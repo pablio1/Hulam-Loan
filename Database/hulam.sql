@@ -1,13 +1,14 @@
 -- phpMyAdmin SQL Dump
--- version 5.1.1
+-- version 4.8.5
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 06, 2021 at 10:02 AM
--- Server version: 10.4.19-MariaDB
--- PHP Version: 8.0.7
+-- Generation Time: Nov 06, 2021 at 10:41 AM
+-- Server version: 10.1.40-MariaDB
+-- PHP Version: 7.3.5
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
@@ -65,8 +66,18 @@ CREATE TABLE `feedback` (
   `debtor_id` int(100) NOT NULL,
   `comments` varchar(250) NOT NULL,
   `ratings` varchar(250) NOT NULL,
-  `date` date NOT NULL
+  `dateOfRate` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `feedback`
+--
+
+INSERT INTO `feedback` (`id`, `lender_id`, `debtor_id`, `comments`, `ratings`, `dateOfRate`) VALUES
+(1, 37, 49, 'Testing ta beh\r\n', '3', '2021-11-06'),
+(2, 37, 52, 'good', '3', '2021-11-06'),
+(3, 37, 52, 'good', '3', '2021-11-06'),
+(4, 37, 52, 'good', '3', '2021-11-06');
 
 -- --------------------------------------------------------
 
@@ -415,7 +426,7 @@ ALTER TABLE `user_type`
 -- AUTO_INCREMENT for table `feedback`
 --
 ALTER TABLE `feedback`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- AUTO_INCREMENT for table `loan_application`
