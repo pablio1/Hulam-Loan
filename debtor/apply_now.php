@@ -240,20 +240,23 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 							if (!isset($_GET['amount']) && !isset($_GET['type'])) {
 				
 								$sql = $dbh->prepare("SELECT * FROM user INNER JOIN loan_features ON user.user_id = loan_features.lender_id WHERE user_type = 3 OR user_type = 4");
+								//$sql = $dbh->prepare("SELECT * FROM `loan_features` WHERE loan_features.min_loan > 10000;");
 								$sql->execute();
 								$lenders = $sql->fetchAll();
+								
 							} else {
 								$amount = $_GET['amount'];
 								$type = $_GET['type'];
 								$month = $_GET['month'];
 								//$sql = $dbh->prepare("SELECT * FROM user INNER JOIN loan_features ON user.user_id = loan_features.lender_id WHERE (loan_features.min_loan < 35000)");
-								$sql = $dbh->prepare("SELECT * FROM user INNER JOIN loan_features ON user.user_id = loan_features.lender_id WHERE user_type = :type && :month BETWEEN min_term AND max_term");
-								$sql->execute(['type' => $type, 'month' => $month]);
-								
+								$sql = $dbh->prepare("SELECT * FROM `user` INNER JOIN `loan_features` ON user.user_id = loan_features.lender_id WHERE loan_features.min_loan <= $amount AND $amount <= loan_features.max_loan AND user.user_type = $type AND loan_features.min_term <= $month AND loan_features.max_term >= $month;");
+								//$sql = $dbh->prepare("SELECT * FROM user INNER JOIN loan_features ON user.user_id = loan_features.lender_id WHERE user_type = :type && :month BETWEEN min_term AND max_term");
+								//$sql->execute(['type' => $type, 'month' => $month]);
+								$sql->execute();
 								$lenders = $sql->fetchAll();
 							}
 							?>
-
+							
 							<?php if ($sql->rowCount() == 0) : ?>
 								<div class="card card-custom gutter-b">
 									<div class="card-body">
@@ -262,9 +265,9 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 								</div>
 							<?php endif; ?>
 							<?php
-								 echo "<pre>";
-								 print_r($lenders);
-								 echo "</pre>";
+								//  echo "<pre>";
+								//  print_r($lenders);
+								//  echo "</pre>";
 							?>
 							<?php foreach ($lenders as $lender) : ?>
 								<div class="card card-custom gutter-b">
@@ -279,12 +282,12 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 												<div class="d-flex align-items-center justify-content-between flex-wrap mt-2">
 													<div class="mr-3">
 														<a href="#" class="d-flex align-items-center text-dark text-hover-primary font-size-h5 font-weight-bold mr-3"><?= $lender['company_name'] ?></a>
-														<div class="d-flex flex-wrap my-2">
+														<!-- <div class="d-flex flex-wrap my-2">
 															<a href="<?= $lender['website'] ?>" target="_blank" class="text-muted text-hover-primary font-weight-bold mr-lg-8 mr-5 mb-lg-0 mb-2">
 																<span class="svg-icon svg-icon-md svg-icon-gray-500 mr-1">
 																</span>View site >>
 															</a>
-														</div>
+														</div> -->
 													</div>
 													<div class="my-lg-0 my-1">
 														<!-- <a href="#" class="btn btn-sm btn-light-primary font-weight-bolder mr-2">View Details</a> -->
@@ -314,14 +317,27 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 															if (!isset($_GET['amount'])) {
 																echo '0.00';
 															} else {
-																$dif_month = $_GET['month'] - $lender['min_term'];
+																/*$dif_month = $_GET['month'] - $lender['min_term'];
 																$initial_amount = $_GET['amount'] + ($_GET['amount'] * $lender['fix_rate'] / 100);
 																$additional_interest = $dif_month * $lender['monthly_rate'];
 																$additional_amount = $_GET['amount'] * $additional_interest / 100;
 
-																echo number_format(($initial_amount + $additional_amount) / 12, 2);
+																echo number_format(($initial_amount + $additional_amount) / 12, 2);*/
+																if($lender['user_type'] == 4){
+																	$amount = $_GET['amount'];
+																	$month = $_GET['month'];
+																	$new_rate = $month * $lender['fix_rate'];
+
+																	$initial_amount = $amount * ($new_rate/ 100);
+																	$add_interest = $initial_amount + $amount;
+																	echo number_format($add_interest / $month, 2);
+																}else{
+																	$amount = $_GET['amount'];
+																	$initial_amount =  $amount * ($lender['fix_rate']/ 100);
+																	$add_interest = $amount / $lender['max_term'];
+																	echo number_format($add_interest + $initial_amount, 2);
+																}
 															}
-													
 														?>
 													</span>
 												</div>
@@ -340,13 +356,13 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 														<span class="text-dark-50 font-weight-bold"></span><?= $lender['fix_rate'] ?>%</span>
 												</div>
 											</div>
-											<div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
+											<!-- <div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
 												<div class="d-flex flex-column text-dark-75">
 													<span class="font-weight-bolder font-size-sm">Monthly Add-on Interest</span>
 													<span class="font-weight-bolder font-size-h5">
 														<span class="text-dark-50 font-weight-bold"></span><?= $lender['monthly_rate'] ?>%</span>
 												</div>
-											</div>
+											</div> -->
 											<div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
 												<span class="mr-4">
 													<span class="svg-icon svg-icon-2x">
@@ -1353,10 +1369,15 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 	<script src="assets/keen/js/scripts.bundle.js"></script>
 	<!--end::Global Theme Bundle-->
 	<!--begin::Page Vendors(used by this page)-->
+	<script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	<script src="assets/keen/plugins/custom/fullcalendar/fullcalendar.bundle.js"></script>
 	<!--end::Page Vendors-->
 	<!--begin::Page Scripts(used by this page)-->
 	<script src="assets/keen/js/pages/widgets.js"></script>
+
+	<script>
+
+	</script>
 	<!--end::Page Scripts-->
 </body>
 <!--end::Body-->

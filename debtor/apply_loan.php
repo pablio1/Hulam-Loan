@@ -348,12 +348,12 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 												</div>
 											</div>
 										<!-- MOA -->
-										<div class="separator separator-solid my-7"></div>
+										<!-- <div class="separator separator-solid my-7"></div>
 											<div class="form-group row">
 												<label class="col-xl-3 col-lg-3 col-form-label"></label>
-												<div class="col-lg-9 col-xl-6">
+												<div class="col-lg-9 col-xl-6"> -->
 													<!--begin::Input-->
-													<div class="row">
+													<!-- <div class="row">
 														<div class="col-lg-9">
 															<div class="form-group">
 																<label class="form-control-label font-weight-bolder font-size-h5" for="input-username">MEMORANDUM OF AGREEMENT</label>
@@ -367,16 +367,16 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 
 															</div>
 														</div>
-													</div>
+													</div> -->
 													<!--end::Input-->
-												</div>
-											</div>
-											<div class="separator separator-solid my-7"></div>
+												<!-- </div>
+											</div> -->
+											<!-- <div class="separator separator-solid my-7"></div>
 											<div class="form-group row">
 												<label class="col-xl-3 col-lg-3 col-form-label"></label>
-												<div class="col-lg-9 col-xl-6">
+												<div class="col-lg-9 col-xl-6"> -->
 													<!--begin::Input-->
-													<div class="row">
+													<!-- <div class="row">
 														<div class="col-lg-9">
 															<div class="form-group">
 																<label class="form-control-label font-weight-bolder font-size-h5" for="input-username">NOTICE OF CONSENT AND APPROVAL</label>
@@ -390,10 +390,10 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 
 															</div>
 														</div>
-													</div>
+													</div> -->
 													<!--end::Input-->
-												</div>
-											</div>
+												<!-- </div>
+											</div> -->
 
 
 											<div class="separator separator-solid my-7"></div>
@@ -1461,6 +1461,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 	<!--end::Page Vendors-->
 	<!--begin::Page Scripts(used by this page)-->
 	<script src="assets/keen/js/pages/widgets.js"></script>
+	<script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	<!--end::Page Scripts-->
 </body>
 <!--end::Body-->
