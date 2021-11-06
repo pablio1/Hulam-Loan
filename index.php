@@ -25,7 +25,7 @@ if (isset($_SESSION['user_type'])) {
 <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>Hulam Loan</title>
+    <title>HULAM LOAN</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
