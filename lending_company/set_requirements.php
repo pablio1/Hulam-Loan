@@ -219,59 +219,61 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 												<span class="menu-text">Set Requirements</span>
 											</a>
 										</li>
+										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+											<a href="lending_company/setup_payment.php" class="menu-link menu-toggle">
+												<span class="svg-icon menu-icon">
+												</span>
+												<span class="menu-text">Set Mode of Payment</span>
+											</a>
+										</li>
+										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+											<a href="lending_company/set_notice.php" class="menu-link menu-toggle">
+												<span class="svg-icon menu-icon">
+												</span>
+												<span class="menu-text">Set Loan Notice</span>
+											</a>
+										</li>
 									</ul>
 								</div>
 							</li>
 							<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-									<a href="javascript:;" class="menu-link menu-toggle">
-										<span class="svg-icon menu-icon">
-										</span>
-										<span class="menu-text">Loan Application</span>
-										<i class="menu-arrow"></i>
-									</a>
-									<div class="menu-submenu">
-										<i class="menu-arrow"></i>
-										<ul class="menu-subnav">
-											<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-												<a href="lending_company/pending_loan.php" class="menu-link menu-toggle">
-													<i class="menu-bullet">
-														<span></span>
-													</i>
-													<span class="menu-text">Pending Loan</span>
-													<span class="menu-label">
-														<span class="label label-rounded label-primary">6</span>
-													</span>
-													<i class="menu-arrow"></i>
-												</a>
-											</li>
-											<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-												<a href="lending_company/approved_loan.php" class="menu-link menu-toggle">
-													<i class="menu-bullet">
-														<span></span>
-													</i>
-													<span class="menu-text">Approved Loan</span>
-													<span class="menu-label">
-														<span class="label label-rounded label-primary">6</span>
-													</span>
-													<i class="menu-arrow"></i>
-												</a>
-											</li>
-											<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-												<a href="lending_company/declined_loan.php" class="menu-link menu-toggle">
-													<i class="menu-bullet">
-														<span></span>
-													</i>
-													<span class="menu-text">Declined Loan</span>
-													<span class="menu-label">
-														<span class="label label-rounded label-primary">6</span>
-													</span>
-													<i class="menu-arrow"></i>
-												</a>
-											</li>
-											
-										</ul>
-									</div>
-								</li>
+								<a href="javascript:;" class="menu-link menu-toggle">
+									<span class="svg-icon menu-icon">
+									</span>
+									<span class="menu-text">Loan Application</span>
+									<i class="menu-arrow"></i>
+								</a>
+								<div class="menu-submenu">
+									<i class="menu-arrow"></i>
+									<ul class="menu-subnav">
+										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+											<a href="lending_company/pending_loan.php" class="menu-link menu-toggle">
+												<i class="menu-bullet">
+													<span></span>
+												</i>
+												<span class="menu-text">Pending Loan</span>
+											</a>
+										</li>
+										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+											<a href="lending_company/approved_loan.php" class="menu-link menu-toggle">
+												<i class="menu-bullet">
+													<span></span>
+												</i>
+												<span class="menu-text">Approved Loan</span>
+											</a>
+										</li>
+										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+											<a href="lending_company/declined_loan.php" class="menu-link menu-toggle">
+												<i class="menu-bullet">
+													<span></span>
+												</i>
+												<span class="menu-text">Declined Loan</span>
+											</a>
+										</li>
+
+									</ul>
+								</div>
+							</li>
 								<li class="menu-section">
 									<h4 class="menu-text">Manage Payment</h4>
 									<i class="menu-icon ki ki-bold-more-hor icon-md"></i>

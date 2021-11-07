@@ -228,24 +228,16 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 											<div class="d-flex">
 												<div class="flex-shrink-0 mr-7">
 													<div class="symbol symbol-50 symbol-lg-120 symbol-circle">
-														<img alt="Pic" src="assets/keen/media//logos/<?= $lender['image'] ?>" />
+														<img alt="Pic" src="./assets/keen/company_logo/<?= $lender['company_logo'] ?>" />
 													</div>
 												</div>
 												<div class="flex-grow-1">
 													<div class="d-flex align-items-center justify-content-between flex-wrap mt-2">
 														<div class="mr-3">
-															<a href="#" class="d-flex align-items-center text-dark text-hover-primary font-size-h5 font-weight-bold mr-3"><?= $lender['company_name'] ?></a>
-															<div class="d-flex flex-wrap my-2">
-																<a href="<?= $lender['website'] ?>" target="_blank" class="text-muted text-hover-primary font-weight-bold mr-lg-8 mr-5 mb-lg-0 mb-2">
-																	<span class="svg-icon svg-icon-md svg-icon-gray-500 mr-1">
-																	</span>View site >>
-																</a>
-															</div>
+															<a href="#" class="d-flex align-items-center text-dark text-hover-primary font-size-h5 font-weight-bold mr-3"><?= $lender['company_name'] ?></a> 
 														</div>
 														<div class="my-lg-0 my-1">
-															<a href="debtor/apply_now.php" class="btn btn-sm btn-light-primary font-weight-bolder mr-2">
-																<< Back</a>
-																	<!-- <a href="debtor/update_information.php" class="btn btn-sm btn-primary font-weight-bolder">Apply Now</a> -->
+															<a href="debtor/apply_now.php" class="btn btn-sm btn-light-primary font-weight-bolder mr-2"><< Back</a>
 														</div>
 													</div>
 													<div class="d-flex align-items-center flex-wrap justify-content-between">
@@ -292,13 +284,6 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 															<span class="text-dark-50 font-weight-bold"></span><?= $lender['fix_rate'] ?>%</span>
 													</div>
 												</div>
-												<div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
-													<div class="d-flex flex-column flex-lg-fill">
-														<span class="font-weight-bolder font-size-m">Interest Per Month</span>
-														<span class="font-weight-bolder font-size-h5">
-															<span class="text-dark-50 font-weight-bold"></span><?= $lender['monthly_rate'] ?>%</span>
-													</div>
-												</div>
 											</div>
 											<div class="separator separator-solid my-7"></div>
 											<div class="d-flex align-items-center flex-wrap">
@@ -330,72 +315,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 															<span class="text-dark-50 font-weight-bold"></span><?= $lender['late_rate'] ?>%</span>
 													</div>
 												</div>
-												<div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
-													<span class="mr-4">
-														<span class="svg-icon svg-icon-2x">
-															<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-																<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-																	<rect x="0" y="0" width="24" height="24" />
-																	<polygon fill="#000000" opacity="0.3" points="5 15 3 21.5 9.5 19.5" />
-																	<path d="M13.5,21 C8.25329488,21 4,16.7467051 4,11.5 C4,6.25329488 8.25329488,2 13.5,2 C18.7467051,2 23,6.25329488 23,11.5 C23,16.7467051 18.7467051,21 13.5,21 Z M9,8 C8.44771525,8 8,8.44771525 8,9 C8,9.55228475 8.44771525,10 9,10 L18,10 C18.5522847,10 19,9.55228475 19,9 C19,8.44771525 18.5522847,8 18,8 L9,8 Z M9,12 C8.44771525,12 8,12.4477153 8,13 C8,13.5522847 8.44771525,14 9,14 L14,14 C14.5522847,14 15,13.5522847 15,13 C15,12.4477153 14.5522847,12 14,12 L9,12 Z" fill="#000000" />
-																</g>
-															</svg>
-														</span>
-													</span>
-													<div class="d-flex flex-column">
-														<span class="text-dark-75 font-weight-bolder font-size-sm">Rates and Reviews</span>
-													</div>
-												</div>
 											</div>
-										<!-- MOA -->
-										<!-- <div class="separator separator-solid my-7"></div>
-											<div class="form-group row">
-												<label class="col-xl-3 col-lg-3 col-form-label"></label>
-												<div class="col-lg-9 col-xl-6"> -->
-													<!--begin::Input-->
-													<!-- <div class="row">
-														<div class="col-lg-9">
-															<div class="form-group">
-																<label class="form-control-label font-weight-bolder font-size-h5" for="input-username">MEMORANDUM OF AGREEMENT</label>
-																<div class="dropzone-panel mb-lg-0 mb-2">
-																</div>
-																<a href="/hulam/assets/keen/moa" target="_blank">Memorandum of Agreement</a></br></br>
-																<label class="form-control-label" for="input-username">Click on the Memorandum of Agreement to download and upload back with your signature.</label>
-																<div class="dropzone-panel mb-lg-0 mb-2">
-																	<input type="file" name="dti_permit" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm" value="<?= $res['dti_permit'];?>"/>
-																</div></br>
-
-															</div>
-														</div>
-													</div> -->
-													<!--end::Input-->
-												<!-- </div>
-											</div> -->
-											<!-- <div class="separator separator-solid my-7"></div>
-											<div class="form-group row">
-												<label class="col-xl-3 col-lg-3 col-form-label"></label>
-												<div class="col-lg-9 col-xl-6"> -->
-													<!--begin::Input-->
-													<!-- <div class="row">
-														<div class="col-lg-9">
-															<div class="form-group">
-																<label class="form-control-label font-weight-bolder font-size-h5" for="input-username">NOTICE OF CONSENT AND APPROVAL</label>
-																<div class="dropzone-panel mb-lg-0 mb-2">
-																</div>
-																<a href="/hulam/assets/keen/moa/" target="_blank">Notice of Consent and Approval</a></br></br>
-																<label class="form-control-label" for="input-username">Click on the Notice of Consent and Approval file to download and upload back with your signature.</label>
-																<div class="dropzone-panel mb-lg-0 mb-2">
-																	<input type="file" name="dti_permit" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm" value="<?= $res['dti_permit'];?>"/>
-																</div></br>
-
-															</div>
-														</div>
-													</div> -->
-													<!--end::Input-->
-												<!-- </div>
-											</div> -->
-
-
 											<div class="separator separator-solid my-7"></div>
 											<div class="form-group row">
 												<label class="col-xl-3 col-lg-3 col-form-label"></label>

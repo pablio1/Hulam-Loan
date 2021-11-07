@@ -198,16 +198,22 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 											</a>
 										</li>
 										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-											<a href="lending_company/set_requirements.php" class="menu-link menu-toggle">
+											<a href="lending_company/setup_payment.php" class="menu-link menu-toggle">
 												<span class="svg-icon menu-icon">
 												</span>
 												<span class="menu-text">Set Mode of Payment</span>
 											</a>
 										</li>
+										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+											<a href="lending_company/set_notice.php" class="menu-link menu-toggle">
+												<span class="svg-icon menu-icon">
+												</span>
+												<span class="menu-text">Set Loan Notice</span>
+											</a>
+										</li>
 									</ul>
 								</div>
 							</li>
-
 							<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
 								<a href="javascript:;" class="menu-link menu-toggle">
 									<span class="svg-icon menu-icon">
@@ -227,7 +233,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 											</a>
 										</li>
 										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-											<a href="lending_company/pending_loan.php" class="menu-link menu-toggle">
+											<a href="lending_company/approved_loan.php" class="menu-link menu-toggle">
 												<i class="menu-bullet">
 													<span></span>
 												</i>
@@ -235,7 +241,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 											</a>
 										</li>
 										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-											<a href="lending_company/pending_loan.php" class="menu-link menu-toggle">
+											<a href="lending_company/declined_loan.php" class="menu-link menu-toggle">
 												<i class="menu-bullet">
 													<span></span>
 												</i>

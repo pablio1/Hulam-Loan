@@ -180,30 +180,6 @@ include('db_connection/config.php');
                                 +63 945 490 9530 <br>
                                 Mactan, Lapu-Lapu City Cebu 6015
                             </p>
-                            <!-- <div class="socail_links">
-                                <ul>
-                                    <li>
-                                        <a href="#">
-                                            <i class="ti-facebook"></i>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            <i class="fa fa-google-plus"></i>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            <i class="fa fa-twitter"></i>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            <i class="fa fa-instagram"></i>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div> -->
 
                         </div>
                     </div>
@@ -212,12 +188,6 @@ include('db_connection/config.php');
                             <h3 class="footer_title">
                                 Services
                             </h3>
-                            <!-- <ul>
-                                <li><a href="#">SEO/SEM </a></li>
-                                <li><a href="#">Web design </a></li>
-                                <li><a href="#">Ecommerce</a></li>
-                                <li><a href="#">Digital marketing</a></li>
-                            </ul> -->
 
                         </div>
                     </div>
