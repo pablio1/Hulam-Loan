@@ -1278,7 +1278,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 						<i class="symbol-badge bg-success"></i>
 					</div>
 					<div class="d-flex flex-column">
-						<a href="#" class="font-weight-bold font-size-h5 text-dark-75 text-hover-primary">Lending Company</a>
+						<a href="#" class="font-weight-bold font-size-h5 text-dark-75 text-hover-primary">Individual Investor</a>
 						<div class="text-muted mt-1"></div>
 						<div class="navi mt-1">
 							<a href="#" class="navi-item">
