@@ -1,6 +1,6 @@
 <?php
 session_start();
-error_reporting(-1);
+error_reporting(0);
 include('../db_connection/config.php');
 ?>
 <?php
@@ -42,7 +42,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 	<!--begin::Head-->
 	<head><base href="../">
 		<meta charset="utf-8" />
-		<title>Hulam | Admin | Lending Company</title>
+		<title>Hulam | Admin | Individual Investor</title>
 		<meta name="description" content="Updates and statistics" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 		<!--begin::Fonts-->
@@ -137,195 +137,186 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 					<!--end::Brand-->
 					<!--begin::Aside Menu-->
 					<div class="aside-menu-wrapper flex-column-fluid" id="kt_aside_menu_wrapper">
-						<!--begin::Menu Container-->
-						<div id="kt_aside_menu" class="aside-menu my-4" data-menu-vertical="1" data-menu-scroll="1" data-menu-dropdown-timeout="500">
-							<!--begin::Menu Nav-->
-							<ul class="menu-nav">
-								<li class="menu-item menu-item-active" aria-haspopup="true">
-									<a href="lending_company/index.php"  class="menu-link">
-										<span class="svg-icon menu-icon">
-											<!--begin::Svg Icon | path:assets/media/svg/icons/Design/Layers.svg-->
-											<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-												<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-													<polygon points="0 0 24 0 24 24 0 24" />
-													<path d="M12.9336061,16.072447 L19.36,10.9564761 L19.5181585,10.8312381 C20.1676248,10.3169571 20.2772143,9.3735535 19.7629333,8.72408713 C19.6917232,8.63415859 19.6104327,8.55269514 19.5206557,8.48129411 L12.9336854,3.24257445 C12.3871201,2.80788259 11.6128799,2.80788259 11.0663146,3.24257445 L4.47482784,8.48488609 C3.82645598,9.00054628 3.71887192,9.94418071 4.23453211,10.5925526 C4.30500305,10.6811601 4.38527899,10.7615046 4.47382636,10.8320511 L4.63,10.9564761 L11.0659024,16.0730648 C11.6126744,16.5077525 12.3871218,16.5074963 12.9336061,16.072447 Z" fill="#000000" fill-rule="nonzero" />
-													<path d="M11.0563554,18.6706981 L5.33593024,14.122919 C4.94553994,13.8125559 4.37746707,13.8774308 4.06710397,14.2678211 C4.06471678,14.2708238 4.06234874,14.2738418 4.06,14.2768747 L4.06,14.2768747 C3.75257288,14.6738539 3.82516916,15.244888 4.22214834,15.5523151 C4.22358765,15.5534297 4.2250303,15.55454 4.22647627,15.555646 L11.0872776,20.8031356 C11.6250734,21.2144692 12.371757,21.2145375 12.909628,20.8033023 L19.7677785,15.559828 C20.1693192,15.2528257 20.2459576,14.6784381 19.9389553,14.2768974 C19.9376429,14.2751809 19.9363245,14.2734691 19.935,14.2717619 L19.935,14.2717619 C19.6266937,13.8743807 19.0546209,13.8021712 18.6572397,14.1104775 C18.654352,14.112718 18.6514778,14.1149757 18.6486172,14.1172508 L12.9235044,18.6705218 C12.377022,19.1051477 11.6029199,19.1052208 11.0563554,18.6706981 Z" fill="#000000" opacity="0.3" />
-												</g>
-											</svg>
-											<!--end::Svg Icon-->
-										</span>
-										<span class="menu-text">Dashboard</span>
-									</a>
-								</li>
-								<li class="menu-section">
-									<h4 class="menu-text">Manage Loan</h4>
-									<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
-								</li>
-								<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-									<a href="javascript:;" class="menu-link menu-toggle">
-										<span class="svg-icon menu-icon">
-										</span>
-										<span class="menu-text">Loan Application</span>
-										<i class="menu-arrow"></i>
-									</a>
-									<div class="menu-submenu">
-										<i class="menu-arrow"></i>
-										<ul class="menu-subnav">
-											<!-- <li class="menu-item menu-item-parent" aria-haspopup="true">
-												<span class="menu-link">
-													<span class="menu-text">Applications</span>
+					<!--begin::Menu Container-->
+					<div id="kt_aside_menu" class="aside-menu my-4" data-menu-vertical="1" data-menu-scroll="1" data-menu-dropdown-timeout="500">
+						<!--begin::Menu Nav-->
+						<ul class="menu-nav">
+							<li class="menu-item menu-item-active" aria-haspopup="true">
+								<a href="individual_investor/index.php" class="menu-link">
+									<span class="svg-icon menu-icon">
+										<!--begin::Svg Icon | path:assets/media/svg/icons/Design/Layers.svg-->
+										<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+											<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+												<polygon points="0 0 24 0 24 24 0 24" />
+												<path d="M12.9336061,16.072447 L19.36,10.9564761 L19.5181585,10.8312381 C20.1676248,10.3169571 20.2772143,9.3735535 19.7629333,8.72408713 C19.6917232,8.63415859 19.6104327,8.55269514 19.5206557,8.48129411 L12.9336854,3.24257445 C12.3871201,2.80788259 11.6128799,2.80788259 11.0663146,3.24257445 L4.47482784,8.48488609 C3.82645598,9.00054628 3.71887192,9.94418071 4.23453211,10.5925526 C4.30500305,10.6811601 4.38527899,10.7615046 4.47382636,10.8320511 L4.63,10.9564761 L11.0659024,16.0730648 C11.6126744,16.5077525 12.3871218,16.5074963 12.9336061,16.072447 Z" fill="#000000" fill-rule="nonzero" />
+												<path d="M11.0563554,18.6706981 L5.33593024,14.122919 C4.94553994,13.8125559 4.37746707,13.8774308 4.06710397,14.2678211 C4.06471678,14.2708238 4.06234874,14.2738418 4.06,14.2768747 L4.06,14.2768747 C3.75257288,14.6738539 3.82516916,15.244888 4.22214834,15.5523151 C4.22358765,15.5534297 4.2250303,15.55454 4.22647627,15.555646 L11.0872776,20.8031356 C11.6250734,21.2144692 12.371757,21.2145375 12.909628,20.8033023 L19.7677785,15.559828 C20.1693192,15.2528257 20.2459576,14.6784381 19.9389553,14.2768974 C19.9376429,14.2751809 19.9363245,14.2734691 19.935,14.2717619 L19.935,14.2717619 C19.6266937,13.8743807 19.0546209,13.8021712 18.6572397,14.1104775 C18.654352,14.112718 18.6514778,14.1149757 18.6486172,14.1172508 L12.9235044,18.6705218 C12.377022,19.1051477 11.6029199,19.1052208 11.0563554,18.6706981 Z" fill="#000000" opacity="0.3" />
+											</g>
+										</svg>
+										<!--end::Svg Icon-->
+									</span>
+									<span class="menu-text">Dashboard</span>
+								</a>
+							</li>
+							<li class="menu-section">
+								<h4 class="menu-text">Manage Account</h4>
+								<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
+							</li>
+							<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+								<a href="javascript:;" class="menu-link menu-toggle">
+									<span class="svg-icon menu-icon">
+									</span>
+									<span class="menu-text">My Account</span>
+									<i class="menu-arrow"></i>
+								</a>
+								<div class="menu-submenu">
+									<i class="menu-arrow"></i>
+									<ul class="menu-subnav">
+										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+											<a href="individual_investor/update_information.php" class="menu-link menu-toggle">
+												<i class="menu-bullet">
+													<span></span>
+												</i>
+												<span class="menu-text">My Profile</span>
+											</a>
+										</li>
+									</ul>
+								</div>
+							</li>
+							<li class="menu-section">
+								<h4 class="menu-text">Manage Loan</h4>
+								<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
+							</li>
+							<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+								<a href="javascript:;" class="menu-link menu-toggle">
+									<span class="svg-icon menu-icon">
+									</span>
+									<span class="menu-text">Setup Loan</span>
+									<i class="menu-arrow"></i>
+								</a>
+								<div class="menu-submenu">
+									<ul class="menu-subnav">
+										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+											<a href="individual_investor/setup_loan.php" class="menu-link menu-toggle">
+												<span class="svg-icon menu-icon">
 												</span>
-											</li> -->
-											<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-												<a href="lending_company/pending_loan.php" class="menu-link menu-toggle">
-													<i class="menu-bullet">
-														<span></span>
-													</i>
-													<span class="menu-text">Pending Loan</span>
-													<!-- <span class="menu-label">
-														<span class="label label-rounded label-primary">6</span>
-													</span>
-													<i class="menu-arrow"></i> -->
-												</a>
-											</li>
-											<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-												<a href="lending_company/pending_loan.php" class="menu-link menu-toggle">
-													<i class="menu-bullet">
-														<span></span>
-													</i>
-													<span class="menu-text">Approved Loan</span>
-													<!-- <span class="menu-label">
-														<span class="label label-rounded label-primary">6</span>
-													</span>
-													<i class="menu-arrow"></i> -->
-												</a>
-											</li>
-											<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-												<a href="lending_company/pending_loan.php" class="menu-link menu-toggle">
-													<i class="menu-bullet">
-														<span></span>
-													</i>
-													<span class="menu-text">Declined Loan</span>
-													<!-- <span class="menu-label">
-														<span class="label label-rounded label-primary">6</span>
-													</span>
-													<i class="menu-arrow"></i> -->
-												</a>
-											</li>
-											
-										</ul>
-									</div>
-								</li>
-								<li class="menu-section">
-									<h4 class="menu-text">Product Features</h4>
-									<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
-								</li>
-								<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-									<a href="javascript:;" class="menu-link menu-toggle">
-										<span class="svg-icon menu-icon">
-										</span>
-										<span class="menu-text">View</span>
-										<i class="menu-arrow"></i>
-									</a>
-									<div class="menu-submenu">
-										<i class="menu-arrow"></i>
-										<ul class="menu-subnav">
-											<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-												<a href="lending_company/loan_info.php" class="menu-link menu-toggle">
-													<i class="menu-bullet">
-														<span></span>
-													</i>
-													<span class="menu-text">Loan Information</span>
-													<i class="menu-arrow"></i>
-												</a>
-											</li>
-										</ul>
-									</div>
-								</li>
-								<li class="menu-section">
-									<h4 class="menu-text">Manage Payment</h4>
-									<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
-								</li>
-								<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-									<a href="javascript:;" class="menu-link menu-toggle">
-										<span class="svg-icon menu-icon">
-										</span>
-										<span class="menu-text">Payment Information</span>
-										<i class="menu-arrow"></i>
-									</a>
-									<div class="menu-submenu">
-										<i class="menu-arrow"></i>
-										<ul class="menu-subnav">
-											<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-												<a href="lending_company/pending_loan.php" class="menu-link menu-toggle">
-													<i class="menu-bullet">
-														<span></span>
-													</i>
-													<span class="menu-text">Payment Received</span>
-													<span class="menu-label">
-													</span>
-													<i class="menu-arrow"></i>
-												</a>
-											</li>
-											<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-												<a href="lending_company/payment_records.php" class="menu-link menu-toggle">
-													<i class="menu-bullet">
-														<span></span>
-													</i>
-													<span class="menu-text">Payment Records</span>
-													<span class="menu-label">
-													</span>
-													<i class="menu-arrow"></i>
-												</a>
-											</li>
-										</ul>
-									</div>
-								</li>
+												<span class="menu-text">Setup Loan Features</span>
+											</a>
+										</li>
+										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+											<a href="individual_investor/set_requirements.php" class="menu-link menu-toggle">
+												<span class="svg-icon menu-icon">
+												</span>
+												<span class="menu-text">Set Requirements</span>
+											</a>
+										</li>
+										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+											<a href="individual_investor/.php" class="menu-link menu-toggle">
+												<span class="svg-icon menu-icon">
+												</span>
+												<span class="menu-text">Set Mode of Payment</span>
+											</a>
+										</li>
+									</ul>
+								</div>
+							</li>
+
+							<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+								<a href="javascript:;" class="menu-link menu-toggle">
+									<span class="svg-icon menu-icon">
+									</span>
+									<span class="menu-text">Loan Application</span>
+									<i class="menu-arrow"></i>
+								</a>
+								<div class="menu-submenu">
+									<i class="menu-arrow"></i>
+									<ul class="menu-subnav">
+										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+											<a href="individual_investor/pending_loan.php" class="menu-link menu-toggle">
+												<i class="menu-bullet">
+													<span></span>
+												</i>
+												<span class="menu-text">Pending Loan</span>
+											</a>
+										</li>
+										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+											<a href="individual_investor/approvedloan.php" class="menu-link menu-toggle">
+												<i class="menu-bullet">
+													<span></span>
+												</i>
+												<span class="menu-text">Approved Loan</span>
+											</a>
+										</li>
+										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+											<a href="individual_investor/.php" class="menu-link menu-toggle">
+												<i class="menu-bullet">
+													<span></span>
+												</i>
+												<span class="menu-text">Declined Loan</span>
+											</a>
+										</li>
+
+									</ul>
+								</div>
+							</li>
+							<li class="menu-section">
+								<h4 class="menu-text">Manage Payment</h4>
+								<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
+							</li>
+							<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+								<a href="javascript:;" class="menu-link menu-toggle">
+									<span class="svg-icon menu-icon">
+									</span>
+									<span class="menu-text">Payment Information</span>
+									<i class="menu-arrow"></i>
+								</a>
+								<div class="menu-submenu">
+									<i class="menu-arrow"></i>
+									<ul class="menu-subnav">
+										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+											<a href="individual_investor/.php" class="menu-link menu-toggle">
+												<i class="menu-bullet">
+													<span></span>
+												</i>
+												<span class="menu-text">Payment Received</span>
+												<span class="menu-label">
+												</span>
+												<i class="menu-arrow"></i>
+											</a>
+										</li>
+										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+											<a href="individual_investor/.php" class="menu-link menu-toggle">
+												<i class="menu-bullet">
+													<span></span>
+												</i>
+												<span class="menu-text">Payment Records</span>
+												<span class="menu-label">
+												</span>
+												<i class="menu-arrow"></i>
+											</a>
+										</li>
+									</ul>
+								</div>
+							</li>
+
+							<li class="menu-section">
+								<h4 class="menu-text">Manage Report</h4>
+								<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
+							</li>
+							<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+								<a href="javascript:;" class="menu-link menu-toggle">
+									<span class="svg-icon menu-icon">
+									</span>
+									<span class="menu-text">Generate Report</span>
+									<i class="menu-arrow"></i>
+								</a>
 								
-								<li class="menu-section">
-									<h4 class="menu-text">Manage Report</h4>
-									<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
-								</li>
-								<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-									<a href="javascript:;" class="menu-link menu-toggle">
-										<span class="svg-icon menu-icon">
-										</span>
-										<span class="menu-text">Generate Report</span>
-										<i class="menu-arrow"></i>
-									</a>
-									<div class="menu-submenu">
-										<i class="menu-arrow"></i>
-										<ul class="menu-subnav">
-											<li class="menu-item menu-item-parent" aria-haspopup="true">
-												<span class="menu-link">
-													<span class="menu-text">Themes</span>
-												</span>
-											</li>
-											<li class="menu-item" aria-haspopup="true">
-												<a href="layout/themes/aside-light.html" class="menu-link">
-													<i class="menu-bullet menu-bullet-dot">
-														<span></span>
-													</i>
-													<span class="menu-text">Light Aside</span>
-												</a>
-											</li>
-											<li class="menu-item" aria-haspopup="true">
-												<a href="layout/themes/header-dark.html" class="menu-link">
-													<i class="menu-bullet menu-bullet-dot">
-														<span></span>
-													</i>
-													<span class="menu-text">Dark Header</span>
-												</a>
-											</li>
-										</ul>
-									</div>
-								</li>
+							</li>
 							<!--end::Menu Nav-->
-						</div>
-						<!--end::Menu Container-->
 					</div>
-					<!--end::Aside Menu-->
+					<!--end::Menu Container-->
 				</div>
+				<!--end::Aside Menu-->
+			</div>
 				<!--end::Aside-->
 				<!--begin::Wrapper-->
 				<div class="d-flex flex-column flex-row-fluid wrapper" id="kt_wrapper">
@@ -351,63 +342,6 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 							<!--end::Header Menu Wrapper-->
 							<!--begin::Topbar-->
 							<div class="topbar">
-								<!--begin::Search-->
-								<div class="dropdown mr-1" id="kt_quick_search_toggle">
-									<!--begin::Toggle-->
-									<div class="topbar-item" data-toggle="dropdown" data-offset="10px,0px">
-										<div class="btn btn-icon btn-clean btn-lg btn-dropdown">
-											<span class="svg-icon svg-icon-xl svg-icon-primary">
-												<!--begin::Svg Icon | path:assets/media/svg/icons/General/Search.svg-->
-												<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-													<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-														<rect x="0" y="0" width="24" height="24" />
-														<path d="M14.2928932,16.7071068 C13.9023689,16.3165825 13.9023689,15.6834175 14.2928932,15.2928932 C14.6834175,14.9023689 15.3165825,14.9023689 15.7071068,15.2928932 L19.7071068,19.2928932 C20.0976311,19.6834175 20.0976311,20.3165825 19.7071068,20.7071068 C19.3165825,21.0976311 18.6834175,21.0976311 18.2928932,20.7071068 L14.2928932,16.7071068 Z" fill="#000000" fill-rule="nonzero" opacity="0.3" />
-														<path d="M11,16 C13.7614237,16 16,13.7614237 16,11 C16,8.23857625 13.7614237,6 11,6 C8.23857625,6 6,8.23857625 6,11 C6,13.7614237 8.23857625,16 11,16 Z M11,18 C7.13400675,18 4,14.8659932 4,11 C4,7.13400675 7.13400675,4 11,4 C14.8659932,4 18,7.13400675 18,11 C18,14.8659932 14.8659932,18 11,18 Z" fill="#000000" fill-rule="nonzero" />
-													</g>
-												</svg>
-												<!--end::Svg Icon-->
-											</span>
-										</div>
-									</div>
-									<!--end::Toggle-->
-									<!--begin::Dropdown-->
-									<div class="dropdown-menu p-0 m-0 dropdown-menu-right dropdown-menu-anim-up dropdown-menu-lg">
-										<div class="quick-search quick-search-dropdown" id="kt_quick_search_dropdown">
-											<!--begin:Form-->
-											<form method="get" class="quick-search-form">
-												<div class="input-group">
-													<div class="input-group-prepend">
-														<span class="input-group-text">
-															<span class="svg-icon svg-icon-lg">
-																<!--begin::Svg Icon | path:assets/media/svg/icons/General/Search.svg-->
-																<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-																	<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-																		<rect x="0" y="0" width="24" height="24" />
-																		<path d="M14.2928932,16.7071068 C13.9023689,16.3165825 13.9023689,15.6834175 14.2928932,15.2928932 C14.6834175,14.9023689 15.3165825,14.9023689 15.7071068,15.2928932 L19.7071068,19.2928932 C20.0976311,19.6834175 20.0976311,20.3165825 19.7071068,20.7071068 C19.3165825,21.0976311 18.6834175,21.0976311 18.2928932,20.7071068 L14.2928932,16.7071068 Z" fill="#000000" fill-rule="nonzero" opacity="0.3" />
-																		<path d="M11,16 C13.7614237,16 16,13.7614237 16,11 C16,8.23857625 13.7614237,6 11,6 C8.23857625,6 6,8.23857625 6,11 C6,13.7614237 8.23857625,16 11,16 Z M11,18 C7.13400675,18 4,14.8659932 4,11 C4,7.13400675 7.13400675,4 11,4 C14.8659932,4 18,7.13400675 18,11 C18,14.8659932 14.8659932,18 11,18 Z" fill="#000000" fill-rule="nonzero" />
-																	</g>
-																</svg>
-																<!--end::Svg Icon-->
-															</span>
-														</span>
-													</div>
-													<input type="text" class="form-control" placeholder="Search..." />
-													<div class="input-group-append">
-														<span class="input-group-text">
-															<i class="quick-search-close ki ki-close icon-sm text-muted"></i>
-														</span>
-													</div>
-												</div>
-											</form>
-											<!--end::Form-->
-											<!--begin::Scroll-->
-											<div class="quick-search-wrapper scroll" data-scroll="true" data-height="325" data-mobile-height="200"></div>
-											<!--end::Scroll-->
-										</div>
-									</div>
-									<!--end::Dropdown-->
-								</div>
-								<!--end::Search-->
 								<!--begin::Notifications-->
 								<div class="dropdown mr-1">
 									<!--begin::Dropdown-->
@@ -991,7 +925,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 									<!--begin::Page Heading-->
 									<div class="d-flex align-items-baseline flex-wrap mr-5">
 										<!--begin::Page Title-->
-										<h4 class="text-white font-weight-bold my-1 mr-5">Dashboard |</h4><h5 class="text-white font-weight-bold my-1 mr-5">Lending Investor</h5>
+										<h4 class="text-white font-weight-bold my-1 mr-5">Dashboard |</h4><h5 class="text-white font-weight-bold my-1 mr-5">Individual Investor</h5>
 										<!--end::Page Title-->
 									</div>
 									<!--end::Page Heading-->
@@ -1518,7 +1452,6 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 			<!--begin::Header-->
 			<div class="offcanvas-header d-flex align-items-center justify-content-between pb-5">
 				<h3 class="font-weight-bold m-0">Profile
-				<small class="text-muted font-size-sm ml-2">15 messages</small></h3>
 				<a href="#" class="btn btn-xs btn-icon btn-light btn-hover-primary" id="kt_quick_user_close">
 					<i class="ki ki-close icon-xs text-muted"></i>
 				</a>
@@ -1533,7 +1466,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 						<i class="symbol-badge bg-success"></i>
 					</div>
 					<div class="d-flex flex-column">
-						<a href="#" class="font-weight-bold font-size-h5 text-dark-75 text-hover-primary">Lending Company</a>
+						<a href="#" class="font-weight-bold font-size-h5 text-dark-75 text-hover-primary">Individual Investor</a>
 						<div class="text-muted mt-1"></div>
 						<div class="navi mt-1">
 							<a href="#" class="navi-item">
@@ -1551,96 +1484,15 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 											<!--end::Svg Icon-->
 										</span>
 									</span>
-									<span class="navi-text text-muted text-hover-primary">hulamloan@gmail.com</span>
+									<span class="navi-text text-muted text-hover-primary"><?= $_SESSION['email'];?></span>
 								</span>
 							</a>
 						</div>
 					</div>
 				</div>
-				<!--end::Header-->
-				<!--begin::Separator-->
 				<div class="separator separator-dashed mt-8 mb-5"></div>
-				<!--end::Separator-->
-				<!--begin::Nav-->
 				<div class="navi navi-spacer-x-0 p-0">
-					<!--begin::Item-->
-					<a href="custom/apps/user/profile-1/personal-information.html" class="navi-item">
-						<div class="navi-link">
-							<div class="symbol symbol-40 bg-light mr-3">
-								<div class="symbol-label">
-									<span class="svg-icon svg-icon-md svg-icon-danger">
-										<!--begin::Svg Icon | path:assets/media/svg/icons/Communication/Adress-book2.svg-->
-										<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-											<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-												<rect x="0" y="0" width="24" height="24" />
-												<path d="M18,2 L20,2 C21.6568542,2 23,3.34314575 23,5 L23,19 C23,20.6568542 21.6568542,22 20,22 L18,22 L18,2 Z" fill="#000000" opacity="0.3" />
-												<path d="M5,2 L17,2 C18.6568542,2 20,3.34314575 20,5 L20,19 C20,20.6568542 18.6568542,22 17,22 L5,22 C4.44771525,22 4,21.5522847 4,21 L4,3 C4,2.44771525 4.44771525,2 5,2 Z M12,11 C13.1045695,11 14,10.1045695 14,9 C14,7.8954305 13.1045695,7 12,7 C10.8954305,7 10,7.8954305 10,9 C10,10.1045695 10.8954305,11 12,11 Z M7.00036205,16.4995035 C6.98863236,16.6619875 7.26484009,17 7.4041679,17 C11.463736,17 14.5228466,17 16.5815,17 C16.9988413,17 17.0053266,16.6221713 16.9988413,16.5 C16.8360465,13.4332455 14.6506758,12 11.9907452,12 C9.36772908,12 7.21569918,13.5165724 7.00036205,16.4995035 Z" fill="#000000" />
-											</g>
-										</svg>
-										<!--end::Svg Icon-->
-									</span>
-								</div>
-							</div>
-							<div class="navi-text">
-								<div class="font-weight-bold">My Account</div>
-								<div class="text-muted">Profile info
-								<span class="label label-light-danger label-inline font-weight-bold">update</span></div>
-							</div>
-						</div>
-					</a>
-					<!--end:Item-->
-					<!--begin::Item-->
-					<a href="custom/apps/user/profile-3.html" class="navi-item">
-						<div class="navi-link">
-							<div class="symbol symbol-40 bg-light mr-3">
-								<div class="symbol-label">
-									<span class="svg-icon svg-icon-md svg-icon-success">
-										<!--begin::Svg Icon | path:assets/media/svg/icons/General/Settings-1.svg-->
-										<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-											<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-												<rect x="0" y="0" width="24" height="24" />
-												<path d="M7,3 L17,3 C19.209139,3 21,4.790861 21,7 C21,9.209139 19.209139,11 17,11 L7,11 C4.790861,11 3,9.209139 3,7 C3,4.790861 4.790861,3 7,3 Z M7,9 C8.1045695,9 9,8.1045695 9,7 C9,5.8954305 8.1045695,5 7,5 C5.8954305,5 5,5.8954305 5,7 C5,8.1045695 5.8954305,9 7,9 Z" fill="#000000" />
-												<path d="M7,13 L17,13 C19.209139,13 21,14.790861 21,17 C21,19.209139 19.209139,21 17,21 L7,21 C4.790861,21 3,19.209139 3,17 C3,14.790861 4.790861,13 7,13 Z M17,19 C18.1045695,19 19,18.1045695 19,17 C19,15.8954305 18.1045695,15 17,15 C15.8954305,15 15,15.8954305 15,17 C15,18.1045695 15.8954305,19 17,19 Z" fill="#000000" opacity="0.3" />
-											</g>
-										</svg>
-										<!--end::Svg Icon-->
-									</span>
-								</div>
-							</div>
-							<div class="navi-text">
-								<div class="font-weight-bold">My Tasks</div>
-								<div class="text-muted">Todo and tasks</div>
-							</div>
-						</div>
-					</a>
-					<!--end:Item-->
-					<!--begin::Item-->
-					<a href="custom/apps/user/profile-2.html" class="navi-item">
-						<div class="navi-link">
-							<div class="symbol symbol-40 bg-light mr-3">
-								<div class="symbol-label">
-									<span class="svg-icon svg-icon-md svg-icon-primary">
-										<!--begin::Svg Icon | path:assets/media/svg/icons/General/Half-star.svg-->
-										<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-											<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-												<polygon points="0 0 24 0 24 24 0 24" />
-												<path d="M12,4.25932872 C12.1488635,4.25921584 12.3000368,4.29247316 12.4425657,4.36281539 C12.6397783,4.46014562 12.7994058,4.61977315 12.8967361,4.81698575 L14.9389263,8.95491503 L19.5054023,9.61846284 C20.0519472,9.69788046 20.4306287,10.2053233 20.351211,10.7518682 C20.3195865,10.9695052 20.2170993,11.1706476 20.0596157,11.3241562 L16.7552826,14.545085 L17.5353298,19.0931094 C17.6286908,19.6374458 17.263103,20.1544017 16.7187666,20.2477627 C16.5020089,20.2849396 16.2790408,20.2496249 16.0843804,20.1472858 L12,18 L12,4.25932872 Z" fill="#000000" opacity="0.3" />
-												<path d="M12,4.25932872 L12,18 L7.91561963,20.1472858 C7.42677504,20.4042866 6.82214789,20.2163401 6.56514708,19.7274955 C6.46280801,19.5328351 6.42749334,19.309867 6.46467018,19.0931094 L7.24471742,14.545085 L3.94038429,11.3241562 C3.54490071,10.938655 3.5368084,10.3055417 3.92230962,9.91005817 C4.07581822,9.75257453 4.27696063,9.65008735 4.49459766,9.61846284 L9.06107374,8.95491503 L11.1032639,4.81698575 C11.277344,4.464261 11.6315987,4.25960807 12,4.25932872 Z" fill="#000000" />
-											</g>
-										</svg>
-										<!--end::Svg Icon-->
-									</span>
-								</div>
-							</div>
-							<div class="navi-text">
-								<div class="font-weight-bold">My Events</div>
-								<div class="text-muted">Logs and notifications</div>
-							</div>
-						</div>
-					</a>
-					<!--end:Item-->
-					<!--begin::Item-->
-					<a href="custom/apps/userprofile-1/overview.html" class="navi-item">
+					<a href="individual_investor/update_information.php" class="navi-item">
 						<div class="navi-link">
 							<div class="symbol symbol-40 bg-light mr-3">
 								<div class="symbol-label">
@@ -1649,37 +1501,28 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 										<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
 											<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
 												<rect x="0" y="0" width="24" height="24" />
-												<path d="M6,2 L18,2 C18.5522847,2 19,2.44771525 19,3 L19,12 C19,12.5522847 18.5522847,13 18,13 L6,13 C5.44771525,13 5,12.5522847 5,12 L5,3 C5,2.44771525 5.44771525,2 6,2 Z M7.5,5 C7.22385763,5 7,5.22385763 7,5.5 C7,5.77614237 7.22385763,6 7.5,6 L13.5,6 C13.7761424,6 14,5.77614237 14,5.5 C14,5.22385763 13.7761424,5 13.5,5 L7.5,5 Z M7.5,7 C7.22385763,7 7,7.22385763 7,7.5 C7,7.77614237 7.22385763,8 7.5,8 L10.5,8 C10.7761424,8 11,7.77614237 11,7.5 C11,7.22385763 10.7761424,7 10.5,7 L7.5,7 Z" fill="#000000" opacity="0.3" />
-												<path d="M3.79274528,6.57253826 L12,12.5 L20.2072547,6.57253826 C20.4311176,6.4108595 20.7436609,6.46126971 20.9053396,6.68513259 C20.9668779,6.77033951 21,6.87277228 21,6.97787787 L21,17 C21,18.1045695 20.1045695,19 19,19 L5,19 C3.8954305,19 3,18.1045695 3,17 L3,6.97787787 C3,6.70173549 3.22385763,6.47787787 3.5,6.47787787 C3.60510559,6.47787787 3.70753836,6.51099993 3.79274528,6.57253826 Z" fill="#000000" />
+												<path d="M18,2 L20,2 C21.6568542,2 23,3.34314575 23,5 L23,19 C23,20.6568542 21.6568542,22 20,22 L18,22 L18,2 Z" fill="#000000" opacity="0.3" />
+												<path d="M5,2 L17,2 C18.6568542,2 20,3.34314575 20,5 L20,19 C20,20.6568542 18.6568542,22 17,22 L5,22 C4.44771525,22 4,21.5522847 4,21 L4,3 C4,2.44771525 4.44771525,2 5,2 Z M12,11 C13.1045695,11 14,10.1045695 14,9 C14,7.8954305 13.1045695,7 12,7 C10.8954305,7 10,7.8954305 10,9 C10,10.1045695 10.8954305,11 12,11 Z M7.00036205,16.4995035 C6.98863236,16.6619875 7.26484009,17 7.4041679,17 C11.463736,17 14.5228466,17 16.5815,17 C16.9988413,17 17.0053266,16.6221713 16.9988413,16.5 C16.8360465,13.4332455 14.6506758,12 11.9907452,12 C9.36772908,12 7.21569918,13.5165724 7.00036205,16.4995035 Z" fill="#000000" />
 											</g>
-										</svg>
+										</svg> 
 										<!--end::Svg Icon-->
 									</span>
 								</div>
 							</div>
 							<div class="navi-text">
-								<div class="font-weight-bold">My Statements</div>
-								<div class="text-muted">latest tasks and projects</div>
+								<div class="font-weight-bold">My Account</div>
+								<div class="text-muted">Update Information</div>
 							</div>
 						</div>
 					</a>
-					<!--end:Item-->
-					<!--begin::Item-->
 					<span class="navi-item mt-2">
 						<span class="navi-link">
 							<a href="logout.php" class="btn btn-sm btn-light-primary font-weight-bolder py-3 px-6">Sign Out</a>
 						</span>
 					</span>
-					<!--end:Item-->
 				</div>
-				<!--end::Nav-->
-				<!--begin::Separator-->
 				<div class="separator separator-dashed my-7"></div>
-				<!--end::Separator-->
-
-
 			</div>
-			<!--end::Content-->
 		</div>
 		<!-- end::User Panel-->
 
