@@ -187,6 +187,13 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 											<span class="card-label font-weight-bolder font-size-h4 text-dark-75">Loan Information</span>
 										</h3>
 									</div>
+									<?php
+											if(isset($_SESSION['status'])){
+												?>
+												<h4 class="alert alert-success"><?php echo $_SESSION['status'];?></h4>
+												<?php
+												unset($_SESSION['status']);
+											}?>
 									<!--begin::Body-->
 									<div class="card-body pt-4">
 										<div class="card card-custom">

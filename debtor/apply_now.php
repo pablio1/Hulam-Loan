@@ -277,14 +277,14 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 													</div>
 													<div class="my-lg-0 my-1">
 														<a href="debtor/view_company.php?lender_id=<?= $lender['lender_id']?>" class="btn btn-sm btn-light-primary font-weight-bolder mr-2">View Details</a>
-														<?php if (!isset($_GET['amount'])) : ?>
-															<a href="<?= ($_SESSION['eligible'] == 'no') ? 'debtor/update_information.php' : 'debtor/apply_loan.php?id=' . $lender['user_id'] ?>" class="btn btn-sm btn-primary font-weight-bolder">Apply Now</a>
+														<?php if ($_SESSION['eligible']=='no') : ?>
+															<a href="debtor/update_information.php?id=<?= $lender['user_id']?>" class="btn btn-sm btn-primary font-weight-bolder">Apply Now</a>
 														<?php else : ?>
-															<a href="<?= ($_SESSION['eligible'] == 'yes') ? 'debtor/apply_loan.php' : 'debtor/update_information?id=' . $lender['user_id'] . '&amount=' . $_GET['amount'] . '&month=' . $_GET['month']  ?>" class="btn btn-sm btn-primary font-weight-bolder">Apply Now</a>
+															<a href="debtor/apply_loan.php?lender_id=<?= $lender['lender_id']. '&amount=' . $_GET['amount'] . '&month=' . $_GET['month']  ?>" class="btn btn-sm btn-primary font-weight-bolder">Apply Now</a>
 														<?php endif; ?>
 													</div>
 												</div>
-												<div class="d-flex align-items-center flex-wrap justify-content-between">
+												<div class="d-flex align-items-center flex-wrap justify-content-between">	
 													<div class="flex-grow-1 font-weight-bold text-dark-50 py-2 py-lg-2 mr-5">
 														<?= $lender['description'] ?>
 													</div>
@@ -295,7 +295,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 										<div class="d-flex align-items-center flex-wrap">
 											<div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
 												<div class="d-flex flex-column text-dark-75">
-													<span class="font-weight-bolder font-size-sm">Estimated Monthly Payment</span>
+													<span class="font-weight-bolder font-size-sm">Monthly Payment</span>
 													<span class="font-weight-bolder font-size-h5">
 														<span class="text-dark-50 font-weight-bold">Php &nbsp;</span>
 														<?php
@@ -306,16 +306,24 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 															if ($lender['user_type'] == 4) {
 																$amount = $_GET['amount'];
 																$month = $_GET['month'];
-																$new_rate = $month * $lender['fix_rate'];
-
-																$initial_amount = $amount * ($new_rate / 100);
+																$new_rate = $month * ($lender['fix_rate']/100);
+																			//1 * 10/100 = 0.1
+																$initial_amount = $amount * $new_rate;
+																				//500 * 0.1 = 50
 																$add_interest = $initial_amount + $amount;
+																				//50 + 500 = 550
 																echo number_format($add_interest / $month, 2);
-															} else {
+																				//550 /1 = 550
+															} else{
 																$amount = $_GET['amount'];
+																$month = $_GET['month'];
+																				//30000
 																$initial_amount =  $amount * ($lender['fix_rate'] / 100);
-																$add_interest = $amount / $lender['max_term'];
+																				//30000 * 0.03 = 900
+																$add_interest = $amount / $month;
+																				//30000 / 12 =2500
 																echo number_format($add_interest + $initial_amount, 2);
+																				//2500 + 900 = 3400
 															}
 														}
 														?>
@@ -326,7 +334,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 												<div class="d-flex flex-column text-dark-75">
 													<span class="font-weight-bolder font-size-sm">Loan Term</span>
 													<span class="font-weight-bolder font-size-h5">
-														<span class="text-dark-50 font-weight-bold"></span><?= $lender['min_term'] ?>-<?= $lender['max_term'] ?> months</span>
+													<?= $_GET['month']?>&nbsp;<span class="text-dark-50 font-weight-bold">Months</span>
 												</div>
 											</div>
 											<div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
@@ -334,6 +342,36 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 													<span class="font-weight-bolder font-size-sm">Fixed Interest Rate</span>
 													<span class="font-weight-bolder font-size-h5">
 														<span class="text-dark-50 font-weight-bold"></span><?= $lender['fix_rate'] ?>%</span>
+												</div>
+											</div>
+											<div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
+												<div class="d-flex flex-column text-dark-75">
+													<span class="font-weight-bolder font-size-sm">Total Interest</span>
+													<span class="font-weight-bolder font-size-h5">
+														<span class="text-dark-50 font-weight-bold">Php &nbsp;</span>
+														<?php 
+														if(!isset($_GET['amount'])){
+															echo '0.00';
+														}else{
+															if($lender['user_type']==4){
+																$amount = $_GET['amount'];
+																$month = $_GET['month'];
+																$new_rate = $amount * ($lender['fix_rate'] / 100); //500 * 0.1 = 50
+																$total = $new_rate * $month;//50 * 1
+																echo number_format($total, 2);
+															}else{
+																$amount = $_GET['amount'];
+																$month = $_GET['month'];
+																$new_rate = $amount * ($lender['fix_rate'] / 100); //30000* 0.3 = 900
+																$total = $new_rate * $month;//900 * 12
+
+																echo number_format($total, 2);
+															}
+
+														}
+														
+														?>
+														</span>
 												</div>
 											</div>
 											<div class="d-flex align-items-center flex-lg-fill mr-5 my-1">

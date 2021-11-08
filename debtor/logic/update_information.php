@@ -1,17 +1,16 @@
 <?php
 session_start();
-error_reporting(0);
+error_reporting(-1);
 include('../../db_connection/config.php');
 
 if ($_SESSION['user_type'] != 2) {
     header('location: ../index.php');
-}
+}?>
 
-// $sql = $dbh->prepare("SELECT * FROM user INNER JOIN debtors_info ON user.user_id = debtors_info.user_id WHERE user.user_id = :user_id");
-// $sql->execute(['user_id' => $_SESSION['user_id']]);
-// $user = $sql->fetch();
 
-if (isset($_POST['submit'])) {
+<?php
+if(isset($_POST['submit'])){
+
     $lname = $_POST['lname'];
     $fname = $_POST['fname'];
     $mname = $_POST['mname'];
@@ -29,8 +28,8 @@ if (isset($_POST['submit'])) {
     $p_city = $_POST['p_city'];
     $p_province = $_POST['p_province'];
     $p_zipcode = $_POST['p_zipcode'];
-    $company_name = $_POST['company_name'];
     $monthly_salary = $_POST['monthly_salary'];
+    $company_name = $_POST['company_name'];
     $company_mobile = $_POST['company_mobile'];
     $company_landline = $_POST['company_landline'];
     $company_email = $_POST['company_email'];
@@ -39,95 +38,113 @@ if (isset($_POST['submit'])) {
     $company_city = $_POST['company_city'];
     $company_province = $_POST['company_province'];
     $company_zipcode = $_POST['company_zipcode'];
-    $type_id = $_POST['type_id'];
-    $rel_type = $_POST['rel_type'];
     $rel_name = $_POST['rel_name'];
     $rel_mobile = $_POST['rel_mobile'];
-    $fileName = $_FILES['proof_id']['name'];
-    $image = $_FILES['proof_id']['tmp_name'];
+    $rel_type = $_POST['rel_type'];
+    $user_id = $_SESSION['user_id'];
 
-    $fileExt = explode('.', $fileName);
-    $ext = strtolower(end($fileExt));
+    // profile_pic
+	$images2 =$_FILES['profile_pic']['name'];
+	$tmp_dir = $_FILES['profile_pic']['tmp_name'];
+	$imageSize=$_FILES['profile_pic']['size'];
 
-    $allowed = array('jpg', 'jpeg', 'png');
+	$upload_dir2='../../assets/keen/debtors/';
+	$imgExt=strtolower(pathinfo($images2,PATHINFO_EXTENSION));
+	$valid_extensions=array('jpeg','jpg','gif','pdf','doc','docx');
+	$pic2=rand(1000,10000000).".".$imgExt;
+	move_uploaded_file($tmp_dir,$upload_dir2.$pic2);
 
-    if (empty($type_id) || empty($rel_type) || empty($rel_name) || empty($rel_mobile)) {
-        header('location: ../update_identity.php?type_id=' . $type_id . '&rel_name=' . $rel_name . '&rel_type=' . $rel_type . '&rel_mobile=' . $rel_mobile . '&company_name=' . $company_name . '&monthly_salary=' . $monthly_salary . '&company_mobile=' . $company_mobile . '&company_email=' . $company_email . '&company_mobile=' . $company_mobile . '&company_landline=' . $company_landline . '&company_street=' . $company_street . '&company_barangay=' . $company_barangay . '&company_city=' . $company_city . '&company_province=' . $company_province . '&company_zipcode=' . $company_zipcode . '&c_street=' . $c_street . '&c_barangay=' . $c_barangay . '&c_city=' . $c_city . '&c_province=' . $c_province . '&c_zipcode=' . $c_zipcode . '&p_street=' . $p_street . '&p_barangay=' . $p_barangay . '&p_city=' . $p_city . '&p_province=' . $p_province . '&p_zipcode=' . $p_zipcode . '&lname=' . $lname . '&fname=' . $fname . '&mname=' . $mname . '&gender=' . $gender . '&b_day=' . $b_day . '&mobile=' . $mobile . '&landline=' . $landline . '&e=Please fill up all the required fields!');
-        exit();
-    }
-    if (!in_array($ext, $allowed)) {
-        header('location: ../update_identity.php?type_id=' . $type_id . '&rel_name=' . $rel_name . '&rel_type=' . $rel_type . '&rel_mobile=' . $rel_mobile . '&company_name=' . $company_name . '&monthly_salary=' . $monthly_salary . '&company_mobile=' . $company_mobile . '&company_email=' . $company_email . '&company_mobile=' . $company_mobile . '&company_landline=' . $company_landline . '&company_street=' . $company_street . '&company_barangay=' . $company_barangay . '&company_city=' . $company_city . '&company_province=' . $company_province . '&company_zipcode=' . $company_zipcode . '&c_street=' . $c_street . '&c_barangay=' . $c_barangay . '&c_city=' . $c_city . '&c_province=' . $c_province . '&c_zipcode=' . $c_zipcode . '&p_street=' . $p_street . '&p_barangay=' . $p_barangay . '&p_city=' . $p_city . '&p_province=' . $p_province . '&p_zipcode=' . $p_zipcode . '&lname=' . $lname . '&fname=' . $fname . '&mname=' . $mname . '&gender=' . $gender . '&b_day=' . $b_day . '&mobile=' . $mobile . '&landline=' . $landline . '&e=Please upload a valid image file extension!');
-        exit();
-    }
 
-    $newFileName = uniqid('', true) . '.' . $ext;
-
-    $dir = '../../assets/img/' . $newFileName;
-
-    move_uploaded_file($image, $dir);
-
-    $sql = $dbh->prepare("UPDATE user SET lastname = :lname, firstname = :fname, middlename = :mname, mobile = :mobile, landline = :landline, gender = :gender, b_day = :b_day, 
+    $sql = "UPDATE user SET lastname = :lname, firstname = :fname, middlename = :mname, mobile = :mobile, landline = :landline, gender = :gender, b_day = :b_day, 
     c_street = :c_street, c_barangay = :c_barangay, c_city = :c_city, c_province = :c_province, c_zipcode = :c_zipcode, p_street = :p_street, p_barangay = :p_barangay, 
-    p_city = :p_city, p_province = :p_province, p_zipcode = :p_zipcode, relative_type = :rel_type, eligible = 'yes' WHERE user_id = :user_id;");
-    $sql->execute([
-        'lname' => $lname, 'fname' => $fname, 'mname' => $mname, 'mobile' => $mobile, 'landline' => $landline, 'gender' => $gender, 'b_day' => $b_day,
-        'c_street' => $c_street, 'c_barangay' => $c_barangay, 'c_city' => $c_city, 'c_province' => $c_province, 'c_zipcode' => $c_zipcode, 'p_street' => $p_street,
-        'p_barangay' => $p_barangay, 'p_city' => $p_city, 'p_province' => $p_province, 'p_zipcode' => $p_zipcode, 'rel_type' => $rel_type, 'user_id' => $_SESSION['user_id']
-    ]);
+    p_city = :p_city, p_province = :p_province, p_zipcode = :p_zipcode, profile_pic =:profile_pic WHERE user_id = :user_id";
+    $query = $dbh->prepare($sql);
+    $query->bindParam(':lname',$lname,PDO::PARAM_STR);
+    $query->bindParam(':fname',$fname,PDO::PARAM_STR);
+    $query->bindParam(':mname',$mname,PDO::PARAM_STR);
+    $query->bindParam(':mobile',$mobile,PDO::PARAM_STR);
+    $query->bindParam(':landline',$landline,PDO::PARAM_STR);
+    $query->bindParam(':gender',$gender,PDO::PARAM_STR);
+    $query->bindParam(':b_day',$b_day,PDO::PARAM_STR);
+    $query->bindParam(':c_street',$c_street,PDO::PARAM_STR);
+    $query->bindParam(':c_barangay',$c_barangay,PDO::PARAM_STR);
+    $query->bindParam(':c_city',$c_city,PDO::PARAM_STR);
+    $query->bindParam(':c_province',$c_province,PDO::PARAM_STR);
+    $query->bindParam(':c_zipcode',$c_zipcode,PDO::PARAM_STR);
+    $query->bindParam(':p_street',$p_street,PDO::PARAM_STR);
+    $query->bindParam(':p_barangay',$p_barangay,PDO::PARAM_STR);
+    $query->bindParam(':p_city',$p_city,PDO::PARAM_STR);
+    $query->bindParam(':p_province',$p_province,PDO::PARAM_STR);
+    $query->bindParam(':p_zipcode',$p_zipcode,PDO::PARAM_STR);
+    $query->bindParam(':profile_pic',$pic2,PDO::PARAM_STR);
+    $query->bindParam(':user_id',$user_id,PDO::PARAM_STR);
+    $query->execute();
 
-    $user = $dbh->prepare("SELECT * FROM debtors_info WHERE user_id = :user_id");
-    $user->execute(['user_id' => $_SESSION['user_id']]);
+    $sql2 = "SELECT * FROM debtors_info WHERE user_id = $user_id";
+    $query2 = $dbh->prepare($sql2);
+    $query2->execute();
 
-    if ($user->rowCount() == 0) {
-        $insert = $dbh->prepare("INSERT INTO `debtors_info`(`user_id`, `monthly_salary`, `id_type`, `id_image`, `company_name`, `company_mobile`, `company_landline`, `company_email`, 
-        `company_street`, `company_barangay`, `company_city`, `company_province`, `company_zipcode`, `relative_name`, `relative_mobile`, `relative_type`) VALUES (:user_id, 
-        :monthly_salary, :type_id, :newFileName, :company_name, :company_mobile, :company_landline, :company_email, :company_street, :company_barangay, :company_city, 
-        :company_province, :company_zipcode, :relative_name, :relative_mobile, :relative_type)");
-        $insert->execute([
-            'user_id' => $_SESSION['user_id'], 'monthly_salary' => $monthly_salary, 'type_id' => $type_id, 'newFileName' => $newFileName, 'company_name' => $company_name,
-            'company_mobile' => $company_mobile, 'company_landline' => $company_landline, 'company_email' => $company_email, 'company_street' => $company_street,
-            'company_barangay' => $company_barangay, 'company_city' => $company_city, 'company_province' => $company_province, 'company_zipcode' => $company_zipcode,
-            'relative_name' => $rel_name, 'relative_mobile' => $rel_mobile, 'relative_type' => $rel_type
-        ]);
-    } else {
-        $update = $dbh->prepare("UPDATE debtors_info SET monthly_salary = :monthly_salary, id_type = :type_id, id_image = :newFileName, company_name = :company_name, company_landline = :company_landline, 
-        company_email = :company_email, company_street = :company_street, company_barangay = :company_barangay, company_city = :company_city, company_province = :company_province, 
-        company_zipcode = :company_zipcode, relative_name = :relative_name, relative_mobile = :relative_mobile, relative_type = :relative_type WHERE user_id = :user_id");
-        $update->execute([
-            'monthly_salary' => $monthly_salary, 'type_id' => $type_id, 'newFileName' => $newFileName, 'company_name' => $company_name, 'company_landline' => $company_landline, 'company_email' => $company_email,
-            'company_street' => $company_street, 'company_barangay' => $company_barangay, 'company_city' => $company_city, 'company_province' => $company_province, 'company_zipcode' => $company_zipcode,
-            'relative_name' => $rel_name, 'relative_mobile' => $rel_mobile, 'relative_type' => $rel_type, 'user_id' => $_SESSION['user_id']
-        ]);
+      // valid_id
+	$images =$_FILES['valid_id']['name'];
+	$tmp_dir = $_FILES['valid_id']['tmp_name'];
+	$imageSize=$_FILES['valid_id']['size'];
+
+	$upload_dir='../../assets/keen/debtors/';
+	$imgExt=strtolower(pathinfo($images,PATHINFO_EXTENSION));
+	$valid_extensions=array('jpeg','jpg','gif','pdf','doc','docx');
+	$pic=rand(1000,10000000).".".$imgExt;
+	move_uploaded_file($tmp_dir,$upload_dir.$pic);
+
+    if($query2->rowCount()==0){
+        $sql3 = "INSERT INTO `debtors_info`(`user_id`, `monthly_salary`, `company_name`, `company_mobile`, `company_landline`, `company_email`, `company_street`, `company_barangay`, `company_city`, `company_province`, `company_zipcode`, `rel_name`, `rel_mobile`, `rel_type`, `valid_id`) 
+        VALUES (:user_id,:monthly_salary,:company_name,:company_mobile,:company_landline,:company_email,
+        :company_street,:company_barangay,:company_city,:company_province,:company_zipcode,:rel_name,:rel_mobile,:rel_type,:valid_id)";
+        $query3 = $dbh->prepare($sql3);
+        $query3->bindParam(':user_id',$user_id,PDO::PARAM_STR);
+        $query3->bindParam(':monthly_salary',$monthly_salary,PDO::PARAM_STR);
+        $query3->bindParam(':company_name',$company_name,PDO::PARAM_STR);
+        $query3->bindParam(':company_mobile',$company_mobile,PDO::PARAM_STR);
+        $query3->bindParam(':company_landline',$company_landline,PDO::PARAM_STR);
+        $query3->bindParam(':company_email',$company_email,PDO::PARAM_STR);
+        $query3->bindParam(':company_street',$company_street,PDO::PARAM_STR);
+        $query3->bindParam(':company_barangay',$company_barangay,PDO::PARAM_STR);
+        $query3->bindParam(':company_city',$company_city,PDO::PARAM_STR);
+        $query3->bindParam(':company_province',$company_province,PDO::PARAM_STR);
+        $query3->bindParam(':company_zipcode',$company_zipcode,PDO::PARAM_STR);
+        $query3->bindParam(':rel_name',$rel_name,PDO::PARAM_STR);
+        $query3->bindParam(':rel_mobile',$rel_mobile,PDO::PARAM_STR);
+        $query3->bindParam(':rel_type',$rel_type,PDO::PARAM_STR);
+        $query3->bindParam(':valid_id',$pic,PDO::PARAM_STR);
+        $query3->execute();
+     }else{
+         $sql4 = "UPDATE debtors_info SET monthly_salary=:monthly_salary,company_name=:company_name,company_mobile=:company_mobile,company_landline=:company_landline,
+         company_email=:company_email,company_street=:company_street,company_barangay=:company_barangay,company_city=:company_city,company_province=:company_province,
+         company_zipcode=:company_zipcode,rel_name=:rel_name,rel_mobile=:rel_mobile,rel_type=:rel_type,valid_id=:valid_id WHERE user_id =:user_id";
+          $query4 = $dbh->prepare($sql4);
+          $query4->bindParam(':user_id',$user_id,PDO::PARAM_STR);
+          $query4->bindParam(':monthly_salary',$monthly_salary,PDO::PARAM_STR);
+          $query4->bindParam(':company_name',$company_name,PDO::PARAM_STR);
+          $query4->bindParam(':company_mobile',$company_mobile,PDO::PARAM_STR);
+          $query4->bindParam(':company_landline',$company_landline,PDO::PARAM_STR);
+          $query4->bindParam(':company_email',$company_email,PDO::PARAM_STR);
+          $query4->bindParam(':company_street',$company_street,PDO::PARAM_STR);
+          $query4->bindParam(':company_barangay',$company_barangay,PDO::PARAM_STR);
+          $query4->bindParam(':company_city',$company_city,PDO::PARAM_STR);
+          $query4->bindParam(':company_province',$company_province,PDO::PARAM_STR);
+          $query4->bindParam(':company_zipcode',$company_zipcode,PDO::PARAM_STR);
+          $query4->bindParam(':rel_name',$rel_name,PDO::PARAM_STR);
+          $query4->bindParam(':rel_mobile',$rel_mobile,PDO::PARAM_STR);
+          $query4->bindParam(':rel_type',$rel_type,PDO::PARAM_STR);
+          $query4->bindParam(':valid_id',$pic,PDO::PARAM_STR);
+          $query4->execute();
+     }
+     if($query->execute()){
+         $_SESSION['status']= 'Updated Successfully';
+         header("Location: ../update_information.php");
+         exit();
+    }else{
+        $_SESSION[]="Error! Unable to Update!";
+        header("Location: ../update_information.php");
+        exit();
     }
-
-    $_SESSION['lname'] = $lname;
-    $_SESSION['fname'] = $fname;
-    $_SESSION['mname'] = $mname;
-    $_SESSION['gender'] = $gender;
-    $_SESSION['b_day'] = $b_day;
-    $_SESSION['mobile'] = $mobile;
-    $_SESSION['landline'] = $landline;
-    $_SESSION['c_street'] = $c_street;
-    $_SESSION['c_barangay'] = $c_barangay;
-    $_SESSION['c_city'] = $c_city;
-    $_SESSION['c_province'] = $c_province;
-    $_SESSION['c_zipcode'] = $c_zipcode;
-    $_SESSION['p_street'] = $p_street;
-    $_SESSION['p_barangay'] = $p_barangay;
-    $_SESSION['p_city'] = $p_city;
-    $_SESSION['p_province'] = $p_province;
-    $_SESSION['p_zipcode'] = $p_zipcode;
-    $_SESSION['company_name'] = $company_name;
-    $_SESSION['monthly_salary'] = $monthly_salary;
-    $_SESSION['company_mobile'] = $company_mobile;
-    $_SESSION['company_landline'] = $company_landline;
-    $_SESSION['company_email'] = $company_email;
-    $_SESSION['company_street'] = $company_street;
-    $_SESSION['company_barangay'] = $company_barangay;
-    $_SESSION['company_city'] = $company_city;
-    $_SESSION['company_province'] = $company_province;
-    $_SESSION['company_zipcode'] = $company_zipcode;
-    $_SESSON['eligible'] = 'yes';
-
-    header('location: ../apply_loan.php');
-}
+}?>

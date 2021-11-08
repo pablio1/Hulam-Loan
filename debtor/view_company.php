@@ -192,9 +192,10 @@ $res = $query->fetch();
                                         <div class="flex-grow-1">
                                             <div class="d-flex align-items-center justify-content-between flex-wrap mt-2">
                                                 <div class="mr-3">
-                                                    <a href="#" class="d-flex align-items-center text-dark text-hover-primary font-size-h5 font-weight-bold mr-3"><?= $res['company_name'] ?></a>
+                                                    <h5><?= $res['company_name'] ?></h5>
                                                 </div>
                                                 <div class="my-lg-0 my-1">
+                                                    
                                                     <a href="debtor/apply_now.php" class="btn btn-sm btn-light-primary font-weight-bolder mr-2">
                                                         << Back</a>
                                                 </div>
@@ -202,6 +203,21 @@ $res = $query->fetch();
                                             <div class="d-flex align-items-center flex-wrap justify-content-between">
                                                 <div class="flex-grow-1 font-weight-bold text-dark-50 py-2 py-lg-2 mr-5">
                                                     <?= $res['description'] ?>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex align-items-center flex-wrap justify-content-between">
+                                                <div class="flex-grow-1 font-weight-bold text-dark-50 py-2 py-lg-2 mr-5">
+                                                    <?= $res['company_street']?> <?= $res['company_barangay']?> <?= $res['company_city']?> <?= $res['company_province']?> <?= $res['company_zipcode']?>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex align-items-center flex-wrap justify-content-between">
+                                                <div class="flex-grow-1 font-weight-bold text-dark-50 py-2 py-lg-2 mr-5">
+                                                    Mobile: <?= $res['mobile']?>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex align-items-center flex-wrap justify-content-between">
+                                                <div class="flex-grow-1 font-weight-bold text-dark-50 py-2 py-lg-2 mr-5">
+                                                    Landline: <?= $res['company_landline']?>
                                                 </div>
                                             </div>
                                         </div>
@@ -225,8 +241,8 @@ $res = $query->fetch();
                                                     </thead>
                                                     <tbody>
                                                         <tr>
-                                                            <td><?= $res['min_loan']?></td>
-                                                            <td><?= $res['max_loan']?></td>
+                                                            <td><?= $res['min_loan'] ?></td>
+                                                            <td><?= $res['max_loan'] ?></td>
                                                             <td><?= $res['min_term'] ?>%</td>
                                                             <td><?= $res['max_term'] ?>%</td>
                                                             <td><?= $res['fix_rate'] ?>%</td>
@@ -251,16 +267,16 @@ $res = $query->fetch();
                                                         $query = $dbh->prepare($sql);
                                                         $query->execute();
                                                         $res2 = $query->fetchAll(PDO::FETCH_OBJ);
-                                                        $cnt=1;
-                                                        if($query->rowCount()>0)
-                                                        {
-                                                            foreach ($res2 as $result)
-                                                                {?>
-                                                        <tr>
-                                                            <td><?= htmlentities($result->req_name)?></td>
-                                                            <td><?= htmlentities($result->remarks)?></td>
-                                                        </tr>
-                                                        <?php $cnt = $cnt+1;}}?>
+                                                        $cnt = 1;
+                                                        if ($query->rowCount() > 0) {
+                                                            foreach ($res2 as $result) { ?>
+                                                                <tr>
+                                                                    <td><?= htmlentities($result->req_name) ?></td>
+                                                                    <td><?= htmlentities($result->remarks) ?></td>
+                                                                </tr>
+                                                        <?php $cnt = $cnt + 1;
+                                                            }
+                                                        } ?>
                                                     </tbody>
                                                 </table>
                                                 <div class="separator separator-dashed mt-8 mb-5"></div>
@@ -279,18 +295,39 @@ $res = $query->fetch();
                                                         $query = $dbh->prepare($sql);
                                                         $query->execute();
                                                         $res2 = $query->fetchAll(PDO::FETCH_OBJ);
-                                                        $cnt=1;
-                                                        if($query->rowCount()>0)
-                                                        {
-                                                            foreach ($res2 as $result)
-                                                                {?>
-                                                        <tr>
-                                                            <td><?= htmlentities($result->mode_name)?></td>
-                                                            <td><?= htmlentities($result->remarks)?></td>
-                                                        </tr>
-                                                        <?php $cnt = $cnt+1;}}?>
+                                                        $cnt = 1;
+                                                        if ($query->rowCount() > 0) {
+                                                            foreach ($res2 as $result) { ?>
+                                                                <tr>
+                                                                    <td><?= htmlentities($result->mode_name) ?></td>
+                                                                    <td><?= htmlentities($result->remarks) ?></td>
+                                                                </tr>
+                                                        <?php $cnt = $cnt + 1;
+                                                            }
+                                                        } ?>
                                                     </tbody>
                                                 </table>
+                                                <div class="separator separator-dashed mt-8 mb-5"></div>
+                                                <?php 
+                                                $id = intval($_GET['lender_id']);
+                                                $sql = "SELECT * FROM notice WHERE lender_id = $id";
+                                                $query = $dbh->prepare($sql);
+                                                $query->execute();
+                                                $res3 = $query->fetchAll();
+                                                foreach($res3 as $y):
+                                                ?>
+                                                <h5 class="mb-10 font-weight-bold text-dark"><?= $y['notice_title']?>: </h5>
+                                                <div class="pb-5" data-wizard-type="step-content" data-wizard-state="current">
+                                                    <div class="row">
+                                                        <div class="col-lg-9">
+                                                            <div class="form-group">
+                                                                <!-- <textarea name="remarks[]" class="form-control" rows="4" cols="50" autocomplete="off" placeholder="Remarks"><?= $y['remarks']; ?></textarea> -->
+                                                                <label><?= $y['remarks']; ?></label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <?php endforeach; ?>
                                             </div>
                                         </div>
                                     </div>

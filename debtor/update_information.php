@@ -138,46 +138,50 @@ $user = $sql->fetch();
 											</div>
 										<?php endif; ?>
 										<h4 class="mb-10 font-weight-bold text-dark">Update Your Information</h4>
-										<div class="form-group row">
-											<label class="col-xl-3 col-lg-3 col-form-label text-right"></label>
-											<div class="col-lg-12 col-xl-3">
-												<div class="image-input image-input-outline align=center" id="kt_image_1">
-													<div class="image-input-wrapper" style="background-image: url('http://localhost/hulam/assets/img/<?= $_SESSION['image'] ?>');">
+										<form action="debtor/logic/update_information.php" method="post" id="kt_form" enctype="multipart/form-data">
+
+											<div class="form-group row">
+												<label class="col-xl-3 col-lg-3 col-form-label text-right"></label>
+												<div class="col-lg-9 col-xl-6">
+													<div class="image-input image-input-outline" id="kt_image_1">
+														<div class="image-input-wrapper" style="background-image: url(/hulam/assets/keen/debtors/<?= $user['profile_pic']?>"></div>
+														<label class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow" data-action="change" data-toggle="tooltip" title="" data-original-title="upload photo">
+															<i class="fa fa-pen icon-sm text-muted" style="margin-left: 27px;"></i>
+															<!-- <input type="file" name="profile" accept=".png, .jpg, .jpeg" /> -->
+															<input type="file" name="profile_pic" class="form-control" accept="*/image">
+															<input type="hidden" name="profile_avatar_remove" />
+														</label>
+														<span class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow" data-action="cancel" data-toggle="tooltip" title="Cancel Photo">
+															<i class="ki ki-bold-close icon-xs text-muted"></i>
+														</span>
 													</div>
-													<label class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow" data-action="change" data-toggle="tooltip" title="" data-original-title="upload photo">
-														<i class="fa fa-pen icon-sm text-muted" style="margin-left: 27px;"></i>
-														<input type="file" name="profile" class="form-control" accept="*/image">
-														<input type="hidden" name="profile_avatar_remove" />
-													</label>
 												</div>
 											</div>
-										</div>
-										<form action="debtor/update_location.php" method="post" id="kt_form" enctype="multipart/form-data">
 											<div class="row">
 												<div class="col-lg-4">
 													<div class="form-group">
 														<label>Last Name</label> <span class="text-danger">*</span>
-														<input type="text" class="form-control" name="lname" value="<?= isset($_GET['e']) ? $_GET['lname'] : $_SESSION['lastname'] ?>" />
+														<input type="text" class="form-control" name="lname" required value="<?= isset($_GET['e']) ? $_GET['lname'] : $_SESSION['lastname'] ?>" />
 													</div>
 												</div>
 												<div class="col-lg-4">
 													<div class="form-group">
 														<label>First Name</label> <span class="text-danger">*</span>
-														<input type="text" class="form-control" name="fname" value="<?= isset($_GET['e']) ? $_GET['fname'] : $_SESSION['firstname'] ?>" />
+														<input type="text" class="form-control" name="fname" required value="<?= isset($_GET['e']) ? $_GET['fname'] : $_SESSION['firstname'] ?>" />
 													</div>
 												</div>
-												<div class="col-lg-4">	
+												<div class="col-lg-4">
 													<div class="form-group">
 														<label>Middle Name</label> <span class="text-danger">*</span>
-														<input type="text" class="form-control" name="mname" value="<?= isset($_GET['e']) ? $_GET['mname'] : $_SESSION['middlename'] ?>" />
+														<input type="text" class="form-control" name="mname" required value="<?= isset($_GET['e']) ? $_GET['mname'] : $_SESSION['middlename'] ?>" />
 													</div>
-												</div>	
+												</div>
 											</div>
 											<div class="row">
 												<div class="col-xl-4">
 													<div class="form-group">
 														<label>Gender</label> <span class="text-danger">*</span>
-														<select name="gender" class="form-control">
+														<select name="gender" class="form-control" required>
 															<option value="" hidden>Select Gender</option>
 															<option value="Male" <?php if (isset($_GET['e'])) {
 																						if ($_GET['gender'] == 'Male') {
@@ -203,13 +207,13 @@ $user = $sql->fetch();
 												<div class="col-xl-4">
 													<div class="form-group">
 														<label>Email Address</label> <span class="text-danger">*</span>
-														<input type="text" class="form-control" value="<?= $_SESSION['email'] ?>" disabled />
+														<input type="email" class="form-control" required value="<?= $_SESSION['email'] ?>" disabled />
 													</div>
 												</div>
 												<div class="col-xl-4">
 													<div class="form-group">
 														<label>Date Of Birth</label> <span class="text-danger">*</span>
-														<input type="date" class="form-control" name="b_day" value="<?= isset($_GET['e']) ? $_GET['b_day'] :  $_SESSION['b_day'] ?>" />
+														<input type="date" class="form-control" required name="b_day" value="<?= isset($_GET['e']) ? $_GET['b_day'] :  $_SESSION['b_day'] ?>" />
 													</div>
 												</div>
 											</div>
@@ -217,7 +221,7 @@ $user = $sql->fetch();
 												<div class="col-xl-4">
 													<div class="form-group">
 														<label>Mobile</label> <span class="text-danger">*</span>
-														<input type="number" class="form-control" name="mobile" value="<?= isset($_GET['e']) ? $_GET['mobile'] :  $_SESSION['mobile'] ?>" placeholder="Enter mobile number" />
+														<input type="number" class="form-control" required name="mobile" value="<?= isset($_GET['e']) ? $_GET['mobile'] :  $_SESSION['mobile'] ?>" placeholder="Enter mobile number" />
 													</div>
 												</div>
 												<div class="col-xl-4">
@@ -227,10 +231,229 @@ $user = $sql->fetch();
 													</div>
 												</div>
 											</div>
-
+											<h4 class="mb-10 font-weight-bold text-dark">Setup Your Location</h4>
+											<div class="row">
+												<div class="col-xl-6">
+													<div class="form-group">
+														<h6>Current Address</h6>
+													</div>
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-xl-4">
+													<div class="form-group">
+														<label>Street</label> <span class="text-danger">*</span>
+														<input type="text" class="form-control" name="c_street" value="<?= isset($_GET['e']) ? $_GET['c_street'] : $_SESSION['c_street'] ?>" placeholder="Enter street" />
+													</div>
+												</div>
+												<div class="col-xl-4">
+													<div class="form-group">
+														<label>Barangay</label> <span class="text-danger">*</span>
+														<input type="text" class="form-control" required name="c_barangay" value="<?= isset($_GET['e']) ? $_GET['c_barangay'] : $_SESSION['c_barangay'] ?>" placeholder="Enter barangay" />
+													</div>
+												</div>
+												<div class="col-xl-4">
+													<div class="form-group">
+														<label>City/Municipality</label> <span class="text-danger">*</span>
+														<input type="text" class="form-control" required name="c_city" value="<?= isset($_GET['e']) ? $_GET['c_city'] : $_SESSION['c_city'] ?>" placeholder="Enter city" />
+													</div>
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-xl-4">
+													<div class="form-group">
+														<label>Province</label> <span class="text-danger">*</span>
+														<input type="text" class="form-control" required name="c_province" value="<?= isset($_GET['e']) ? $_GET['c_province'] : $_SESSION['c_province'] ?>" placeholder="Enter barangay" />
+													</div>
+												</div>
+												<div class="col-xl-4">
+													<div class="form-group">
+														<label>Zip Code</label> <span class="text-danger">*</span>
+														<input type="text" class="form-control" required name="c_zipcode" value="<?= isset($_GET['e']) ? $_GET['c_zipcode'] : $_SESSION['c_zipcode'] ?>" placeholder="Enter zipcode" />
+													</div>
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-xl-6">
+													<div class="form-group">
+														<h6>Permanent Address</h6>
+													</div>
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-xl-4">
+													<div class="form-group">
+														<label>Street</label> <span class="text-danger">*</span>
+														<input type="text" class="form-control" name="p_street" value="<?= isset($_GET['e']) ? $_GET['p_street'] : $_SESSION['p_street'] ?>" placeholder="Enter street" />
+													</div>
+												</div>
+												<div class="col-xl-4">
+													<div class="form-group">
+														<label>Barangay</label> <span class="text-danger">*</span>
+														<input type="text" class="form-control" required name="p_barangay" value="<?= isset($_GET['e']) ? $_GET['p_barangay'] : $_SESSION['p_barangay'] ?>" placeholder="Enter barangay" />
+													</div>
+												</div>
+												<div class="col-xl-4">
+													<div class="form-group">
+														<label>City/Municipality</label> <span class="text-danger">*</span>
+														<input type="text" class="form-control" required name="p_city" value="<?= isset($_GET['e']) ? $_GET['p_city'] : $_SESSION['p_city'] ?>" placeholder="Enter city" />
+													</div>
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-xl-4">
+													<div class="form-group">
+														<label>Province</label> <span class="text-danger">*</span>
+														<input type="text" class="form-control" required name="p_province" value="<?= isset($_GET['e']) ? $_GET['p_province'] : $_SESSION['p_province'] ?>" placeholder="Enter barangay" />
+													</div>
+												</div>
+												<div class="col-xl-4">
+													<div class="form-group">
+														<label>Zip Code</label> <span class="text-danger">*</span>
+														<input type="text" class="form-control" required name="p_zipcode" value="<?= isset($_GET['e']) ? $_GET['p_zipcode'] : $_SESSION['p_zipcode'] ?>" placeholder="Enter zipcode" />
+													</div>
+												</div>
+											</div>
+											<h4 class="mb-10 font-weight-bold text-dark">Source of Income</h4>
+											<?php
+											$user_id =$_SESSION['user_id'];
+											
+											$sql = "SELECT * FROM debtors_info WHERE user_id = $user_id";
+											$query = $dbh->prepare($sql);
+											$query->execute();
+											$set = $query->fetch();
+											?>
+											<div class="row">
+												<div class="col-xl-4">
+													<div class="form-group">
+														<label>Company Name</label> <span class="text-danger">*</span>
+														<input type="text" class="form-control" required name="company_name" value="<?= isset($_GET['e']) ? $_GET['company_name'] : $set['company_name'] ?>" placeholder="Enter company name" />
+													</div>
+												</div>
+												<div class="col-xl-4">
+													<div class="form-group">
+														<label>Monthly Salary<span class="text-danger">*</span>
+															<input type="number" class="form-control" required name="monthly_salary" value="<?= isset($_GET['e']) ? $_GET['monthly_salary'] : $set['monthly_salary'] ?>" placeholder="Enter company name" />
+													</div>
+												</div>
+												<div class="col-xl-4">
+													<div class="form-group">
+														<label>Mobile No.<span class="text-danger">*</span>
+															<input type="text" class="form-control" required name="company_mobile" value="<?= isset($_GET['e']) ? $_GET['company_mobile'] : $set['company_mobile'] ?>" placeholder="Enter company mobile" />
+													</div>
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-xl-4">
+													<div class="form-group">
+														<label>Landline No.</label> <span class="text-danger">*</span>
+														<input type="text" class="form-control" required name="company_landline" value="<?= isset($_GET['e']) ? $_GET['company_landline'] : $set['company_landline'] ?>" placeholder="Enter company landline" />
+													</div>
+												</div>
+												<div class="col-xl-4">
+													<div class="form-group">
+														<label>Email Address.</label>
+														<input type="text" class="form-control" required name="company_email" value="<?= isset($_GET['e']) ? $_GET['company_email'] : $set['company_email'] ?>" placeholder="Enter company email" />
+													</div>
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-xl-6">
+													<div class="form-group">
+														<h6>Company Address</h6>
+													</div>
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-xl-4">
+													<div class="form-group">
+														<label>Street</label> <span class="text-danger">*</span>
+														<input type="text" class="form-control" name="company_street" value="<?= isset($_GET['e']) ? $_GET['company_street'] : $set['company_street'] ?>" placeholder="Enter street" />
+													</div>
+												</div>
+												<div class="col-xl-4">
+													<div class="form-group">
+														<label>Barangay</label> <span class="text-danger">*</span>
+														<input type="text" class="form-control" required name="company_barangay" value="<?= isset($_GET['e']) ? $_GET['company_barangay'] : $set['company_barangay'] ?>" placeholder="Enter barangay" />
+													</div>
+												</div>
+												<div class="col-xl-4">
+													<div class="form-group">
+														<label>City/Municipality</label> <span class="text-danger">*</span>
+														<input type="text" class="form-control" required name="company_city" value="<?= isset($_GET['e']) ? $_GET['company_city'] : $set['company_city'] ?>" placeholder="Enter city" />
+													</div>
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-xl-4">
+													<div class="form-group">
+														<label>Province</label> <span class="text-danger">*</span>
+														<input type="text" class="form-control" required name="company_province" value="<?= isset($_GET['e']) ? $_GET['company_province'] : $set['company_province'] ?>" placeholder="Enter city" />
+													</div>
+												</div>
+												<div class="col-xl-4">
+													<div class="form-group">
+														<label>Zip Code</label> <span class="text-danger">*</span>
+														<input type="text" class="form-control" required name="company_zipcode" value="<?= isset($_GET['e']) ? $_GET['company_zipcode'] : $set['company_zipcode'] ?>" placeholder="Enter zipcode" />
+													</div>
+												</div>
+											</div>
+											<h4 class="mb-10 font-weight-bold text-dark">Identity Verification</h4>
+											<div class="row">
+												<div class="col-xl-6">
+													<div class="form-group">
+														<h6>Relatives Contact</h6>
+													</div>
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-xl-4">
+													<div class="form-group">
+														<label>Fullname:</label>
+														<input type="text" class="form-control" name="rel_name" value="<?= isset($_GET['e']) ? $_GET['rel_name'] : $set['rel_name'] ?>" />
+													</div>
+												</div>
+												<div class="col-xl-4">
+													<div class="form-group">
+														<label>Mobile No:</label>
+														<input type="number" class="form-control" name="rel_mobile" value="<?= isset($_GET['e']) ? $_GET['rel_mobile'] : $set['rel_mobile'] ?>" />
+													</div>
+												</div>
+												<div class="col-xl-4">
+													<div class="form-group">
+														<label>Relation:</label>
+														<input type="text" class="form-control" name="rel_type" value="<?= isset($_GET['e']) ? $_GET['rel_type'] : $set['rel_type'] ?>" />
+													</div>
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-xl-6">
+													<div class="form-group">
+														<label class="form-control-label">Upload Valid ID</label>
+														<div class="dropzone-panel mb-lg-0 mb-2">
+															<input type="file" name="valid_id" class="dropzone-select btn btn-light-primary font-weight-bold"  value="<?= $set['valid_id'];?>"/></br>
+															<span class="text-muted font-size-sm">UMID/SSS ID, PASSPORT ID, NATIONAL ID</span>
+															<p class="text-muted font-size-sm">Accept files docx, jpeg, png, pdf</p>
+															<label class="form-control-label" for="input-username">Uploaded Valid ID: &nbsp;</label>
+                            								<a href="/hulam/assets/keen/debtors/<?=$set['valid_id']; ?>" target="_blank"><?= $set['valid_id']; ?></a>
+														</div>
+													</div>
+												</div>
+												<!-- <div class="col-xl-6">
+                                                    <div class="form-group">
+                                                        <label class="form-control-label">PROOF OF BILLING ADDRESS</label>
+                                                        <div class="dropzone-panel mb-lg-0 mb-2">
+                                                            <input type="file" name="proof_id" class="dropzone-select btn btn-light-primary font-weight-bold" /></br>
+															<span class="text-muted font-size-sm">UMID/SSS ID, PASSPORT ID, NATIONAL ID</span>
+															<p class="text-muted font-size-sm">Accept files docx, jpeg, png, pdf</p>
+                                                        </div>
+                                                    </div>
+                                                </div> -->
+											</div>
 											<div class="d-flex justify-content-between border-top mt-5 pt-10">
+												<div></div>
 												<div>
-													<button type="submit" name="next" class="btn btn-success font-weight-bolder px-10 py-3">Next</button>
+													<button type="submit" name="submit" class="btn btn-success font-weight-bolder px-10 py-3">Submit</button>
 												</div>
 											</div>
 										</form>

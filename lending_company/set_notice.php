@@ -35,6 +35,8 @@ if(isset($_POST['add_notice'])){
 
 ?>
 
+
+
 <!DOCTYPE html>
 <!--
 Template Name: Keen - The Ultimate Bootstrap 4 HTML Admin Dashboard Theme
@@ -1056,7 +1058,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
                                                             <td><?= htmlentities($rem->notice_title); ?></td>
                                                             <td><?= htmlentities($rem->remarks); ?></td>
                                                             <td>
-                                                                <a href="lending_company/editmode_payment.php?mode_id=<?= htmlentities($rem->mode_id)?>" class="kt-nav__link">
+                                                                <a href="lending_company/edit_notice.php?notice_id=<?= htmlentities($rem->notice_id)?>" class="kt-nav__link">
                                                                     <span class="kt-nav__link-text">Edit</span>
                                                                 </a>
                                                             </td>

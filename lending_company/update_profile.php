@@ -1073,6 +1073,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 														<!--begin: Wizard Step 1-->
 														<div class="pb-5" data-wizard-type="step-content" data-wizard-state="current">
 															<h4 class="mb-10 font-weight-bold text-dark">Enter your Company Details</h4>
+															
 															<div class="form-group row">
 																<label class="col-xl-3 col-lg-3 col-form-label text-right"></label>
 																<div class="col-lg-9 col-xl-6">
