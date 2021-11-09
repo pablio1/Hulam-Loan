@@ -199,6 +199,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 															<th>Lending Investor</th>
 															<th>Total Loan Amount</th>
 															<th>Statement of Account</th>
+															<th>Rate & Reviews</th>
 														</tr>
 													</thead>
 													<tbody>
@@ -221,6 +222,8 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 																<span class="kt-nav__link-text">View</span>
 																</a>
 															</td>
+															<td><a href="debtor/rating.php?lender_id=<?php echo htmlentities($result->lender_id);?>">Rate this Investor
+																</a></td>
 														</tr>
 													</tbody>
 													<?php }}?>

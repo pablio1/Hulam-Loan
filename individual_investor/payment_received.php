@@ -23,7 +23,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 	<!--begin::Head-->
 	<head><base href="../">
 		<meta charset="utf-8" />
-		<title>Hulam | Admin | Lending Company</title>
+		<title>Hulam | Admin | Individual Investor</title>
 		<meta name="description" content="Updates and statistics" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 		<!--begin::Fonts-->
@@ -52,7 +52,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 		<!--begin::Header Mobile-->
 		<div id="kt_header_mobile" class="header-mobile align-items-center header-mobile-fixed">
 			<!--begin::Logo-->
-			<a href="lending_company/index.php" >
+			<a href="individual_investor/index.php" >
 			<img alt="Logo" src="assets/admin/media/logos/Hulam_Logo.png" class="h-60px w-60px" style="padding-top: 10%; padding: right 50%;"/>
 			</a>
 			<!--end::Logo-->
@@ -95,7 +95,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 					<!--begin::Brand-->
 					<div class="brand flex-column-auto" id="kt_brand">
 						<!--begin::Logo-->
-						<a href="lending_company/index.php" class="brand-logo">
+						<a href="individual_investor/index.php" class="brand-logo">
 						<img alt="Logo" src="assets/admin/media/logos/Hulam_Logo.png" class="h-100px w-90px" style="padding-top: 20%; padding: right 50%;"/>
 						</a>
 						<!--end::Logo-->
@@ -118,167 +118,184 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 					<!--end::Brand-->
 					<!--begin::Aside Menu-->
 					<div class="aside-menu-wrapper flex-column-fluid" id="kt_aside_menu_wrapper">
-						<!--begin::Menu Container-->
-						<div id="kt_aside_menu" class="aside-menu my-4" data-menu-vertical="1" data-menu-scroll="1" data-menu-dropdown-timeout="500">
-							<!--begin::Menu Nav-->
-							<ul class="menu-nav">
-								<li class="menu-item menu-item-active" aria-haspopup="true">
-									<a href="lending_company/index.php"  class="menu-link">
-										<span class="svg-icon menu-icon">
-											<!--begin::Svg Icon | path:assets/media/svg/icons/Design/Layers.svg-->
-											<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-												<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-													<polygon points="0 0 24 0 24 24 0 24" />
-													<path d="M12.9336061,16.072447 L19.36,10.9564761 L19.5181585,10.8312381 C20.1676248,10.3169571 20.2772143,9.3735535 19.7629333,8.72408713 C19.6917232,8.63415859 19.6104327,8.55269514 19.5206557,8.48129411 L12.9336854,3.24257445 C12.3871201,2.80788259 11.6128799,2.80788259 11.0663146,3.24257445 L4.47482784,8.48488609 C3.82645598,9.00054628 3.71887192,9.94418071 4.23453211,10.5925526 C4.30500305,10.6811601 4.38527899,10.7615046 4.47382636,10.8320511 L4.63,10.9564761 L11.0659024,16.0730648 C11.6126744,16.5077525 12.3871218,16.5074963 12.9336061,16.072447 Z" fill="#000000" fill-rule="nonzero" />
-													<path d="M11.0563554,18.6706981 L5.33593024,14.122919 C4.94553994,13.8125559 4.37746707,13.8774308 4.06710397,14.2678211 C4.06471678,14.2708238 4.06234874,14.2738418 4.06,14.2768747 L4.06,14.2768747 C3.75257288,14.6738539 3.82516916,15.244888 4.22214834,15.5523151 C4.22358765,15.5534297 4.2250303,15.55454 4.22647627,15.555646 L11.0872776,20.8031356 C11.6250734,21.2144692 12.371757,21.2145375 12.909628,20.8033023 L19.7677785,15.559828 C20.1693192,15.2528257 20.2459576,14.6784381 19.9389553,14.2768974 C19.9376429,14.2751809 19.9363245,14.2734691 19.935,14.2717619 L19.935,14.2717619 C19.6266937,13.8743807 19.0546209,13.8021712 18.6572397,14.1104775 C18.654352,14.112718 18.6514778,14.1149757 18.6486172,14.1172508 L12.9235044,18.6705218 C12.377022,19.1051477 11.6029199,19.1052208 11.0563554,18.6706981 Z" fill="#000000" opacity="0.3" />
-												</g>
-											</svg>
-											<!--end::Svg Icon-->
-										</span>
-										<span class="menu-text">Dashboard</span>
-									</a>
-								</li>
-								<li class="menu-section">
-									<h4 class="menu-text">Manage Loan</h4>
-									<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
-								</li>
-								<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-									<a href="javascript:;" class="menu-link menu-toggle">
-										<span class="svg-icon menu-icon">
-										</span>
-										<span class="menu-text">Loan Application</span>
-										<i class="menu-arrow"></i>
-									</a>
-									<div class="menu-submenu">
-										<i class="menu-arrow"></i>
-										<ul class="menu-subnav">
-											<!-- <li class="menu-item menu-item-parent" aria-haspopup="true">
-												<span class="menu-link">
-													<span class="menu-text">Applications</span>
+					<!--begin::Menu Container-->
+					<div id="kt_aside_menu" class="aside-menu my-4" data-menu-vertical="1" data-menu-scroll="1" data-menu-dropdown-timeout="500">
+						<!--begin::Menu Nav-->
+						<ul class="menu-nav">
+							<li class="menu-item menu-item-active" aria-haspopup="true">
+								<a href="individual_investor/index.php" class="menu-link">
+									<span class="svg-icon menu-icon">
+										<!--begin::Svg Icon | path:assets/media/svg/icons/Design/Layers.svg-->
+										<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+											<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+												<polygon points="0 0 24 0 24 24 0 24" />
+												<path d="M12.9336061,16.072447 L19.36,10.9564761 L19.5181585,10.8312381 C20.1676248,10.3169571 20.2772143,9.3735535 19.7629333,8.72408713 C19.6917232,8.63415859 19.6104327,8.55269514 19.5206557,8.48129411 L12.9336854,3.24257445 C12.3871201,2.80788259 11.6128799,2.80788259 11.0663146,3.24257445 L4.47482784,8.48488609 C3.82645598,9.00054628 3.71887192,9.94418071 4.23453211,10.5925526 C4.30500305,10.6811601 4.38527899,10.7615046 4.47382636,10.8320511 L4.63,10.9564761 L11.0659024,16.0730648 C11.6126744,16.5077525 12.3871218,16.5074963 12.9336061,16.072447 Z" fill="#000000" fill-rule="nonzero" />
+												<path d="M11.0563554,18.6706981 L5.33593024,14.122919 C4.94553994,13.8125559 4.37746707,13.8774308 4.06710397,14.2678211 C4.06471678,14.2708238 4.06234874,14.2738418 4.06,14.2768747 L4.06,14.2768747 C3.75257288,14.6738539 3.82516916,15.244888 4.22214834,15.5523151 C4.22358765,15.5534297 4.2250303,15.55454 4.22647627,15.555646 L11.0872776,20.8031356 C11.6250734,21.2144692 12.371757,21.2145375 12.909628,20.8033023 L19.7677785,15.559828 C20.1693192,15.2528257 20.2459576,14.6784381 19.9389553,14.2768974 C19.9376429,14.2751809 19.9363245,14.2734691 19.935,14.2717619 L19.935,14.2717619 C19.6266937,13.8743807 19.0546209,13.8021712 18.6572397,14.1104775 C18.654352,14.112718 18.6514778,14.1149757 18.6486172,14.1172508 L12.9235044,18.6705218 C12.377022,19.1051477 11.6029199,19.1052208 11.0563554,18.6706981 Z" fill="#000000" opacity="0.3" />
+											</g>
+										</svg>
+										<!--end::Svg Icon-->
+									</span>
+									<span class="menu-text">Dashboard</span>
+								</a>
+							</li>
+							<li class="menu-section">
+								<h4 class="menu-text">Manage Account</h4>
+								<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
+							</li>
+							<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+								<a href="javascript:;" class="menu-link menu-toggle">
+									<span class="svg-icon menu-icon">
+									</span>
+									<span class="menu-text">My Account</span>
+									<i class="menu-arrow"></i>
+								</a>
+								<div class="menu-submenu">
+									<i class="menu-arrow"></i>
+									<ul class="menu-subnav">
+										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+											<a href="individual_investor/update_information.php" class="menu-link menu-toggle">
+												<i class="menu-bullet">
+													<span></span>
+												</i>
+												<span class="menu-text">My Profile</span>
+											</a>
+										</li>
+									</ul>
+								</div>
+							</li>
+							<li class="menu-section">
+								<h4 class="menu-text">Manage Loan</h4>
+								<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
+							</li>
+							<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+								<a href="javascript:;" class="menu-link menu-toggle">
+									<span class="svg-icon menu-icon">
+									</span>
+									<span class="menu-text">Setup Loan</span>
+									<i class="menu-arrow"></i>
+								</a>
+								<div class="menu-submenu">
+									<ul class="menu-subnav">
+										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+											<a href="individual_investor/setup_loan.php" class="menu-link menu-toggle">
+												<span class="svg-icon menu-icon">
 												</span>
-											</li> -->
-											<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-												<a href="lending_company/pending_loan.php" class="menu-link menu-toggle">
-													<i class="menu-bullet">
-														<span></span>
-													</i>
-													<span class="menu-text">Pending Loan</span>
-													<!-- <span class="menu-label">
-														<span class="label label-rounded label-primary">6</span>
-													</span>
-													<i class="menu-arrow"></i> -->
-												</a>
-											</li>
-											<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-												<a href="lending_company/pending_loan.php" class="menu-link menu-toggle">
-													<i class="menu-bullet">
-														<span></span>
-													</i>
-													<span class="menu-text">Approved Loan</span>
-													<!-- <span class="menu-label">
-														<span class="label label-rounded label-primary">6</span>
-													</span>
-													<i class="menu-arrow"></i> -->
-												</a>
-											</li>
-											<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-												<a href="lending_company/pending_loan.php" class="menu-link menu-toggle">
-													<i class="menu-bullet">
-														<span></span>
-													</i>
-													<span class="menu-text">Declined Loan</span>
-													<!-- <span class="menu-label">
-														<span class="label label-rounded label-primary">6</span>
-													</span>
-													<i class="menu-arrow"></i> -->
-												</a>
-											</li>
-											
-										</ul>
-									</div>
-								</li>
-								<li class="menu-section">
-									<h4 class="menu-text">Manage Payment</h4>
-									<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
-								</li>
-								<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-									<a href="javascript:;" class="menu-link menu-toggle">
-										<span class="svg-icon menu-icon">
-										</span>
-										<span class="menu-text">Payment Information</span>
-										<i class="menu-arrow"></i>
-									</a>
-									<div class="menu-submenu">
-										<i class="menu-arrow"></i>
-										<ul class="menu-subnav">
-											<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-												<a href="lending_company/pending_loan.php" class="menu-link menu-toggle">
-													<i class="menu-bullet">
-														<span></span>
-													</i>
-													<span class="menu-text">Payment Received</span>
-													<span class="menu-label">
-													</span>
-													<i class="menu-arrow"></i>
-												</a>
-											</li>
-											<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-												<a href="lending_company/payment_records.php" class="menu-link menu-toggle">
-													<i class="menu-bullet">
-														<span></span>
-													</i>
-													<span class="menu-text">Payment Records</span>
-													<span class="menu-label">
-													</span>
-													<i class="menu-arrow"></i>
-												</a>
-											</li>
-										</ul>
-									</div>
-								</li>
+												<span class="menu-text">Setup Loan Features</span>
+											</a>
+										</li>
+										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+											<a href="individual_investor/set_requirements.php" class="menu-link menu-toggle">
+												<span class="svg-icon menu-icon">
+												</span>
+												<span class="menu-text">Set Requirements</span>
+											</a>
+										</li>
+										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+											<a href="individual_investor/.php" class="menu-link menu-toggle">
+												<span class="svg-icon menu-icon">
+												</span>
+												<span class="menu-text">Set Mode of Payment</span>
+											</a>
+										</li>
+									</ul>
+								</div>
+							</li>
+
+							<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+								<a href="javascript:;" class="menu-link menu-toggle">
+									<span class="svg-icon menu-icon">
+									</span>
+									<span class="menu-text">Loan Application</span>
+									<i class="menu-arrow"></i>
+								</a>
+								<div class="menu-submenu">
+									<i class="menu-arrow"></i>
+									<ul class="menu-subnav">
+										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+											<a href="individual_investor/pending_loan.php" class="menu-link menu-toggle">
+												<i class="menu-bullet">
+													<span></span>
+												</i>
+												<span class="menu-text">Pending Loan</span>
+											</a>
+										</li>
+										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+											<a href="individual_investor/approvedloan.php" class="menu-link menu-toggle">
+												<i class="menu-bullet">
+													<span></span>
+												</i>
+												<span class="menu-text">Approved Loan</span>
+											</a>
+										</li>
+										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+											<a href="individual_investor/.php" class="menu-link menu-toggle">
+												<i class="menu-bullet">
+													<span></span>
+												</i>
+												<span class="menu-text">Declined Loan</span>
+											</a>
+										</li>
+
+									</ul>
+								</div>
+							</li>
+							<li class="menu-section">
+								<h4 class="menu-text">Manage Payment</h4>
+								<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
+							</li>
+							<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+								<a href="javascript:;" class="menu-link menu-toggle">
+									<span class="svg-icon menu-icon">
+									</span>
+									<span class="menu-text">Payment Information</span>
+									<i class="menu-arrow"></i>
+								</a>
+								<div class="menu-submenu">
+									<i class="menu-arrow"></i>
+									<ul class="menu-subnav">
+										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+											<a href="individual_investor/.php" class="menu-link menu-toggle">
+												<i class="menu-bullet">
+													<span></span>
+												</i>
+												<span class="menu-text">Payment Received</span>
+												<span class="menu-label">
+												</span>
+												<i class="menu-arrow"></i>
+											</a>
+										</li>
+										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+											<a href="individual_investor/.php" class="menu-link menu-toggle">
+												<i class="menu-bullet">
+													<span></span>
+												</i>
+												<span class="menu-text">Payment Records</span>
+												<span class="menu-label">
+												</span>
+												<i class="menu-arrow"></i>
+											</a>
+										</li>
+									</ul>
+								</div>
+							</li>
+
+							<li class="menu-section">
+								<h4 class="menu-text">Manage Report</h4>
+								<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
+							</li>
+							<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+								<a href="javascript:;" class="menu-link menu-toggle">
+									<span class="svg-icon menu-icon">
+									</span>
+									<span class="menu-text">Generate Report</span>
+									<i class="menu-arrow"></i>
+								</a>
 								
-								<li class="menu-section">
-									<h4 class="menu-text">Manage Report</h4>
-									<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
-								</li>
-								<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-									<a href="javascript:;" class="menu-link menu-toggle">
-										<span class="svg-icon menu-icon">
-										</span>
-										<span class="menu-text">Generate Report</span>
-										<i class="menu-arrow"></i>
-									</a>
-									<div class="menu-submenu">
-										<i class="menu-arrow"></i>
-										<ul class="menu-subnav">
-											<li class="menu-item menu-item-parent" aria-haspopup="true">
-												<span class="menu-link">
-													<span class="menu-text">Themes</span>
-												</span>
-											</li>
-											<li class="menu-item" aria-haspopup="true">
-												<a href="layout/themes/aside-light.html" class="menu-link">
-													<i class="menu-bullet menu-bullet-dot">
-														<span></span>
-													</i>
-													<span class="menu-text">Light Aside</span>
-												</a>
-											</li>
-											<li class="menu-item" aria-haspopup="true">
-												<a href="layout/themes/header-dark.html" class="menu-link">
-													<i class="menu-bullet menu-bullet-dot">
-														<span></span>
-													</i>
-													<span class="menu-text">Dark Header</span>
-												</a>
-											</li>
-										</ul>
-									</div>
-								</li>
+							</li>
 							<!--end::Menu Nav-->
-						</div>
-						<!--end::Menu Container-->
 					</div>
+					<!--end::Menu Container-->
+				</div>
 					<!--end::Aside Menu-->
 				</div>
 				<!--end::Aside-->
@@ -295,7 +312,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 									<!--begin::Header Nav-->
 									<ul class="menu-nav">
 										<li class="menu-item menu-item-open menu-item-here menu-item-submenu menu-item-rel menu-item-open menu-item-here menu-item-active" data-menu-toggle="click" aria-haspopup="true">
-										    <h4 class="menu-text" style="color:blue">Welcome to Hulam! <h4>&nbsp;&nbsp;<h6><?php echo $_SESSION['firstname'];?></h6>
+										    <h4 class="menu-text" style="color:blue">Welcome to Hulam! <h4>&nbsp;&nbsp;
 											<i class="menu-arrow"></i>
 										 </li>
 								    </ul>
@@ -889,7 +906,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 									<!--begin::Page Heading-->
 									<div class="d-flex align-items-baseline flex-wrap mr-5">
 										<!--begin::Page Title-->
-										<h4 class="text-white font-weight-bold my-1 mr-5">Dashboard |</h4><h5 class="text-white font-weight-bold my-1 mr-5">Lending Investor</h5>
+										<h4 class="text-white font-weight-bold my-1 mr-5">Dashboard |</h4><h5 class="text-white font-weight-bold my-1 mr-5">Individual Investor</h5>
 										<!--end::Page Title-->
 									</div>
 									<!--end::Page Heading-->
@@ -930,7 +947,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
                                                                     <th>Remittance Name</th>
 																	<th>Sender Fullname</th>
                                                                     <th>Phone No</th>
-                                                                    <th>Lending Company Name</th>
+                                                                    <th>Investor Name</th>
                                                                     <th>Bank Name</th>
                                                                     <th>Bank Account No</th>
                                                                     <th>Payment Date</th>
@@ -971,7 +988,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
                                                                     <td><?= htmlentities($res->amount_paid);?></td>
                                                                     <td><?= htmlentities($res->posted_date);?></td>
 																	<td>
-																		<a href="lending_company/view_payment.php?loan_payment_id=<?= htmlentities($res->loan_payment_id)?>" class="kt-nav__link">
+																		<a href="individual_investor/view_payment.php?loan_payment_id=<?= htmlentities($res->loan_payment_id)?>" class="kt-nav__link">
 																		<span class="kt-nav__link-text">View</span>
 																		</a>
 																	</td>
@@ -1018,7 +1035,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 		<div id="kt_quick_user" class="offcanvas offcanvas-right p-10">
 			<!--begin::Header-->
 			<div class="offcanvas-header d-flex align-items-center justify-content-between pb-5">
-				<h3 class="font-weight-bold m-0">Profile</h3>
+				<h3 class="font-weight-bold m-0">Profile
 				<a href="#" class="btn btn-xs btn-icon btn-light btn-hover-primary" id="kt_quick_user_close">
 					<i class="ki ki-close icon-xs text-muted"></i>
 				</a>
@@ -1033,7 +1050,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 						<i class="symbol-badge bg-success"></i>
 					</div>
 					<div class="d-flex flex-column">
-						<a href="#" class="font-weight-bold font-size-h5 text-dark-75 text-hover-primary">Lending Company</a>
+						<a href="#" class="font-weight-bold font-size-h5 text-dark-75 text-hover-primary">Individual Investor</a>
 						<div class="text-muted mt-1"></div>
 						<div class="navi mt-1">
 							<a href="#" class="navi-item">
@@ -1051,59 +1068,45 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 											<!--end::Svg Icon-->
 										</span>
 									</span>
-									<span class="navi-text text-muted text-hover-primary">hulamloan@gmail.com</span>
+									<span class="navi-text text-muted text-hover-primary"><?= $_SESSION['email'];?></span>
 								</span>
 							</a>
 						</div>
 					</div>
 				</div>
-				<!--end::Header-->
-				<!--begin::Separator-->
 				<div class="separator separator-dashed mt-8 mb-5"></div>
-				<!--end::Separator-->
-				<!--begin::Nav-->
 				<div class="navi navi-spacer-x-0 p-0">
-					<!--begin::Item-->
-					<a href="lending_company/update_profile.php" class="navi-item">
+					<a href="individual_investor/update_information.php" class="navi-item">
 						<div class="navi-link">
 							<div class="symbol symbol-40 bg-light mr-3">
 								<div class="symbol-label">
-									<span class="svg-icon svg-icon-md svg-icon-danger">
-										<!--begin::Svg Icon | path:assets/media/svg/icons/Communication/Adress-book2.svg-->
+									<span class="svg-icon svg-icon-md svg-icon-info">
+										<!--begin::Svg Icon | path:assets/media/svg/icons/Communication/Mail-opened.svg-->
 										<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
 											<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
 												<rect x="0" y="0" width="24" height="24" />
 												<path d="M18,2 L20,2 C21.6568542,2 23,3.34314575 23,5 L23,19 C23,20.6568542 21.6568542,22 20,22 L18,22 L18,2 Z" fill="#000000" opacity="0.3" />
 												<path d="M5,2 L17,2 C18.6568542,2 20,3.34314575 20,5 L20,19 C20,20.6568542 18.6568542,22 17,22 L5,22 C4.44771525,22 4,21.5522847 4,21 L4,3 C4,2.44771525 4.44771525,2 5,2 Z M12,11 C13.1045695,11 14,10.1045695 14,9 C14,7.8954305 13.1045695,7 12,7 C10.8954305,7 10,7.8954305 10,9 C10,10.1045695 10.8954305,11 12,11 Z M7.00036205,16.4995035 C6.98863236,16.6619875 7.26484009,17 7.4041679,17 C11.463736,17 14.5228466,17 16.5815,17 C16.9988413,17 17.0053266,16.6221713 16.9988413,16.5 C16.8360465,13.4332455 14.6506758,12 11.9907452,12 C9.36772908,12 7.21569918,13.5165724 7.00036205,16.4995035 Z" fill="#000000" />
 											</g>
-										</svg>
+										</svg> 
 										<!--end::Svg Icon-->
 									</span>
 								</div>
 							</div>
 							<div class="navi-text">
 								<div class="font-weight-bold">My Account</div>
-								<div class="text-muted">Profile info
-								<span class="label label-light-danger label-inline font-weight-bold">update</span></div>
+								<div class="text-muted">Update Information</div>
 							</div>
 						</div>
 					</a>
-					<!--begin::Item-->
 					<span class="navi-item mt-2">
 						<span class="navi-link">
 							<a href="logout.php" class="btn btn-sm btn-light-primary font-weight-bolder py-3 px-6">Sign Out</a>
 						</span>
 					</span>
-					<!--end:Item-->
 				</div>
-				<!--end::Nav-->
-				<!--begin::Separator-->
 				<div class="separator separator-dashed my-7"></div>
-				<!--end::Separator-->
-
-
 			</div>
-			<!--end::Content-->
 		</div>
 		<!-- end::User Panel-->
 

@@ -1,60 +1,39 @@
 <?php
 session_start();
-// error_reporting(0);
-ini_set('display_errors', 1);
-error_reporting(E_ALL|E_STRICT);
+error_reporting(0);
 include('../db_connection/config.php');
-
-if(isset($_POST['submit'])){
-
-	$min = $_POST['min'];
-	$max = $_POST['max'];
-	$ten_min = $_POST['ten_min'];
-	$ten_max = $_POST['ten_max'];
-	$rate_f = $_POST['rate_f'];
-	$rate_t = $_POST['rate_t'];
-	$approval = $_POST['approval'];
-	$l_charges = $_POST['l_charges'];
-	$age_f = $_POST['age_f'];
-	$age_t = $_POST['age_t'];
-	$m_income = $_POST['m_income'];
-	$col = $_POST['col'];
-
-	$id = $_SESSION['user_id'];
-
-	$insert ="INSERT INTO loan_features(id,min,max,ten_min,ten_max,rate_f,rate_t,approval,l_charges,age_f,age_t,m_income,col)VALUES(:id,:min,:max,:ten_min,:ten_max,:rate_f,:rate_t,:approval,:l_charges,:age_f,:age_t,:m_income,:col)";
-	$sql = $dbh->prepare($insert);
-	$sql->bindParam(':id',$id,PDO::PARAM_STR);
-	$sql->bindParam(':min',$min,PDO::PARAM_STR);
-	$sql->bindParam(':max',$max,PDO::PARAM_STR);
-	$sql->bindParam(':ten_min',$ten_min,PDO::PARAM_STR);
-	$sql->bindParam(':ten_max',$ten_max,PDO::PARAM_STR);
-	$sql->bindParam(':rate_f',$rate_f,PDO::PARAM_STR);
-	$sql->bindParam(':rate_t',$rate_t,PDO::PARAM_STR);
-	$sql->bindParam(':approval',$approval,PDO::PARAM_STR);
-	$sql->bindParam(':l_charges',$l_charges,PDO::PARAM_STR);
-	$sql->bindParam(':age_f',$age_f,PDO::PARAM_STR);
-	$sql->bindParam(':age_t',$age_t,PDO::PARAM_STR);
-	$sql->bindParam(':m_income',$m_income,PDO::PARAM_STR);
-	$sql->bindParam(':col',$col,PDO::PARAM_STR);
-	$sql->execute();	
-
-if($sql)
-{
-echo ("<SCRIPT LANGUAGE='JavaScript'>
-      window.alert('Successfully Added')
-       window.location.href='loan_info.php';
-  </SCRIPT>");
-
-}
-else
-{
-  echo '<script language="javascript">alert("Something went wrong. Please try again")</script>';
-}
-
-}
 ?>
 
+<!--codes to insert the image -->
+<?php
+
+if(isset($_POST['add_req'])){
+
+    $req_name = $_POST['req_name'];
+    $remarks = $_POST['remarks'];
+    // $lender_id = $_SESSION['user_id']; 
+
+    foreach($req_name as $index => $names){
+        $s_req_name = $names;
+        $s_remarks = $remarks[$index];
+        $lender_id = $_SESSION['user_id']; 
+
+        $sql ="INSERT INTO loan_requirements(lender_id,req_name,remarks)VALUES('$lender_id','$s_req_name','$s_remarks')";
+        $query = $dbh->prepare($sql);
+        $query->execute();
+    }
+    if($query){
+        $_SESSION['status'] = "Added successfully" ;
+        header("Location: set_requirements.php");
+        exit();
+    }else{
+        $_SESSION['status'] = "Error! Not Added" ;
+        header("Location: set_requirements.php");
+        exit();
+    }
+}
+
+?>
 
 <!DOCTYPE html>
 <!--
@@ -145,7 +124,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 					<!--begin::Brand-->
 					<div class="brand flex-column-auto" id="kt_brand">
 						<!--begin::Logo-->
-						<a href="individual_investor/index.php"  class="brand-logo">
+						<a href="individual_investor/index.php" class="brand-logo">
 						<img alt="Logo" src="assets/admin/media/logos/Hulam_Logo.png" class="h-100px w-90px" style="padding-top: 20%; padding: right 50%;"/>
 						</a>
 						<!--end::Logo-->
@@ -168,27 +147,27 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 					<!--end::Brand-->
 					<!--begin::Aside Menu-->
 					<div class="aside-menu-wrapper flex-column-fluid" id="kt_aside_menu_wrapper">
-					<!--begin::Menu Container-->
-					<div id="kt_aside_menu" class="aside-menu my-4" data-menu-vertical="1" data-menu-scroll="1" data-menu-dropdown-timeout="500">
-						<!--begin::Menu Nav-->
-						<ul class="menu-nav">
-							<li class="menu-item menu-item-active" aria-haspopup="true">
-								<a href="individual_investor/index.php" class="menu-link">
-									<span class="svg-icon menu-icon">
-										<!--begin::Svg Icon | path:assets/media/svg/icons/Design/Layers.svg-->
-										<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-											<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-												<polygon points="0 0 24 0 24 24 0 24" />
-												<path d="M12.9336061,16.072447 L19.36,10.9564761 L19.5181585,10.8312381 C20.1676248,10.3169571 20.2772143,9.3735535 19.7629333,8.72408713 C19.6917232,8.63415859 19.6104327,8.55269514 19.5206557,8.48129411 L12.9336854,3.24257445 C12.3871201,2.80788259 11.6128799,2.80788259 11.0663146,3.24257445 L4.47482784,8.48488609 C3.82645598,9.00054628 3.71887192,9.94418071 4.23453211,10.5925526 C4.30500305,10.6811601 4.38527899,10.7615046 4.47382636,10.8320511 L4.63,10.9564761 L11.0659024,16.0730648 C11.6126744,16.5077525 12.3871218,16.5074963 12.9336061,16.072447 Z" fill="#000000" fill-rule="nonzero" />
-												<path d="M11.0563554,18.6706981 L5.33593024,14.122919 C4.94553994,13.8125559 4.37746707,13.8774308 4.06710397,14.2678211 C4.06471678,14.2708238 4.06234874,14.2738418 4.06,14.2768747 L4.06,14.2768747 C3.75257288,14.6738539 3.82516916,15.244888 4.22214834,15.5523151 C4.22358765,15.5534297 4.2250303,15.55454 4.22647627,15.555646 L11.0872776,20.8031356 C11.6250734,21.2144692 12.371757,21.2145375 12.909628,20.8033023 L19.7677785,15.559828 C20.1693192,15.2528257 20.2459576,14.6784381 19.9389553,14.2768974 C19.9376429,14.2751809 19.9363245,14.2734691 19.935,14.2717619 L19.935,14.2717619 C19.6266937,13.8743807 19.0546209,13.8021712 18.6572397,14.1104775 C18.654352,14.112718 18.6514778,14.1149757 18.6486172,14.1172508 L12.9235044,18.6705218 C12.377022,19.1051477 11.6029199,19.1052208 11.0563554,18.6706981 Z" fill="#000000" opacity="0.3" />
-											</g>
-										</svg>
-										<!--end::Svg Icon-->
-									</span>
-									<span class="menu-text">Dashboard</span>
-								</a>
-							</li>
-							<li class="menu-section">
+						<!--begin::Menu Container-->
+						<div id="kt_aside_menu" class="aside-menu my-4" data-menu-vertical="1" data-menu-scroll="1" data-menu-dropdown-timeout="500">
+							<!--begin::Menu Nav-->
+							<ul class="menu-nav">
+								<li class="menu-item menu-item-active" aria-haspopup="true">
+									<a href="individual_investor/index.php"  class="menu-link">
+										<span class="svg-icon menu-icon">
+											<!--begin::Svg Icon | path:assets/media/svg/icons/Design/Layers.svg-->
+											<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+												<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+													<polygon points="0 0 24 0 24 24 0 24" />
+													<path d="M12.9336061,16.072447 L19.36,10.9564761 L19.5181585,10.8312381 C20.1676248,10.3169571 20.2772143,9.3735535 19.7629333,8.72408713 C19.6917232,8.63415859 19.6104327,8.55269514 19.5206557,8.48129411 L12.9336854,3.24257445 C12.3871201,2.80788259 11.6128799,2.80788259 11.0663146,3.24257445 L4.47482784,8.48488609 C3.82645598,9.00054628 3.71887192,9.94418071 4.23453211,10.5925526 C4.30500305,10.6811601 4.38527899,10.7615046 4.47382636,10.8320511 L4.63,10.9564761 L11.0659024,16.0730648 C11.6126744,16.5077525 12.3871218,16.5074963 12.9336061,16.072447 Z" fill="#000000" fill-rule="nonzero" />
+													<path d="M11.0563554,18.6706981 L5.33593024,14.122919 C4.94553994,13.8125559 4.37746707,13.8774308 4.06710397,14.2678211 C4.06471678,14.2708238 4.06234874,14.2738418 4.06,14.2768747 L4.06,14.2768747 C3.75257288,14.6738539 3.82516916,15.244888 4.22214834,15.5523151 C4.22358765,15.5534297 4.2250303,15.55454 4.22647627,15.555646 L11.0872776,20.8031356 C11.6250734,21.2144692 12.371757,21.2145375 12.909628,20.8033023 L19.7677785,15.559828 C20.1693192,15.2528257 20.2459576,14.6784381 19.9389553,14.2768974 C19.9376429,14.2751809 19.9363245,14.2734691 19.935,14.2717619 L19.935,14.2717619 C19.6266937,13.8743807 19.0546209,13.8021712 18.6572397,14.1104775 C18.654352,14.112718 18.6514778,14.1149757 18.6486172,14.1172508 L12.9235044,18.6705218 C12.377022,19.1051477 11.6029199,19.1052208 11.0563554,18.6706981 Z" fill="#000000" opacity="0.3" />
+												</g>
+											</svg>
+											<!--end::Svg Icon-->
+										</span>
+										<span class="menu-text">Dashboard</span>
+									</a>
+								</li>
+								<li class="menu-section">
 								<h4 class="menu-text">Manage Account</h4>
 								<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
 							</li>
@@ -240,112 +219,141 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 												<span class="menu-text">Set Requirements</span>
 											</a>
 										</li>
-										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-											<a href="individual_investor/.php" class="menu-link menu-toggle">
-												<span class="svg-icon menu-icon">
-												</span>
-												<span class="menu-text">Set Mode of Payment</span>
-											</a>
-										</li>
 									</ul>
 								</div>
 							</li>
-
 							<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-								<a href="javascript:;" class="menu-link menu-toggle">
-									<span class="svg-icon menu-icon">
-									</span>
-									<span class="menu-text">Loan Application</span>
-									<i class="menu-arrow"></i>
-								</a>
-								<div class="menu-submenu">
-									<i class="menu-arrow"></i>
-									<ul class="menu-subnav">
-										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-											<a href="individual_investor/pending_loan.php" class="menu-link menu-toggle">
-												<i class="menu-bullet">
-													<span></span>
-												</i>
-												<span class="menu-text">Pending Loan</span>
-											</a>
-										</li>
-										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-											<a href="individual_investor/approvedloan.php" class="menu-link menu-toggle">
-												<i class="menu-bullet">
-													<span></span>
-												</i>
-												<span class="menu-text">Approved Loan</span>
-											</a>
-										</li>
-										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-											<a href="individual_investor/.php" class="menu-link menu-toggle">
-												<i class="menu-bullet">
-													<span></span>
-												</i>
-												<span class="menu-text">Declined Loan</span>
-											</a>
-										</li>
-
-									</ul>
-								</div>
-							</li>
-							<li class="menu-section">
-								<h4 class="menu-text">Manage Payment</h4>
-								<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
-							</li>
-							<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-								<a href="javascript:;" class="menu-link menu-toggle">
-									<span class="svg-icon menu-icon">
-									</span>
-									<span class="menu-text">Payment Information</span>
-									<i class="menu-arrow"></i>
-								</a>
-								<div class="menu-submenu">
-									<i class="menu-arrow"></i>
-									<ul class="menu-subnav">
-										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-											<a href="individual_investor/.php" class="menu-link menu-toggle">
-												<i class="menu-bullet">
-													<span></span>
-												</i>
-												<span class="menu-text">Payment Received</span>
-												<span class="menu-label">
-												</span>
-												<i class="menu-arrow"></i>
-											</a>
-										</li>
-										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-											<a href="individual_investor/.php" class="menu-link menu-toggle">
-												<i class="menu-bullet">
-													<span></span>
-												</i>
-												<span class="menu-text">Payment Records</span>
-												<span class="menu-label">
-												</span>
-												<i class="menu-arrow"></i>
-											</a>
-										</li>
-									</ul>
-								</div>
-							</li>
-
-							<li class="menu-section">
-								<h4 class="menu-text">Manage Report</h4>
-								<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
-							</li>
-							<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-								<a href="javascript:;" class="menu-link menu-toggle">
-									<span class="svg-icon menu-icon">
-									</span>
-									<span class="menu-text">Generate Report</span>
-									<i class="menu-arrow"></i>
-								</a>
+									<a href="javascript:;" class="menu-link menu-toggle">
+										<span class="svg-icon menu-icon">
+										</span>
+										<span class="menu-text">Loan Application</span>
+										<i class="menu-arrow"></i>
+									</a>
+									<div class="menu-submenu">
+										<i class="menu-arrow"></i>
+										<ul class="menu-subnav">
+											<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+												<a href="individual_investor/pending_loan.php" class="menu-link menu-toggle">
+													<i class="menu-bullet">
+														<span></span>
+													</i>
+													<span class="menu-text">Pending Loan</span>
+													<span class="menu-label">
+														<span class="label label-rounded label-primary">6</span>
+													</span>
+													<i class="menu-arrow"></i>
+												</a>
+											</li>
+											<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+												<a href="individual_investor/approvedloan.php" class="menu-link menu-toggle">
+													<i class="menu-bullet">
+														<span></span>
+													</i>
+													<span class="menu-text">Approved Loan</span>
+													<span class="menu-label">
+														<span class="label label-rounded label-primary">6</span>
+													</span>
+													<i class="menu-arrow"></i>
+												</a>
+											</li>
+											<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+												<a href="individual_investor/declined_loan.php" class="menu-link menu-toggle">
+													<i class="menu-bullet">
+														<span></span>
+													</i>
+													<span class="menu-text">Declined Loan</span>
+													<span class="menu-label">
+														<span class="label label-rounded label-primary">6</span>
+													</span>
+													<i class="menu-arrow"></i>
+												</a>
+											</li>
+											
+										</ul>
+									</div>
+								</li>
+								<li class="menu-section">
+									<h4 class="menu-text">Manage Payment</h4>
+									<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
+								</li>
+								<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+									<a href="javascript:;" class="menu-link menu-toggle">
+										<span class="svg-icon menu-icon">
+										</span>
+										<span class="menu-text">Payment Information</span>
+										<i class="menu-arrow"></i>
+									</a>
+									<div class="menu-submenu">
+										<i class="menu-arrow"></i>
+										<ul class="menu-subnav">
+											<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+												<a href="individual_investor/payment_received.php" class="menu-link menu-toggle">
+													<i class="menu-bullet">
+														<span></span>
+													</i>
+													<span class="menu-text">Payment Received</span>
+													<span class="menu-label">
+													</span>
+													<i class="menu-arrow"></i>
+												</a>
+											</li>
+											<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+												<a href="individual_investor/payment_records.php" class="menu-link menu-toggle">
+													<i class="menu-bullet">
+														<span></span>
+													</i>
+													<span class="menu-text">Payment Records</span>
+													<span class="menu-label">
+													</span>
+													<i class="menu-arrow"></i>
+												</a>
+											</li>
+										</ul>
+									</div>
+								</li>
 								
-							</li>
+								<li class="menu-section">
+									<h4 class="menu-text">Manage Report</h4>
+									<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
+								</li>
+								<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+									<a href="javascript:;" class="menu-link menu-toggle">
+										<span class="svg-icon menu-icon">
+										</span>
+										<span class="menu-text">Generate Report</span>
+										<i class="menu-arrow"></i>
+									</a>
+									<div class="menu-submenu">
+										<i class="menu-arrow"></i>
+										<ul class="menu-subnav">
+											<li class="menu-item menu-item-parent" aria-haspopup="true">
+												<span class="menu-link">
+													<span class="menu-text">Themes</span>
+												</span>
+											</li>
+											<li class="menu-item" aria-haspopup="true">
+												<a href="layout/themes/aside-light.html" class="menu-link">
+													<i class="menu-bullet menu-bullet-dot">
+														<span></span>
+													</i>
+													<span class="menu-text">Light Aside</span>
+												</a>
+											</li>
+											<li class="menu-item" aria-haspopup="true">
+												<a href="layout/themes/header-dark.html" class="menu-link">
+													<i class="menu-bullet menu-bullet-dot">
+														<span></span>
+													</i>
+													<span class="menu-text">Dark Header</span>
+												</a>
+											</li>
+										</ul>
+									</div>
+								</li>
 							<!--end::Menu Nav-->
+						</div>
+						<!--end::Menu Container-->
 					</div>
-					<!--end::Menu Container-->
-				</div>
 					<!--end::Aside Menu-->
 				</div>
 				<!--end::Aside-->
@@ -956,438 +964,105 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 									<!--begin::Page Heading-->
 									<div class="d-flex align-items-baseline flex-wrap mr-5">
 										<!--begin::Page Title-->
-										<h4 class="text-white font-weight-bold my-1 mr-5">Loan Information |</h4><h5 class="text-white font-weight-bold my-1 mr-5">Individual Investor</h5>
+										<h4 class="text-white font-weight-bold my-1 mr-5">Dashboard |</h4><h5 class="text-white font-weight-bold my-1 mr-5">Individual Investor</h5>
 										<!--end::Page Title-->
 									</div>
+                                    <?php
+                                    if(isset($_SESSION['status'])){
+                                        ?>
+                                        <h4 class="alert alert-success"><?php echo $_SESSION['status'];?></h4>
+                                        <?php
+                                        unset($_SESSION['status']);
+                                    }?>
 									<!--end::Page Heading-->
 								</div>
 								<!--end::Info-->
-								<!--begin::Toolbar-->
-								<div class="d-flex align-items-center flex-wrap">
-                                    <!--begin::Daterange-->
-									<a href="#" class="btn btn-fixed-height btn-bg-white btn-text-dark-50 btn-hover-text-primary btn-icon-primary font-weight-bolder font-size-sm px-5 my-1 mr-3" id="kt_dashboard_daterangepicker" data-toggle="tooltip" title="Select dashboard daterange" data-placement="top">
-										<span class="opacity-60 font-weight-bolder mr-2" id="kt_dashboard_daterangepicker_title">Today</span>
-										<span class="font-weight-bolder" id="kt_dashboard_daterangepicker_date">Aug 16</span>
-									</a>
-									<!--end::Daterange-->
-
-                                    <!--begin::Add Loan Features -->
-                                        <a href="add_loan_features" class="btn btn-fixed-height btn-primary font-weight-bolder font-size-sm px-5 mr-3" data-toggle="modal" data-target="#features">
-                                        <span class="svg-icon svg-icon-md">
-                                        </span>Set-Up Loan</a>
-									<!--end::Add Loan Features -->	
-                                    <!--begin::Dropdown-->
-									<div class="dropdown dropdown-inline">
-										<a href="individual_investor/edit_loan.php" class="btn btn-fixed-height btn-primary font-weight-bolder font-size-sm px-5 my-1">
-										<span class="svg-icon svg-icon-md">
-											<!--begin::Svg Icon | path:assets/media/svg/icons/Files/File.svg-->
-											<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-												<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-													<polygon points="0 0 24 0 24 24 0 24" />
-													<path d="M5.85714286,2 L13.7364114,2 C14.0910962,2 14.4343066,2.12568431 14.7051108,2.35473959 L19.4686994,6.3839416 C19.8056532,6.66894833 20,7.08787823 20,7.52920201 L20,20.0833333 C20,21.8738751 19.9795521,22 18.1428571,22 L5.85714286,22 C4.02044787,22 4,21.8738751 4,20.0833333 L4,3.91666667 C4,2.12612489 4.02044787,2 5.85714286,2 Z" fill="#000000" fill-rule="nonzero" opacity="0.3" />
-													<rect fill="#000000" x="6" y="11" width="9" height="2" rx="1" />
-													<rect fill="#000000" x="6" y="15" width="5" height="2" rx="1" />
-												</g>
-											</svg>
-											<!--end::Svg Icon-->
-										</span>Edit Loan</a>
-									</div>
-									<!--end::Dropdown-->
-								</div>
-								<!--end::Toolbar-->
 							</div>
 						</div>
 						<!--end::Subheader-->
-                        <!--begin::add features  -->
-                        <div class="modal fade" id="features" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdrop" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-                                <div class="modal-content">
-                                    <!-- Modal Header -->
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLabel" class="">Set-Up Loan</h5>
-                                    </div>
-
-                                    <!--begin:  -->
-                                    <div class="kt-portlet__body">
-                                        <div class="kt-container  kt-container--fluid  kt-grid__item kt-grid__item--fluid" >
-                                            <div class="kt-portlet">
-                                                <div class="kt-portlet__body kt-portlet__body--fit" ><br/>
-                                                    <!--begin:Form-->
-                                                    <form class="kt-form" id="kt_form" method="post" action="">
-                                                    <div class="row justify-content-center">
-                                                        <div class="col-xl-9">
-                                                            <h5 class="text-dark font-weight-bold mb-10">PRODUCT FEATURES</h5>
-                                                            <div class="form-group row">
-                                                                <label class="col-xl-3 col-lg-3 col-form-label">Min Financing Amount</label>
-                                                                <div class="col-xl-6">
-                                                                    <div class="input-group">
-                                                                        <div class="input-group-append">
-                                                                            <span class="input-group-text">₱</span>
-                                                                        </div>
-                                                                        <input name="min" type="text" class="form-control"  placeholder="Enter Amount" />
+							<!--begin::Entry-->
+                            <div class="d-flex flex-column-fluid" >
+							<!--begin::Container-->
+							<div class="container" >
+								<div class="card card-custom">
+									<div class="card-body p-0">
+										<!--begin: Wizard Body-->
+										<div class="wizard-body py-8 px-8 py-lg-20 px-lg-10">
+											<!--begin: Wizard Form-->
+											<div class="row">
+												<div class="offset-xxl-2 col-xxl-8">
+													<form action="" method="post" id="kt_form" >
+                                                        <h4 class="mb-10 font-weight-bold text-dark">Set Requirements to Comply: </h4>
+                                                        <div class="pb-5" data-wizard-type="step-content" data-wizard-state="current">
+                                                            <div class="row">
+                                                                <div class="col-lg-6">
+                                                                    <div class="form-group">
+                                                                        <input type="text" class="form-control" name="req_name[]" required autocomplete="off" placeholder="Requirements Type">
                                                                     </div>
                                                                 </div>
-                                                            </div>
-                                                            <!--begin::Group-->
-                                                                <div class="form-group row">
-                                                                    <label class="col-xl-3 col-lg-3 col-form-label">Max Financing Amount</label>
-                                                                    <div class="col-xl-6">
-                                                                        <div class="input-group">
-                                                                            <div class="input-group-append">
-                                                                                <span class="input-group-text">₱</span>
-                                                                            </div>
-                                                                            <input name="max" type="text" class="form-control" placeholder="Enter Amount" />
-                                                                        </div>
+                                                                <div class="col-lg-4">
+                                                                    <div class="form-group">
+																	<textarea name="remarks" class="form-control"  rows="4" cols="50" required autocomplete="off" placeholder="Remarks"><?= $res['remarks'];?></textarea>
+                                                                        <!-- <input type="text" class="form-control" name="remarks[]" required autocomplete="off" placeholder="Remarks"> -->
                                                                     </div>
                                                                 </div>
-                                                                <!--end::Group-->
-                                                                <!--begin::Group-->
-                                                                <div class="form-group row">
-                                                                    <label class="col-xl-3 col-lg-3 col-form-label">Tenure Year Min</label>
-                                                                    <div class="col-xl-6">
-                                                                        <div class="input-group">
-                                                                        <input name="ten_min" type="text" class="form-control" placeholder="Enter No. of Years" />
-                                                                            <div class="input-group-append">
-                                                                                <span class="input-group-text">Year</span>
-                                                                            </div>
-                                                                        </div>
+                                                                <div class="col-lg-2">
+                                                                    <div class="form-group">
+                                                                        <button type="submit" name="add_req"  class="btn btn-primary font-weight-bolder px-10 py-2" data-wizard-type="action-next">Save</button>
+                                                                        <!-- <a href="individual_investor/view_requirements.php" type="button" class="btn btn-success font-weight-bolder px-10 py-3" data-wizard-type="action-next">Edit Requirements</a> -->
                                                                     </div>
                                                                 </div>
-                                                                <!--end::Group-->
-                                                                    <!--begin::Group-->
-                                                                <div class="form-group row">
-                                                                    <label class="col-xl-3 col-lg-3 col-form-label">Tenure Year Max</label>
-                                                                    <div class="col-xl-6">
-                                                                        <div class="input-group">
-                                                                        <input name="ten_max" type="text" class="form-control" placeholder="Enter No. of Years"  />
-                                                                            <div class="input-group-append">
-                                                                                <span class="input-group-text">Year</span>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <!--end::Group-->
-                                                                    <!--begin::Group-->
-                                                                <div class="form-group row">
-                                                                    <label class="col-xl-3 col-lg-3 col-form-label">Interest Rate From</label>
-                                                                    <div class="col-xl-6">
-                                                                        <div class="input-group">
-                                                                        <input name="rate_f" type="text" class="form-control" placeholder=""  />
-                                                                            <div class="input-group-append">
-                                                                                <span class="input-group-text">%</span>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <!--end::Group-->
-                                                                <!--begin::Group-->
-                                                                <div class="form-group row">
-                                                                    <label class="col-xl-3 col-lg-3 col-form-label">Interest Rate To</label>
-                                                                    <div class="col-xl-6">
-                                                                        <div class="input-group">
-                                                                        <input name="rate_t" type="text" class="form-control" placeholder="" />
-                                                                            <div class="input-group-append">
-                                                                                <span class="input-group-text">%</span>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <!--end::Group-->
-                                                                    <!--begin::Group-->
-                                                                <div class="form-group row">
-                                                                    <label class="col-xl-3 col-lg-3 col-form-label">Approval Duration</label>
-                                                                    <div class="col-xl-6">
-                                                                        <div class="input-group">
-                                                                        <input name="approval" type="text" class="form-control" placeholder="" />
-                                                                            <div class="input-group-append">
-                                                                                <span class="input-group-text">Day</span>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <!--end::Group-->
-
-                                                                <h5 class="text-dark font-weight-bold mb-10">PENALTIES</h5>
-                                                                <!--begin::Group-->
-                                                                <div class="form-group row">
-                                                                    <label class="col-xl-3 col-lg-3 col-form-label">Late Payment Charges</label>
-                                                                    <div class="col-xl-6">
-                                                                        <div class="input-group">
-                                                                        <input name="l_charges" type="text" class="form-control" placeholder="" />
-                                                                            <div class="input-group-append">
-                                                                                <span class="input-group-text">%</span>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <!--end::Group-->
-
-                                                                <h5 class="text-dark font-weight-bold mb-10">ELIGIBILITY</h5>
-                                                                <!--begin::Group-->
-                                                                <div class="form-group row">
-                                                                    <label class="col-xl-3 col-lg-3 col-form-label">Age Requirement</label>
-                                                                    <div class="col-xl-3">
-                                                                        <div class="input-group">
-                                                                            <div class="input-group-append">
-                                                                                <span class="input-group-text">Age</span>
-                                                                            </div>
-                                                                            <input name="age_f" type="text" class="form-control" placeholder=""  />
-                                                                        </div>
-                                                                    </div>
-                                                                    TO
-                                                                    <div class="col-xl-3">
-                                                                        <div class="input-group">
-                                                                            <div class="input-group-append">
-                                                                                <span class="input-group-text">Age</span>
-                                                                            </div>
-                                                                            <input name="age_t" type="text" class="form-control" placeholder=""  />
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <!--end::Group-->
-                                                                <!--begin::Group-->
-                                                                <div class="form-group row">
-                                                                    <label class="col-xl-3 col-lg-3 col-form-label">Employment Eligibility</label>
-                                                                    <div class="col-xl-6">
-                                                                        <div class="input-group">
-                                                                            <div class="input-group-append">
-                                                                                <span class="input-group-text">₱</span>
-                                                                            </div>
-                                                                                <input name="m_income" type="text" class="form-control" placeholder="" />
-                                                                            <div class="input-group-append">
-                                                                                <span class="input-group-text">monthly income</span>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <!--end::Group-->
-                                                                <!--begin::Group-->
-                                                                <div class="form-group row">
-                                                                    <label class="col-xl-3 col-lg-3 col-form-label">Guarantor/Collateral Requirement</label>
-                                                                    <div class="col-xl-6">
-                                                                        <div class="input-group">
-                                                                        <select name="col" class="form-control form-control-lg form-control-solid" >
-                                                                            <option value="">Select</option>
-                                                                            <option value="Yes">Yes</option>
-                                                                            <option value="No">No</option>
-                                                                        </select>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <!--end::Group-->
                                                             </div>
                                                         </div>
-                                                    </form>
-                                                </div>
-                                            </div>
+                                                        
+                                    				</form>
+                                   					 <!--end::Form-->
+                               					</div>
+                            				</div>
+                            				<!--end::Content-->
                                         </div>
                                     </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-light-primary font-weight-bold" data-dismiss="modal">Close</button>
-                                        <button type="submit" name="submit" class="btn btn-success font-weight-bolder px-10 py-3">Submit</button>
+                                        <div class="card card-custom">
+                                            <div class="card-body">
+                                                <h5>Manage Requirements</h5>
+                                                <table class="table table-bordered">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Requirements Type</th>
+                                                            <th>Remarks</th>
+                                                            <th>Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <?php
+                                                        $lender_id = $_SESSION['user_id'];
+
+                                                        $sql = "SELECT  * FROM loan_requirements WHERE lender_id = $lender_id";
+                                                        $query = $dbh->prepare($sql);
+                                                        $query->execute();
+                                                        $res = $query->fetchAll(PDO::FETCH_OBJ);
+                                                        if ($query->rowCount() > 0) {
+                                                            foreach ($res as $rem) { ?>
+                                                        <tr>
+                                                            <td><?= htmlentities($rem->req_name); ?></td>
+                                                            <td><?= htmlentities($rem->remarks); ?></td>
+                                                            <td>
+                                                                <a href="individual_investor/edit_requirements.php?req_id=<?= htmlentities($rem->req_id) ?>" class="kt-nav__link">
+                                                                    <span class="kt-nav__link-text">Edit</span>
+                                                                </a>
+                                                            </td>
+                                                        </tr>
+                                                        <?php }} ?>
+                                                    </tbody>
+                                                </table>
+                                                
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <!-- end:: add features -->
-						<!--begin::Entry-->
-						<div class="d-flex flex-column-fluid">
-							<!--begin::Container-->
-							    <div class="container">
-
-                                    <!--begin::Card-->
-											<div class="card card-custom card-shadowless rounded-top-0">
-												<!--begin::Body-->
-												<div class="card-body p-0">
-													<div class="row justify-content-center py-8 px-8 py-lg-15 px-lg-10">
-														<div class="col-xl-12 col-xxl-10">
-													        <form action=" " method="post">
-																<div class="row justify-content-center">
-																	<div class="col-xl-9">
-                                                                        <?php
-                                                                        $id = $_SESSION['user_id'];
-                                                                        $sql = "SELECT * FROM loan_features WHERE id = :id";
-                                                                        $query = $dbh->prepare($sql);
-                                                                        $query->bindParam(':id',$id,PDO::PARAM_STR);
-                                                                        $query->execute();
-                                                                        $results=$query->fetch();
-                                                                         ?>
-																			<h5 class="text-dark font-weight-bold mb-10">PRODUCT FEATURES</h5>
-																			<!--begin::Group-->
-																			<div class="form-group row">
-																				<label class="col-xl-3 col-lg-3 col-form-label">Min Financing Amount</label>
-																				<div class="col-xl-6">
-                                                                                    <div class="input-group">
-                                                                                        <div class="input-group-append">
-                                                                                            <span class="input-group-text">₱</span>
-                                                                                        </div>
-                                                                                        <input type="text" class="form-control"  placeholder="Enter Amount" value="<?php echo $results['min'];?>" />
-                                                                                    </div>
-                                                                                </div>
-																			</div>
-																			<!--end::Group-->
-                                                                            <!--begin::Group-->
-																			<div class="form-group row">
-																				<label class="col-xl-3 col-lg-3 col-form-label">Max Financing Amount</label>
-																				<div class="col-xl-6">
-                                                                                    <div class="input-group">
-                                                                                        <div class="input-group-append">
-                                                                                            <span class="input-group-text">₱</span>
-                                                                                        </div>
-                                                                                        <input  type="text" class="form-control" placeholder="Enter Amount" value="<?php echo $results['max'];?>" />
-                                                                                    </div>
-                                                                                </div>
-																			</div>
-																			<!--end::Group-->
-                                                                            <!--begin::Group-->
-																			<div class="form-group row">
-																				<label class="col-xl-3 col-lg-3 col-form-label">Tenure Year Min</label>
-																				<div class="col-xl-6">
-                                                                                    <div class="input-group">
-                                                                                    <input  type="text" class="form-control" placeholder="Enter No. of Years" value="<?php echo $results['ten_min'];?>"/>
-                                                                                        <div class="input-group-append">
-                                                                                            <span class="input-group-text">Year</span>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-																			</div>
-																			<!--end::Group-->
-                                                                             <!--begin::Group-->
-																			<div class="form-group row">
-																				<label class="col-xl-3 col-lg-3 col-form-label">Tenure Year Max</label>
-																				<div class="col-xl-6">
-                                                                                    <div class="input-group">
-                                                                                    <input  type="text" class="form-control" placeholder="Enter No. of Years" value="<?php echo $results['ten_max'];?>" />
-                                                                                        <div class="input-group-append">
-                                                                                            <span class="input-group-text">Year</span>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-																			</div>
-																			<!--end::Group-->
-                                                                             <!--begin::Group-->
-																			<div class="form-group row">
-																				<label class="col-xl-3 col-lg-3 col-form-label">Interest Rate From</label>
-																				<div class="col-xl-6">
-                                                                                    <div class="input-group">
-                                                                                    <input  type="text" class="form-control" placeholder="" value="<?php echo $results['rate_f'];?>" />
-                                                                                        <div class="input-group-append">
-                                                                                            <span class="input-group-text">%</span>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-																			</div>
-																			<!--end::Group-->
-                                                                            <!--begin::Group-->
-																			<div class="form-group row">
-																				<label class="col-xl-3 col-lg-3 col-form-label">Interest Rate To</label>
-																				<div class="col-xl-6">
-                                                                                    <div class="input-group">
-                                                                                    <input  type="text" class="form-control" placeholder="" value="<?php echo $results['rate_t'];?>"/>
-                                                                                        <div class="input-group-append">
-                                                                                            <span class="input-group-text">%</span>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-																			</div>
-																			<!--end::Group-->
-                                                                             <!--begin::Group-->
-																			<div class="form-group row">
-																				<label class="col-xl-3 col-lg-3 col-form-label">Approval Duration</label>
-																				<div class="col-xl-6">
-                                                                                    <div class="input-group">
-                                                                                    <input  type="text" class="form-control" placeholder="" value="<?php echo $results['approval'];?>"/>
-                                                                                        <div class="input-group-append">
-                                                                                            <span class="input-group-text">Day</span>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-																			</div>
-																			<!--end::Group-->
-
-																			<h5 class="text-dark font-weight-bold mb-10">PENALTIES</h5>
-                                                                            <!--begin::Group-->
-																			<div class="form-group row">
-																				<label class="col-xl-3 col-lg-3 col-form-label">Late Payment Charges</label>
-																				<div class="col-xl-6">
-                                                                                    <div class="input-group">
-                                                                                    <input  type="text" class="form-control" placeholder="" value="<?php echo $results['l_charges'];?>"/>
-                                                                                        <div class="input-group-append">
-                                                                                            <span class="input-group-text">%</span>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-																			</div>
-																			<!--end::Group-->
-
-																			<h5 class="text-dark font-weight-bold mb-10">ELIGIBILITY</h5>
-                                                                            <!--begin::Group-->
-																			<div class="form-group row">
-																				<label class="col-xl-3 col-lg-3 col-form-label">Age Requirement</label>
-																				<div class="col-xl-3">
-                                                                                    <div class="input-group">
-																						<div class="input-group-append">
-                                                                                            <span class="input-group-text">Age</span>
-                                                                                        </div>
-                                                                                    	<input  type="text" class="form-control" placeholder="" value="<?php echo $results['age_f'];?>" />
-                                                                                    </div>
-                                                                                </div>
-																				TO
-																				<div class="col-xl-3">
-                                                                                    <div class="input-group">
-																						<div class="input-group-append">
-                                                                                            <span class="input-group-text">Age</span>
-                                                                                        </div>
-                                                                                    	<input type="text" class="form-control" placeholder="" value="<?php echo $results['age_t'];?>" />
-                                                                                    </div>
-                                                                                </div>
-																			</div>
-																			<!--end::Group-->
-																			<!--begin::Group-->
-																			<div class="form-group row">
-																				<label class="col-xl-3 col-lg-3 col-form-label">Employment Eligibility</label>
-																				<div class="col-xl-6">
-                                                                                    <div class="input-group">
-																						<div class="input-group-append">
-                                                                                            <span class="input-group-text">₱</span>
-                                                                                        </div>
-                                                                                    		<input type="text" class="form-control" placeholder="" value="<?php echo $results['m_income'];?>" />
-																						<div class="input-group-append">
-                                                                                            <span class="input-group-text">monthly income</span>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-																			</div>
-																			<!--end::Group-->
-																			<!--begin::Group-->
-																			<div class="form-group row">
-																				<label class="col-xl-3 col-lg-3 col-form-label">Guarantor/Collateral Requirement</label>
-																				<div class="col-xl-6">
-                                                                                    <div class="input-group">
-                                                                                    <select class="form-control form-control-lg form-control-solid" >
-																						<option value="<?php echo $results['col'];?>"><?php echo $results['col'];?></option>
-																						<option value="Yes">Yes</option>
-																						<option value="No">No</option>
-																					</select>
-                                                                                    </div>
-                                                                                </div>
-																			</div>
-                                                                            </div>  
-                                                                        </div>  
-																	</div>
-																</div>
-															</form>
-															<!--end::Wizard Form-->
-														</div>
-													</div>
-												</div>
-												<!--end::Body-->
-											</div>
-										<!--end::Card-->
-									</div>
-								<!--end::Wizard-->
-							</div>
-						<!--end::Container-->
+                    </div>
 					</div>
 					<!--end::Content-->
 					<!--begin::Footer-->
@@ -1503,13 +1178,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 			<div class="offcanvas-header offcanvas-header-navs d-flex align-items-center justify-content-between mb-5">
 				<ul class="nav nav-bold nav-tabs nav-tabs-line nav-tabs-line-3x nav-tabs-primary flex-grow-1 px-10" role="tablist">
 					<li class="nav-item">
-						<a class="nav-link active" data-toggle="tab" href="#kt_quick_panel_logs">Logs</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" data-toggle="tab" href="#kt_quick_panel_notifications">Notifications</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" data-toggle="tab" href="#kt_quick_panel_settings">Settings</a>
+						<a class="nav-link active" data-toggle="tab" href="#kt_quick_panel_notifications">Notifications</a>
 					</li>
 				</ul>
 				<div class="offcanvas-close mt-n1 pr-5">
@@ -1522,459 +1191,8 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 			<!--begin::Content-->
 			<div class="offcanvas-content px-10">
 				<div class="tab-content">
-					<!--begin::Tabpane-->
-					<div class="tab-pane fade show pt-3 pr-5 mr-n5 active" id="kt_quick_panel_logs" role="tabpanel">
-						<!--begin::Section-->
-						<div class="mb-15">
-							<h5 class="font-weight-bold mb-5">System Messages</h5>
-							<!--begin::Timeline-->
-							<div class="timeline timeline-5">
-								<div class="timeline-items">
-									<!--begin::Item-->
-									<div class="timeline-item">
-										<!--begin::Icon-->
-										<div class="timeline-media bg-light-primary">
-											<span class="svg-icon svg-icon-primary svg-icon-md">
-												<!--begin::Svg Icon | path:assets/media/svg/icons/Communication/Group-chat.svg-->
-												<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-													<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-														<rect x="0" y="0" width="24" height="24" />
-														<path d="M16,15.6315789 L16,12 C16,10.3431458 14.6568542,9 13,9 L6.16183229,9 L6.16183229,5.52631579 C6.16183229,4.13107011 7.29290239,3 8.68814808,3 L20.4776218,3 C21.8728674,3 23.0039375,4.13107011 23.0039375,5.52631579 L23.0039375,13.1052632 L23.0206157,17.786793 C23.0215995,18.0629336 22.7985408,18.2875874 22.5224001,18.2885711 C22.3891754,18.2890457 22.2612702,18.2363324 22.1670655,18.1421277 L19.6565168,15.6315789 L16,15.6315789 Z" fill="#000000" />
-														<path d="M1.98505595,18 L1.98505595,13 C1.98505595,11.8954305 2.88048645,11 3.98505595,11 L11.9850559,11 C13.0896254,11 13.9850559,11.8954305 13.9850559,13 L13.9850559,18 C13.9850559,19.1045695 13.0896254,20 11.9850559,20 L4.10078614,20 L2.85693427,21.1905292 C2.65744295,21.3814685 2.34093638,21.3745358 2.14999706,21.1750444 C2.06092565,21.0819836 2.01120804,20.958136 2.01120804,20.8293182 L2.01120804,18.32426 C1.99400175,18.2187196 1.98505595,18.1104045 1.98505595,18 Z M6.5,14 C6.22385763,14 6,14.2238576 6,14.5 C6,14.7761424 6.22385763,15 6.5,15 L11.5,15 C11.7761424,15 12,14.7761424 12,14.5 C12,14.2238576 11.7761424,14 11.5,14 L6.5,14 Z M9.5,16 C9.22385763,16 9,16.2238576 9,16.5 C9,16.7761424 9.22385763,17 9.5,17 L11.5,17 C11.7761424,17 12,16.7761424 12,16.5 C12,16.2238576 11.7761424,16 11.5,16 L9.5,16 Z" fill="#000000" opacity="0.3" />
-													</g>
-												</svg>
-												<!--end::Svg Icon-->
-											</span>
-										</div>
-										<!--end::Icon-->
-										<!--begin::Info-->
-										<div class="timeline-desc timeline-desc-light-primary">
-											<span class="font-weight-bolder text-primary">09:30 AM</span>
-											<p class="font-weight-normal text-dark-50 pb-2">To start a blog, think of a topic about and first brainstorm ways to write details</p>
-										</div>
-										<!--end::Info-->
-									</div>
-									<!--end::Item-->
-									<!--begin::Item-->
-									<div class="timeline-item">
-										<!--begin::Icon-->
-										<div class="timeline-media bg-light-warning">
-											<span class="svg-icon svg-icon-warning svg-icon-md">
-												<!--begin::Svg Icon | path:assets/media/svg/icons/General/Attachment2.svg-->
-												<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-													<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-														<rect x="0" y="0" width="24" height="24" />
-														<path d="M11.7573593,15.2426407 L8.75735931,15.2426407 C8.20507456,15.2426407 7.75735931,15.6903559 7.75735931,16.2426407 C7.75735931,16.7949254 8.20507456,17.2426407 8.75735931,17.2426407 L11.7573593,17.2426407 L11.7573593,18.2426407 C11.7573593,19.3472102 10.8619288,20.2426407 9.75735931,20.2426407 L5.75735931,20.2426407 C4.65278981,20.2426407 3.75735931,19.3472102 3.75735931,18.2426407 L3.75735931,14.2426407 C3.75735931,13.1380712 4.65278981,12.2426407 5.75735931,12.2426407 L9.75735931,12.2426407 C10.8619288,12.2426407 11.7573593,13.1380712 11.7573593,14.2426407 L11.7573593,15.2426407 Z" fill="#000000" opacity="0.3" transform="translate(7.757359, 16.242641) rotate(-45.000000) translate(-7.757359, -16.242641)" />
-														<path d="M12.2426407,8.75735931 L15.2426407,8.75735931 C15.7949254,8.75735931 16.2426407,8.30964406 16.2426407,7.75735931 C16.2426407,7.20507456 15.7949254,6.75735931 15.2426407,6.75735931 L12.2426407,6.75735931 L12.2426407,5.75735931 C12.2426407,4.65278981 13.1380712,3.75735931 14.2426407,3.75735931 L18.2426407,3.75735931 C19.3472102,3.75735931 20.2426407,4.65278981 20.2426407,5.75735931 L20.2426407,9.75735931 C20.2426407,10.8619288 19.3472102,11.7573593 18.2426407,11.7573593 L14.2426407,11.7573593 C13.1380712,11.7573593 12.2426407,10.8619288 12.2426407,9.75735931 L12.2426407,8.75735931 Z" fill="#000000" transform="translate(16.242641, 7.757359) rotate(-45.000000) translate(-16.242641, -7.757359)" />
-														<path d="M5.89339828,3.42893219 C6.44568303,3.42893219 6.89339828,3.87664744 6.89339828,4.42893219 L6.89339828,6.42893219 C6.89339828,6.98121694 6.44568303,7.42893219 5.89339828,7.42893219 C5.34111353,7.42893219 4.89339828,6.98121694 4.89339828,6.42893219 L4.89339828,4.42893219 C4.89339828,3.87664744 5.34111353,3.42893219 5.89339828,3.42893219 Z M11.4289322,5.13603897 C11.8194565,5.52656326 11.8194565,6.15972824 11.4289322,6.55025253 L10.0147186,7.96446609 C9.62419433,8.35499039 8.99102936,8.35499039 8.60050506,7.96446609 C8.20998077,7.5739418 8.20998077,6.94077682 8.60050506,6.55025253 L10.0147186,5.13603897 C10.4052429,4.74551468 11.0384079,4.74551468 11.4289322,5.13603897 Z M0.600505063,5.13603897 C0.991029355,4.74551468 1.62419433,4.74551468 2.01471863,5.13603897 L3.42893219,6.55025253 C3.81945648,6.94077682 3.81945648,7.5739418 3.42893219,7.96446609 C3.0384079,8.35499039 2.40524292,8.35499039 2.01471863,7.96446609 L0.600505063,6.55025253 C0.209980772,6.15972824 0.209980772,5.52656326 0.600505063,5.13603897 Z" fill="#000000" opacity="0.3" transform="translate(6.014719, 5.843146) rotate(-45.000000) translate(-6.014719, -5.843146)" />
-														<path d="M17.9142136,15.4497475 C18.4664983,15.4497475 18.9142136,15.8974627 18.9142136,16.4497475 L18.9142136,18.4497475 C18.9142136,19.0020322 18.4664983,19.4497475 17.9142136,19.4497475 C17.3619288,19.4497475 16.9142136,19.0020322 16.9142136,18.4497475 L16.9142136,16.4497475 C16.9142136,15.8974627 17.3619288,15.4497475 17.9142136,15.4497475 Z M23.4497475,17.1568542 C23.8402718,17.5473785 23.8402718,18.1805435 23.4497475,18.5710678 L22.0355339,19.9852814 C21.6450096,20.3758057 21.0118446,20.3758057 20.6213203,19.9852814 C20.2307961,19.5947571 20.2307961,18.9615921 20.6213203,18.5710678 L22.0355339,17.1568542 C22.4260582,16.76633 23.0592232,16.76633 23.4497475,17.1568542 Z M12.6213203,17.1568542 C13.0118446,16.76633 13.6450096,16.76633 14.0355339,17.1568542 L15.4497475,18.5710678 C15.8402718,18.9615921 15.8402718,19.5947571 15.4497475,19.9852814 C15.0592232,20.3758057 14.4260582,20.3758057 14.0355339,19.9852814 L12.6213203,18.5710678 C12.2307961,18.1805435 12.2307961,17.5473785 12.6213203,17.1568542 Z" fill="#000000" opacity="0.3" transform="translate(18.035534, 17.863961) scale(1, -1) rotate(45.000000) translate(-18.035534, -17.863961)" />
-													</g>
-												</svg>
-												<!--end::Svg Icon-->
-											</span>
-										</div>
-										<!--end::Icon-->
-										<!--begin::Info-->
-										<div class="timeline-desc timeline-desc-light-warning">
-											<span class="font-weight-bolder text-warning">2:45 PM</span>
-											<p class="font-weight-normal text-dark-50 pt-1 pb-2">To start a blog, think of a topic about and first brainstorm ways to write details</p>
-										</div>
-										<!--end::Info-->
-									</div>
-									<!--end::Item-->
-									<!--begin::Item-->
-									<div class="timeline-item">
-										<!--begin::Icon-->
-										<div class="timeline-media bg-light-success">
-											<span class="svg-icon svg-icon-success svg-icon-md">
-												<!--begin::Svg Icon | path:assets/media/svg/icons/Home/Library.svg-->
-												<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-													<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-														<rect x="0" y="0" width="24" height="24" />
-														<path d="M5,3 L6,3 C6.55228475,3 7,3.44771525 7,4 L7,20 C7,20.5522847 6.55228475,21 6,21 L5,21 C4.44771525,21 4,20.5522847 4,20 L4,4 C4,3.44771525 4.44771525,3 5,3 Z M10,3 L11,3 C11.5522847,3 12,3.44771525 12,4 L12,20 C12,20.5522847 11.5522847,21 11,21 L10,21 C9.44771525,21 9,20.5522847 9,20 L9,4 C9,3.44771525 9.44771525,3 10,3 Z" fill="#000000" />
-														<rect fill="#000000" opacity="0.3" transform="translate(17.825568, 11.945519) rotate(-19.000000) translate(-17.825568, -11.945519)" x="16.3255682" y="2.94551858" width="3" height="18" rx="1" />
-													</g>
-												</svg>
-												<!--end::Svg Icon-->
-											</span>
-										</div>
-										<!--end::Icon-->
-										<!--begin::Info-->
-										<div class="timeline-desc timeline-desc-light-success">
-											<span class="font-weight-bolder text-success">3:12 PM</span>
-											<p class="font-weight-normal text-dark-50 pt-1 pb-2">To start a blog, think of a topic about and first brainstorm ways to write details</p>
-										</div>
-										<!--end::Info-->
-									</div>
-									<!--end::Item-->
-									<!--begin::Item-->
-									<div class="timeline-item">
-										<!--begin::Icon-->
-										<div class="timeline-media bg-light-danger">
-											<span class="svg-icon svg-icon-danger svg-icon-md">
-												<!--begin::Svg Icon | path:assets/media/svg/icons/Communication/Add-user.svg-->
-												<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-													<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-														<polygon points="0 0 24 0 24 24 0 24" />
-														<path d="M18,8 L16,8 C15.4477153,8 15,7.55228475 15,7 C15,6.44771525 15.4477153,6 16,6 L18,6 L18,4 C18,3.44771525 18.4477153,3 19,3 C19.5522847,3 20,3.44771525 20,4 L20,6 L22,6 C22.5522847,6 23,6.44771525 23,7 C23,7.55228475 22.5522847,8 22,8 L20,8 L20,10 C20,10.5522847 19.5522847,11 19,11 C18.4477153,11 18,10.5522847 18,10 L18,8 Z M9,11 C6.790861,11 5,9.209139 5,7 C5,4.790861 6.790861,3 9,3 C11.209139,3 13,4.790861 13,7 C13,9.209139 11.209139,11 9,11 Z" fill="#000000" fill-rule="nonzero" opacity="0.3" />
-														<path d="M0.00065168429,20.1992055 C0.388258525,15.4265159 4.26191235,13 8.98334134,13 C13.7712164,13 17.7048837,15.2931929 17.9979143,20.2 C18.0095879,20.3954741 17.9979143,21 17.2466999,21 C13.541124,21 8.03472472,21 0.727502227,21 C0.476712155,21 -0.0204617505,20.45918 0.00065168429,20.1992055 Z" fill="#000000" fill-rule="nonzero" />
-													</g>
-												</svg>
-												<!--end::Svg Icon-->
-											</span>
-										</div>
-										<!--end::Icon-->
-										<!--begin::Info-->
-										<div class="timeline-desc timeline-desc-light-danger">
-											<span class="font-weight-bolder text-danger">7:05 PM</span>
-											<p class="font-weight-normal text-dark-50 pt-1">To start a blog, think of a topic about and first brainstorm ways to write details</p>
-										</div>
-										<!--end::Info-->
-									</div>
-									<!--end::Item-->
-								</div>
-							</div>
-							<!--end::Timeline-->
-						</div>
-						<!--end::Section-->
-						<!--begin::Section-->
-						<div class="mb-5">
-							<h5 class="font-weight-bold mb-5">Notifications</h5>
-							<!--begin::Item-->
-							<div class="d-flex align-items-center mb-6">
-								<!--begin::Symbol-->
-								<div class="symbol symbol-35 flex-shrink-0 mr-3">
-									<img alt="Pic" src="assets/media/users/150-5.jpg" />
-								</div>
-								<!--end::Symbol-->
-								<!--begin::Content-->
-								<div class="d-flex flex-wrap flex-row-fluid">
-									<!--begin::Text-->
-									<div class="d-flex flex-column pr-5 flex-grow-1">
-										<a href="#" class="text-dark text-hover-primary mb-1 font-weight-bold font-size-lg">Marcus Smart</a>
-										<span class="text-muted font-weight-bold">UI/UX, Art Director</span>
-									</div>
-									<!--end::Text-->
-									<!--begin::Section-->
-									<div class="d-flex align-items-center py-2">
-										<!--begin::Label-->
-										<span class="text-success font-weight-bolder font-size-sm pr-6">+65%</span>
-										<!--end::Label-->
-										<!--begin::Btn-->
-										<a href="#" class="btn btn-icon btn-light btn-sm">
-											<span class="svg-icon svg-icon-success">
-												<span class="svg-icon svg-icon-md">
-													<!--begin::Svg Icon | path:assets/media/svg/icons/Navigation/Angle-right.svg-->
-													<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-														<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-															<polygon points="0 0 24 0 24 24 0 24" />
-															<path d="M6.70710678,15.7071068 C6.31658249,16.0976311 5.68341751,16.0976311 5.29289322,15.7071068 C4.90236893,15.3165825 4.90236893,14.6834175 5.29289322,14.2928932 L11.2928932,8.29289322 C11.6714722,7.91431428 12.2810586,7.90106866 12.6757246,8.26284586 L18.6757246,13.7628459 C19.0828436,14.1360383 19.1103465,14.7686056 18.7371541,15.1757246 C18.3639617,15.5828436 17.7313944,15.6103465 17.3242754,15.2371541 L12.0300757,10.3841378 L6.70710678,15.7071068 Z" fill="#000000" fill-rule="nonzero" transform="translate(12.000003, 11.999999) rotate(-270.000000) translate(-12.000003, -11.999999)" />
-														</g>
-													</svg>
-													<!--end::Svg Icon-->
-												</span>
-											</span>
-										</a>
-										<!--end::Btn-->
-									</div>
-									<!--end::Section-->
-								</div>
-								<!--end::Content-->
-							</div>
-							<!--end::Item-->
-							<!--begin::Item-->
-							<div class="d-flex align-items-center mb-6">
-								<!--begin::Symbol-->
-								<div class="symbol symbol-35 symbol-light-info flex-shrink-0 mr-3">
-									<span class="symbol-label font-weight-bolder font-size-lg">AH</span>
-								</div>
-								<!--end::Symbol-->
-								<!--begin::Content-->
-								<div class="d-flex flex-wrap flex-row-fluid">
-									<!--begin::Text-->
-									<div class="d-flex flex-column pr-5 flex-grow-1">
-										<a href="#" class="text-dark text-hover-primary mb-1 font-weight-bold font-size-lg">Andreas Hawks</a>
-										<span class="text-muted font-weight-bold">Python Developer</span>
-									</div>
-									<!--end::Text-->
-									<!--begin::Section-->
-									<div class="d-flex align-items-center py-2">
-										<!--begin::Label-->
-										<span class="text-success font-weight-bolder font-size-sm pr-6">+23%</span>
-										<!--end::Label-->
-										<!--begin::Btn-->
-										<a href="#" class="btn btn-icon btn-light btn-sm">
-											<span class="svg-icon svg-icon-success">
-												<span class="svg-icon svg-icon-md">
-													<!--begin::Svg Icon | path:assets/media/svg/icons/Navigation/Angle-right.svg-->
-													<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-														<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-															<polygon points="0 0 24 0 24 24 0 24" />
-															<path d="M6.70710678,15.7071068 C6.31658249,16.0976311 5.68341751,16.0976311 5.29289322,15.7071068 C4.90236893,15.3165825 4.90236893,14.6834175 5.29289322,14.2928932 L11.2928932,8.29289322 C11.6714722,7.91431428 12.2810586,7.90106866 12.6757246,8.26284586 L18.6757246,13.7628459 C19.0828436,14.1360383 19.1103465,14.7686056 18.7371541,15.1757246 C18.3639617,15.5828436 17.7313944,15.6103465 17.3242754,15.2371541 L12.0300757,10.3841378 L6.70710678,15.7071068 Z" fill="#000000" fill-rule="nonzero" transform="translate(12.000003, 11.999999) rotate(-270.000000) translate(-12.000003, -11.999999)" />
-														</g>
-													</svg>
-													<!--end::Svg Icon-->
-												</span>
-											</span>
-										</a>
-										<!--end::Btn-->
-									</div>
-									<!--end::Section-->
-								</div>
-								<!--end::Content-->
-							</div>
-							<!--end::Item-->
-							<!--begin::Item-->
-							<div class="d-flex align-items-center mb-6">
-								<!--begin::Symbol-->
-								<div class="symbol symbol-35 symbol-light-success flex-shrink-0 mr-3">
-									<span class="symbol-label font-weight-bolder font-size-lg">SC</span>
-								</div>
-								<!--end::Symbol-->
-								<!--begin::Content-->
-								<div class="d-flex flex-wrap flex-row-fluid">
-									<!--begin::Text-->
-									<div class="d-flex flex-column pr-5 flex-grow-1">
-										<a href="#" class="text-dark text-hover-primary mb-1 font-weight-bold font-size-lg">Sarah Connor</a>
-										<span class="text-muted font-weight-bold">HTML, CSS. jQuery</span>
-									</div>
-									<!--end::Text-->
-									<!--begin::Section-->
-									<div class="d-flex align-items-center py-2">
-										<!--begin::Label-->
-										<span class="text-danger font-weight-bolder font-size-sm pr-6">-34%</span>
-										<!--end::Label-->
-										<!--begin::Btn-->
-										<a href="#" class="btn btn-icon btn-light btn-sm">
-											<span class="svg-icon svg-icon-success">
-												<span class="svg-icon svg-icon-md">
-													<!--begin::Svg Icon | path:assets/media/svg/icons/Navigation/Angle-right.svg-->
-													<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-														<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-															<polygon points="0 0 24 0 24 24 0 24" />
-															<path d="M6.70710678,15.7071068 C6.31658249,16.0976311 5.68341751,16.0976311 5.29289322,15.7071068 C4.90236893,15.3165825 4.90236893,14.6834175 5.29289322,14.2928932 L11.2928932,8.29289322 C11.6714722,7.91431428 12.2810586,7.90106866 12.6757246,8.26284586 L18.6757246,13.7628459 C19.0828436,14.1360383 19.1103465,14.7686056 18.7371541,15.1757246 C18.3639617,15.5828436 17.7313944,15.6103465 17.3242754,15.2371541 L12.0300757,10.3841378 L6.70710678,15.7071068 Z" fill="#000000" fill-rule="nonzero" transform="translate(12.000003, 11.999999) rotate(-270.000000) translate(-12.000003, -11.999999)" />
-														</g>
-													</svg>
-													<!--end::Svg Icon-->
-												</span>
-											</span>
-										</a>
-										<!--end::Btn-->
-									</div>
-									<!--end::Section-->
-								</div>
-								<!--end::Content-->
-							</div>
-							<!--end::Item-->
-							<!--begin::Item-->
-							<div class="d-flex align-items-center mb-6">
-								<!--begin::Symbol-->
-								<div class="symbol symbol-35 flex-shrink-0 mr-3">
-									<img alt="Pic" src="assets/media/users/150-7.jpg" />
-								</div>
-								<!--end::Symbol-->
-								<!--begin::Content-->
-								<div class="d-flex flex-wrap flex-row-fluid">
-									<!--begin::Text-->
-									<div class="d-flex flex-column pr-5 flex-grow-1">
-										<a href="#" class="text-dark text-hover-primary mb-1 font-weight-bold font-size-lg">Amanda Harden</a>
-										<span class="text-muted font-weight-bold">UI/UX, Art Director</span>
-									</div>
-									<!--end::Text-->
-									<!--begin::Section-->
-									<div class="d-flex align-items-center py-2">
-										<!--begin::Label-->
-										<span class="text-success font-weight-bolder font-size-sm pr-6">+72%</span>
-										<!--end::Label-->
-										<!--begin::Btn-->
-										<a href="#" class="btn btn-icon btn-light btn-sm">
-											<span class="svg-icon svg-icon-success">
-												<span class="svg-icon svg-icon-md">
-													<!--begin::Svg Icon | path:assets/media/svg/icons/Navigation/Angle-right.svg-->
-													<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-														<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-															<polygon points="0 0 24 0 24 24 0 24" />
-															<path d="M6.70710678,15.7071068 C6.31658249,16.0976311 5.68341751,16.0976311 5.29289322,15.7071068 C4.90236893,15.3165825 4.90236893,14.6834175 5.29289322,14.2928932 L11.2928932,8.29289322 C11.6714722,7.91431428 12.2810586,7.90106866 12.6757246,8.26284586 L18.6757246,13.7628459 C19.0828436,14.1360383 19.1103465,14.7686056 18.7371541,15.1757246 C18.3639617,15.5828436 17.7313944,15.6103465 17.3242754,15.2371541 L12.0300757,10.3841378 L6.70710678,15.7071068 Z" fill="#000000" fill-rule="nonzero" transform="translate(12.000003, 11.999999) rotate(-270.000000) translate(-12.000003, -11.999999)" />
-														</g>
-													</svg>
-													<!--end::Svg Icon-->
-												</span>
-											</span>
-										</a>
-										<!--end::Btn-->
-									</div>
-									<!--end::Section-->
-								</div>
-								<!--end::Content-->
-							</div>
-							<!--end::Item-->
-							<!--begin::Item-->
-							<div class="d-flex align-items-center mb-6">
-								<!--begin::Symbol-->
-								<div class="symbol symbol-35 symbol-light-danger flex-shrink-0 mr-3">
-									<span class="symbol-label font-weight-bolder font-size-lg">SR</span>
-								</div>
-								<!--end::Symbol-->
-								<!--begin::Content-->
-								<div class="d-flex flex-wrap flex-row-fluid">
-									<!--begin::Text-->
-									<div class="d-flex flex-column pr-5 flex-grow-1">
-										<a href="#" class="text-dark text-hover-primary mb-1 font-weight-bold font-size-lg">Sean Robbins</a>
-										<span class="text-muted font-weight-bold">UI/UX, Art Director</span>
-									</div>
-									<!--end::Text-->
-									<!--begin::Section-->
-									<div class="d-flex align-items-center py-2">
-										<!--begin::Label-->
-										<span class="text-success font-weight-bolder font-size-sm pr-6">+65%</span>
-										<!--end::Label-->
-										<!--begin::Btn-->
-										<a href="#" class="btn btn-icon btn-light btn-sm">
-											<span class="svg-icon svg-icon-success">
-												<span class="svg-icon svg-icon-md">
-													<!--begin::Svg Icon | path:assets/media/svg/icons/Navigation/Angle-right.svg-->
-													<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-														<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-															<polygon points="0 0 24 0 24 24 0 24" />
-															<path d="M6.70710678,15.7071068 C6.31658249,16.0976311 5.68341751,16.0976311 5.29289322,15.7071068 C4.90236893,15.3165825 4.90236893,14.6834175 5.29289322,14.2928932 L11.2928932,8.29289322 C11.6714722,7.91431428 12.2810586,7.90106866 12.6757246,8.26284586 L18.6757246,13.7628459 C19.0828436,14.1360383 19.1103465,14.7686056 18.7371541,15.1757246 C18.3639617,15.5828436 17.7313944,15.6103465 17.3242754,15.2371541 L12.0300757,10.3841378 L6.70710678,15.7071068 Z" fill="#000000" fill-rule="nonzero" transform="translate(12.000003, 11.999999) rotate(-270.000000) translate(-12.000003, -11.999999)" />
-														</g>
-													</svg>
-													<!--end::Svg Icon-->
-												</span>
-											</span>
-										</a>
-										<!--end::Btn-->
-									</div>
-									<!--end::Section-->
-								</div>
-								<!--end::Content-->
-							</div>
-							<!--end::Item-->
-							<!--begin::Item-->
-							<div class="d-flex align-items-center">
-								<!--begin::Symbol-->
-								<div class="symbol symbol-35 symbol-light-primary flex-shrink-0 mr-3">
-									<span class="symbol-label font-weight-bolder font-size-lg">JT</span>
-								</div>
-								<!--end::Symbol-->
-								<!--begin::Content-->
-								<div class="d-flex flex-wrap flex-row-fluid">
-									<!--begin::Text-->
-									<div class="d-flex flex-column pr-5 flex-grow-1">
-										<a href="#" class="text-dark text-hover-primary mb-1 font-weight-bold font-size-lg">Jason Tatum</a>
-										<span class="text-muted font-weight-bold">ASP.NET Developer</span>
-									</div>
-									<!--end::Text-->
-									<!--begin::Section-->
-									<div class="d-flex align-items-center py-2">
-										<!--begin::Label-->
-										<span class="text-success font-weight-bolder font-size-sm pr-6">+139%</span>
-										<!--end::Label-->
-										<!--begin::Btn-->
-										<a href="#" class="btn btn-icon btn-light btn-sm">
-											<span class="svg-icon svg-icon-success">
-												<span class="svg-icon svg-icon-md">
-													<!--begin::Svg Icon | path:assets/media/svg/icons/Navigation/Angle-right.svg-->
-													<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-														<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-															<polygon points="0 0 24 0 24 24 0 24" />
-															<path d="M6.70710678,15.7071068 C6.31658249,16.0976311 5.68341751,16.0976311 5.29289322,15.7071068 C4.90236893,15.3165825 4.90236893,14.6834175 5.29289322,14.2928932 L11.2928932,8.29289322 C11.6714722,7.91431428 12.2810586,7.90106866 12.6757246,8.26284586 L18.6757246,13.7628459 C19.0828436,14.1360383 19.1103465,14.7686056 18.7371541,15.1757246 C18.3639617,15.5828436 17.7313944,15.6103465 17.3242754,15.2371541 L12.0300757,10.3841378 L6.70710678,15.7071068 Z" fill="#000000" fill-rule="nonzero" transform="translate(12.000003, 11.999999) rotate(-270.000000) translate(-12.000003, -11.999999)" />
-														</g>
-													</svg>
-													<!--end::Svg Icon-->
-												</span>
-											</span>
-										</a>
-										<!--end::Btn-->
-									</div>
-									<!--end::Section-->
-								</div>
-								<!--end::Content-->
-							</div>
-							<!--end::Item-->
-						</div>
-						<!--end::Section-->
-					</div>
-					<!--end::Tabpane-->
-					<!--begin::Tabpane-->
-					<div class="tab-pane fade pt-2 pr-5 mr-n5" id="kt_quick_panel_notifications" role="tabpanel">
 						<!--begin::Nav-->
 						<div class="navi navi-icon-circle navi-spacer-x-0">
-							<!--begin::Item-->
-							<a href="#" class="navi-item">
-								<div class="navi-link rounded">
-									<div class="symbol symbol-50 mr-3">
-										<div class="symbol-label">
-											<i class="flaticon-bell text-success icon-lg"></i>
-										</div>
-									</div>
-									<div class="navi-text">
-										<div class="font-weight-bold font-size-lg">5 new user generated report</div>
-										<div class="text-muted">Reports based on sales</div>
-									</div>
-								</div>
-							</a>
-							<!--end::Item-->
-							<!--begin::Item-->
-							<a href="#" class="navi-item">
-								<div class="navi-link rounded">
-									<div class="symbol symbol-50 mr-3">
-										<div class="symbol-label">
-											<i class="flaticon2-box text-danger icon-lg"></i>
-										</div>
-									</div>
-									<div class="navi-text">
-										<div class="font-weight-bold font-size-lg">2 new items submited</div>
-										<div class="text-muted">by Grog John</div>
-									</div>
-								</div>
-							</a>
-							<!--end::Item-->
-							<!--begin::Item-->
-							<a href="#" class="navi-item">
-								<div class="navi-link rounded">
-									<div class="symbol symbol-50 mr-3">
-										<div class="symbol-label">
-											<i class="flaticon-psd text-primary icon-lg"></i>
-										</div>
-									</div>
-									<div class="navi-text">
-										<div class="font-weight-bold font-size-lg">79 PSD files generated</div>
-										<div class="text-muted">Reports based on sales</div>
-									</div>
-								</div>
-							</a>
-							<!--end::Item-->
-							<!--begin::Item-->
-							<a href="#" class="navi-item">
-								<div class="navi-link rounded">
-									<div class="symbol symbol-50 mr-3">
-										<div class="symbol-label">
-											<i class="flaticon2-supermarket text-warning icon-lg"></i>
-										</div>
-									</div>
-									<div class="navi-text">
-										<div class="font-weight-bold font-size-lg">$2900 worth producucts sold</div>
-										<div class="text-muted">Total 234 items</div>
-									</div>
-								</div>
-							</a>
-							<!--end::Item-->
-							<!--begin::Item-->
-							<a href="#" class="navi-item">
-								<div class="navi-link rounded">
-									<div class="symbol symbol-50 mr-3">
-										<div class="symbol-label">
-											<i class="flaticon-paper-plane-1 text-success icon-lg"></i>
-										</div>
-									</div>
-									<div class="navi-text">
-										<div class="font-weight-bold font-size-lg">4.5h-avarage response time</div>
-										<div class="text-muted">Fostest is Barry</div>
-									</div>
-								</div>
-							</a>
-							<!--end::Item-->
 							<!--begin::Item-->
 							<a href="#" class="navi-item">
 								<div class="navi-link rounded">
@@ -2019,82 +1237,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 									</div>
 								</div>
 							</a>
-							<!--end::Item-->
-							<!--begin::Item-->
-							<a href="#" class="navi-item">
-								<div class="navi-link rounded">
-									<div class="symbol symbol-50 mr-3">
-										<div class="symbol-label">
-											<i class="flaticon2-box text-info icon-lg"></i>
-										</div>
-									</div>
-									<div class="navi-text">
-										<div class="font-weight-bold font-size-lg">2 new items have been submited</div>
-										<div class="text-muted">by Grog John</div>
-									</div>
-								</div>
-							</a>
-							<!--end::Item-->
-							<!--begin::Item-->
-							<a href="#" class="navi-item">
-								<div class="navi-link rounded">
-									<div class="symbol symbol-50 mr-3">
-										<div class="symbol-label">
-											<i class="flaticon2-download text-success icon-lg"></i>
-										</div>
-									</div>
-									<div class="navi-text">
-										<div class="font-weight-bold font-size-lg">2.8 GB-total downloads size</div>
-										<div class="text-muted">Mostly PSD end AL concepts</div>
-									</div>
-								</div>
-							</a>
-							<!--end::Item-->
-							<!--begin::Item-->
-							<a href="#" class="navi-item">
-								<div class="navi-link rounded">
-									<div class="symbol symbol-50 mr-3">
-										<div class="symbol-label">
-											<i class="flaticon2-supermarket text-danger icon-lg"></i>
-										</div>
-									</div>
-									<div class="navi-text">
-										<div class="font-weight-bold font-size-lg">$2900 worth producucts sold</div>
-										<div class="text-muted">Total 234 items</div>
-									</div>
-								</div>
-							</a>
-							<!--end::Item-->
-							<!--begin::Item-->
-							<a href="#" class="navi-item">
-								<div class="navi-link rounded">
-									<div class="symbol symbol-50 mr-3">
-										<div class="symbol-label">
-											<i class="flaticon-bell text-primary icon-lg"></i>
-										</div>
-									</div>
-									<div class="navi-text">
-										<div class="font-weight-bold font-size-lg">7 new user generated report</div>
-										<div class="text-muted">Reports based on sales</div>
-									</div>
-								</div>
-							</a>
-							<!--end::Item-->
-							<!--begin::Item-->
-							<a href="#" class="navi-item">
-								<div class="navi-link rounded">
-									<div class="symbol symbol-50 mr-3">
-										<div class="symbol-label">
-											<i class="flaticon-paper-plane-1 text-success icon-lg"></i>
-										</div>
-									</div>
-									<div class="navi-text">
-										<div class="font-weight-bold font-size-lg">4.5h-avarage response time</div>
-										<div class="text-muted">Fostest is Barry</div>
-									</div>
-								</div>
-							</a>
-							<!--end::Item-->
+							<!--end::Item-->	
 						</div>
 						<!--end::Nav-->
 					</div>
@@ -2519,17 +1662,14 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 		<!--end::Sticky Toolbar-->
 		<!--begin::Demo Panel-->
 		<div id="kt_demo_panel" class="offcanvas offcanvas-right p-10">
-			
-			<!--begin::Content-->
-			<div class="offcanvas-content">
-				
-				<!--begin::Purchase-->
-				<div class="offcanvas-footer">
-					<a href="https://themes.getbootstrap.com/product/keen-the-ultimate-bootstrap-admin-theme/" target="_blank" class="btn btn-block btn-danger btn-shadow font-weight-bolder text-uppercase">Buy Keen Now!</a>
-				</div>
-				<!--end::Purchase-->
+			<!--begin::Header-->
+			<div class="offcanvas-header d-flex align-items-center justify-content-between pb-7">
+				<h4 class="font-weight-bold m-0">Select A Demo</h4>
+				<a href="#" class="btn btn-xs btn-icon btn-light btn-hover-primary" id="kt_demo_panel_close">
+					<i class="ki ki-close icon-xs text-muted"></i>
+				</a>
 			</div>
-			<!--end::Content-->
+			<!--end::Header-->
 		</div>
 		<!--end::Demo Panel-->
 		<script>var HOST_URL = "https://preview.keenthemes.com/keen/theme/tools/preview";</script>
@@ -2546,6 +1686,37 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 		<!--end::Page Vendors-->
 		<!--begin::Page Scripts(used by this page)-->
 		<script src="assets/admin/js/pages/widgets.js"></script>
+        <script src="assets/keen/js/pages/features/file-upload/image-input.js"></script>
+        <script scr="https://code.jquery.com/jquery-3.6.0.js"></script>
+        <script>
+            $(document).ready(function(){
+                $(document).on('click','.remove-btn', function(){
+                    $(this).closest('.pb-5').remove();
+                });
+                $(document).on('click','.add-more-form', function(){
+                    $('.paste-new-forms').append('<div class="pb-5" data-wizard-type="step-content" data-wizard-state="current">\
+                                <div class="row">\
+                                    <div class="col-lg-6">\
+                                        <div class="form-group">\
+                                            <input type="text" class="form-control" name="req_name[]" autocomplete="off">\
+                                        </div>\
+                                    </div>\
+                                    <div class="col-lg-4">\
+                                        <div class="form-group">\
+                                            <input type="text" class="form-control" name="remarks[]" autocomplete="off">\
+                                        </div>\
+                                    </div>\
+                                    <div class="col-lg-2">\
+                                        <div class="form-group">\
+                                            <button type="button" class="remove-btn btn btn-danger">Remove</button>\
+                                        </div>\
+                                    </div>\
+                                </div>\
+                            </div>');
+                            
+                });
+             });
+        </script>
 		<!--end::Page Scripts-->
 	</body>
 	<!--end::Body-->
