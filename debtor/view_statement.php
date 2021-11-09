@@ -452,7 +452,7 @@ if(isset($_POST['save'])){
 					</div>
 				</div>
 				<!--end: display modal of upload payment -->	
-		<!--begin::Chat Panel-->
+		 <!--begin::Chat Panel-->
 		<div class="modal modal-sticky modal-sticky-bottom-right" id="kt_chat_modal" role="dialog" data-backdrop="false">
 			<div class="modal-dialog" role="document">
 				<div class="modal-content">

@@ -36,7 +36,7 @@ if ($token1 == $token2) {
     $_SESSION['eligible'] = $user['eligible'];
 
     if($user['user_type'] == 1) {
-        header('location: admin/idex.php');
+        header('location: admin/index.php');
     }
     if($user['user_type'] == 2) {
         header('location: debtor/index.php');

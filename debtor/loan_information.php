@@ -1,6 +1,6 @@
 <?php
 session_start();
-error_reporting(-1);
+error_reporting(0);
 include('../db_connection/config.php');
 
 if($_SESSION['user_type'] != 2) {
@@ -187,66 +187,59 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 											<span class="card-label font-weight-bolder font-size-h4 text-dark-75">Loan Information</span>
 										</h3>
 									</div>
-									<?php
-											if(isset($_SESSION['status'])){
-												?>
-												<h4 class="alert alert-success"><?php echo $_SESSION['status'];?></h4>
-												<?php
-												unset($_SESSION['status']);
-											}?>
 									<!--begin::Body-->
 									<div class="card-body pt-4">
 										<div class="card card-custom">
 											<div class="card-body">
-												<h5> List of Availed Loans </h5>
+											<h5> List of Availed Loans </h5>
 												<table class="table table-bordered">
 													<thead>
 														<tr>
 															<th>Application Date</th>
 															<th>Lending Investor</th>
-															<th>Principal Amount</th>
+															<th>Total Loan Amount</th>
 															<th>Statement of Account</th>
 														</tr>
 													</thead>
 													<tbody>
-														<?php 
+													<?php 
 														$user_id = $_SESSION['user_id'];
 
-														$sql = "SELECT loan_application.*, user.* FROM loan_application INNER JOIN user ON loan_application.lender_id = user.user_id WHERE loan_application.debtor_id = $user_id AND loan_application.status= 'approved'";
+														$sql = "SELECT * FROM loan_application INNER JOIN user ON loan_application.lender_id = user.user_id WHERE loan_application.debtor_id = $user_id AND loan_application.status= 'approved'";
 														$query = $dbh->prepare($sql);
 														$query->execute();
 														$results = $query->fetchAll(PDO::FETCH_OBJ);
 														if($query->rowCount() > 0){
-															foreach($results as $result){
+															foreach($results as $res){
 														?>
 														<tr>
-															<th scope="row"><?= htmlentities($result->date);?></th>
-															<td><?= htmlentities($result->company_name);?></td>
-															<td><?= htmlentities($result->total_amount);?></td>
+															<th scope="row"><?= htmlentities($res->date);?></th>
+															<td><?= htmlentities($res->company_name);?></td>
+															<td><?= htmlentities($res->total_amount);?></td>
 															<td>
-																<a href="debtor/view_statement.php?id=<?= htmlentities($result->id);?>" class="kt-nav__link">
+																<a href="debtor/view_statement.php?loan_app_id=<?= htmlentities($result->loan_app_id);?>" class="kt-nav__link">
 																<span class="kt-nav__link-text">View</span>
 																</a>
 															</td>
 														</tr>
 													</tbody>
 													<?php }}?>
-												</table></br>
-												<div class="separator separator-dashed mt-8 mb-5"></div>
+												</table></br></br></br>
 												<h5> Pending Loan Application</h5>
 												<table class="table table-bordered">
 													<thead>
 														<tr>
 															<th>Loan Date</th>
 															<th>Lending Investor</th>
-															<th>Principal Amount</th>
-															<th>Monthly Payable</th>
+															<th>Total Loan Amount</th>
+															<th>Monthly Payment</th>
 															<th>Action</th>
 														</tr>
 													</thead>
 													<tbody>
 														<?php
-														$sql ="SELECT loan_application.*, user.* FROM loan_application INNER JOIN user ON loan_application.lender_id = user.user_id WHERE loan_application.debtor_id = $user_id AND loan_application.status ='pending'";
+														$user_id = $_SESSION['user_id'];
+														$sql ="SELECT * FROM loan_application INNER JOIN user ON loan_application.lender_id = user.user_id WHERE loan_application.debtor_id = $user_id AND loan_application.status ='Pending'";
 														$query = $dbh->prepare($sql);
 														$query->execute();
 														$results=$query->fetchAll(PDO::FETCH_OBJ);
@@ -258,16 +251,16 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 															{
 														?>
 														<tr>
-															<th scope="row"><?php echo htmlentities($result->date);?></th>
+															<td><?php echo htmlentities($result->date);?></td>
 															<td><?php echo htmlentities($result->company_name);?></td>
 															<td><?php echo htmlentities($result->total_amount);?></td>
-															<td><?php echo htmlentities($result->monthly_payable);?></td>
-															
-															<td><a href="">cancel</a></td>
+															<td><?php echo htmlentities($result->monthly_payment);?></td>
+															<td><a href="debtor/view_application.php?loan_app_id=<?= htmlentities($result->loan_app_id);?>">View</a></td>
 														</tr>
 														<?php }}?>
 													</tbody>
 												</table>
+												
 											</div>
 										</div>
 									</div>

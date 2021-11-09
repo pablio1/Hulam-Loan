@@ -134,12 +134,22 @@ if (isset($_POST['submit'])) {
 	$pic10=rand(1000,10000000).".".$imgExt;
 	move_uploaded_file($tmp_dir,$upload_dir.$pic10);
 
-    $sql ="INSERT INTO upload_requirements(lender_id,debtor_id,valid_id,barangay_clearance,payslip,cedula,atm_transaction,coe,bank_statement,proof_billing,co_maker_id,co_maker_cedula,x_id,date)
-    VALUES(:lender_id,:debtor_id,:valid_id,:barangay_clearance,:payslip,:cedula,:atm_transaction,:coe,:bank_statement,:proof_billing,:co_maker_id,:co_maker_cedula,:x_id,:date)";
-    $query = $dbh->prepare($sql);
-    $query->bindParam(':lender_id',$lender_id,PDO::PARAM_STR);
-    $query->bindParam(':debtor_id',$debtor_id,PDO::PARAM_STR);
-    $query->bindParam(':valid_id',$pic,PDO::PARAM_STR);
+	$sql = "INSERT INTO loan_application(debtor_id,lender_id,loan_amount,loan_term,fix_rate,total_amount,monthly_payment,total_interest,late_charges,date,valid_id,barangay_clearance,
+	payslip,cedula,atm_transaction,coe,bank_statement,proof_billing,co_maker_id,co_maker_cedula,id_pic,confirm,status)
+    VALUES(:debtor_id,:lender_id,:loan_amount,:loan_term,:fix_rate,:total_amount,:monthly_payment,:total_interest,:late_charges,:date,:valid_id,:barangay_clearance,
+	:payslip,:cedula,:atm_transaction,:coe,:bank_statement,:proof_billing,:co_maker_id,:co_maker_cedula,:id_pic,:confirm,:status)";
+	$query = $dbh->prepare($sql);
+	$query->bindParam(':debtor_id', $debtor_id, PDO::PARAM_STR);
+	$query->bindParam(':lender_id', $lender_id, PDO::PARAM_STR);
+	$query->bindParam(':loan_amount', $loan_amount, PDO::PARAM_STR);
+	$query->bindParam(':loan_term', $loan_term, PDO::PARAM_STR);
+	$query->bindParam(':fix_rate', $fix_rate, PDO::PARAM_STR);
+	$query->bindParam(':total_amount', $total_amount, PDO::PARAM_STR);
+	$query->bindParam(':monthly_payment', $monthly_payment, PDO::PARAM_STR);
+	$query->bindParam(':total_interest', $total_interest, PDO::PARAM_STR);
+	$query->bindParam(':late_charges', $late_charges, PDO::PARAM_STR);
+	$query->bindParam(':date', $date, PDO::PARAM_STR);
+	$query->bindParam(':valid_id',$pic,PDO::PARAM_STR);
     $query->bindParam(':barangay_clearance',$pic1,PDO::PARAM_STR);
     $query->bindParam(':payslip',$pic2,PDO::PARAM_STR);
     $query->bindParam(':cedula',$pic3,PDO::PARAM_STR);
@@ -149,26 +159,9 @@ if (isset($_POST['submit'])) {
     $query->bindParam(':proof_billing',$pic7,PDO::PARAM_STR);
     $query->bindParam(':co_maker_id',$pic8,PDO::PARAM_STR);
     $query->bindParam(':co_maker_cedula',$pic9,PDO::PARAM_STR);
-    $query->bindParam(':x_id',$pic10,PDO::PARAM_STR);
-    $query->bindParam(':date',$date,PDO::PARAM_STR);
-
-     $sql2 = "INSERT INTO loan_application(debtor_id,lender_id,loan_amount,loan_term,fix_rate,total_amount,monthly_payment,total_interest,late_charges,date,confirm,status)
-    VALUES(:debtor_id,:lender_id,:loan_amount,:loan_term,:fix_rate,:total_amount,:monthly_payment,:total_interest,:late_charges,:date,:confirm,:status)";
-	$query2 = $dbh->prepare($sql2);
-	$query2->bindParam(':debtor_id', $debtor_id, PDO::PARAM_STR);
-	$query2->bindParam(':lender_id', $lender_id, PDO::PARAM_STR);
-	$query2->bindParam(':loan_amount', $loan_amount, PDO::PARAM_STR);
-	$query2->bindParam(':loan_term', $loan_term, PDO::PARAM_STR);
-	$query2->bindParam(':fix_rate', $fix_rate, PDO::PARAM_STR);
-	$query2->bindParam(':total_amount', $total_amount, PDO::PARAM_STR);
-	$query2->bindParam(':monthly_payment', $monthly_payment, PDO::PARAM_STR);
-	$query2->bindParam(':total_interest', $total_interest, PDO::PARAM_STR);
-	$query2->bindParam(':late_charges', $late_charges, PDO::PARAM_STR);
-	$query2->bindParam(':date', $date, PDO::PARAM_STR);
-	$query2->bindParam(':confirm', $confirm, PDO::PARAM_STR);
-	$query2->bindParam(':status', $status, PDO::PARAM_STR);
-    $query2->execute();
-
+    $query->bindParam(':id_pic',$pic10,PDO::PARAM_STR);
+	$query->bindParam(':confirm', $confirm, PDO::PARAM_STR);
+	$query->bindParam(':status', $status, PDO::PARAM_STR);
 
     if ($query->execute()) {
 		$_SESSION['status'] = "Loan Application Submitted Successfully!";
