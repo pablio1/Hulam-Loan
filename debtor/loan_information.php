@@ -198,6 +198,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 															<th>Application Date</th>
 															<th>Lending Investor</th>
 															<th>Total Loan Amount</th>
+															<th>Running Balance</th>
 															<th>Statement of Account</th>
 															<th>Rate & Reviews</th>
 														</tr>
@@ -218,11 +219,16 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 															<td><?= htmlentities($res->company_name);?></td>
 															<td><?= htmlentities($res->total_amount);?></td>
 															<td>
-																<a href="debtor/view_statement.php?loan_app_id=<?= htmlentities($result->loan_app_id);?>" class="kt-nav__link">
+																<a href="debtor/running_balance.php?loan_app_id=<?= htmlentities($res->loan_app_id);?>" class="kt-nav__link">
+																<span class="kt-nav__link-text">View</span>
+																</a>
+															</td>	
+															<td>
+																<a href="debtor/view_statement.php?loan_app_id=<?= htmlentities($res->loan_app_id);?>" class="kt-nav__link">
 																<span class="kt-nav__link-text">View</span>
 																</a>
 															</td>
-															<td><a href="debtor/rating.php?lender_id=<?php echo htmlentities($result->lender_id);?>">Rate this Investor
+															<td><a href="debtor/rating.php?lender_id=<?php echo htmlentities($res->lender_id);?>">Rate this Investor
 																</a></td>
 														</tr>
 													</tbody>

@@ -439,6 +439,20 @@ if ($_SESSION['user_type'] != 2) {
 	}
 ?>
 
+<?php 
+// if(isset($_POST['remove_valid_id'])){
+// 	$loan_app_id = intval($_GET['loan_app_id']);
+	
+// 	$sql = "SELECT * FROM `loan_application`";
+// 	$select = $dbh->prepare($sql);
+// 	$select->execute();
+// 	$result = $select->fetch();
+// 	$valid_id = $result['valid_id'];
+// 	$sql = "DELETE FROM `loan_application` WHERE valid_id = $valid_id AND loan_app_id = $loan_app_id";
+
+
+?>
+
 
 
 <!DOCTYPE html>
@@ -639,7 +653,7 @@ if ($_SESSION['user_type'] != 2) {
 																<a href="#" class="d-flex align-items-center text-dark text-hover-primary font-size-h5 font-weight-bold mr-3"><?= $lender['company_name'] ?></a>
 															</div>
 															<div class="my-lg-0 my-1">
-																<a href="debtor/apply_now.php" class="btn btn-sm btn-light-primary font-weight-bolder mr-2">
+																<a href="debtor/loan_information.php" class="btn btn-sm btn-light-primary font-weight-bolder mr-2">
 																	<< Back</a>
 															</div>
 														</div>
@@ -740,57 +754,58 @@ if ($_SESSION['user_type'] != 2) {
 																			<tr>
 																				<td>Valid ID</td>
 																				<td><a href="/hulam/assets/keen/requirements/<?= htmlentities($res->barangay_clearance) ?>" target="_blank"><?= htmlentities($res->barangay_clearance); ?></a></td>
-																				<td><a href="" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#view">Update</button></td>
+																				<td><a href="" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#view">Update</a></td>
+																					<!-- <button type="submit" class="btn btn-sm btn-light-danger font-weight-bolder mr-2" data-toggle="modal" data-target="#view2">Remove</button></td> -->
 																			</tr>
 																			<tr>
 																				<td>Barangay Clearanace</td>
 																				<td><a href="/hulam/assets/keen/requirements/<?= htmlentities($res->barangay_clearance) ?>" target="_blank"><?= htmlentities($res->barangay_clearance); ?></a></td>
-																				<td><a href="" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#barangay_clearance">Update</button></td>
+																				<td><a href="" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#barangay_clearance">Update</a></td>
 																			</tr>
 																			<tr>
 																				<td>Payslip</td>
 																				<td><a href="/hulam/assets/keen/requirements/<?= htmlentities($res->payslip) ?>" target="_blank"><?= htmlentities($res->payslip); ?></a></td>
-																				<td><a href="" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#payslip">Update</button></td>
+																				<td><a href="" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#payslip">Update</a></td>
 																			</tr>
 																			<tr>
 																				<td>Cedula</td>
 																				<td><a href="/hulam/assets/keen/requirements/<?= htmlentities($res->cedula) ?>" target="_blank"><?= htmlentities($res->cedula); ?></a></td>
-																				<td><a href="" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#cedula">Update</button></td>
+																				<td><a href="" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#cedula">Update</a></td>
 																			</tr>
 																			<tr>
 																				<td>ATM Latest Transaction Receipt</td>
 																				<td><a href="/hulam/assets/keen/requirements/<?= htmlentities($res->atm_transaction) ?>" target="_blank"><?= htmlentities($res->atm_transaction); ?></a></td>
-																				<td><a href="" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#atm_transaction">Update</button></td>
+																				<td><a href="" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#atm_transaction">Update</a></td>
 																			</tr>
 																			<tr>
 																				<td>Certificate of Employment</td>
 																				<td><a href="/hulam/assets/keen/requirements/<?= htmlentities($res->coe) ?>" target="_blank"><?= htmlentities($res->coe); ?></a></td>
-																				<td><a href="" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#coe">Update</button></td>
+																				<td><a href="" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#coe">Update</a></td>
 																			</tr>
 																			<tr>
 																				<td>Bank Statement</td>
 																				<td><a href="/hulam/assets/keen/requirements/<?= htmlentities($res->bank_statement) ?>" target="_blank"><?= htmlentities($res->bank_statement); ?></a></td>
-																				<td><a href="" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#bank_statement">Update</button></td>
+																				<td><a href="" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#bank_statement">Update</a></td>
 																			</tr>
 																			<tr>
 																				<td>Proof of Billing</td>
 																				<td><a href="/hulam/assets/keen/requirements/<?= htmlentities($res->proof_billing) ?>" target="_blank"><?= htmlentities($res->proof_billing); ?></a></td>
-																				<td><a href="" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#proof_billing">Update</button></td>
+																				<td><a href="" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#proof_billing">Update</a></td>
 																			</tr>
 																			<tr>
 																				<td>Co-Maker ID</td>
 																				<td><a href="/hulam/assets/keen/requirements/<?= htmlentities($res->co_maker_id) ?>" target="_blank"><?= htmlentities($res->co_maker_id); ?></a></td>
-																				<td><a href="" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#co_maker_id">Update</button></td>
+																				<td><a href="" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#co_maker_id">Update</a></td>
 																			</tr>
 																			<tr>
 																				<td>Co-Maker Cedula</td>
 																				<td><a href="/hulam/assets/keen/requirements/<?= htmlentities($res->co_maker_cedula) ?>" target="_blank"><?= htmlentities($res->co_maker_cedula); ?></a></td>
-																				<td><a href="" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#co_maker_cedula">Update</button></td>
+																				<td><a href="" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#co_maker_cedula">Update</a></td>
 																			</tr>
 																			<tr>
 																				<td>2x2 ID</td>
 																				<td><a href="/hulam/assets/keen/requirements/<?= htmlentities($res->id_pic) ?>" target="_blank"><?= htmlentities($res->id_pic); ?></a></td>
-																				<td><a href="" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#id_pic">Update</button></td>
+																				<td><a href="" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#id_pic">Update</a></td>
 																			</tr>
 																</tbody>
 														<?php }
@@ -823,7 +838,7 @@ if ($_SESSION['user_type'] != 2) {
 																			</div>
 																			<div class="modal-footer">
 																				<button type="button" class="btn btn-light-primary font-weight-bold" data-dismiss="modal">Close</button>
-																				<button type="submit" name="barangay_clearance" class="btn btn-primary font-weight-bold">Save changes</button>
+																				<button type="submit" name="valid_id" class="btn btn-primary font-weight-bold">Save changes</button>
 																			</div>
 																		</div>
 																	</div>
@@ -1091,6 +1106,31 @@ if ($_SESSION['user_type'] != 2) {
 																</div>
 															</form>
 															<!-- End Modal -->
+															<!-- MODAL REMOVE -->
+															<!-- Start Modal -->
+															<form action="" method="post" enctype="multipart/form-data">
+															<div class="modal fade" id="view2" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
+																<div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+																	<div class="modal-content">
+																		<div class="modal-header">
+																			<h5 class="modal-title" id="exampleModalLabel">Valid ID</h5>
+																			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+																				<i aria-hidden="true" class="ki ki-close"></i>
+																			</button>
+																		</div>
+																		<div class="modal-body">
+																			Are you Sure you want to Remove?
+																		</div>
+																			<div class="modal-footer">
+																				<button type="button" class="btn btn-light-primary font-weight-bold" data-dismiss="modal">No</button>
+																				<button type="submit" name="remove_valid_id" class="btn btn-primary font-weight-bold">Yes</button>
+																			</div>
+																		</div>
+																	</div>
+																</div>
+															</form>
+															<!-- End Modal -->
+
 														</div>
 													</div>
 												</div>
@@ -1099,10 +1139,10 @@ if ($_SESSION['user_type'] != 2) {
 												<!-- UPLOAD REQUIREMENTS -->
 												<div class="separator separator-solid my-7"></div>
 												<div class="form-group row">
-													<label class="col-xl-3 col-lg-3 col-form-label"></label>
+													<h4>Reminders:</h4>
 													<div class="col-lg-12 col-xl-12">
 														<p class="font-weight-bolder font-size-lg py-4">
-															▸ Loan application is subject for approval.</br>
+															<!-- ▸ Loan application is subject for approval.</br> -->
 															▸ Please comply all the requirements provided below to complete the loan application.</br>
 															▸ Requirements uploaded will be validated by the <?= $lender['company_name'] ?>.
 														</p>Please read <a href="#" class="font-weight-boldk" data-toggle="modal" data-target="#view_terms">Terms and Conditions |&nbsp;&nbsp;</a><a href="#" class="font-weight-bold" data-toggle="modal" data-target="#view_privacy">Privacy Statement</a>
@@ -1138,218 +1178,18 @@ if ($_SESSION['user_type'] != 2) {
 														} ?>
 													</tbody>
 												</table>
-												<div class="form-group row">
-													<label class="col-xl-3 col-lg-3 col-form-label"></label>
-													<div class="col-xl-12 col-xl-12">
-														<h5>Upload Requirements<h5>
-																<p class="font-weight-lighter font-size-sm py-4">Upload only what is required by the company. Accept docx, jpeg, png, dpf</br>
-																<div class="row">
-																	<div class="col-xl-4">
-																		<label class="font-weight-bolder font-size-lg" for="input-username">Valid ID</label>
-																		<div class="form-group">
-																			<input type="file" name="barangay_clearance" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3" />
-																		</div>
-																	</div>
-																	<div class="col-xl-4">
-																		<label class="font-weight-bolder font-size-lg" for="input-username">Barangay Clearance</label>
-																		<div class="form-group">
-																			<input type="file" name="barangay_clearance" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3" />
-																		</div>
-																	</div>
-																	<div class="col-xl-4">
-																		<label class="font-weight-bolder font-size-lg" for="input-username">Cedula</label>
-																		<div class="form-group">
-																			<input type="file" name="cedula" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3" />
-																		</div>
-																	</div>
-																</div>
-																<div class="row">
-																	<div class="col-xl-4">
-																		<label class="font-weight-bolder font-size-lg" for="input-username">Payslip</label>
-																		<div class="form-group">
-																			<input type="file" name="payslip" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3" />
-																		</div>
-																	</div>
-																	<div class="col-xl-4">
-																		<label class="font-weight-bolder font-size-lg" for="input-username">Latest ATM Transaction Receipt</label>
-																		<div class="form-group">
-																			<input type="file" name="atm_receipt" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3" />
-																		</div>
-																	</div>
-																	<div class="col-xl-4">
-																		<label class="font-weight-bolder font-size-lg" for="input-username">Certificate of Employment</label>
-																		<div class="form-group">
-																			<input type="file" name="coe" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3" />
-																		</div>
-																	</div>
-																</div>
-																<div class="row">
-																	<div class="col-xl-4">
-																		<label class="font-weight-bolder font-size-lg" for="input-username">Bank Statement</label>
-																		<div class="form-group">
-																			<input type="file" name="bank_statement" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3" />
-																		</div>
-																	</div>
-																	<div class="col-xl-4">
-																		<label class="font-weight-bolder font-size-lg" for="input-username">Proof of Billing Address</label>
-																		<div class="form-group">
-																			<input type="file" name="proof_billing" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3" />
-																		</div>
-																	</div>
-																	<div class="col-xl-4">
-																		<label class="font-weight-bolder font-size-lg" for="input-username">Co-Maker ID</label>
-																		<div class="form-group">
-																			<input type="file" name="co_maker_id" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3" />
-																		</div>
-																	</div>
-																</div>
-																<div class="row">
-																	<div class="col-xl-4">
-																		<label class="font-weight-bolder font-size-lg" for="input-username">Co-Maker Cedula</label>
-																		<div class="form-group">
-																			<input type="file" name="co_maker_cedula" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3" />
-																		</div>
-																	</div>
-																	<div class="col-xl-4">
-																		<label class="font-weight-bolder font-size-lg" for="input-username">2x2 ID Photo</label>
-																		<div class="form-group">
-																			<input type="file" name="x_id" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3" />
-																		</div>
-																	</div>
-																	<!-- <div class="col-xl-4">
-															<label class="font-weight-bolder font-size-lg" for="input-username">Co-Maker Cedula</label>
-																<div class="form-group">
-																	
-																	<input type="file" name="coe" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3"/>
-																</div>
-															</div> -->
-																</div>
-													</div>
-												</div>
-
-
-												<div class="separator separator-solid my-7"></div>
-												<div class="form-group row">
-													<label class="col-xl-3 col-lg-3 col-form-label"></label>
-													<div class="col-lg-12 col-xl-12">
-														<div class="checkbox-inline">
-															<label class="checkbox m-1">
-																<input type="checkbox" name="confirm" required value="Yes" />
-																<span></span>
-																<h5>I confirm that:<h5>
-															</label>
-														</div>
-														<p class="font-weight-bolder font-size-lg py-4">
-															▸ All the information I have provided on this application are mine, true and up-to-date;</br />
-															▸ I agree to the Terms and Conditions, and Fees and Charges of the loan I am applying for.</br>
-															▸ I agree that <?= $lender['company_name'] ?> may use my Personal Data and other information for automated processing and for automated decision.
-														</p>
-													</div>
-												</div>
-												<div class="modal-footer">
-													<input type="hidden" name="date" value="<?= date('Y-m-d H:i:s') ?>">
-													<input type="hidden" name="debtor_id" value="<?= $_SESSION['user_id'] ?>">
-													<input type="hidden" name="lender_id" value="<?= $_GET['lender_id'] ?>">
-													<input type="hidden" name="loan_amount" value="<?php
-																									if (!isset($_GET['amount'])) {
-																										echo '0.00';
-																									} else {
-																										echo $_GET['amount'];
-																										// echo number_format($_GET['amount'], 2);
-																									} ?>">
-													<input type="hidden" name="loan_term" value="<?= $_GET['month'] ?>">
-													<input type="hidden" name="fix_rate" value="<?= $lender['fix_rate'] ?>">
-													<input type="hidden" name="total_amount" value="<?php
-																									if (!isset($_GET['amount'])) {
-																										echo '0.00';
-																									} else {
-																										if ($lender['user_type'] == 4) {
-																											$amount = $_GET['amount'];
-																											$month = $_GET['month'];
-
-																											$initial_interest = $amount * ($lender['fix_rate'] / 100);
-																											//500 * (10 /100) = 50
-																											$total_interest = $initial_interest * $month;
-																											// 50 * 1 = 50
-																											$total = $total_interest + $amount;
-																											// 50 + 500 = 550
-																											echo $total;
-																										} else {
-																											$amount = $_GET['amount'];
-																											$month = $_GET['month'];
-
-																											$initial = $amount * ($lender['fix_rate'] / 100);
-																											//30000 * (3 /100) = 900
-																											$interest2 = $initial * $month;
-																											// 900 * 12 = 10, 800
-																											$total2 = $amount + $interest2;
-																											// 30000 + 10800
-																											echo $total2; //40800
-																										}
-																									} ?>">
-													<input type="hidden" name="monthly_payment" value="<?php
-																										if (!isset($_GET['amount'])) {
-																											echo '0.00';
-																										} else {
-																											if ($lender['user_type'] == 4) {
-																												$amount = $_GET['amount'];
-																												$month = $_GET['month'];
-																												$new_rate = $month * ($lender['fix_rate'] / 100);
-																												//1 * 10/100 = 0.1
-																												$initial_amount = $amount * $new_rate;
-																												//500 * 0.1 = 50
-																												$add_interest = $initial_amount + $amount;
-																												//50 + 500 = 550
-																												$total3 = $add_interest / $month;
-
-																												echo $total3;
-																												//550 /1 = 550
-																											} else {
-																												$amount = $_GET['amount'];
-																												$month = $_GET['month'];
-																												//30000
-																												$initial_amount =  $amount * ($lender['fix_rate'] / 100);
-																												//30000 * 0.03 = 900
-																												$add_interest = $amount / $month;
-																												//30000 / 12 =2500
-																												$total4 = $add_interest + $initial_amount;
-
-																												echo $total4;
-																												//2500 + 900 = 3400
-																											}
-																										} ?>">
-													<input type="hidden" name="total_interest" value="<?php
-																										if (!isset($_GET['amount'])) {
-																											echo '0.00';
-																										} else {
-																											if ($lender['user_type'] == 4) {
-																												$amount = $_GET['amount'];
-																												$month = $_GET['month'];
-																												$new_rate = $amount * ($lender['fix_rate'] / 100); //500 * 0.1 = 50
-																												$total5 = $new_rate * $month; //50 * 1
-																												echo $total5;
-																											} else {
-																												$amount = $_GET['amount'];
-																												$month = $_GET['month'];
-																												$new_rate = $amount * ($lender['fix_rate'] / 100); //30000* 0.3 = 900
-																												$total5 = $new_rate * $month; //900 * 12
-																												echo $total5;
-																											}
-																										} ?>">
-													<input type="hidden" name="late_charges" value="<?= $lender['late_charges'] ?>">
-
-													<button type="submit" name="submit" class="btn btn-sm btn-primary font-weight-bolder">Submit
-														<span class="svg-icon svg-icon-md ml-3">
+													<!-- <button type="submit" name="submit" class="btn btn-sm btn-primary font-weight-bolder">Submit -->
+														<!-- <span class="svg-icon svg-icon-md ml-3"> -->
 															<!--begin::Svg Icon | path:assets/media/svg/icons/Navigation/Check.svg-->
-															<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+															<!-- <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
 																<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
 																	<polygon points="0 0 24 0 24 24 0 24" />
 																	<path d="M6.26193932,17.6476484 C5.90425297,18.0684559 5.27315905,18.1196257 4.85235158,17.7619393 C4.43154411,17.404253 4.38037434,16.773159 4.73806068,16.3523516 L13.2380607,6.35235158 C13.6013618,5.92493855 14.2451015,5.87991302 14.6643638,6.25259068 L19.1643638,10.2525907 C19.5771466,10.6195087 19.6143273,11.2515811 19.2474093,11.6643638 C18.8804913,12.0771466 18.2484189,12.1143273 17.8356362,11.7474093 L14.0997854,8.42665306 L6.26193932,17.6476484 Z" fill="#000000" fill-rule="nonzero" transform="translate(11.999995, 12.000002) rotate(-180.000000) translate(-11.999995, -12.000002)" />
 																</g>
-															</svg>
+															</svg> -->
 															<!--end::Svg Icon-->
-														</span>
-													</button>
+														<!-- </span>
+													</button> -->
 											<!-- </form> -->
 											<!-- Start Modal -->
 											<div class="modal fade" id="view_terms" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">

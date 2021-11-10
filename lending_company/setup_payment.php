@@ -997,14 +997,25 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
                                                         <h4 class="mb-10 font-weight-bold text-dark">Set Mode of Payment: </h4>
                                                         <div class="pb-5" data-wizard-type="step-content" data-wizard-state="current">
                                                             <div class="row">
-                                                                <div class="col-lg-6">
-                                                                    <div class="form-group">
-                                                                        <input type="text" class="form-control" name="mode_name" required autocomplete="off" placeholder="Mode of Payment">
-                                                                    </div>
-                                                                </div>
                                                                 <div class="col-lg-4">
                                                                     <div class="form-group">
-																	<textarea name="remarks" class="form-control"  rows="4" cols="50" required autocomplete="off" placeholder="Remarks"><?= $res['remarks'];?></textarea>
+																		<label>Select Mode of Payment</label>
+																		<?php
+																			$sql ="SELECT * FROM `user` WHERE user_type = 5";
+																			$q = $dbh->prepare($sql);
+																			$q->execute();
+																			$r = $q->fetch();
+																			?>
+																		<select name="mode_name" required class="form-control" required>
+																			<option value="" hidden></option>
+																			<option value="ATM Deduction">ATM Deduction</option>
+																			<option value="<?= $r['user_id']?>"><?= $r['company_name']?></option>
+																		</select>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-lg-6">
+                                                                    <div class="form-group">
+																	<textarea name="remarks" class="form-control"  rows="4" cols="50" required autocomplete="off" placeholder="Remarks / Notes"><?= $res['remarks'];?></textarea>
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-lg-2">
@@ -1015,8 +1026,17 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        
                                     				</form>
+                                   					 <!--end::Form-->
+                               					</div>
+                            				</div>
+											<div class="row">
+												<div class="offset-xxl-2 col-xxl-8">
+                                                        <div class="pb-5" data-wizard-type="step-content" data-wizard-state="current">
+                                                        <span class="font-weight-bolder font-size-sm">Note:</span>
+														<span class="font-size-sm">Excluding ATM deduction, all payment centers will uplaod an excel file direct to the lenders account.
+														Lending Investors will input payment details made by our debtors to generate balance update.</span>
+                                                        </div>
                                    					 <!--end::Form-->
                                					</div>
                             				</div>

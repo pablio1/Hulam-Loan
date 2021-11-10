@@ -1,6 +1,6 @@
 <?php
 session_start();
-error_reporting(-1);
+error_reporting(0);
 include('../db_connection/config.php');
 
 if ($_SESSION['user_type'] != 2) {
@@ -287,17 +287,17 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
                                                     <?php
                                                     if(isset($_POST['submit']))
                                                     {
-														$lender = mysqli_real_escape_string($dbh,$_POST['lender_id']);
-														$debtor_id = mysqli_real_escape_string($dbh,$_POST['debtor_id']);
-                                                        $comments = mysqli_real_escape_string($dbh,$_POST['comments']);
-                                                        $rating = mysqli_real_escape_string($dbh,$_POST['rating']);
-														$dateOfRate = mysqli_real_escape_string($dbh,$_POST['dateOfRate']);
+														$lender = mysqli_real_escape_string($conn,$_POST['lender_id']);
+														$debtor_id = mysqli_real_escape_string($conn,$_POST['debtor_id']);
+                                                        $comments = mysqli_real_escape_string($conn,$_POST['comments']);
+                                                        $rating = mysqli_real_escape_string($conn,$_POST['rating']);
+														$dateOfRate = mysqli_real_escape_string($conn,$_POST['dateOfRate']);
                                                         if(empty($ratings))
                                                         {
                                                             $ratings=0;
                                                         }
 
-                                                        $result =mysqli_query($dbh,"INSERT INTO feedback(lender_id,debtor_id,comments,ratings,dateOfRate) VALUES ('$lender','$debtor_id','$comments','$ratings','$dateOfRate')");
+                                                        $result =mysqli_query($conn,"INSERT INTO feedback(lender_id,debtor_id,comments,ratings,dateOfRate) VALUES ('$lender','$debtor_id','$comments','$ratings','$dateOfRate')");
 
 													//	echo "<script>alert('Thank you for rating!');window.location.href='debtor/index.php'</script>";
                                                     }
@@ -331,7 +331,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 															<input type="hidden" name="user_id" value="<?php echo $_SESSION['user_id']; ?>">
 															<input type="hidden" name="lender_id" value="<?php echo $lender_id; ?>">
                                                             <td>COMMENT </td>
-                                                            <td><textarea type="text" name="comment" style="width:200px; height:100px;"></textarea></td>
+                                                            <td><textarea type="text" name="comment" style="width:500px; height:100px;"></textarea></td>
                                                         </tr>
                                                         <tr>
                                                             <td> <label><input type="hidden" name="date" value="<?php echo date('Y-m-d'); ?>" ></label></td>
@@ -343,7 +343,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
                                                             echo $_GET['company_name ']; ?>" > -->
 														</tr>
                                                         <tr>
-                                                            <td colspan="2%"><input type="submit" class="btn btn-primary btn-block font-weight-bolder" name="submit" value="Submit"></td>
+                                                            <td><input type="submit" class="btn btn-primary btn-block font-weight-bolder" name="submit" value="Submit"></td>
                                                         </tr>
                                                     </table>
 													

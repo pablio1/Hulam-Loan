@@ -1,6 +1,6 @@
 <?php
 session_start();
-error_reporting(-1);
+error_reporting(0);
 include('../db_connection/config.php');
 
 if ($_SESSION['user_type'] != 2) {
@@ -390,96 +390,80 @@ $lender = $query->fetch();
                                                         } ?>
                                                     </tbody>
                                                 </table>
-												<div class="form-group row">
-													<label class="col-xl-3 col-lg-3 col-form-label"></label>
-													<div class="col-xl-12 col-xl-12">
-														<h5>Upload Requirements<h5>
-															<p class="font-weight-lighter font-size-sm py-4">Upload only what is required by the company. Accept docx, jpeg, png, dpf</br>
-														<div class="row">
-															<div class="col-xl-4">
-															<label class="font-weight-bolder font-size-lg" for="input-username">Valid ID</label>
-																<div class="form-group">
-																	<input type="file" name="valid_id" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3"/>
-																</div>
-															</div>
-															<div class="col-xl-4">
-															<label class="font-weight-bolder font-size-lg" for="input-username">Barangay Clearance</label>
-																<div class="form-group">
-																	<input type="file" name="barangay_clearance" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3"/>
-																</div>
-															</div>
-															<div class="col-xl-4">
-															<label class="font-weight-bolder font-size-lg" for="input-username">Cedula</label>
-																<div class="form-group">
-																	<input type="file" name="cedula" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3"/>
-																</div>
-															</div>
+													</br></br>
+												<h5>Please upload Requeirements here</h5>
+												<?php
+													if(isset($_SESSION['status'])){
+														?>
+														<div class="alert alert-success alert-dismissable" id="flash-msg">
+														<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+														<h4>Success!</h4>
 														</div>
-														<div class="row">
-															<div class="col-xl-4">
-															<label class="font-weight-bolder font-size-lg" for="input-username">Payslip</label>
-																<div class="form-group">
-																	<input type="file" name="payslip" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3"/>
-																</div>
-															</div>
-															<div class="col-xl-4">
-															<label class="font-weight-bolder font-size-lg" for="input-username">Latest ATM Transaction Receipt</label>
-																<div class="form-group">
-																	<input type="file" name="atm_receipt" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3"/>
-																</div>
-															</div>
-															<div class="col-xl-4">
-															<label class="font-weight-bolder font-size-lg" for="input-username">Certificate of Employment</label>
-																<div class="form-group">
-																	<input type="file" name="coe" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3"/>
-																</div>
-															</div>
-														</div>
-														<div class="row">
-															<div class="col-xl-4">
-															<label class="font-weight-bolder font-size-lg" for="input-username">Bank Statement</label>
-																<div class="form-group">
-																	<input type="file" name="bank_statement" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3"/>
-																</div>
-															</div>
-															<div class="col-xl-4">
-															<label class="font-weight-bolder font-size-lg" for="input-username">Proof of Billing Address</label>
-																<div class="form-group">
-																	<input type="file" name="proof_billing" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3"/>
-																</div>
-															</div>
-															<div class="col-xl-4">
-															<label class="font-weight-bolder font-size-lg" for="input-username">Co-Maker ID</label>
-																<div class="form-group">
-																	<input type="file" name="co_maker_id" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3"/>
-																</div>
-															</div>
-														</div>
-														<div class="row">
-															<div class="col-xl-4">
-															<label class="font-weight-bolder font-size-lg" for="input-username">Co-Maker Cedula</label>
-																<div class="form-group">
-																	<input type="file" name="co_maker_cedula" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3"/>
-																</div>
-															</div>
-															<div class="col-xl-4">
-															<label class="font-weight-bolder font-size-lg" for="input-username">2x2 ID Photo</label>
-																<div class="form-group">
-																	<input type="file" name="x_id" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3"/>
-																</div>
-															</div>
-															<!-- <div class="col-xl-4">
-															<label class="font-weight-bolder font-size-lg" for="input-username">Co-Maker Cedula</label>
-																<div class="form-group">
-																	
-																	<input type="file" name="coe" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3"/>
-																</div>
-															</div> -->
-														</div>
-													</div>
-												</div>
-												
+														<?php
+														unset($_SESSION['status']);
+													}?>
+													<table class="table table-bordered">
+														<thead>
+															<tr>
+																<th>Type of Documents</th>
+																<th>Action</th>
+															</tr>
+														</thead>
+														<tbody>
+															<?php
+															// $loan_app_id = intval($_GET['loan_app_id']);
 
+															// $sql = "SELECT * FROM loan_application";
+															// $query = $dbh->prepare($sql);
+															// $query->execute();
+															// $results = $query->fetch();
+															?>															
+															<tr>
+																<td>Valid ID</td>
+																<td><input type="file" name="valid_id" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3"/></td>
+															</tr>
+															<tr>
+																<td>Barangay Clearanace</td>
+																<td><input type="file" name="barangay_clearance" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3"/></td>
+															</tr>
+															<tr>
+																<td>Payslip</td>
+																<td><input type="file" name="payslip" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3"/></td>
+															</tr>
+															<tr>
+																<td>Cedula</td>
+																<td><input type="file" name="cedula" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3"/></td>
+															</tr>
+															<tr>
+																<td>ATM Latest Transaction Receipt</td>
+																<td><input type="file" name="atm_transaction" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3"/></td>
+															</tr>
+															<tr>
+																<td>Certificate of Employment</td>
+																<td><input type="file" name="coe" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3"/></td>
+															</tr>
+															<tr>
+																<td>Bank Statement</td>
+																<td><input type="file" name="bank_statement" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3"/></td>
+															</tr>
+															<tr>
+																<td>Proof of Billing</td>
+																<td><input type="file" name="proof_billing" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3"/></td>
+															</tr>
+															<tr>
+																<td>Co-Maker ID</td>
+																<td><input type="file" name="co_maker_id" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3"/></td>
+															</tr>
+															<tr>
+																<td>Co-Maker Cedula</td>
+																<td><input type="file" name="co_maker_cedula" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3"/></td>
+															</tr>
+															<tr>
+																<td>2x2 ID</td>
+																<td><input type="file" name="x_id" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3"/></td>
+															</tr>
+														</tbody>
+													</table>
 												<div class="separator separator-solid my-7"></div>
 												<div class="form-group row">
 													<label class="col-xl-3 col-lg-3 col-form-label"></label>
