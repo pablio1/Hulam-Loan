@@ -1,8 +1,37 @@
 <?php
 session_start();
-error_reporting(-1);
+error_reporting(0);
 include('../db_connection/config.php');
+?>
 
+<!--codes to insert the image -->
+<?php
+
+if(isset($_POST['add_req'])){
+
+    $req_name = $_POST['req_name'];
+    $remarks = $_POST['remarks'];
+    // $lender_id = $_SESSION['user_id']; 
+
+    foreach($req_name as $index => $names){
+        $s_req_name = $names;
+        $s_remarks = $remarks[$index];
+        $lender_id = $_SESSION['user_id']; 
+
+        $sql ="INSERT INTO loan_requirements(lender_id,req_name,remarks)VALUES('$lender_id','$s_req_name','$s_remarks')";
+        $query = $dbh->prepare($sql);
+        $query->execute();
+    }
+    if($query){
+        $_SESSION['status'] = "Added successfully" ;
+        header("Location: set_requirements.php");
+        exit();
+    }else{
+        $_SESSION['status'] = "Error! Not Added" ;
+        header("Location: set_requirements.php");
+        exit();
+    }
+}
 
 ?>
 
@@ -118,27 +147,27 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 					<!--end::Brand-->
 					<!--begin::Aside Menu-->
 					<div class="aside-menu-wrapper flex-column-fluid" id="kt_aside_menu_wrapper">
-					<!--begin::Menu Container-->
-					<div id="kt_aside_menu" class="aside-menu my-4" data-menu-vertical="1" data-menu-scroll="1" data-menu-dropdown-timeout="500">
-						<!--begin::Menu Nav-->
-						<ul class="menu-nav">
-							<li class="menu-item menu-item-active" aria-haspopup="true">
-								<a href="individual_investor/index.php" class="menu-link">
-									<span class="svg-icon menu-icon">
-										<!--begin::Svg Icon | path:assets/media/svg/icons/Design/Layers.svg-->
-										<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-											<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-												<polygon points="0 0 24 0 24 24 0 24" />
-												<path d="M12.9336061,16.072447 L19.36,10.9564761 L19.5181585,10.8312381 C20.1676248,10.3169571 20.2772143,9.3735535 19.7629333,8.72408713 C19.6917232,8.63415859 19.6104327,8.55269514 19.5206557,8.48129411 L12.9336854,3.24257445 C12.3871201,2.80788259 11.6128799,2.80788259 11.0663146,3.24257445 L4.47482784,8.48488609 C3.82645598,9.00054628 3.71887192,9.94418071 4.23453211,10.5925526 C4.30500305,10.6811601 4.38527899,10.7615046 4.47382636,10.8320511 L4.63,10.9564761 L11.0659024,16.0730648 C11.6126744,16.5077525 12.3871218,16.5074963 12.9336061,16.072447 Z" fill="#000000" fill-rule="nonzero" />
-												<path d="M11.0563554,18.6706981 L5.33593024,14.122919 C4.94553994,13.8125559 4.37746707,13.8774308 4.06710397,14.2678211 C4.06471678,14.2708238 4.06234874,14.2738418 4.06,14.2768747 L4.06,14.2768747 C3.75257288,14.6738539 3.82516916,15.244888 4.22214834,15.5523151 C4.22358765,15.5534297 4.2250303,15.55454 4.22647627,15.555646 L11.0872776,20.8031356 C11.6250734,21.2144692 12.371757,21.2145375 12.909628,20.8033023 L19.7677785,15.559828 C20.1693192,15.2528257 20.2459576,14.6784381 19.9389553,14.2768974 C19.9376429,14.2751809 19.9363245,14.2734691 19.935,14.2717619 L19.935,14.2717619 C19.6266937,13.8743807 19.0546209,13.8021712 18.6572397,14.1104775 C18.654352,14.112718 18.6514778,14.1149757 18.6486172,14.1172508 L12.9235044,18.6705218 C12.377022,19.1051477 11.6029199,19.1052208 11.0563554,18.6706981 Z" fill="#000000" opacity="0.3" />
-											</g>
-										</svg>
-										<!--end::Svg Icon-->
-									</span>
-									<span class="menu-text">Dashboard</span>
-								</a>
-							</li>
-							<li class="menu-section">
+						<!--begin::Menu Container-->
+						<div id="kt_aside_menu" class="aside-menu my-4" data-menu-vertical="1" data-menu-scroll="1" data-menu-dropdown-timeout="500">
+							<!--begin::Menu Nav-->
+							<ul class="menu-nav">
+								<li class="menu-item menu-item-active" aria-haspopup="true">
+									<a href="individual_investor/index.php"  class="menu-link">
+										<span class="svg-icon menu-icon">
+											<!--begin::Svg Icon | path:assets/media/svg/icons/Design/Layers.svg-->
+											<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+												<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+													<polygon points="0 0 24 0 24 24 0 24" />
+													<path d="M12.9336061,16.072447 L19.36,10.9564761 L19.5181585,10.8312381 C20.1676248,10.3169571 20.2772143,9.3735535 19.7629333,8.72408713 C19.6917232,8.63415859 19.6104327,8.55269514 19.5206557,8.48129411 L12.9336854,3.24257445 C12.3871201,2.80788259 11.6128799,2.80788259 11.0663146,3.24257445 L4.47482784,8.48488609 C3.82645598,9.00054628 3.71887192,9.94418071 4.23453211,10.5925526 C4.30500305,10.6811601 4.38527899,10.7615046 4.47382636,10.8320511 L4.63,10.9564761 L11.0659024,16.0730648 C11.6126744,16.5077525 12.3871218,16.5074963 12.9336061,16.072447 Z" fill="#000000" fill-rule="nonzero" />
+													<path d="M11.0563554,18.6706981 L5.33593024,14.122919 C4.94553994,13.8125559 4.37746707,13.8774308 4.06710397,14.2678211 C4.06471678,14.2708238 4.06234874,14.2738418 4.06,14.2768747 L4.06,14.2768747 C3.75257288,14.6738539 3.82516916,15.244888 4.22214834,15.5523151 C4.22358765,15.5534297 4.2250303,15.55454 4.22647627,15.555646 L11.0872776,20.8031356 C11.6250734,21.2144692 12.371757,21.2145375 12.909628,20.8033023 L19.7677785,15.559828 C20.1693192,15.2528257 20.2459576,14.6784381 19.9389553,14.2768974 C19.9376429,14.2751809 19.9363245,14.2734691 19.935,14.2717619 L19.935,14.2717619 C19.6266937,13.8743807 19.0546209,13.8021712 18.6572397,14.1104775 C18.654352,14.112718 18.6514778,14.1149757 18.6486172,14.1172508 L12.9235044,18.6705218 C12.377022,19.1051477 11.6029199,19.1052208 11.0563554,18.6706981 Z" fill="#000000" opacity="0.3" />
+												</g>
+											</svg>
+											<!--end::Svg Icon-->
+										</span>
+										<span class="menu-text">Dashboard</span>
+									</a>
+								</li>
+								<li class="menu-section">
 								<h4 class="menu-text">Manage Account</h4>
 								<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
 							</li>
@@ -190,112 +219,141 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 												<span class="menu-text">Set Requirements</span>
 											</a>
 										</li>
-										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-											<a href="individual_investor/.php" class="menu-link menu-toggle">
-												<span class="svg-icon menu-icon">
-												</span>
-												<span class="menu-text">Set Mode of Payment</span>
-											</a>
-										</li>
 									</ul>
 								</div>
 							</li>
-
 							<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-								<a href="javascript:;" class="menu-link menu-toggle">
-									<span class="svg-icon menu-icon">
-									</span>
-									<span class="menu-text">Loan Application</span>
-									<i class="menu-arrow"></i>
-								</a>
-								<div class="menu-submenu">
-									<i class="menu-arrow"></i>
-									<ul class="menu-subnav">
-										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-											<a href="individual_investor/pending_loan.php" class="menu-link menu-toggle">
-												<i class="menu-bullet">
-													<span></span>
-												</i>
-												<span class="menu-text">Pending Loan</span>
-											</a>
-										</li>
-										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-											<a href="individual_investor/approvedloan.php" class="menu-link menu-toggle">
-												<i class="menu-bullet">
-													<span></span>
-												</i>
-												<span class="menu-text">Approved Loan</span>
-											</a>
-										</li>
-										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-											<a href="individual_investor/.php" class="menu-link menu-toggle">
-												<i class="menu-bullet">
-													<span></span>
-												</i>
-												<span class="menu-text">Declined Loan</span>
-											</a>
-										</li>
-
-									</ul>
-								</div>
-							</li>
-							<li class="menu-section">
-								<h4 class="menu-text">Manage Payment</h4>
-								<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
-							</li>
-							<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-								<a href="javascript:;" class="menu-link menu-toggle">
-									<span class="svg-icon menu-icon">
-									</span>
-									<span class="menu-text">Payment Information</span>
-									<i class="menu-arrow"></i>
-								</a>
-								<div class="menu-submenu">
-									<i class="menu-arrow"></i>
-									<ul class="menu-subnav">
-										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-											<a href="individual_investor/.php" class="menu-link menu-toggle">
-												<i class="menu-bullet">
-													<span></span>
-												</i>
-												<span class="menu-text">Payment Received</span>
-												<span class="menu-label">
-												</span>
-												<i class="menu-arrow"></i>
-											</a>
-										</li>
-										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-											<a href="individual_investor/.php" class="menu-link menu-toggle">
-												<i class="menu-bullet">
-													<span></span>
-												</i>
-												<span class="menu-text">Payment Records</span>
-												<span class="menu-label">
-												</span>
-												<i class="menu-arrow"></i>
-											</a>
-										</li>
-									</ul>
-								</div>
-							</li>
-
-							<li class="menu-section">
-								<h4 class="menu-text">Manage Report</h4>
-								<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
-							</li>
-							<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-								<a href="javascript:;" class="menu-link menu-toggle">
-									<span class="svg-icon menu-icon">
-									</span>
-									<span class="menu-text">Generate Report</span>
-									<i class="menu-arrow"></i>
-								</a>
+									<a href="" class="menu-link menu-toggle">
+										<span class="svg-icon menu-icon">
+										</span>
+										<span class="menu-text">Loan Application</span>
+										<i class="menu-arrow"></i>
+									</a>
+									<div class="menu-submenu">
+										<i class="menu-arrow"></i>
+										<ul class="menu-subnav">
+											<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+												<a href="individual_investor/pending_loan.php" class="menu-link menu-toggle">
+													<i class="menu-bullet">
+														<span></span>
+													</i>
+													<span class="menu-text">Pending Loan</span>
+													<span class="menu-label">
+														<span class="label label-rounded label-primary">6</span>
+													</span>
+													<i class="menu-arrow"></i>
+												</a>
+											</li>
+											<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+												<a href="individual_investor/approvedloan.php" class="menu-link menu-toggle">
+													<i class="menu-bullet">
+														<span></span>
+													</i>
+													<span class="menu-text">Approved Loan</span>
+													<span class="menu-label">
+														<span class="label label-rounded label-primary">6</span>
+													</span>
+													<i class="menu-arrow"></i>
+												</a>
+											</li>
+											<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+												<a href="individual_investor/declined_loan.php" class="menu-link menu-toggle">
+													<i class="menu-bullet">
+														<span></span>
+													</i>
+													<span class="menu-text">Declined Loan</span>
+													<span class="menu-label">
+														<span class="label label-rounded label-primary">6</span>
+													</span>
+													<i class="menu-arrow"></i>
+												</a>
+											</li>
+											
+										</ul>
+									</div>
+								</li>
+								<li class="menu-section">
+									<h4 class="menu-text">Manage Payment</h4>
+									<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
+								</li>
+								<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+									<a href="individual_information/view_payment.php" class="menu-link menu-toggle">
+										<span class="svg-icon menu-icon">
+										</span>
+										<span class="menu-text">Payment Information</span>
+										<i class="menu-arrow"></i>
+									</a>
+									<div class="menu-submenu">
+										<i class="menu-arrow"></i>
+										<ul class="menu-subnav">
+											<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+												<a href="individual_investor/payment_received.php" class="menu-link menu-toggle">
+													<i class="menu-bullet">
+														<span></span>
+													</i>
+													<span class="menu-text">Payment Received</span>
+													<span class="menu-label">
+													</span>
+													<i class="menu-arrow"></i>
+												</a>
+											</li>
+											<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+												<a href="individual_investor/payment_records.php" class="menu-link menu-toggle">
+													<i class="menu-bullet">
+														<span></span>
+													</i>
+													<span class="menu-text">Payment Records</span>
+													<span class="menu-label">
+													</span>
+													<i class="menu-arrow"></i>
+												</a>
+											</li>
+										</ul>
+									</div>
+								</li>
 								
-							</li>
+								<li class="menu-section">
+									<h4 class="menu-text">Manage Report</h4>
+									<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
+								</li>
+								<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+									<a href="javascript:;" class="menu-link menu-toggle">
+										<span class="svg-icon menu-icon">
+										</span>
+										<span class="menu-text">Generate Report</span>
+										<i class="menu-arrow"></i>
+									</a>
+									<div class="menu-submenu">
+										<i class="menu-arrow"></i>
+										<ul class="menu-subnav">
+											<li class="menu-item menu-item-parent" aria-haspopup="true">
+												<span class="menu-link">
+													<span class="menu-text">Themes</span>
+												</span>
+											</li>
+											<li class="menu-item" aria-haspopup="true">
+												<a href="layout/themes/aside-light.html" class="menu-link">
+													<i class="menu-bullet menu-bullet-dot">
+														<span></span>
+													</i>
+													<span class="menu-text">Light Aside</span>
+												</a>
+											</li>
+											<li class="menu-item" aria-haspopup="true">
+												<a href="layout/themes/header-dark.html" class="menu-link">
+													<i class="menu-bullet menu-bullet-dot">
+														<span></span>
+													</i>
+													<span class="menu-text">Dark Header</span>
+												</a>
+											</li>
+										</ul>
+									</div>
+								</li>
 							<!--end::Menu Nav-->
+						</div>
+						<!--end::Menu Container-->
 					</div>
-					<!--end::Menu Container-->
-
 					<!--end::Aside Menu-->
 				</div>
 				<!--end::Aside-->
@@ -312,7 +370,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 									<!--begin::Header Nav-->
 									<ul class="menu-nav">
 										<li class="menu-item menu-item-open menu-item-here menu-item-submenu menu-item-rel menu-item-open menu-item-here menu-item-active" data-menu-toggle="click" aria-haspopup="true">
-										    <h4 class="menu-text" style="color:blue">Welcome to Hulam! <h4>&nbsp;&nbsp;
+										    <h4 class="menu-text" style="color:blue">Welcome to Hulam! <h4>&nbsp;&nbsp;<h6><?php echo $_SESSION['firstname'];?></h6>
 											<i class="menu-arrow"></i>
 										 </li>
 								    </ul>
@@ -909,24 +967,21 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 										<h4 class="text-white font-weight-bold my-1 mr-5">Dashboard |</h4><h5 class="text-white font-weight-bold my-1 mr-5">Individual Investor</h5>
 										<!--end::Page Title-->
 									</div>
+                                    <?php
+                                    if(isset($_SESSION['status'])){
+                                        ?>
+                                        <h4 class="alert alert-success"><?php echo $_SESSION['status'];?></h4>
+                                        <?php
+                                        unset($_SESSION['status']);
+                                    }?>
 									<!--end::Page Heading-->
 								</div>
 								<!--end::Info-->
-								<!--begin::Toolbar-->
-								<div class="d-flex align-items-center flex-wrap">
-									<!--begin::Daterange-->
-									<a href="#" class="btn btn-fixed-height btn-bg-white btn-text-dark-50 btn-hover-text-primary btn-icon-primary font-weight-bolder font-size-sm px-5 my-1 mr-3" id="kt_dashboard_daterangepicker" data-toggle="tooltip" title="Select dashboard daterange" data-placement="top">
-										<span class="opacity-60 font-weight-bolder mr-2" id="kt_dashboard_daterangepicker_title">Today</span>
-										<span class="font-weight-bolder" id="kt_dashboard_daterangepicker_date">Aug 16</span>
-									</a>
-									<!--end::Daterange-->
-								</div>
-								<!--end::Toolbar-->
 							</div>
 						</div>
 						<!--end::Subheader-->
-						<!--begin::Entry-->
-						<div class="d-flex flex-column-fluid">
+							<!--begin::Entry-->
+                            <div class="d-flex flex-column-fluid">
 							<!--begin::Container-->
 							<div class="container">
 								<!--begin::Body-->
@@ -985,120 +1040,115 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 							</div>
 						</div>
 					</div>
-					
-				<!--end::Content-->
-				<!--begin::Footer-->
-				<!-- <div class="footer bg-white py-4 d-flex flex-lg-column" id="kt_footer"> -->
-					<!--begin::Container-->
-					<div class="container d-flex flex-column flex-md-row align-items-center justify-content-between">
-						<!--begin::Copyright-->
-						<!-- <div class="text-dark order-2 order-md-1">
-							<span class="text-muted font-weight-bold mr-2">2021©</span>
-							<a href="https://keenthemes.com/keen" target="_blank" class="text-dark-75 text-hover-primary">The Hulam Team</a>
-						</div> -->
-						<!--end::Copyright-->
-						<!--begin::Nav-->
-						<!-- <div class="nav nav-dark">
-							<a href="https://keenthemes.com/keen" target="_blank" class="nav-link pl-0 pr-2">About</a>
-							<a href="https://keenthemes.com/keen" target="_blank" class="nav-link pr-2">Team</a>
-							<a href="https://keenthemes.com/keen" target="_blank" class="nav-link pr-0">Contact</a>
-						</div> -->
-						<!--end::Nav-->
+
+                    </div>
 					</div>
-				</div>
 					
+							<!--end::Nav-->
+						</div>
+						<!--end::Container-->
+					</div>
+					<!--end::Footer-->
+				</div>
+				<!--end::Wrapper-->
+			</div>
+			<!--end::Page-->
+		</div>
+		<!--end::Main-->
 
 		<!-- begin::User Panel-->
 		<div id="kt_quick_user" class="offcanvas offcanvas-right p-10">
-			<!--begin::Header-->
-			<div class="offcanvas-header d-flex align-items-center justify-content-between pb-5">
-				<h3 class="font-weight-bold m-0">Profile</h3>
+		<!--begin::Header-->
+		<div class="offcanvas-header d-flex align-items-center justify-content-between pb-5">
+			<h3 class="font-weight-bold m-0">Profile
 				<a href="#" class="btn btn-xs btn-icon btn-light btn-hover-primary" id="kt_quick_user_close">
 					<i class="ki ki-close icon-xs text-muted"></i>
 				</a>
-			</div>
-			<!--end::Header-->
-			<!--begin::Content-->
-			<div class="offcanvas-content pr-5 mr-n5">
-				<!--begin::Header-->
-				<div class="d-flex align-items-center mt-5">
-					<div class="symbol symbol-100 mr-5">
-						<div class="symbol-label" style="background-image:url('assets/admin/media/users/icon-company.jpg')"></div>
-						<i class="symbol-badge bg-success"></i>
-					</div>
-					<div class="d-flex flex-column">
-						<a href="#" class="font-weight-bold font-size-h5 text-dark-75 text-hover-primary">Individual Investor</a>
-						<div class="text-muted mt-1"></div>
-						<div class="navi mt-1">
-							<a href="#" class="navi-item">
-								<span class="navi-link p-0 pb-2">
-									<span class="navi-icon mr-1">
-										<span class="svg-icon svg-icon-lg svg-icon-primary">
-											<!--begin::Svg Icon | path:assets/media/svg/icons/Communication/Mail-notification.svg-->
-											<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-												<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-													<rect x="0" y="0" width="24" height="24" />
-													<path d="M21,12.0829584 C20.6747915,12.0283988 20.3407122,12 20,12 C16.6862915,12 14,14.6862915 14,18 C14,18.3407122 14.0283988,18.6747915 14.0829584,19 L5,19 C3.8954305,19 3,18.1045695 3,17 L3,8 C3,6.8954305 3.8954305,6 5,6 L19,6 C20.1045695,6 21,6.8954305 21,8 L21,12.0829584 Z M18.1444251,7.83964668 L12,11.1481833 L5.85557487,7.83964668 C5.4908718,7.6432681 5.03602525,7.77972206 4.83964668,8.14442513 C4.6432681,8.5091282 4.77972206,8.96397475 5.14442513,9.16035332 L11.6444251,12.6603533 C11.8664074,12.7798822 12.1335926,12.7798822 12.3555749,12.6603533 L18.8555749,9.16035332 C19.2202779,8.96397475 19.3567319,8.5091282 19.1603533,8.14442513 C18.9639747,7.77972206 18.5091282,7.6432681 18.1444251,7.83964668 Z" fill="#000000" />
-													<circle fill="#000000" opacity="0.3" cx="19.5" cy="17.5" r="2.5" />
-												</g>
-											</svg>
-											<!--end::Svg Icon-->
-										</span>
-									</span>
-									<span class="navi-text text-muted text-hover-primary">hulamloan@gmail.com</span>
-								</span>
-							</a>
-						</div>
-					</div>
+		</div>
+		<!--end::Header-->
+		<!--begin::Content-->
+		<div class="offcanvas-content pr-5 mr-n5">
+			<!--begin::Header-->
+			<div class="d-flex align-items-center mt-5">
+				<div class="symbol symbol-100 mr-5">
+					<div class="symbol-label" style="background-image:url('assets/admin/media/users/icon-company.jpg')"></div>
+					<i class="symbol-badge bg-success"></i>
 				</div>
-				<!--end::Header-->
-				<!--begin::Separator-->
-				<div class="separator separator-dashed mt-8 mb-5"></div>
-				<!--end::Separator-->
-				<!--begin::Nav-->
-				<div class="navi navi-spacer-x-0 p-0">
-					<!--begin::Item-->
-					<a href="individual_investor/update_profile.php" class="navi-item">
-						<div class="navi-link">
-							<div class="symbol symbol-40 bg-light mr-3">
-								<div class="symbol-label">
-									<span class="svg-icon svg-icon-md svg-icon-danger">
-										<!--begin::Svg Icon | path:assets/media/svg/icons/Communication/Adress-book2.svg-->
+				<div class="d-flex flex-column">
+					<a href="#" class="font-weight-bold font-size-h5 text-dark-75 text-hover-primary">Individual Investor</a>
+					<div class="text-muted mt-1"></div>
+					<div class="navi mt-1">
+						<a href="#" class="navi-item">
+							<span class="navi-link p-0 pb-2">
+								<span class="navi-icon mr-1">
+									<span class="svg-icon svg-icon-lg svg-icon-primary">
+										<!--begin::Svg Icon | path:assets/media/svg/icons/Communication/Mail-notification.svg-->
 										<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
 											<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
 												<rect x="0" y="0" width="24" height="24" />
-												<path d="M18,2 L20,2 C21.6568542,2 23,3.34314575 23,5 L23,19 C23,20.6568542 21.6568542,22 20,22 L18,22 L18,2 Z" fill="#000000" opacity="0.3" />
-												<path d="M5,2 L17,2 C18.6568542,2 20,3.34314575 20,5 L20,19 C20,20.6568542 18.6568542,22 17,22 L5,22 C4.44771525,22 4,21.5522847 4,21 L4,3 C4,2.44771525 4.44771525,2 5,2 Z M12,11 C13.1045695,11 14,10.1045695 14,9 C14,7.8954305 13.1045695,7 12,7 C10.8954305,7 10,7.8954305 10,9 C10,10.1045695 10.8954305,11 12,11 Z M7.00036205,16.4995035 C6.98863236,16.6619875 7.26484009,17 7.4041679,17 C11.463736,17 14.5228466,17 16.5815,17 C16.9988413,17 17.0053266,16.6221713 16.9988413,16.5 C16.8360465,13.4332455 14.6506758,12 11.9907452,12 C9.36772908,12 7.21569918,13.5165724 7.00036205,16.4995035 Z" fill="#000000" />
+												<path d="M21,12.0829584 C20.6747915,12.0283988 20.3407122,12 20,12 C16.6862915,12 14,14.6862915 14,18 C14,18.3407122 14.0283988,18.6747915 14.0829584,19 L5,19 C3.8954305,19 3,18.1045695 3,17 L3,8 C3,6.8954305 3.8954305,6 5,6 L19,6 C20.1045695,6 21,6.8954305 21,8 L21,12.0829584 Z M18.1444251,7.83964668 L12,11.1481833 L5.85557487,7.83964668 C5.4908718,7.6432681 5.03602525,7.77972206 4.83964668,8.14442513 C4.6432681,8.5091282 4.77972206,8.96397475 5.14442513,9.16035332 L11.6444251,12.6603533 C11.8664074,12.7798822 12.1335926,12.7798822 12.3555749,12.6603533 L18.8555749,9.16035332 C19.2202779,8.96397475 19.3567319,8.5091282 19.1603533,8.14442513 C18.9639747,7.77972206 18.5091282,7.6432681 18.1444251,7.83964668 Z" fill="#000000" />
+												<circle fill="#000000" opacity="0.3" cx="19.5" cy="17.5" r="2.5" />
 											</g>
 										</svg>
 										<!--end::Svg Icon-->
 									</span>
-								</div>
-							</div>
-							<div class="navi-text">
-								<div class="font-weight-bold">My Account</div>
-								<div class="text-muted">Profile info
-								<span class="label label-light-danger label-inline font-weight-bold">update</span></div>
+								</span>
+								<span class="navi-text text-muted text-hover-primary"><?= $_SESSION['email'] ?></span>
+							</span>
+						</a>
+					</div>
+				</div>
+			</div>
+			<!--end::Header-->
+			<!--begin::Separator-->
+			<div class="separator separator-dashed mt-8 mb-5"></div>
+			<!--end::Separator-->
+			<!--begin::Nav-->
+			<div class="navi navi-spacer-x-0 p-0">
+				<!--begin::Item-->
+				<a href="individual_investor/update_information.php" class="navi-item">
+					<div class="navi-link">
+						<div class="symbol symbol-40 bg-light mr-3">
+							<div class="symbol-label">
+								<span class="svg-icon svg-icon-md svg-icon-danger">
+									<!--begin::Svg Icon | path:assets/media/svg/icons/Communication/Adress-book2.svg-->
+									<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+										<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+											<rect x="0" y="0" width="24" height="24" />
+											<path d="M18,2 L20,2 C21.6568542,2 23,3.34314575 23,5 L23,19 C23,20.6568542 21.6568542,22 20,22 L18,22 L18,2 Z" fill="#000000" opacity="0.3" />
+											<path d="M5,2 L17,2 C18.6568542,2 20,3.34314575 20,5 L20,19 C20,20.6568542 18.6568542,22 17,22 L5,22 C4.44771525,22 4,21.5522847 4,21 L4,3 C4,2.44771525 4.44771525,2 5,2 Z M12,11 C13.1045695,11 14,10.1045695 14,9 C14,7.8954305 13.1045695,7 12,7 C10.8954305,7 10,7.8954305 10,9 C10,10.1045695 10.8954305,11 12,11 Z M7.00036205,16.4995035 C6.98863236,16.6619875 7.26484009,17 7.4041679,17 C11.463736,17 14.5228466,17 16.5815,17 C16.9988413,17 17.0053266,16.6221713 16.9988413,16.5 C16.8360465,13.4332455 14.6506758,12 11.9907452,12 C9.36772908,12 7.21569918,13.5165724 7.00036205,16.4995035 Z" fill="#000000" />
+										</g>
+									</svg>
+									<!--end::Svg Icon-->
+								</span>
 							</div>
 						</div>
-					</a>
-					<!--begin::Item-->
-					<span class="navi-item mt-2">
-						<span class="navi-link">
-							<a href="logout.php" class="btn btn-sm btn-light-primary font-weight-bolder py-3 px-6">Sign Out</a>
-						</span>
+						<div class="navi-text">
+							<div class="font-weight-bold">My Account</div>
+							<div class="text-muted">Profile info
+								<span class="label label-light-danger label-inline font-weight-bold">update</span>
+							</div>
+						</div>
+					</div>
+				</a>
+				<!--end:Item-->
+				<!--begin::Item-->
+				<span class="navi-item mt-2">
+					<span class="navi-link">
+						<a href="logout.php" class="btn btn-sm btn-light-primary font-weight-bolder py-3 px-6">Sign Out</a>
 					</span>
-					<!--end:Item-->
-				</div>
-				<!--end::Nav-->
-				<!--begin::Separator-->
-				<div class="separator separator-dashed my-7"></div>
-				<!--end::Separator-->
-
-
+				</span>
+				<!--end:Item-->
 			</div>
-			<!--end::Content-->
+			<!--end::Nav-->
+			<!--begin::Separator-->
+			<div class="separator separator-dashed my-7"></div>
+			<!--end::Separator-->
+
+
 		</div>
+		<!--end::Content-->
+	</div>
 		<!-- end::User Panel-->
 
 		<!--begin::Quick Panel-->
@@ -1107,7 +1157,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 			<div class="offcanvas-header offcanvas-header-navs d-flex align-items-center justify-content-between mb-5">
 				<ul class="nav nav-bold nav-tabs nav-tabs-line nav-tabs-line-3x nav-tabs-primary flex-grow-1 px-10" role="tablist">
 					<li class="nav-item">
-						<a class="nav-link" data-toggle="tab" href="#kt_quick_panel_notifications">Notifications</a>
+						<a class="nav-link active" data-toggle="tab" href="#kt_quick_panel_notifications">Notifications</a>
 					</li>
 				</ul>
 				<div class="offcanvas-close mt-n1 pr-5">
@@ -1120,18 +1170,19 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 			<!--begin::Content-->
 			<div class="offcanvas-content px-10">
 				<div class="tab-content">
+						<!--begin::Nav-->
 						<div class="navi navi-icon-circle navi-spacer-x-0">
 							<!--begin::Item-->
 							<a href="#" class="navi-item">
 								<div class="navi-link rounded">
 									<div class="symbol symbol-50 mr-3">
 										<div class="symbol-label">
-											<i class="flaticon-bell text-success icon-lg"></i>
+											<i class="flaticon-safe-shield-protection text-danger icon-lg"></i>
 										</div>
 									</div>
 									<div class="navi-text">
-										<div class="font-weight-bold font-size-lg">5 new user generated report</div>
-										<div class="text-muted">Reports based on sales</div>
+										<div class="font-weight-bold font-size-lg">3 Defence alerts</div>
+										<div class="text-muted">40% less alerts thar last week</div>
 									</div>
 								</div>
 							</a>
@@ -1141,18 +1192,90 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 								<div class="navi-link rounded">
 									<div class="symbol symbol-50 mr-3">
 										<div class="symbol-label">
-											<i class="flaticon2-box text-danger icon-lg"></i>
+											<i class="flaticon-notepad text-primary icon-lg"></i>
 										</div>
 									</div>
 									<div class="navi-text">
-										<div class="font-weight-bold font-size-lg">2 new items submited</div>
-										<div class="text-muted">by Grog John</div>
+										<div class="font-weight-bold font-size-lg">Avarage 4 blog posts per author</div>
+										<div class="text-muted">Most posted 12 time</div>
 									</div>
 								</div>
 							</a>
 							<!--end::Item-->
+							<!--begin::Item-->
+							<a href="#" class="navi-item">
+								<div class="navi-link rounded">
+									<div class="symbol symbol-50 mr-3">
+										<div class="symbol-label">
+											<i class="flaticon-users-1 text-warning icon-lg"></i>
+										</div>
+									</div>
+									<div class="navi-text">
+										<div class="font-weight-bold font-size-lg">16 authors joined last week</div>
+										<div class="text-muted">9 photodrapehrs, 7 designer</div>
+									</div>
+								</div>
+							</a>
+							<!--end::Item-->	
 						</div>
 						<!--end::Nav-->
+					</div>
+					<!--end::Tabpane-->
+					<!--begin::Tabpane-->
+					<div class="tab-pane fade pt-3 pr-5 mr-n5" id="kt_quick_panel_settings" role="tabpanel">
+						<form class="form">
+							<!--begin::Section-->
+							<div class="pt-1">
+								<h4 class="mb-7">Privacy Settings:</h4>
+								<div class="pb-5">
+									<div class="checkbox-inline mb-2">
+										<label class="checkbox">
+										<input type="checkbox" />
+										<span></span>You have new notifications.</label>
+									</div>
+									<div class="checkbox-inline mb-2">
+										<label class="checkbox">
+										<input type="checkbox" />
+										<span></span>You're sent a direct message</label>
+									</div>
+									<div class="checkbox-inline mb-2">
+										<label class="checkbox">
+										<input type="checkbox" checked="checked" />
+										<span></span>Someone adds you as a connection</label>
+									</div>
+									<div class="checkbox-inline mb-2">
+										<label class="checkbox checkbox-success">
+										<input type="checkbox" />
+										<span></span>Upon new order</label>
+									</div>
+									<div class="checkbox-inline mb-2">
+										<label class="checkbox checkbox-success">
+										<input type="checkbox" />
+										<span></span>New membership approval</label>
+									</div>
+								</div>
+								<!--begin::Group-->
+								<div class="text-muted">After you log in, you will be asked for additional information to confirm your identity.</div>
+								<!--end::Group-->
+							</div>
+							<!--end::Section-->
+							<div class="separator separator-dashed my-8"></div>
+							<!--begin::Section-->
+							<div class="pt-1">
+								<h4 class="mb-7">Security Settings:</h4>
+								<div class="pb-5">
+									<div class="checkbox-inline">
+										<label class="checkbox mb-2">
+										<input type="checkbox" />
+										<span></span>Personal information safety</label>
+									</div>
+									<p class="form-text text-muted pb-5 mb-0">After you log in, you will be asked for additional information to confirm your identity. For extra security, this requires you to confirm your email.
+									<a href="#" class="font-weight-bold">Learn more</a>.</p>
+									<button type="button" class="btn btn-light-danger font-weight-bolder btn-sm">Setup login verification</button>
+								</div>
+							</div>
+							<!--end::Section-->
+						</form>
 					</div>
 					<!--end::Tabpane-->
 				</div>
@@ -1526,107 +1649,6 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 				</a>
 			</div>
 			<!--end::Header-->
-			<!--begin::Content-->
-			<div class="offcanvas-content">
-				<!--begin::Wrapper-->
-				<div class="offcanvas-wrapper mb-5 scroll-pull">
-					<h5 class="font-weight-bold mb-4 text-center">Demo 1</h5>
-					<div class="overlay rounded-lg mb-8 offcanvas-demo offcanvas-demo-active">
-						<div class="overlay-wrapper rounded-lg">
-							<img src="assets/media/demos/demo1.png" alt="" class="w-100" />
-						</div>
-						<div class="overlay-layer">
-							<a href="../../demo1/dist" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">HTML</a>
-							<a href="https://preview.keenthemes.com/keen/demo1/rtl/index.html" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">RTL</a>
-						</div>
-					</div>
-					<h5 class="font-weight-bold mb-4 text-center">Demo 2</h5>
-					<div class="overlay rounded-lg mb-8 offcanvas-demo">
-						<div class="overlay-wrapper rounded-lg">
-							<img src="assets/media/demos/demo2.png" alt="" class="w-100" />
-						</div>
-						<div class="overlay-layer">
-							<a href="../../demo2/dist" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">HTML</a>
-							<a href="https://preview.keenthemes.com/keen/demo2/rtl/index.html" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">RTL</a>
-						</div>
-					</div>
-					<h5 class="font-weight-bold mb-4 text-center">Demo 3</h5>
-					<div class="overlay rounded-lg mb-8 offcanvas-demo">
-						<div class="overlay-wrapper rounded-lg">
-							<img src="assets/media/demos/demo3.png" alt="" class="w-100" />
-						</div>
-						<div class="overlay-layer">
-							<a href="../../demo3/dist" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">HTML</a>
-							<a href="https://preview.keenthemes.com/keen/demo3/rtl/index.html" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">RTL</a>
-						</div>
-					</div>
-					<h5 class="font-weight-bold mb-4 text-center">Demo 4</h5>
-					<div class="overlay rounded-lg mb-8 offcanvas-demo">
-						<div class="overlay-wrapper rounded-lg">
-							<img src="assets/media/demos/demo4.png" alt="" class="w-100" />
-						</div>
-						<div class="overlay-layer">
-							<a href="../../demo4/dist" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">HTML</a>
-							<a href="https://preview.keenthemes.com/keen/demo4/rtl/index.html" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">RTL</a>
-						</div>
-					</div>
-					<h5 class="font-weight-bold mb-4 text-center">Demo 5</h5>
-					<div class="overlay rounded-lg mb-8 offcanvas-demo">
-						<div class="overlay-wrapper rounded-lg">
-							<img src="assets/media/demos/demo5.png" alt="" class="w-100" />
-						</div>
-						<div class="overlay-layer">
-							<a href="../../demo5/dist" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">HTML</a>
-							<a href="https://preview.keenthemes.com/keen/demo5/rtl/index.html" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">RTL</a>
-						</div>
-					</div>
-					<h5 class="font-weight-bold mb-4 text-center">Demo 6</h5>
-					<div class="overlay rounded-lg mb-8 offcanvas-demo">
-						<div class="overlay-wrapper rounded-lg">
-							<img src="assets/media/demos/demo6.png" alt="" class="w-100" />
-						</div>
-						<div class="overlay-layer">
-							<a href="../../demo6/dist" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">HTML</a>
-							<a href="https://preview.keenthemes.com/keen/demo6/rtl/index.html" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">RTL</a>
-						</div>
-					</div>
-					<h5 class="font-weight-bold mb-4 text-center">Demo 7</h5>
-					<div class="overlay rounded-lg mb-8 offcanvas-demo">
-						<div class="overlay-wrapper rounded-lg">
-							<img src="assets/media/demos/demo7.png" alt="" class="w-100" />
-						</div>
-						<div class="overlay-layer">
-							<a href="../../demo7/dist" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">HTML</a>
-							<a href="https://preview.keenthemes.com/keen/demo7/rtl/index.html" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">RTL</a>
-						</div>
-					</div>
-					<h5 class="font-weight-bold mb-4 text-center">Demo 8</h5>
-					<div class="overlay rounded-lg mb-8 offcanvas-demo">
-						<div class="overlay-wrapper rounded-lg">
-							<img src="assets/media/demos/demo8.png" alt="" class="w-100" />
-						</div>
-						<div class="overlay-layer">
-							<a href="#" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow disabled opacity-90">Coming soon</a>
-						</div>
-					</div>
-					<h5 class="font-weight-bold mb-4 text-center">Demo 9</h5>
-					<div class="overlay rounded-lg mb-8 offcanvas-demo">
-						<div class="overlay-wrapper rounded-lg">
-							<img src="assets/media/demos/demo9.png" alt="" class="w-100" />
-						</div>
-						<div class="overlay-layer">
-							<a href="#" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow disabled opacity-90">Coming soon</a>
-						</div>
-					</div>
-				</div>
-				<!--end::Wrapper-->
-				<!--begin::Purchase-->
-				<div class="offcanvas-footer">
-					<a href="https://themes.getbootstrap.com/product/keen-the-ultimate-bootstrap-admin-theme/" target="_blank" class="btn btn-block btn-danger btn-shadow font-weight-bolder text-uppercase">Buy Keen Now!</a>
-				</div>
-				<!--end::Purchase-->
-			</div>
-			<!--end::Content-->
 		</div>
 		<!--end::Demo Panel-->
 		<script>var HOST_URL = "https://preview.keenthemes.com/keen/theme/tools/preview";</script>
@@ -1643,6 +1665,37 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 		<!--end::Page Vendors-->
 		<!--begin::Page Scripts(used by this page)-->
 		<script src="assets/admin/js/pages/widgets.js"></script>
+        <script src="assets/keen/js/pages/features/file-upload/image-input.js"></script>
+        <script scr="https://code.jquery.com/jquery-3.6.0.js"></script>
+        <script>
+            $(document).ready(function(){
+                $(document).on('click','.remove-btn', function(){
+                    $(this).closest('.pb-5').remove();
+                });
+                $(document).on('click','.add-more-form', function(){
+                    $('.paste-new-forms').append('<div class="pb-5" data-wizard-type="step-content" data-wizard-state="current">\
+                                <div class="row">\
+                                    <div class="col-lg-6">\
+                                        <div class="form-group">\
+                                            <input type="text" class="form-control" name="req_name[]" autocomplete="off">\
+                                        </div>\
+                                    </div>\
+                                    <div class="col-lg-4">\
+                                        <div class="form-group">\
+                                            <input type="text" class="form-control" name="remarks[]" autocomplete="off">\
+                                        </div>\
+                                    </div>\
+                                    <div class="col-lg-2">\
+                                        <div class="form-group">\
+                                            <button type="button" class="remove-btn btn btn-danger">Remove</button>\
+                                        </div>\
+                                    </div>\
+                                </div>\
+                            </div>');
+                            
+                });
+             });
+        </script>
 		<!--end::Page Scripts-->
 	</body>
 	<!--end::Body-->

@@ -3,10 +3,6 @@ session_start();
 error_reporting(-1);
 include('../db_connection/config.php');
 
-if ($_SESSION['user_type'] != 1) {
-	header('location: ../index.php');
-}
-
 
 ?>
 
@@ -26,7 +22,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 -->
 <html lang="en">
 	<!--begin::Head-->
-	<head><base href="../index.php">
+	<head><base href="../">
 		<meta charset="utf-8" />
 		<title>Hulam | Admin | Dashboard</title>
 		<meta name="description" content="Updates and statistics" />
@@ -186,7 +182,6 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 										</ul>
 									</div>
 								</li>
-								
 								<li class="menu-section">
 									<h4 class="menu-text">Manage Report</h4>
 									<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
@@ -849,154 +844,60 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 						</div>
 						<!--end::Subheader-->
 						<!--begin::Entry-->
-						<div class="d-flex flex-column-fluid">
+                        <div class="d-flex flex-column-fluid" >
 							<!--begin::Container-->
-							<div class="container">
-								<!--begin::Dashboard-->
-								<!--begin::Row-->
-								<div class="row">
-									<div class="col-lg-4">
-										<!--begin::Card-->
-										<div class="card card-custom gutter-b">
-											<div class="card-header">
-												<div class="card-title">
-													<h3 class="card-label">Debtors</h3>	
-												</div>
-											</div>
-											<div class="card-body">
-											<div class="card-body d-flex align-items-center justify-content-between pt-7 flex-wrap">
-												<span class="font-weight-bolder display5 text-dark-75 py-4 pl-5 pr-5">
-													<p class="text-primary font-size-h2 font-weight-bolder pt-3 mb-0">
+							<div class="container" >
+								<div class="card card-custom">
+									<div class="card-body p-0">
+										<!--begin: Wizard Body-->
+										<div class="wizard-body py-8 px-8 py-lg-20 px-lg-10">
+											<!--begin: Wizard Form-->
+											<div class="row">
+												<div class="offset-xxl-2 col-xxl-8">
+												<h5 class="mb-10 font-weight-bold text-dark">List of Debtors</5>	
+                                                <form action="" method="POST" id="kt_form" enctype="multipart/form-data">
+                                                <table class="table table-bordered">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Name</th>
+                                                            <th>Email</th>
+                                                            <th>Contact No.</th>
+                                                            <th>Current Address</th>
+                                                            <th>Status</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
 													<?php
-														$sql = "SELECT COUNT(*) AS debtor FROM user WHERE user_type ='2'";
-														$result= mysqli_query($conn,$sql);
-														$res = mysqli_fetch_array($result);
-														
-														echo $res['debtor'];
-													?>
-													
-
-													</p>
-											</div>
-											</div>
-										</div>
-										<!--end::Card-->
-									</div>
-									<div class="col-lg-4">
-										<!--begin::Card-->
-										<div class="card card-custom gutter-b">
-											<div class="card-header">
-												<div class="card-title">
-													<h3 class="card-label">Lending Company Investor</h3>
-												</div>
-											</div>
-											<div class="card-body">
-											<div class="card-body d-flex align-items-center justify-content-between pt-7 flex-wrap">
-												<span class="font-weight-bolder display5 text-dark-75 py-4 pl-5 pr-5">
-													<p class="text-primary font-size-h2 font-weight-bolder pt-3 mb-0">
-													<?php
-														$sql = "SELECT COUNT(*) AS investor FROM user WHERE user_type ='3'AND eligible='yes'";
-														$result= mysqli_query($conn,$sql);
-														$res = mysqli_fetch_array($result);
-														
-														echo $res['investor'];
-													?>
-
-													</p>
-											</div>
-											</div>
-										</div>
-										<!--end::Card-->
-									</div>
-									<div class="col-lg-4">
-										<!--begin::Card-->
-										<div class="card card-custom gutter-b">
-											<div class="card-header">
-												<div class="card-title">
-													<h3 class="card-label">Individual Investors</h3>
-												</div>
-											</div>
-											<div class="card-body">
-											<div class="card-body d-flex align-items-center justify-content-between pt-7 flex-wrap">
-												<span class="font-weight-bolder display5 text-dark-75 py-4 pl-5 pr-5">
-													<p class="text-primary font-size-h2 font-weight-bolder pt-3 mb-0">
-													<?php
-													$sql = "SELECT COUNT(*) AS investor FROM user WHERE user_type ='4' AND eligible='yes'";
-													$result= mysqli_query($conn,$sql);
-													$res = mysqli_fetch_array($result);
-													
-													echo $res['investor'];
-												?>
-													
-													</p>
-											</div>
-											</div>
-										</div>
-										<!--end::Card-->
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-lg-4">
-										<!--begin::Stats Widget 1-->
-										<div class="card card-custom card-stretch gutter-b">
-											<!--begin::Header-->
-											<div class="card-header border-0 pt-6">
-												<h3 class="card-title">
-													<span class="card-label font-weight-bolder font-size-h4 text-dark-75">Payment Centers</span>
-												</h3>
-											</div>
-											<!--end::Header-->
-											<div class="card-body">
-											<div class="card-body d-flex align-items-center justify-content-between pt-7 flex-wrap">
-												<span class="font-weight-bolder display5 text-dark-75 py-4 pl-5 pr-5">
-													<p class="text-primary font-size-h2 font-weight-bolder pt-3 mb-0">
-													<?php
-														$sql = "SELECT COUNT(*) AS ps FROM user WHERE user_type ='5' AND eligible='yes'";
-														$result= mysqli_query($conn,$sql);
-														$res = mysqli_fetch_array($result);
-														
-														echo $res['ps'];
-													?>
-
-													</p>
-											</div>
-											</div>
-										</div>
-										<!--end::Stats Widget 1-->
-									</div>
-									<div class="col-lg-4">
-										<!--begin::Stats Widget 1-->
-										<div class="card card-custom card-stretch gutter-b">
-											<!--begin::Header-->
-											<div class="card-header border-0 pt-6">
-												<h3 class="card-title">
-													<span class="card-label font-weight-bolder font-size-h4 text-dark-75"> Accounts for Approval</span>
-												</h3>
-											</div>
-											<div class="card-body">
-											<div class="card-body d-flex align-items-center justify-content-between pt-7 flex-wrap">
-												<span class="font-weight-bolder display5 text-dark-75 py-4 pl-5 pr-5">
-													<p class="text-primary font-size-h2 font-weight-bolder pt-3 mb-0">
-													<?php
-														$sql = "SELECT COUNT(*) AS accounts FROM user WHERE eligible='no' AND user_type!='1'";
-														$result= mysqli_query($conn,$sql);
-														$res = mysqli_fetch_array($result);
-														
-														echo $res['accounts'];
-													?>
-
-													</p>
-											</div>
-											</div>
-										</div>
-										<!--end::Stats Widget 1-->
-									</div>
-								</div>
-								<!--end::Row-->
-								<!--end::Dashboard-->
-							</div>
-							<!--end::Container-->
-						</div>
+                                                        $sql = "SELECT  * FROM user WHERE user_type = '2'";
+                                                        $query = $dbh->prepare($sql);
+                                                        $query->execute();
+                                                        $res = $query->fetchAll(PDO::FETCH_OBJ);
+                                                        if ($query->rowCount() > 0) {
+                                                            foreach ($res as $rem) { ?>
+                                                        <tr>
+                                                            <td><?= htmlentities($rem->firstname); ?>&nbsp;<?= htmlentities($rem->middlename); ?>&nbsp;<?= htmlentities($rem->lastname); ?></td>
+                                                            <td><?= htmlentities($rem->email); ?></td>
+															<td><?= htmlentities($rem->mobile); ?><br><?= htmlentities($rem->landline); ?> </td>
+															<td><?= htmlentities($rem->c_street); ?>&nbsp;<?= htmlentities($rem->c_barangay); ?>&nbsp;<?= htmlentities($rem->c_city); ?>&nbsp;<?= htmlentities($rem->c_province); ?>&nbsp;<?= htmlentities($rem->c_zipcode); ?></td>
+                                                            <td>
+                                                                <a href="admin/view_information.php?req_id=<?= htmlentities($rem->req_id) ?>" class="kt-nav__link">
+                                                                    <span class="kt-nav__link-text">Show</span>
+                                                                </a>
+                                                            </td>
+                                                        </tr>
+                                                        <?php }} ?>
+                                                    </tbody>
+                                                        
+                                                    </tbody>
+                                                </table>     
+                                                </form >    
+                               					</div>
+                            				</div>
+                            				<!--end::Content-->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 						<!--end::Entry-->
 					</div>
 					<!--end::Content-->
@@ -1080,7 +981,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 				<!--begin::Nav-->
 				<div class="navi navi-spacer-x-0 p-0">
 					<!--begin::Item-->
-					<a href="custom/apps/user/profile-1/personal-information.html" class="navi-item">
+					<a href="#" class="navi-item">
 						<div class="navi-link">
 							<div class="symbol symbol-40 bg-light mr-3">
 								<div class="symbol-label">
@@ -1511,59 +1412,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 					<!--end::Tabpane-->
 					<!--begin::Tabpane-->
 					<div class="tab-pane fade pt-3 pr-5 mr-n5" id="kt_quick_panel_settings" role="tabpanel">
-						<form class="form">
-							<!--begin::Section-->
-							<div class="pt-1">
-								<h4 class="mb-7">Privacy Settings:</h4>
-								<div class="pb-5">
-									<div class="checkbox-inline mb-2">
-										<label class="checkbox">
-										<input type="checkbox" />
-										<span></span>You have new notifications.</label>
-									</div>
-									<div class="checkbox-inline mb-2">
-										<label class="checkbox">
-										<input type="checkbox" />
-										<span></span>You're sent a direct message</label>
-									</div>
-									<div class="checkbox-inline mb-2">
-										<label class="checkbox">
-										<input type="checkbox" checked="checked" />
-										<span></span>Someone adds you as a connection</label>
-									</div>
-									<div class="checkbox-inline mb-2">
-										<label class="checkbox checkbox-success">
-										<input type="checkbox" />
-										<span></span>Upon new order</label>
-									</div>
-									<div class="checkbox-inline mb-2">
-										<label class="checkbox checkbox-success">
-										<input type="checkbox" />
-										<span></span>New membership approval</label>
-									</div>
-								</div>
-								<!--begin::Group-->
-								<div class="text-muted">After you log in, you will be asked for additional information to confirm your identity.</div>
-								<!--end::Group-->
-							</div>
-							<!--end::Section-->
-							<div class="separator separator-dashed my-8"></div>
-							<!--begin::Section-->
-							<div class="pt-1">
-								<h4 class="mb-7">Security Settings:</h4>
-								<div class="pb-5">
-									<div class="checkbox-inline">
-										<label class="checkbox mb-2">
-										<input type="checkbox" />
-										<span></span>Personal information safety</label>
-									</div>
-									<p class="form-text text-muted pb-5 mb-0">After you log in, you will be asked for additional information to confirm your identity. For extra security, this requires you to confirm your email.
-									<a href="#" class="font-weight-bold">Learn more</a>.</p>
-									<button type="button" class="btn btn-light-danger font-weight-bolder btn-sm">Setup login verification</button>
-								</div>
-							</div>
-							<!--end::Section-->
-						</form>
+						
 					</div>
 					<!--end::Tabpane-->
 				</div>
