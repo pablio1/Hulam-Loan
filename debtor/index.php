@@ -1,6 +1,6 @@
 <?php
 session_start();
-// error_reporting(0);
+error_reporting(0);
 include('../db_connection/config.php');
 
 if ($_SESSION['user_type'] != 2) {
@@ -358,7 +358,7 @@ if($sql->rowCount()== 0){
 														<div class="d-flex align-items-center">
 															<div class="d-flex flex-column">
 																<a href="#" class="text-dark-75 text-hover-primary font-weight-bolder font-size-h5">Balance Due</a>
-																<span class="font-weight-bolder text-primary">Due date <?= date('M d, Y', strtotime($loan['date'] . ' + 1 month')) ?> 08:00 AM</span>
+																<span class="font-weight-bolder text-primary">as of <?= date('M d, Y', strtotime($loan['date'] . ' + 1 month')) ?> 08:00 AM</span>
 															</div>
 														</div>
 														<div class="card-footer d-flex align-items-center justify-content-between flex-wrap py-4">

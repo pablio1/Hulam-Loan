@@ -6,27 +6,19 @@ include('../db_connection/config.php');
 if ($_SESSION['user_type'] != 2) {
 	header('location: ../index.php');
 }
+?>
+<?php
 
-$sql = $dbh->prepare('SELECT * FROM user INNER JOIN loan_features ON user.user_id = loan_features.lender_id WHERE user_id = :user_id');
-$sql->execute(['user_id' => $_GET['id']]);
-$lender = $sql->fetch();
+$id = intval($_GET['lender_id']);
+
+$sql = "SELECT * FROM loan_features INNER JOIN user ON loan_features.lender_id = user.user_id WHERE loan_features.lender_id = $id";
+$query = $dbh->prepare($sql);
+$query->execute();
+$lender = $query->fetch();
 
 ?>
 
-
 <!DOCTYPE html>
-<!--
-Template Name: Keen - The Ultimate Bootstrap 4 HTML Admin Dashboard Theme
-Author: KeenThemes
-Website: http://www.keenthemes.com/
-Contact: support@keenthemes.com
-Follow: www.twitter.com/keenthemes
-Dribbble: www.dribbble.com/keenthemes
-Like: www.facebook.com/keenthemes
-Purchase: https://themes.getbootstrap.com/product/keen-the-ultimate-bootstrap-admin-theme/
-Support: https://keenthemes.com/theme-support
-License: You must have a valid license purchased only from themes.getbootstrap.com(the above link) in order to legally use the theme for your project.
--->
 <html lang="en">
 <!--begin::Head-->
 
@@ -46,6 +38,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 	<link href="assets/keen/plugins/global/plugins.bundle.css" rel="stylesheet" type="text/css" />
 	<link href="assets/keen/plugins/custom/prismjs/prismjs.bundle.css" rel="stylesheet" type="text/css" />
 	<link href="assets/keen/css/style.bundle.css" rel="stylesheet" type="text/css" />
+
 	<!--end::Global Theme Styles-->
 	<!--begin::Layout Themes(used by all pages)-->
 	<!--end::Layout Themes-->
@@ -186,38 +179,6 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 				<!--begin::Container-->
 				<div class="container">
 
-					<div class="col-12">
-						<div class="form-group">
-							<div class="card card-custom card-stretch card-stretch-half gutter-b">
-								<div class="card-body d-flex flex-column">
-									<div class="d-flex align-items-center">
-										<div class="d-flex flex-column">
-											<h4>Calculate Amount</h4>
-										</div>
-									</div>
-									<form method="get" autocomplete="off">
-										<input type="hidden" name="id" value="<?= $_GET['id'] ?>">
-										<div class="row">
-											<div class="col-lg-4">
-												<div class="form-group">
-													<input class="form-control" type="number" name="amount" value="<?= isset($_GET['amount']) ? $_GET['amount'] : '' ?>" placeholder="Enter Loan Amount" required />
-												</div>
-											</div>
-											<div class="col-lg-4">
-												<div class="form-group">
-													<input class="form-control" type="number" name="month" value="<?= isset($_GET['month']) ? $_GET['month'] : '' ?>" placeholder="Months To Pay" required />
-												</div>
-											</div>
-											<div class="col-lg-2">
-												<button type="submit" class="btn btn-primary btn-block font-weight-bolder">Show</button>
-											</div>
-										</div>
-									</form>
-								</div>
-							</div>
-						</div>
-					</div>
-
 					<div class="d-flex flex-column-fluid">
 						<div class="container">
 							<!-- begin::Card-->
@@ -225,235 +186,394 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 								<div class="card-body p-0">
 									<div class="card card-custom gutter-b">
 										<div class="card-body">
-											<div class="d-flex">
-												<div class="flex-shrink-0 mr-7">
-													<div class="symbol symbol-50 symbol-lg-120 symbol-circle">
-														<img alt="Pic" src="assets/keen/media//logos/<?= $lender['image'] ?>" />
+											<form action="debtor/logic/apply_loan.php" method="post" enctype="multipart/form-data">
+												<div class="d-flex">
+													<div class="flex-shrink-0 mr-7">
+														<div class="symbol symbol-50 symbol-lg-120 symbol-circle">
+															<img alt="Pic" src="/hulam/assets/keen/company_logo/<?= $lender['company_logo'] ?>" />
+														</div>
 													</div>
-												</div>
-												<div class="flex-grow-1">
-													<div class="d-flex align-items-center justify-content-between flex-wrap mt-2">
-														<div class="mr-3">
-															<a href="#" class="d-flex align-items-center text-dark text-hover-primary font-size-h5 font-weight-bold mr-3"><?= $lender['company_name'] ?></a>
-															<div class="d-flex flex-wrap my-2">
-																<a href="<?= $lender['website'] ?>" target="_blank" class="text-muted text-hover-primary font-weight-bold mr-lg-8 mr-5 mb-lg-0 mb-2">
-																	<span class="svg-icon svg-icon-md svg-icon-gray-500 mr-1">
-																	</span>View site >>
-																</a>
+													<div class="flex-grow-1">
+														<div class="d-flex align-items-center justify-content-between flex-wrap mt-2">
+															<div class="mr-3">
+																<a href="#" class="d-flex align-items-center text-dark text-hover-primary font-size-h5 font-weight-bold mr-3"><?= $lender['company_name'] ?></a>
+															</div>
+															<div class="my-lg-0 my-1">
+																<a href="debtor/apply_now.php" class="btn btn-sm btn-light-primary font-weight-bolder mr-2">
+																	<< Back</a>
 															</div>
 														</div>
-														<div class="my-lg-0 my-1">
-															<a href="debtor/apply_now.php" class="btn btn-sm btn-light-primary font-weight-bolder mr-2">
-																<< Back</a>
-																	<!-- <a href="debtor/update_information.php" class="btn btn-sm btn-primary font-weight-bolder">Apply Now</a> -->
-														</div>
-													</div>
-													<div class="d-flex align-items-center flex-wrap justify-content-between">
-														<div class="flex-grow-1 font-weight-bold text-dark-50 py-2 py-lg-2 mr-5">
-															<?= $lender['description'] ?>
+														<div class="d-flex align-items-center flex-wrap justify-content-between">
+															<div class="flex-grow-1 font-weight-bold text-dark-50 py-2 py-lg-2 mr-5">
+																<?= $lender['description'] ?>
+															</div>
 														</div>
 													</div>
 												</div>
-											</div>
-											<div class="separator separator-solid my-7"></div>
-											<div class="d-flex align-items-center flex-wrap">
-												<div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
-													<div class="d-flex flex-column text-dark-75">
+												<div class="separator separator-solid my-7"></div>
+												<div class="d-flex align-items-center flex-wrap">
+													<div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
+														<div class="d-flex flex-column text-dark-75">
+															<span class="font-weight-bolder font-size-m">Loan Amount</span>
+															<span class="font-weight-bolder font-size-h5">
+																<span class="text-dark-50 font-weight-bold">Php &nbsp;</span>
+																<?php
+																if (!isset($_GET['amount'])) {
+																	echo '0.00';
+																} else {
+																	echo number_format($_GET['amount'], 2);
+																}
+																?>
 
-														<span class="font-weight-bolder font-size-m">Principal Amount</span>
-														<span class="font-weight-bolder font-size-h5">
-															<span class="text-dark-50 font-weight-bold">Php &nbsp;</span>
+															</span>
+														</div>
+													</div>
+													<div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
+														<div class="d-flex flex-column text-dark-75">
+															<span class="font-weight-bolder font-size-m">Loan Term</span>
+															<span class="font-weight-bolder font-size-h5">
+																<?= $_GET['month'] ?><span class="text-dark-50 font-weight-bold">&nbsp; Months</span>
+														</div>
+													</div>
+													<div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
+														<div class="d-flex flex-column text-dark-75">
+															<span class="font-weight-bolder font-size-m">Interest Rate</span>
+															<span class="font-weight-bolder font-size-h5">
+																<span class="text-dark-50 font-weight-bold"></span><?= $lender['fix_rate'] ?>%</span>
+														</div>
+													</div>
+												</div>
+												<div class="separator separator-solid my-7"></div>
+												<div class="d-flex align-items-center flex-wrap">
+													<div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
+														<div class="d-flex flex-column text-dark-75">
+
+															<span class="font-weight-bolder font-size-sm">Total Amount to Pay</span>
+															<span class="font-weight-bolder font-size-h5">
+																<span class="text-dark-50 font-weight-bold">Php &nbsp;</span>
+																<?php
+																if (!isset($_GET['amount'])) {
+																	echo '0.00';
+																} else {
+																	if ($lender['user_type'] == 4) {
+																		$amount = $_GET['amount'];
+																		$month = $_GET['month'];
+
+																		$initial_interest = $amount * ($lender['fix_rate'] / 100);
+																		//500 * (10 /100) = 50
+																		$total_interest = $initial_interest * $month;
+																		// 50 * 1 = 50
+																		$total = $total_interest + $amount;
+																		// 50 + 500 = 550
+																		echo number_format($total, 2);
+																	} else {
+																		$amount = $_GET['amount'];
+																		$month = $_GET['month'];
+
+																		$initial = $amount * ($lender['fix_rate'] / 100);
+																		//30000 * (3 /100) = 900
+																		$interest2 = $initial * $month;
+																		// 900 * 12 = 10, 800
+																		$total2 = $amount + $interest2;
+																		// 30000 + 10800
+																		echo number_format($total2, 2); //40800
+																	}
+																}
+																?>
+															</span>
+														</div>
+													</div>
+													<div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
+														<div class="d-flex flex-column text-dark-75">
+
+															<span class="font-weight-bolder font-size-sm">Monthly Payment</span>
+															<span class="font-weight-bolder font-size-h5">
+																<span class="text-dark-50 font-weight-bold">Php &nbsp;</span>
+																<?php
+																if (!isset($_GET['amount'])) {
+																	echo '0.00';
+																} else {
+																	if ($lender['user_type'] == 4) {
+																		$amount = $_GET['amount'];
+																		$month = $_GET['month'];
+																		$new_rate = $month * ($lender['fix_rate'] / 100);
+																		//1 * 10/100 = 0.1
+																		$initial_amount = $amount * $new_rate;
+																		//500 * 0.1 = 50
+																		$add_interest = $initial_amount + $amount;
+																		//50 + 500 = 550
+																		echo number_format($add_interest / $month, 2);
+																		//550 /1 = 550
+																	} else {
+																		$amount = $_GET['amount'];
+																		$month = $_GET['month'];
+																		//30000
+																		$initial_amount =  $amount * ($lender['fix_rate'] / 100);
+																		//30000 * 0.03 = 900
+																		$add_interest = $amount / $month;
+																		//30000 / 12 =2500
+																		echo number_format($add_interest + $initial_amount, 2);
+																		//2500 + 900 = 3400
+																	}
+																}
+																?>
+															</span>
+														</div>
+													</div>
+													<div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
+														<div class="d-flex flex-column text-dark-75">
+															<span class="font-weight-bolder font-size-sm">Total Interest to Pay</span>
+															<span class="font-weight-bolder font-size-h5">
+																<span class="text-dark-50 font-weight-bold">Php &nbsp;</span>
+																<?php
+																if (!isset($_GET['amount'])) {
+																	echo '0.00';
+																} else {
+																	if ($lender['user_type'] == 4) {
+																		$amount = $_GET['amount'];
+																		$month = $_GET['month'];
+																		$new_rate = $amount * ($lender['fix_rate'] / 100); //500 * 0.1 = 50
+																		$total = $new_rate * $month; //50 * 1
+																		echo number_format($total, 2);
+																	} else {
+																		$amount = $_GET['amount'];
+																		$month = $_GET['month'];
+																		$new_rate = $amount * ($lender['fix_rate'] / 100); //30000* 0.3 = 900
+																		$total = $new_rate * $month; //900 * 12
+
+																		echo number_format($total, 2);
+																	}
+																} ?>
+															</span>
+														</div>
+													</div>
+												</div>
+												<!-- UPLOAD REQUIREMENTS -->
+												<div class="separator separator-solid my-7"></div>
+												<div class="form-group row">
+													<label class="col-xl-3 col-lg-3 col-form-label"></label>
+													<div class="col-lg-12 col-xl-12">
+														<p class="font-weight-bolder font-size-lg py-4">
+															▸ Loan application is subject for approval.</br>
+															▸ Please comply all the requirements provided below to complete the loan application.</br>
+															▸ Requirements uploaded will be validated by the <?= $lender['company_name'] ?>.
+														</p>Please read <a href="#" class="font-weight-boldk" data-toggle="modal" data-target="#view_terms">Terms and Conditions |&nbsp;&nbsp;</a><a href="#" class="font-weight-bold" data-toggle="modal" data-target="#view_privacy">Privacy Statement</a>
+													</div>
+												</div>
+												
+												<div class="separator separator-solid my-7"></div>
+												<h5>Loan Requirements</h5>
+                                                <table class="table table-bordered">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Requirements</th>
+                                                            <th>Remarks</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <?php
+														$id = intval($_GET['lender_id']);
+
+														$sql = "SELECT * FROM loan_requirements INNER JOIN loan_features ON loan_requirements.lender_id = loan_features.lender_id WHERE loan_features.lender_id = $id";
+														$query = $dbh->prepare($sql);
+														$query->execute();
+														$res2 = $query->fetchAll(PDO::FETCH_OBJ);
+                                                        $cnt = 1;
+                                                        if ($query->rowCount() > 0) {
+                                                            foreach ($res2 as $result) { ?>
+                                                                <tr>
+                                                                    <td><?= htmlentities($result->req_name) ?></td>
+                                                                    <td><?= htmlentities($result->remarks) ?></td>
+                                                                </tr>
+                                                        <?php $cnt = $cnt + 1;
+                                                            }
+                                                        } ?>
+                                                    </tbody>
+                                                </table>
+													</br></br>
+												<h5>Please upload Requeirements here</h5>
+												<?php
+													if(isset($_SESSION['status'])){
+														?>
+														<div class="alert alert-success alert-dismissable" id="flash-msg">
+														<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+														<h4>Success!</h4>
+														</div>
+														<?php
+														unset($_SESSION['status']);
+													}?>
+													<table class="table table-bordered">
+														<thead>
+															<tr>
+																<th>Type of Documents</th>
+																<th>Action</th>
+															</tr>
+														</thead>
+														<tbody>
 															<?php
-															if (!isset($_GET['amount'])) {
-																echo '0.00';
-															} else {
-																$dif_month = $_GET['month'] - $lender['min_term'];
-																$initial_amount = $_GET['amount'] + ($_GET['amount'] * $lender['fix_rate'] / 100);
-																$additional_interest = $dif_month * $lender['monthly_rate'];
-																$additional_amount = $_GET['amount'] * $additional_interest / 100;
+															// $loan_app_id = intval($_GET['loan_app_id']);
 
-																echo number_format(($initial_amount + $additional_amount), 2);
-															}
-															?>
-														</span>
-													</div>
-												</div>
-												<div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
-													<div class="d-flex flex-column text-dark-75">
-														<span class="font-weight-bolder font-size-m">Loan Term</span>
-														<span class="font-weight-bolder font-size-h5">
-															<span class="text-dark-50 font-weight-bold"></span><?= $_GET['month'] ?> months</span>
-													</div>
-												</div>
-												<div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
-													<div class="d-flex flex-column text-dark-75">
-														<span class="font-weight-bolder font-size-m">Fixed Interest Rate</span>
-														<span class="font-weight-bolder font-size-h5">
-															<span class="text-dark-50 font-weight-bold"></span><?= $lender['fix_rate'] ?>%</span>
-													</div>
-												</div>
-												<div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
-													<div class="d-flex flex-column flex-lg-fill">
-														<span class="font-weight-bolder font-size-m">Interest Per Month</span>
-														<span class="font-weight-bolder font-size-h5">
-															<span class="text-dark-50 font-weight-bold"></span><?= $lender['monthly_rate'] ?>%</span>
-													</div>
-												</div>
-											</div>
-											<div class="separator separator-solid my-7"></div>
-											<div class="d-flex align-items-center flex-wrap">
-												<div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
-													<div class="d-flex flex-column text-dark-75">
-
-														<span class="font-weight-bolder font-size-sm">Estimated Monthly Payment</span>
-														<span class="font-weight-bolder font-size-h5">
-															<span class="text-dark-50 font-weight-bold">Php &nbsp;</span>
-															<?php
-															if (!isset($_GET['amount'])) {
-																echo '0.00';
-															} else {
-																$dif_month = $_GET['month'] - $lender['min_term'];
-																$initial_amount = $_GET['amount'] + ($_GET['amount'] * $lender['fix_rate'] / 100);
-																$additional_interest = $dif_month * $lender['monthly_rate'];
-																$additional_amount = $_GET['amount'] * $additional_interest / 100;
-
-																echo number_format(($initial_amount + $additional_amount) / 12, 2);
-															}
-															?>
-														</span>
-													</div>
-												</div>
-												<div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
-													<div class="d-flex flex-column text-dark-75">
-														<span class="font-weight-bolder font-size-sm">Late Payment Charges</span>
-														<span class="font-weight-bolder font-size-h5">
-															<span class="text-dark-50 font-weight-bold"></span><?= $lender['late_rate'] ?>%</span>
-													</div>
-												</div>
-												<div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
-													<span class="mr-4">
-														<span class="svg-icon svg-icon-2x">
-															<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-																<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-																	<rect x="0" y="0" width="24" height="24" />
-																	<polygon fill="#000000" opacity="0.3" points="5 15 3 21.5 9.5 19.5" />
-																	<path d="M13.5,21 C8.25329488,21 4,16.7467051 4,11.5 C4,6.25329488 8.25329488,2 13.5,2 C18.7467051,2 23,6.25329488 23,11.5 C23,16.7467051 18.7467051,21 13.5,21 Z M9,8 C8.44771525,8 8,8.44771525 8,9 C8,9.55228475 8.44771525,10 9,10 L18,10 C18.5522847,10 19,9.55228475 19,9 C19,8.44771525 18.5522847,8 18,8 L9,8 Z M9,12 C8.44771525,12 8,12.4477153 8,13 C8,13.5522847 8.44771525,14 9,14 L14,14 C14.5522847,14 15,13.5522847 15,13 C15,12.4477153 14.5522847,12 14,12 L9,12 Z" fill="#000000" />
-																</g>
-															</svg>
-														</span>
-													</span>
-													<div class="d-flex flex-column">
-														<span class="text-dark-75 font-weight-bolder font-size-sm">Rates and Reviews</span>
-													</div>
-												</div>
-											</div>
-										<!-- MOA -->
-										<!-- <div class="separator separator-solid my-7"></div>
-											<div class="form-group row">
-												<label class="col-xl-3 col-lg-3 col-form-label"></label>
-												<div class="col-lg-9 col-xl-6"> -->
-													<!--begin::Input-->
-													<!-- <div class="row">
-														<div class="col-lg-9">
-															<div class="form-group">
-																<label class="form-control-label font-weight-bolder font-size-h5" for="input-username">MEMORANDUM OF AGREEMENT</label>
-																<div class="dropzone-panel mb-lg-0 mb-2">
-																</div>
-																<a href="/hulam/assets/keen/moa" target="_blank">Memorandum of Agreement</a></br></br>
-																<label class="form-control-label" for="input-username">Click on the Memorandum of Agreement to download and upload back with your signature.</label>
-																<div class="dropzone-panel mb-lg-0 mb-2">
-																	<input type="file" name="dti_permit" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm" value="<?= $res['dti_permit'];?>"/>
-																</div></br>
-
-															</div>
+															// $sql = "SELECT * FROM loan_application";
+															// $query = $dbh->prepare($sql);
+															// $query->execute();
+															// $results = $query->fetch();
+															?>															
+															<tr>
+																<td>Valid ID</td>
+																<td><input type="file" name="valid_id" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3"/></td>
+															</tr>
+															<tr>
+																<td>Barangay Clearanace</td>
+																<td><input type="file" name="barangay_clearance" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3"/></td>
+															</tr>
+															<tr>
+																<td>Payslip</td>
+																<td><input type="file" name="payslip" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3"/></td>
+															</tr>
+															<tr>
+																<td>Cedula</td>
+																<td><input type="file" name="cedula" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3"/></td>
+															</tr>
+															<tr>
+																<td>ATM Latest Transaction Receipt</td>
+																<td><input type="file" name="atm_transaction" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3"/></td>
+															</tr>
+															<tr>
+																<td>Certificate of Employment</td>
+																<td><input type="file" name="coe" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3"/></td>
+															</tr>
+															<tr>
+																<td>Bank Statement</td>
+																<td><input type="file" name="bank_statement" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3"/></td>
+															</tr>
+															<tr>
+																<td>Proof of Billing</td>
+																<td><input type="file" name="proof_billing" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3"/></td>
+															</tr>
+															<tr>
+																<td>Co-Maker ID</td>
+																<td><input type="file" name="co_maker_id" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3"/></td>
+															</tr>
+															<tr>
+																<td>Co-Maker Cedula</td>
+																<td><input type="file" name="co_maker_cedula" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3"/></td>
+															</tr>
+															<tr>
+																<td>2x2 ID</td>
+																<td><input type="file" name="x_id" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3"/></td>
+															</tr>
+														</tbody>
+													</table>
+												<div class="separator separator-solid my-7"></div>
+												<div class="form-group row">
+													<label class="col-xl-3 col-lg-3 col-form-label"></label>
+													<div class="col-lg-12 col-xl-12">
+														<div class="checkbox-inline">
+															<label class="checkbox m-1">
+																<input type="checkbox" name="confirm" required value="Yes" />
+																<span></span>
+																<h5>I confirm that:<h5>
+															</label>
 														</div>
-													</div> -->
-													<!--end::Input-->
-												<!-- </div>
-											</div> -->
-											<!-- <div class="separator separator-solid my-7"></div>
-											<div class="form-group row">
-												<label class="col-xl-3 col-lg-3 col-form-label"></label>
-												<div class="col-lg-9 col-xl-6"> -->
-													<!--begin::Input-->
-													<!-- <div class="row">
-														<div class="col-lg-9">
-															<div class="form-group">
-																<label class="form-control-label font-weight-bolder font-size-h5" for="input-username">NOTICE OF CONSENT AND APPROVAL</label>
-																<div class="dropzone-panel mb-lg-0 mb-2">
-																</div>
-																<a href="/hulam/assets/keen/moa/" target="_blank">Notice of Consent and Approval</a></br></br>
-																<label class="form-control-label" for="input-username">Click on the Notice of Consent and Approval file to download and upload back with your signature.</label>
-																<div class="dropzone-panel mb-lg-0 mb-2">
-																	<input type="file" name="dti_permit" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm" value="<?= $res['dti_permit'];?>"/>
-																</div></br>
-
-															</div>
-														</div>
-													</div> -->
-													<!--end::Input-->
-												<!-- </div>
-											</div> -->
-
-
-											<div class="separator separator-solid my-7"></div>
-											<div class="form-group row">
-												<label class="col-xl-3 col-lg-3 col-form-label"></label>
-												<div class="col-lg-9 col-xl-6">
-													<div class="checkbox-inline">
-														<label class="checkbox m-0">
-															<input type="checkbox" />
-															<span></span>I confirm that: </label>
+														<p class="font-weight-bolder font-size-lg py-4">
+															▸ All the information I have provided on this application are mine, true and up-to-date;</br />
+															▸ I agree to the Terms and Conditions, and Fees and Charges of the loan I am applying for.</br>
+															▸ I agree that <?= $lender['company_name'] ?> may use my Personal Data and other information for automated processing and for automated decision.
+														</p>
 													</div>
-													<p class="font-weight-bolder font-size-sm py-4">
-														▸ All the information I have provided on this application are mine, true and up-to-date;</br />
-														▸ I agree to the Terms and Conditions, and Fees and Charges of the product I am applying for.</br>
-														▸ I consent to Asteria Lending Company Privacy Terms.</br>
-														▸ I agree that Asteria Lending Company may use my Personal Data and other information for automated processing and for automated decision.
-													</p><!-- <a href="#" class="font-weight-boldk">Learn more</a>.</p> -->
 												</div>
-											</div>
-											<div class="modal-footer">
-												<form action="debtor/logic/apply_loan.php" method="post">
+												<div class="modal-footer">
+													<input type="hidden" name="date" value="<?= date('Y-m-d H:i:s') ?>">
 													<input type="hidden" name="debtor_id" value="<?= $_SESSION['user_id'] ?>">
-													<input type="hidden" name="lender_id" value="<?= $_GET['id'] ?>">
+													<input type="hidden" name="lender_id" value="<?= $_GET['lender_id'] ?>">
+													<input type="hidden" name="loan_amount" value="<?php
+																									if (!isset($_GET['amount'])) {
+																										echo '0.00';
+																									} else {
+																										echo $_GET['amount'];
+																										// echo number_format($_GET['amount'], 2);
+																									} ?>">
+													<input type="hidden" name="loan_term" value="<?= $_GET['month'] ?>">
+													<input type="hidden" name="fix_rate" value="<?= $lender['fix_rate'] ?>">
 													<input type="hidden" name="total_amount" value="<?php
 																									if (!isset($_GET['amount'])) {
 																										echo '0.00';
 																									} else {
-																										$dif_month = $_GET['month'] - $lender['min_term'];
-																										$initial_amount = $_GET['amount'] + ($_GET['amount'] * $lender['fix_rate'] / 100);
-																										$additional_interest = $dif_month * $lender['monthly_rate'];
-																										$additional_amount = $_GET['amount'] * $additional_interest / 100;
+																										if ($lender['user_type'] == 4) {
+																											$amount = $_GET['amount'];
+																											$month = $_GET['month'];
 
-																										echo ($initial_amount + $additional_amount);
-																									}
-																									?>">
-													<input type="hidden" name="remaining_balance" value="<?php
-																											if (!isset($_GET['amount'])) {
-																												echo '0.00';
-																											} else {
-																												$dif_month = $_GET['month'] - $lender['min_term'];
-																												$initial_amount = $_GET['amount'] + ($_GET['amount'] * $lender['fix_rate'] / 100);
-																												$additional_interest = $dif_month * $lender['monthly_rate'];
-																												$additional_amount = $_GET['amount'] * $additional_interest / 100;
+																											$initial_interest = $amount * ($lender['fix_rate'] / 100);
+																											//500 * (10 /100) = 50
+																											$total_interest = $initial_interest * $month;
+																											// 50 * 1 = 50
+																											$total = $total_interest + $amount;
+																											// 50 + 500 = 550
+																											echo $total;
+																										} else {
+																											$amount = $_GET['amount'];
+																											$month = $_GET['month'];
 
-																												echo ($initial_amount + $additional_amount);
-																											}
-																											?>">
-													<input type="hidden" name="months" value="<?= $_GET['month'] ?>">
-													<input type="hidden" name="monthly_payable" value="<?php
+																											$initial = $amount * ($lender['fix_rate'] / 100);
+																											//30000 * (3 /100) = 900
+																											$interest2 = $initial * $month;
+																											// 900 * 12 = 10, 800
+																											$total2 = $amount + $interest2;
+																											// 30000 + 10800
+																											echo $total2; //40800
+																										}
+																									} ?>">
+													<input type="hidden" name="monthly_payment" value="<?php
 																										if (!isset($_GET['amount'])) {
 																											echo '0.00';
 																										} else {
-																											$dif_month = $_GET['month'] - $lender['min_term'];
-																											$initial_amount = $_GET['amount'] + ($_GET['amount'] * $lender['fix_rate'] / 100);
-																											$additional_interest = $dif_month * $lender['monthly_rate'];
-																											$additional_amount = $_GET['amount'] * $additional_interest / 100;
+																											if ($lender['user_type'] == 4) {
+																												$amount = $_GET['amount'];
+																												$month = $_GET['month'];
+																												$new_rate = $month * ($lender['fix_rate'] / 100);
+																												//1 * 10/100 = 0.1
+																												$initial_amount = $amount * $new_rate;
+																												//500 * 0.1 = 50
+																												$add_interest = $initial_amount + $amount;
+																												//50 + 500 = 550
+																												$total3 = $add_interest / $month;
 
-																											echo ($initial_amount + $additional_amount) / 12;
-																										}
-																										?>">
+																												echo $total3;
+																												//550 /1 = 550
+																											} else {
+																												$amount = $_GET['amount'];
+																												$month = $_GET['month'];
+																												//30000
+																												$initial_amount =  $amount * ($lender['fix_rate'] / 100);
+																												//30000 * 0.03 = 900
+																												$add_interest = $amount / $month;
+																												//30000 / 12 =2500
+																												$total4 = $add_interest + $initial_amount;
+
+																												echo $total4;
+																												//2500 + 900 = 3400
+																											}
+																										} ?>">
+													<input type="hidden" name="total_interest" value="<?php
+																										if (!isset($_GET['amount'])) {
+																											echo '0.00';
+																										} else {
+																											if ($lender['user_type'] == 4) {
+																												$amount = $_GET['amount'];
+																												$month = $_GET['month'];
+																												$new_rate = $amount * ($lender['fix_rate'] / 100); //500 * 0.1 = 50
+																												$total5 = $new_rate * $month; //50 * 1
+																												echo $total5;
+																											} else {
+																												$amount = $_GET['amount'];
+																												$month = $_GET['month'];
+																												$new_rate = $amount * ($lender['fix_rate'] / 100); //30000* 0.3 = 900
+																												$total5 = $new_rate * $month; //900 * 12
+																												echo $total5;
+																											}
+																										} ?>">
+													<input type="hidden" name="late_charges" value="<?= $lender['late_charges'] ?>">
+
 													<button type="submit" name="submit" class="btn btn-sm btn-primary font-weight-bolder">Submit
 														<span class="svg-icon svg-icon-md ml-3">
 															<!--begin::Svg Icon | path:assets/media/svg/icons/Navigation/Check.svg-->
@@ -466,9 +586,54 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 															<!--end::Svg Icon-->
 														</span>
 													</button>
-												</form>
-
+											</form>
+											<!-- Start Modal -->
+											<div class="modal fade" id="view_terms" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
+												<div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+													<div class="modal-content">
+														<div class="modal-header">
+															<h5 class="modal-title" id="exampleModalLabel">Hulam Data Privacy</h5>
+															<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+																<i aria-hidden="true" class="ki ki-close"></i>
+															</button>
+														</div>
+														<div class="modal-body">
+															<div class="ExternalFiles">
+																<iframe src="/hulam/assets/admin/terms_privacy/Hulam-Data-Privacy.pdf" width="1000" height="1000"></iframe>
+															</div>
+														</div>
+														<div class="modal-footer">
+															<button type="button" class="btn btn-light-primary font-weight-bold" data-dismiss="modal">Close</button>
+															<button type="button" class="btn btn-primary font-weight-bold">Save changes</button>
+														</div>
+													</div>
+												</div>
 											</div>
+											<!-- End Modal -->
+											<!-- Start Modal -->
+											<div class="modal fade" id="view_privacy" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
+												<div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+													<div class="modal-content">
+														<div class="modal-header">
+															<h5 class="modal-title" id="exampleModalLabel">Terms and Conditions</h5>
+															<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+																<i aria-hidden="true" class="ki ki-close"></i>
+															</button>
+														</div>
+														<div class="modal-body">
+															<div class="ExternalFiles">
+																<iframe src="/hulam/assets/admin/terms_privacy/TERMS-AND-CONDITIONS.pdf" width="1000" height="1000"></iframe>
+															</div>
+														</div>
+														<div class="modal-footer">
+															<button type="button" class="btn btn-light-primary font-weight-bold" data-dismiss="modal">Close</button>
+															<button type="button" class="btn btn-primary font-weight-bold">Save changes</button>
+														</div>
+													</div>
+												</div>
+											</div>
+											<!-- End Modal -->
+											
 										</div>
 									</div>
 								</div>
@@ -478,6 +643,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 				</div>
 			</div>
 		</div>
+	</div>
 	</div>
 
 	<div class="footer bg-white py-4 d-flex flex-lg-column" id="kt_footer">
@@ -1461,7 +1627,11 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 	<!--end::Page Vendors-->
 	<!--begin::Page Scripts(used by this page)-->
 	<script src="assets/keen/js/pages/widgets.js"></script>
-	<script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="assets/keen/js/pages/features/file-upload/dropzonejs.js"></script>
+	<script src="https://unpkg.com/dropzone@6.0.0-beta.1/dist/dropzone-min.js"></script>
+<link href="https://unpkg.com/dropzone@6.0.0-beta.1/dist/dropzone.css" rel="stylesheet" type="text/css" />
+
 	<!--end::Page Scripts-->
 </body>
 <!--end::Body-->

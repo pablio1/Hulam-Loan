@@ -238,25 +238,20 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 						<div class="container">
 							<?php
 							if (!isset($_GET['amount']) && !isset($_GET['type'])) {
-				
-								$sql = $dbh->prepare("SELECT * FROM user INNER JOIN loan_features ON user.user_id = loan_features.lender_id WHERE user_type = 3 OR user_type = 4");
-								//$sql = $dbh->prepare("SELECT * FROM `loan_features` WHERE loan_features.min_loan > 10000;");
+
+								$sql = $dbh->prepare("SELECT * FROM user INNER JOIN loan_features ON user.user_id = loan_features.lender_id WHERE (user_type = 3 OR user_type = 4) AND loan_features.status = 'Approved'");
 								$sql->execute();
 								$lenders = $sql->fetchAll();
-								
 							} else {
 								$amount = $_GET['amount'];
 								$type = $_GET['type'];
 								$month = $_GET['month'];
-								//$sql = $dbh->prepare("SELECT * FROM user INNER JOIN loan_features ON user.user_id = loan_features.lender_id WHERE (loan_features.min_loan < 35000)");
-								$sql = $dbh->prepare("SELECT * FROM `user` INNER JOIN `loan_features` ON user.user_id = loan_features.lender_id WHERE loan_features.min_loan <= $amount AND $amount <= loan_features.max_loan AND user.user_type = $type AND loan_features.min_term <= $month AND loan_features.max_term >= $month;");
-								//$sql = $dbh->prepare("SELECT * FROM user INNER JOIN loan_features ON user.user_id = loan_features.lender_id WHERE user_type = :type && :month BETWEEN min_term AND max_term");
-								//$sql->execute(['type' => $type, 'month' => $month]);
+								$sql = $dbh->prepare("SELECT * FROM `user` INNER JOIN `loan_features` ON user.user_id = loan_features.lender_id WHERE loan_features.min_loan <= $amount AND $amount <= loan_features.max_loan AND user.user_type = $type AND loan_features.min_term <= $month AND loan_features.max_term >= $month AND loan_features.status != 'Pending';");
 								$sql->execute();
 								$lenders = $sql->fetchAll();
 							}
 							?>
-							
+
 							<?php if ($sql->rowCount() == 0) : ?>
 								<div class="card card-custom gutter-b">
 									<div class="card-body">
@@ -265,9 +260,6 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 								</div>
 							<?php endif; ?>
 							<?php
-								//  echo "<pre>";
-								//  print_r($lenders);
-								//  echo "</pre>";
 							?>
 							<?php foreach ($lenders as $lender) : ?>
 								<div class="card card-custom gutter-b">
@@ -282,23 +274,17 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 												<div class="d-flex align-items-center justify-content-between flex-wrap mt-2">
 													<div class="mr-3">
 														<a href="#" class="d-flex align-items-center text-dark text-hover-primary font-size-h5 font-weight-bold mr-3"><?= $lender['company_name'] ?></a>
-														<!-- <div class="d-flex flex-wrap my-2">
-															<a href="<?= $lender['website'] ?>" target="_blank" class="text-muted text-hover-primary font-weight-bold mr-lg-8 mr-5 mb-lg-0 mb-2">
-																<span class="svg-icon svg-icon-md svg-icon-gray-500 mr-1">
-																</span>View site >>
-															</a>
-														</div> -->
 													</div>
 													<div class="my-lg-0 my-1">
-														<!-- <a href="#" class="btn btn-sm btn-light-primary font-weight-bolder mr-2">View Details</a> -->
-														<?php if (!isset($_GET['amount'])) : ?>
-															<a href="<?= ($_SESSION['eligible'] == 'no') ? 'debtor/update_information.php' : 'debtor/apply_loan.php?id=' . $lender['user_id'] ?>" class="btn btn-sm btn-primary font-weight-bolder">Apply Now</a>
+														<a href="debtor/view_company.php?lender_id=<?= $lender['lender_id']?>" class="btn btn-sm btn-light-primary font-weight-bolder mr-2">View Details</a>
+														<?php if ($_SESSION['eligible']=='no') : ?>
+															<a href="debtor/update_information.php?id=<?= $lender['user_id']?>" class="btn btn-sm btn-primary font-weight-bolder">Apply Now</a>
 														<?php else : ?>
-															<a href="<?= ($_SESSION['eligible'] == 'yes') ? 'debtor/apply_loan.php' : 'debtor/update_information?id=' . $lender['user_id'] . '&amount=' . $_GET['amount'] . '&month=' . $_GET['month']  ?>" class="btn btn-sm btn-primary font-weight-bolder">Apply Now</a>
+															<a href="debtor/apply_loan.php?lender_id=<?= $lender['lender_id']. '&amount=' . $_GET['amount'] . '&month=' . $_GET['month']  ?>" class="btn btn-sm btn-primary font-weight-bolder">Apply Now</a>
 														<?php endif; ?>
 													</div>
 												</div>
-												<div class="d-flex align-items-center flex-wrap justify-content-between">
+												<div class="d-flex align-items-center flex-wrap justify-content-between">	
 													<div class="flex-grow-1 font-weight-bold text-dark-50 py-2 py-lg-2 mr-5">
 														<?= $lender['description'] ?>
 													</div>
@@ -309,35 +295,37 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 										<div class="d-flex align-items-center flex-wrap">
 											<div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
 												<div class="d-flex flex-column text-dark-75">
-													<span class="font-weight-bolder font-size-sm">Estimated Monthly Payment</span>
+													<span class="font-weight-bolder font-size-sm">Monthly Payment</span>
 													<span class="font-weight-bolder font-size-h5">
 														<span class="text-dark-50 font-weight-bold">Php &nbsp;</span>
 														<?php
-														
-															if (!isset($_GET['amount'])) {
-																echo '0.00';
-															} else {
-																/*$dif_month = $_GET['month'] - $lender['min_term'];
-																$initial_amount = $_GET['amount'] + ($_GET['amount'] * $lender['fix_rate'] / 100);
-																$additional_interest = $dif_month * $lender['monthly_rate'];
-																$additional_amount = $_GET['amount'] * $additional_interest / 100;
 
-																echo number_format(($initial_amount + $additional_amount) / 12, 2);*/
-																if($lender['user_type'] == 4){
-																	$amount = $_GET['amount'];
-																	$month = $_GET['month'];
-																	$new_rate = $month * $lender['fix_rate'];
-
-																	$initial_amount = $amount * ($new_rate/ 100);
-																	$add_interest = $initial_amount + $amount;
-																	echo number_format($add_interest / $month, 2);
-																}else{
-																	$amount = $_GET['amount'];
-																	$initial_amount =  $amount * ($lender['fix_rate']/ 100);
-																	$add_interest = $amount / $lender['max_term'];
-																	echo number_format($add_interest + $initial_amount, 2);
-																}
+														if (!isset($_GET['amount'])) {
+															echo '0.00';
+														} else {
+															if ($lender['user_type'] == 4) {
+																$amount = $_GET['amount'];
+																$month = $_GET['month'];
+																$new_rate = $month * ($lender['fix_rate']/100);
+																			//1 * 10/100 = 0.1
+																$initial_amount = $amount * $new_rate;
+																				//500 * 0.1 = 50
+																$add_interest = $initial_amount + $amount;
+																				//50 + 500 = 550
+																echo number_format($add_interest / $month, 2);
+																				//550 /1 = 550
+															} else{
+																$amount = $_GET['amount'];
+																$month = $_GET['month'];
+																				//30000
+																$initial_amount =  $amount * ($lender['fix_rate'] / 100);
+																				//30000 * 0.03 = 900
+																$add_interest = $amount / $month;
+																				//30000 / 12 =2500
+																echo number_format($add_interest + $initial_amount, 2);
+																				//2500 + 900 = 3400
 															}
+														}
 														?>
 													</span>
 												</div>
@@ -346,7 +334,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 												<div class="d-flex flex-column text-dark-75">
 													<span class="font-weight-bolder font-size-sm">Loan Term</span>
 													<span class="font-weight-bolder font-size-h5">
-														<span class="text-dark-50 font-weight-bold"></span><?= $lender['min_term'] ?>-<?= $lender['max_term'] ?> months</span>
+													<?= $_GET['month']?>&nbsp;<span class="text-dark-50 font-weight-bold">Months</span>
 												</div>
 											</div>
 											<div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
@@ -356,13 +344,36 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 														<span class="text-dark-50 font-weight-bold"></span><?= $lender['fix_rate'] ?>%</span>
 												</div>
 											</div>
-											<!-- <div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
+											<div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
 												<div class="d-flex flex-column text-dark-75">
-													<span class="font-weight-bolder font-size-sm">Monthly Add-on Interest</span>
+													<span class="font-weight-bolder font-size-sm">Total Interest</span>
 													<span class="font-weight-bolder font-size-h5">
-														<span class="text-dark-50 font-weight-bold"></span><?= $lender['monthly_rate'] ?>%</span>
+														<span class="text-dark-50 font-weight-bold">Php &nbsp;</span>
+														<?php 
+														if(!isset($_GET['amount'])){
+															echo '0.00';
+														}else{
+															if($lender['user_type']==4){
+																$amount = $_GET['amount'];
+																$month = $_GET['month'];
+																$new_rate = $amount * ($lender['fix_rate'] / 100); //500 * 0.1 = 50
+																$total = $new_rate * $month;//50 * 1
+																echo number_format($total, 2);
+															}else{
+																$amount = $_GET['amount'];
+																$month = $_GET['month'];
+																$new_rate = $amount * ($lender['fix_rate'] / 100); //30000* 0.3 = 900
+																$total = $new_rate * $month;//900 * 12
+
+																echo number_format($total, 2);
+															}
+
+														}
+														
+														?>
+														</span>
 												</div>
-											</div> -->
+											</div>
 											<div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
 												<span class="mr-4">
 													<span class="svg-icon svg-icon-2x">
@@ -384,14 +395,13 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 									</div>
 								</div>
 							<?php endforeach; ?>
-
-
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-
+		<!--  -->
+	
 		<div class="footer bg-white py-4 d-flex flex-lg-column" id="kt_footer">
 			<div class="container d-flex flex-column flex-md-row align-items-center justify-content-between">
 				<div class="text-dark order-2 order-md-1">
@@ -414,7 +424,6 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 		<!--begin::Header-->
 		<div class="offcanvas-header d-flex align-items-center justify-content-between pb-5">
 			<h3 class="font-weight-bold m-0">User Profile
-				<!-- <small class="text-muted font-size-sm ml-2">15 messages</small></h3> -->
 				<a href="#" class="btn btn-xs btn-icon btn-light btn-hover-primary" id="kt_quick_user_close">
 					<i class="ki ki-close icon-xs text-muted"></i>
 				</a>
@@ -436,7 +445,6 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 							<span class="navi-link p-0 pb-2">
 								<span class="navi-icon mr-1">
 									<span class="svg-icon svg-icon-lg svg-icon-primary">
-										<!--begin::Svg Icon | path:assets/media/svg/icons/Communication/Mail-notification.svg-->
 										<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
 											<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
 												<rect x="0" y="0" width="24" height="24" />
@@ -1195,107 +1203,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 			</a>
 		</div>
 		<!--end::Header-->
-		<!--begin::Content-->
-		<div class="offcanvas-content">
-			<!--begin::Wrapper-->
-			<div class="offcanvas-wrapper mb-5 scroll-pull">
-				<h5 class="font-weight-bold mb-4 text-center">Demo 1</h5>
-				<div class="overlay rounded-lg mb-8 offcanvas-demo">
-					<div class="overlay-wrapper rounded-lg">
-						<img src="assets/media/demos/demo1.png" alt="" class="w-100" />
-					</div>
-					<div class="overlay-layer">
-						<a href="../../demo1/dist" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">HTML</a>
-						<a href="https://preview.keenthemes.com/keen/demo1/rtl/index.html" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">RTL</a>
-					</div>
-				</div>
-				<h5 class="font-weight-bold mb-4 text-center">Demo 2</h5>
-				<div class="overlay rounded-lg mb-8 offcanvas-demo">
-					<div class="overlay-wrapper rounded-lg">
-						<img src="assets/media/demos/demo2.png" alt="" class="w-100" />
-					</div>
-					<div class="overlay-layer">
-						<a href="../../demo2/dist" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">HTML</a>
-						<a href="https://preview.keenthemes.com/keen/demo2/rtl/index.html" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">RTL</a>
-					</div>
-				</div>
-				<h5 class="font-weight-bold mb-4 text-center">Demo 3</h5>
-				<div class="overlay rounded-lg mb-8 offcanvas-demo offcanvas-demo-active">
-					<div class="overlay-wrapper rounded-lg">
-						<img src="assets/media/demos/demo3.png" alt="" class="w-100" />
-					</div>
-					<div class="overlay-layer">
-						<a href="../../demo3/dist" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">HTML</a>
-						<a href="https://preview.keenthemes.com/keen/demo3/rtl/index.html" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">RTL</a>
-					</div>
-				</div>
-				<h5 class="font-weight-bold mb-4 text-center">Demo 4</h5>
-				<div class="overlay rounded-lg mb-8 offcanvas-demo">
-					<div class="overlay-wrapper rounded-lg">
-						<img src="assets/media/demos/demo4.png" alt="" class="w-100" />
-					</div>
-					<div class="overlay-layer">
-						<a href="../../demo4/dist" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">HTML</a>
-						<a href="https://preview.keenthemes.com/keen/demo4/rtl/index.html" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">RTL</a>
-					</div>
-				</div>
-				<h5 class="font-weight-bold mb-4 text-center">Demo 5</h5>
-				<div class="overlay rounded-lg mb-8 offcanvas-demo">
-					<div class="overlay-wrapper rounded-lg">
-						<img src="assets/media/demos/demo5.png" alt="" class="w-100" />
-					</div>
-					<div class="overlay-layer">
-						<a href="../../demo5/dist" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">HTML</a>
-						<a href="https://preview.keenthemes.com/keen/demo5/rtl/index.html" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">RTL</a>
-					</div>
-				</div>
-				<h5 class="font-weight-bold mb-4 text-center">Demo 6</h5>
-				<div class="overlay rounded-lg mb-8 offcanvas-demo">
-					<div class="overlay-wrapper rounded-lg">
-						<img src="assets/media/demos/demo6.png" alt="" class="w-100" />
-					</div>
-					<div class="overlay-layer">
-						<a href="../../demo6/dist" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">HTML</a>
-						<a href="https://preview.keenthemes.com/keen/demo6/rtl/index.html" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">RTL</a>
-					</div>
-				</div>
-				<h5 class="font-weight-bold mb-4 text-center">Demo 7</h5>
-				<div class="overlay rounded-lg mb-8 offcanvas-demo">
-					<div class="overlay-wrapper rounded-lg">
-						<img src="assets/media/demos/demo7.png" alt="" class="w-100" />
-					</div>
-					<div class="overlay-layer">
-						<a href="../../demo7/dist" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">HTML</a>
-						<a href="https://preview.keenthemes.com/keen/demo7/rtl/index.html" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">RTL</a>
-					</div>
-				</div>
-				<h5 class="font-weight-bold mb-4 text-center">Demo 8</h5>
-				<div class="overlay rounded-lg mb-8 offcanvas-demo">
-					<div class="overlay-wrapper rounded-lg">
-						<img src="assets/media/demos/demo8.png" alt="" class="w-100" />
-					</div>
-					<div class="overlay-layer">
-						<a href="#" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow disabled opacity-90">Coming soon</a>
-					</div>
-				</div>
-				<h5 class="font-weight-bold mb-4 text-center">Demo 9</h5>
-				<div class="overlay rounded-lg mb-8 offcanvas-demo">
-					<div class="overlay-wrapper rounded-lg">
-						<img src="assets/media/demos/demo9.png" alt="" class="w-100" />
-					</div>
-					<div class="overlay-layer">
-						<a href="#" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow disabled opacity-90">Coming soon</a>
-					</div>
-				</div>
-			</div>
-			<!--end::Wrapper-->
-			<!--begin::Purchase-->
-			<div class="offcanvas-footer">
-				<a href="https://themes.getbootstrap.com/product/keen-the-ultimate-bootstrap-admin-theme/" target="_blank" class="btn btn-block btn-danger btn-shadow font-weight-bolder text-uppercase">Buy Keen Now!</a>
-			</div>
-			<!--end::Purchase-->
-		</div>
-		<!--end::Content-->
+
 	</div>
 	<!--end::Demo Panel-->
 	<script>
@@ -1369,7 +1277,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 	<script src="assets/keen/js/scripts.bundle.js"></script>
 	<!--end::Global Theme Bundle-->
 	<!--begin::Page Vendors(used by this page)-->
-	<script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	<script src="assets/keen/plugins/custom/fullcalendar/fullcalendar.bundle.js"></script>
 	<!--end::Page Vendors-->
 	<!--begin::Page Scripts(used by this page)-->

@@ -8,7 +8,14 @@ if($_SESSION['user_type'] != 2) {
 }
 
 ?>
+<?php 
+$loan_app_id = intval($_GET['loan_app_id']);
 
+$sql = "SELECT loan_application.*, user.* FROM loan_application INNER JOIN user ON loan_application.lender_id = user.user_id WHERE loan_application.loan_app_id = $loan_app_id AND loan_application.status= 'approved'";
+$query = $dbh->prepare($sql);
+$query->execute();
+$run = $query->fetch();
+?>
 
 <!DOCTYPE html>
 <!--
@@ -193,23 +200,22 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 									<div class="card-body pt-4">
 										<div class="card card-custom">
 											<div class="card-body">
-												<h5> Running Balance to: (Lending Company name here) Loan </h5>
+												<h5 style="color:royalblue"> Running Balance to: <?= $run['company_name']?> &nbsp;Loan </h5>
 												<table class="table table-bordered">
 													<thead>
 														<tr>
-															<th>Principal Amount</th>
-															<th>Interest Rate</th>
-															<th>Month</th>
-															<th>Amount to Pay</th>
-															<th>Balance</th>
-															<th>View Receipt</th>
+															<th>Payment Month Date</th>
+															<th>Principal Payment</th>
+															<th>Interest Payment</th>
+															<th>Total Monthly Payment</th>
+															<th>Remaining Balance</th>
 														</tr>
 													</thead>
 													<tbody>
 														<?php 
-														$user_id = $_SESSION['user_id'];
+														$loan_app_id = intval($_GET['loan_app_id']);
 
-														$sql = "SELECT loan_application.*, user.* FROM loan_application INNER JOIN user ON loan_application.lender_id = user.user_id WHERE loan_application.debtor_id = $user_id AND loan_application.status= 'approved'";
+														$sql = "SELECT * FROM loan_application WHERE loan_app_id = $loan_app_id";
 														$query = $dbh->prepare($sql);
 														$query->execute();
 														$results = $query->fetchAll(PDO::FETCH_OBJ);
@@ -217,14 +223,19 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 															foreach($results as $result){
 														?>
 														<tr>
-															<th scope="row"><?= htmlentities($result->date);?></th>
-															<td><?= htmlentities($result->company_name);?></td>
-															<td><?= htmlentities($result->total_amount);?></td>
-															<td>
-																<a href="debtor/view_statement.php?id=<?= htmlentities($result->id);?>" class="kt-nav__link">
-																<span class="kt-nav__link-text">View</span>
-																</a>
-															</td>
+															<th scope="row">
+															<?php 
+															$date = date("y-m-d");
+															$approval_date = "2022-01-01";
+															while(strtotime($approval_date)<=strtotime($date)){
+																echo date("F-Y",strtotime($date));
+																$date = date("y-m-d",strtotime("+1 month",strtotime($date)));
+															}?>
+															</th>
+															<td><?= $m = htmlentities($result->monthly_payment)-(htmlentities($result->total_interest)/htmlentities($result->loan_term));?></td>
+															<td><?= $in = htmlentities($result->total_interest)/htmlentities($result->loan_term);?></td>
+															<td><?= $total = $m + $in; ?></td>
+															<td><?= htmlentities($result->total_amount)-$total ?></td>
 														</tr>
 													</tbody>
 													<?php }}?>
