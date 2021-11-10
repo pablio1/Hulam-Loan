@@ -222,12 +222,15 @@ $user = $sql->fetch();
 													<div class="form-group">
 														<label>Mobile</label> <span class="text-danger">*</span>
 														<input type="number" class="form-control" required name="mobile" value="<?= isset($_GET['e']) ? $_GET['mobile'] :  $_SESSION['mobile'] ?>" placeholder="Enter mobile number" />
+															<label><span style="color:green">&#x2714;</span><span style="font-family: Courier New; font-size: 11px"> Atleast 11 digits</label></span>
 													</div>
+
 												</div>
 												<div class="col-xl-4">
 													<div class="form-group">
 														<label>Landline</label> <span class="text-danger">*</span>
 														<input type="number" class="form-control" name="landline" value="<?= isset($_GET['e']) ? $_GET['landline'] :  $_SESSION['landline'] ?>" placeholder="Enter landline number" />
+														<label><span style="color:green">&#x2714;</span><span style="font-family: Courier New; font-size: 11px"> Atleast 7 digits</label></span>
 													</div>
 												</div>
 											</div>
@@ -270,6 +273,7 @@ $user = $sql->fetch();
 													<div class="form-group">
 														<label>Zip Code</label> <span class="text-danger">*</span>
 														<input type="text" class="form-control" required name="c_zipcode" value="<?= isset($_GET['e']) ? $_GET['c_zipcode'] : $_SESSION['c_zipcode'] ?>" placeholder="Enter zipcode" />
+														<label><span style="color:green">&#x2714;</span><span style="font-family: Courier New; font-size: 11px"> Atleast 4 digits</label></span>
 													</div>
 												</div>
 											</div>
@@ -311,6 +315,7 @@ $user = $sql->fetch();
 													<div class="form-group">
 														<label>Zip Code</label> <span class="text-danger">*</span>
 														<input type="text" class="form-control" required name="p_zipcode" value="<?= isset($_GET['e']) ? $_GET['p_zipcode'] : $_SESSION['p_zipcode'] ?>" placeholder="Enter zipcode" />
+														<label><span style="color:green">&#x2714;</span><span style="font-family: Courier New; font-size: 11px"> Atleast 4 digits</label></span>
 													</div>
 												</div>
 											</div>
@@ -340,6 +345,7 @@ $user = $sql->fetch();
 													<div class="form-group">
 														<label>Mobile No.<span class="text-danger">*</span>
 															<input type="text" class="form-control" required name="company_mobile" value="<?= isset($_GET['e']) ? $_GET['company_mobile'] : $set['company_mobile'] ?>" placeholder="Enter company mobile" />
+															<label><span style="color:green">&#x2714;</span><span style="font-family: Courier New; font-size: 11px"> Atleast 11 digits</label></span>
 													</div>
 												</div>
 											</div>
@@ -348,6 +354,7 @@ $user = $sql->fetch();
 													<div class="form-group">
 														<label>Landline No.</label> <span class="text-danger">*</span>
 														<input type="text" class="form-control" required name="company_landline" value="<?= isset($_GET['e']) ? $_GET['company_landline'] : $set['company_landline'] ?>" placeholder="Enter company landline" />
+														<label><span style="color:green">&#x2714;</span><span style="font-family: Courier New; font-size: 11px"> Atleast 7 digits</label></span>
 													</div>
 												</div>
 												<div class="col-xl-4">
@@ -395,6 +402,7 @@ $user = $sql->fetch();
 													<div class="form-group">
 														<label>Zip Code</label> <span class="text-danger">*</span>
 														<input type="text" class="form-control" required name="company_zipcode" value="<?= isset($_GET['e']) ? $_GET['company_zipcode'] : $set['company_zipcode'] ?>" placeholder="Enter zipcode" />
+														<<label><span style="color:green">&#x2714;</span><span style="font-family: Courier New; font-size: 11px"> Atleast 4 digits</label></span>
 													</div>
 												</div>
 											</div>
@@ -417,6 +425,7 @@ $user = $sql->fetch();
 													<div class="form-group">
 														<label>Mobile No:</label>
 														<input type="number" class="form-control" name="rel_mobile" value="<?= isset($_GET['e']) ? $_GET['rel_mobile'] : $set['rel_mobile'] ?>" />
+														<label><span style="color:green">&#x2714;</span><span style="font-family: Courier New; font-size: 11px"> Atleast 11 digits</label></span>
 													</div>
 												</div>
 												<div class="col-xl-4">
