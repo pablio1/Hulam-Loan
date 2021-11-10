@@ -1116,6 +1116,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 																	<div class="form-group">
 																		<label>Mobile</label>
 																		<input type="text" class="form-control" name="mobile" value="<?= $_SESSION['mobile'];?>" />
+																		<label><span style="color:green">&#x2714;</span><span style="font-family: Courier New; font-size: 11px"> Atleast 4 digits</label></span>
 																	</div>
 																	<!--end::Input-->
 																</div>
@@ -1124,6 +1125,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 																	<div class="form-group">
 																		<label>Landline</label>
 																		<input type="text" class="form-control" name="company_landline" value="<?= $res['company_landline'];?>"/>
+																		<label><span style="color:green">&#x2714;</span><span style="font-family: Courier New; font-size: 11px"> Atleast 4 digits</label></span>
 																	</div>
 																	<!--end::Input-->
 																</div>
@@ -1182,6 +1184,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 																		<label>Zip Code</label>
 																		<input type="text" class="form-control" name="company_zipcode" value="<?= $res['company_zipcode'];?>" />
 																		<input type="hidden" class="form-control" name="notice_message" value="For potential debtors to view your loan features, we request you to come to the office for the signing of Memorandum of Agreement." />
+																		<label><span style="color:green">&#x2714;</span><span style="font-family: Courier New; font-size: 11px"> Atleast 4 digits</label></span>
 																	</div>
 																	<!--end::Input-->
 																</div>
