@@ -967,7 +967,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 						<div class="container">
 							<div class="card card-custom">
 								<div class="card-body">
-									<h5> Pending Loan Application</h5>
+									<h5>List of Loan Released</h5>
 									<table class="table table-bordered">
 										<thead>
 											<tr>
@@ -980,7 +980,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 											<?php
 											$lender_id = $_SESSION['user_id'];
 
-											$sql = "SELECT loan_application.*, user.* FROM loan_application INNER JOIN user ON loan_application.debtor_id = user.user_id WHERE loan_application.lender_id = '$lender_id' AND loan_application.loan_status = 'pending'";
+											$sql = "SELECT loan_application.*, user.* FROM loan_application INNER JOIN user ON loan_application.debtor_id = user.user_id WHERE loan_application.lender_id = '$lender_id' AND loan_application.loan_status = 'released'";
 											$query = $dbh->prepare($sql);
 											$query->execute();
 											$res = $query->fetchAll(PDO::FETCH_OBJ);

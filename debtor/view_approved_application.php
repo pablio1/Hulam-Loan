@@ -553,37 +553,20 @@ if ($_SESSION['user_type'] != 2) {
 			<div class="topbar">
 				<!--begin::Chat-->
 				<div class="topbar-item mr-1">
-					<div class="btn btn-icon btn-hover-transparent-black btn-clean btn-lg" data-toggle="modal" data-target="#kt_chat_modal">
-						<span class="svg-icon svg-icon-xl svg-icon-primary">
-							<!--begin::Svg Icon | path:assets/media/svg/icons/Communication/Chat6.svg-->
-							<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-								<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-									<rect x="0" y="0" width="24" height="24" />
-									<path opacity="0.3" fill-rule="evenodd" clip-rule="evenodd" d="M14.4862 18L12.7975 21.0566C12.5304 21.54 11.922 21.7153 11.4386 21.4483C11.2977 21.3704 11.1777 21.2597 11.0887 21.1255L9.01653 18H5C3.34315 18 2 16.6569 2 15V6C2 4.34315 3.34315 3 5 3H19C20.6569 3 22 4.34315 22 6V15C22 16.6569 20.6569 18 19 18H14.4862Z" fill="black" />
-									<path fill-rule="evenodd" clip-rule="evenodd" d="M6 7H15C15.5523 7 16 7.44772 16 8C16 8.55228 15.5523 9 15 9H6C5.44772 9 5 8.55228 5 8C5 7.44772 5.44772 7 6 7ZM6 11H11C11.5523 11 12 11.4477 12 12C12 12.5523 11.5523 13 11 13H6C5.44772 13 5 12.5523 5 12C5 11.4477 5.44772 11 6 11Z" fill="black" />
-								</g>
-							</svg>
-							<!--end::Svg Icon-->
-						</span>
-					</div>
-				</div>
-				<!--end::Chat-->
-				<!--begin::Quick panel-->
-				<div class="topbar-item mr-1">
-					<div class="btn btn-icon btn-clean btn-lg" id="kt_quick_panel_toggle">
-						<span class="svg-icon svg-icon-xl svg-icon-primary">
-							<!--begin::Svg Icon | path:assets/media/svg/icons/Layout/Layout-4-blocks.svg-->
-							<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-								<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-									<rect x="0" y="0" width="24" height="24" />
-									<rect fill="#000000" x="4" y="4" width="7" height="7" rx="1.5" />
-									<path d="M5.5,13 L9.5,13 C10.3284271,13 11,13.6715729 11,14.5 L11,18.5 C11,19.3284271 10.3284271,20 9.5,20 L5.5,20 C4.67157288,20 4,19.3284271 4,18.5 L4,14.5 C4,13.6715729 4.67157288,13 5.5,13 Z M14.5,4 L18.5,4 C19.3284271,4 20,4.67157288 20,5.5 L20,9.5 C20,10.3284271 19.3284271,11 18.5,11 L14.5,11 C13.6715729,11 13,10.3284271 13,9.5 L13,5.5 C13,4.67157288 13.6715729,4 14.5,4 Z M14.5,13 L18.5,13 C19.3284271,13 20,13.6715729 20,14.5 L20,18.5 C20,19.3284271 19.3284271,20 18.5,20 L14.5,20 C13.6715729,20 13,19.3284271 13,18.5 L13,14.5 C13,13.6715729 13.6715729,13 14.5,13 Z" fill="#000000" opacity="0.3" />
-								</g>
-							</svg>
-							<!--end::Svg Icon-->
-						</span>
-					</div>
-				</div>
+                    <div class="btn btn-icon btn-hover-transparent-black btn-clean btn-lg" data-toggle="modal" id="kt_quick_panel_toggle">
+                        <span class="svg-icon svg-icon-xl svg-icon-primary">
+                            <!--begin::Svg Icon | path:assets/media/svg/icons/Communication/Chat6.svg-->
+                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                    <rect x="0" y="0" width="24" height="24" />
+                                    <path opacity="0.3" fill-rule="evenodd" clip-rule="evenodd" d="M14.4862 18L12.7975 21.0566C12.5304 21.54 11.922 21.7153 11.4386 21.4483C11.2977 21.3704 11.1777 21.2597 11.0887 21.1255L9.01653 18H5C3.34315 18 2 16.6569 2 15V6C2 4.34315 3.34315 3 5 3H19C20.6569 3 22 4.34315 22 6V15C22 16.6569 20.6569 18 19 18H14.4862Z" fill="black" />
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M6 7H15C15.5523 7 16 7.44772 16 8C16 8.55228 15.5523 9 15 9H6C5.44772 9 5 8.55228 5 8C5 7.44772 5.44772 7 6 7ZM6 11H11C11.5523 11 12 11.4477 12 12C12 12.5523 11.5523 13 11 13H6C5.44772 13 5 12.5523 5 12C5 11.4477 5.44772 11 6 11Z" fill="black" />
+                                </g>
+                            </svg>
+                            <!--end::Svg Icon-->
+                        </span>
+                    </div>
+                </div>
 				<!--end::Quick panel-->
 				<!--begin::User-->
 				<div class="topbar-item mr-3">
@@ -671,51 +654,60 @@ if ($_SESSION['user_type'] != 2) {
 														<div class="card-body">
 															<h5>Loan Information</h5>
 															<table class="table table-bordered">
+																<?php
+																		$loan_app_id = intval($_GET['loan_app_id']);
+
+																		$sql = "SELECT * FROM loan_application WHERE loan_app_id = $loan_app_id";
+																		$query = $dbh->prepare($sql);
+																		$query->execute();
+																		$results = $query->fetchAll(PDO::FETCH_OBJ);
+																		if ($query->rowCount() > 0) {
+																			foreach ($results as $res) {
+																		?>
 																<thead>
 																	<tr>
-																		<th>Application Date</th>
+																		<th>Loan Status</th>
+																		<th><?= htmlentities($res->loan_status);?></th>
 
 																	</tr>
 																</thead>
 																<tbody>
-																	<?php
-																	$loan_app_id = intval($_GET['loan_app_id']);
-
-																	$sql = "SELECT * FROM loan_application WHERE loan_app_id = $loan_app_id";
-																	$query = $dbh->prepare($sql);
-																	$query->execute();
-																	$results = $query->fetchAll(PDO::FETCH_OBJ);
-																	if ($query->rowCount() > 0) {
-																		foreach ($results as $res) {
-																	?>
-																			<tr>
-																				<td>Application Date</td>
-																				<td><?= htmlentities($res->date); ?></td>
-																			</tr>
-																			<tr>
-																				<td>Loan Amount</td>
-																				<td><?= htmlentities($res->loan_amount); ?></td>
-																			</tr>
-																			<tr>
-																				<td>Loan Term</td>
-																				<td><?= htmlentities($res->loan_term); ?></td>
-																			</tr>
-																			<tr>
-																				<td>Fix Rate</td>
-																				<td><?= htmlentities($res->fix_rate); ?>%</td>
-																			</tr>
-																			<tr>
-																				<td>Total Interest</td>
-																				<td><?= htmlentities($res->total_interest); ?></td>
-																			</tr>
-																			<tr>
-																				<td>Late Charge</td>
-																				<td><?= htmlentities($res->late_charges); ?>%</td>
-																			</tr>
-																			<tr>
-																				<td>Total Amoun to Pay</td>
-																				<td><?= htmlentities($res->total_amount); ?></td>
-																			</tr>
+																	<tr>
+																		<td>Application Date</td>
+																		<td><?php echo $year = date('F d, Y - h:i:sa',strtotime($res->date));?></td>
+																	</tr>
+                                                                    <tr>
+																		<td>Approval Date</td>
+																		<td><?php echo $year = date('F d, Y',strtotime($res->approval_date));?></td>
+																	</tr>
+                                                                    <tr>
+																		<td>Releasing Schedule</td>
+																		<td><?= date('F d, Y',strtotime($res->release_schedule)); ?></td>
+																	</tr>
+																	<tr>
+																		<td>Loan Amount</td>
+																		<td><?= number_format(htmlentities($res->loan_amount), 2); ?></td>
+																	</tr>
+																	<tr>
+																		<td>Loan Term</td>
+																		<td><?= htmlentities($res->loan_term); ?></td>
+																	</tr>
+																	<tr>
+																		<td>Fix Rate</td>
+																		<td><?= htmlentities($res->fix_rate); ?>%</td>
+																	</tr>
+																	<tr>
+																		<td>Total Interest</td>
+																		<td><?= number_format(htmlentities($res->total_interest), 2); ?></td>
+																	</tr>
+																	<tr>
+																		<td>Late Charge</td>
+																		<td><?= htmlentities($res->late_charges); ?>%</td>
+																	</tr>
+																	<tr>
+																		<td>Total Loan Amount</td>
+																		<td><?= number_format(htmlentities($res->total_amount), 2); ?></td>
+																	</tr>
 
 																</tbody>
 														<?php }
@@ -1150,47 +1142,8 @@ if ($_SESSION['user_type'] != 2) {
 												</div>
 
 												<div class="separator separator-solid my-7"></div>
-												<h5>Loan Requirements</h5>
-												<table class="table table-bordered">
-													<thead>
-														<tr>
-															<th>Requirements</th>
-															<th>Remarks</th>
-														</tr>
-													</thead>
-													<tbody>
-														<?php
-
-
-														$sql = "SELECT * FROM loan_requirements INNER JOIN loan_features ON loan_requirements.lender_id = loan_features.lender_id WHERE loan_features.lender_id = $lender_id";
-														$query = $dbh->prepare($sql);
-														$query->execute();
-														$res2 = $query->fetchAll(PDO::FETCH_OBJ);
-														$cnt = 1;
-														if ($query->rowCount() > 0) {
-															foreach ($res2 as $result) { ?>
-																<tr>
-																	<td><?= htmlentities($result->req_name) ?></td>
-																	<td><?= htmlentities($result->remarks) ?></td>
-																</tr>
-														<?php $cnt = $cnt + 1;
-															}
-														} ?>
-													</tbody>
-												</table>
-													<!-- <button type="submit" name="submit" class="btn btn-sm btn-primary font-weight-bolder">Submit -->
-														<!-- <span class="svg-icon svg-icon-md ml-3"> -->
-															<!--begin::Svg Icon | path:assets/media/svg/icons/Navigation/Check.svg-->
-															<!-- <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-																<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-																	<polygon points="0 0 24 0 24 24 0 24" />
-																	<path d="M6.26193932,17.6476484 C5.90425297,18.0684559 5.27315905,18.1196257 4.85235158,17.7619393 C4.43154411,17.404253 4.38037434,16.773159 4.73806068,16.3523516 L13.2380607,6.35235158 C13.6013618,5.92493855 14.2451015,5.87991302 14.6643638,6.25259068 L19.1643638,10.2525907 C19.5771466,10.6195087 19.6143273,11.2515811 19.2474093,11.6643638 C18.8804913,12.0771466 18.2484189,12.1143273 17.8356362,11.7474093 L14.0997854,8.42665306 L6.26193932,17.6476484 Z" fill="#000000" fill-rule="nonzero" transform="translate(11.999995, 12.000002) rotate(-180.000000) translate(-11.999995, -12.000002)" />
-																</g>
-															</svg> -->
-															<!--end::Svg Icon-->
-														<!-- </span>
-													</button> -->
-											<!-- </form> -->
+												
+												
 											<!-- Start Modal -->
 											<div class="modal fade" id="view_terms" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
 												<div class="modal-dialog modal-dialog-centered modal-xl" role="document">
@@ -1436,262 +1389,71 @@ if ($_SESSION['user_type'] != 2) {
 	</div>
 	<!-- end::User Panel-->
 
-	<!--begin::Quick Panel-->
-	<div id="kt_quick_panel" class="offcanvas offcanvas-right pt-5 pb-10">
-		<!--begin::Header-->
-		<div class="offcanvas-header offcanvas-header-navs d-flex align-items-center justify-content-between mb-5">
-			<ul class="nav nav-bold nav-tabs nav-tabs-line nav-tabs-line-3x nav-tabs-primary flex-grow-1 px-10" role="tablist">
-				<li class="nav-item">
-					<a class="nav-link" data-toggle="tab" href="#kt_quick_panel_notifications">Notifications</a>
-				</li>
-			</ul>
-			<div class="offcanvas-close mt-n1 pr-5">
-				<a href="#" class="btn btn-xs btn-icon btn-light btn-hover-primary" id="kt_quick_panel_close">
-					<i class="ki ki-close icon-xs text-muted"></i>
-				</a>
-			</div>
-		</div>
-		<!--end::Header-->
+	
 
-		<!--begin::Content-->
-		<div class="offcanvas-content px-10">
-			<div class="tab-content">
-				<!--begin::Tabpane-->
-				<!--begin::Nav-->
-				<div class="navi navi-icon-circle navi-spacer-x-0">
-					<!--begin::Item-->
-					<a href="#" class="navi-item">
-						<div class="navi-link rounded">
-							<div class="symbol symbol-50 mr-3">
-								<div class="symbol-label">
-									<i class="flaticon-bell text-success icon-lg"></i>
-								</div>
-							</div>
-							<div class="navi-text">
-								<div class="font-weight-bold font-size-lg">5 new user generated report</div>
-								<div class="text-muted">Reports based on sales</div>
-							</div>
-						</div>
-					</a>
-					<!--end::Item-->
-					<!--begin::Item-->
-					<a href="#" class="navi-item">
-						<div class="navi-link rounded">
-							<div class="symbol symbol-50 mr-3">
-								<div class="symbol-label">
-									<i class="flaticon2-box text-danger icon-lg"></i>
-								</div>
-							</div>
-							<div class="navi-text">
-								<div class="font-weight-bold font-size-lg">2 new items submited</div>
-								<div class="text-muted">by Grog John</div>
-							</div>
-						</div>
-					</a>
-					<!--end::Item-->
-					<!--begin::Item-->
-					<a href="#" class="navi-item">
-						<div class="navi-link rounded">
-							<div class="symbol symbol-50 mr-3">
-								<div class="symbol-label">
-									<i class="flaticon-psd text-primary icon-lg"></i>
-								</div>
-							</div>
-							<div class="navi-text">
-								<div class="font-weight-bold font-size-lg">79 PSD files generated</div>
-								<div class="text-muted">Reports based on sales</div>
-							</div>
-						</div>
-					</a>
-					<!--end::Item-->
-					<!--begin::Item-->
-					<a href="#" class="navi-item">
-						<div class="navi-link rounded">
-							<div class="symbol symbol-50 mr-3">
-								<div class="symbol-label">
-									<i class="flaticon2-supermarket text-warning icon-lg"></i>
-								</div>
-							</div>
-							<div class="navi-text">
-								<div class="font-weight-bold font-size-lg">$2900 worth producucts sold</div>
-								<div class="text-muted">Total 234 items</div>
-							</div>
-						</div>
-					</a>
-					<!--end::Item-->
-					<!--begin::Item-->
-					<a href="#" class="navi-item">
-						<div class="navi-link rounded">
-							<div class="symbol symbol-50 mr-3">
-								<div class="symbol-label">
-									<i class="flaticon-paper-plane-1 text-success icon-lg"></i>
-								</div>
-							</div>
-							<div class="navi-text">
-								<div class="font-weight-bold font-size-lg">4.5h-avarage response time</div>
-								<div class="text-muted">Fostest is Barry</div>
-							</div>
-						</div>
-					</a>
-					<!--end::Item-->
-					<!--begin::Item-->
-					<a href="#" class="navi-item">
-						<div class="navi-link rounded">
-							<div class="symbol symbol-50 mr-3">
-								<div class="symbol-label">
-									<i class="flaticon-safe-shield-protection text-danger icon-lg"></i>
-								</div>
-							</div>
-							<div class="navi-text">
-								<div class="font-weight-bold font-size-lg">3 Defence alerts</div>
-								<div class="text-muted">40% less alerts thar last week</div>
-							</div>
-						</div>
-					</a>
-					<!--end::Item-->
-					<!--begin::Item-->
-					<a href="#" class="navi-item">
-						<div class="navi-link rounded">
-							<div class="symbol symbol-50 mr-3">
-								<div class="symbol-label">
-									<i class="flaticon-notepad text-primary icon-lg"></i>
-								</div>
-							</div>
-							<div class="navi-text">
-								<div class="font-weight-bold font-size-lg">Avarage 4 blog posts per author</div>
-								<div class="text-muted">Most posted 12 time</div>
-							</div>
-						</div>
-					</a>
-					<!--end::Item-->
-					<!--begin::Item-->
-					<a href="#" class="navi-item">
-						<div class="navi-link rounded">
-							<div class="symbol symbol-50 mr-3">
-								<div class="symbol-label">
-									<i class="flaticon-users-1 text-warning icon-lg"></i>
-								</div>
-							</div>
-							<div class="navi-text">
-								<div class="font-weight-bold font-size-lg">16 authors joined last week</div>
-								<div class="text-muted">9 photodrapehrs, 7 designer</div>
-							</div>
-						</div>
-					</a>
-					<!--end::Item-->
-					<!--begin::Item-->
-					<a href="#" class="navi-item">
-						<div class="navi-link rounded">
-							<div class="symbol symbol-50 mr-3">
-								<div class="symbol-label">
-									<i class="flaticon2-box text-info icon-lg"></i>
-								</div>
-							</div>
-							<div class="navi-text">
-								<div class="font-weight-bold font-size-lg">2 new items have been submited</div>
-								<div class="text-muted">by Grog John</div>
-							</div>
-						</div>
-					</a>
-					<!--end::Item-->
-					<!--begin::Item-->
-					<a href="#" class="navi-item">
-						<div class="navi-link rounded">
-							<div class="symbol symbol-50 mr-3">
-								<div class="symbol-label">
-									<i class="flaticon2-download text-success icon-lg"></i>
-								</div>
-							</div>
-							<div class="navi-text">
-								<div class="font-weight-bold font-size-lg">2.8 GB-total downloads size</div>
-								<div class="text-muted">Mostly PSD end AL concepts</div>
-							</div>
-						</div>
-					</a>
-					<!--end::Item-->
-					<!--begin::Item-->
-					<a href="#" class="navi-item">
-						<div class="navi-link rounded">
-							<div class="symbol symbol-50 mr-3">
-								<div class="symbol-label">
-									<i class="flaticon2-supermarket text-danger icon-lg"></i>
-								</div>
-							</div>
-							<div class="navi-text">
-								<div class="font-weight-bold font-size-lg">$2900 worth producucts sold</div>
-								<div class="text-muted">Total 234 items</div>
-							</div>
-						</div>
-					</a>
-					<!--end::Item-->
-				</div>
-				<!--end::Nav-->
-			</div>
-			<!--end::Tabpane-->
-			<!--begin::Tabpane-->
-			<div class="tab-pane fade pt-3 pr-5 mr-n5" id="kt_quick_panel_settings" role="tabpanel">
-				<form class="form">
-					<!--begin::Section-->
-					<div class="pt-1">
-						<h4 class="mb-7">Privacy Settings:</h4>
-						<div class="pb-5">
-							<div class="checkbox-inline mb-2">
-								<label class="checkbox">
-									<input type="checkbox" />
-									<span></span>You have new notifications.</label>
-							</div>
-							<div class="checkbox-inline mb-2">
-								<label class="checkbox">
-									<input type="checkbox" />
-									<span></span>You're sent a direct message</label>
-							</div>
-							<div class="checkbox-inline mb-2">
-								<label class="checkbox">
-									<input type="checkbox" checked="checked" />
-									<span></span>Someone adds you as a connection</label>
-							</div>
-							<div class="checkbox-inline mb-2">
-								<label class="checkbox checkbox-success">
-									<input type="checkbox" />
-									<span></span>Upon new order</label>
-							</div>
-							<div class="checkbox-inline mb-2">
-								<label class="checkbox checkbox-success">
-									<input type="checkbox" />
-									<span></span>New membership approval</label>
-							</div>
-						</div>
-						<!--begin::Group-->
-						<div class="text-muted">After you log in, you will be asked for additional information to confirm your identity.</div>
-						<!--end::Group-->
-					</div>
-					<!--end::Section-->
-					<div class="separator separator-dashed my-8"></div>
-					<!--begin::Section-->
-					<div class="pt-1">
-						<h4 class="mb-7">Security Settings:</h4>
-						<div class="pb-5">
-							<div class="checkbox-inline">
-								<label class="checkbox mb-2">
-									<input type="checkbox" />
-									<span></span>Personal information safety</label>
-							</div>
-							<p class="form-text text-muted pb-5 mb-0">After you log in, you will be asked for additional information to confirm your identity. For extra security, this requires you to confirm your email.
-								<a href="#" class="font-weight-bold">Learn more</a>.
-							</p>
-							<button type="button" class="btn btn-light-danger font-weight-bolder btn-sm">Setup login verification</button>
-						</div>
-					</div>
-					<!--end::Section-->
-				</form>
-			</div>
-			<!--end::Tabpane-->
-		</div>
-	</div>
-	<!--end::Content-->
-	</div>
-	<!--end::Quick Panel-->
-	<!--begin::Chat Panel-->
+    <!--begin::Quick Panel-->
+    <div id="kt_quick_panel" class="offcanvas offcanvas-right pt-5 pb-10">
+        <!--begin::Header-->
+        <div class="offcanvas-header offcanvas-header-navs d-flex align-items-center justify-content-between mb-5">
+            <ul class="nav nav-bold nav-tabs nav-tabs-line nav-tabs-line-3x nav-tabs-primary flex-grow-1 px-10" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" data-toggle="tab" href="#kt_chat_modal">Messages</a>
+                </li>
+            </ul>
+            <div class="offcanvas-close mt-n1 pr-5">
+                <a href="#" class="btn btn-xs btn-icon btn-light btn-hover-primary" id="kt_quick_panel_close">
+                    <i class="ki ki-close icon-xs text-muted"></i>
+                </a>
+            </div>
+        </div>
+        <!--end::Header-->
+        <!--begin::Content-->
+        <div class="offcanvas-content px-10">
+            <div class="tab-content">
+                <div class="navi navi-icon-circle navi-spacer-x-0">
+                    <?php
+                    $user_id = $_SESSION['user_id'];
+
+                    $sql = "SELECT * FROM message INNER JOIN user ON message.sender_id = user.user_id WHERE message.receiver_id = $user_id";
+                    $query = $dbh->prepare($sql);
+                    $query->execute();
+                    $results = $query->fetchAll(PDO::FETCH_OBJ);
+
+                    foreach ($results as $res) :
+
+                    ?> <a href="debtor/messages.php?sender_id=<?= htmlentities($res->sender_id) ?>">
+                            <div class="navi-link rounded">
+                                <div class="symbol symbol-50 mr-3">
+                                </div>
+                                <div class="navi-text">
+                                    <div class="font-weight-bold font-size-lg">
+                                        <?php
+                                        $red = htmlentities($res->user_type);
+
+                                        if ($red == 1) : ?>
+                                            <?= htmlentities($res->firstname) . '' . htmlentities($res->middlename) . ' ' . htmlentities($res->lastname); ?>
+                                        <?php elseif ($red == 2) : ?>
+                                            <?= htmlentities($res->firstname) . '' . htmlentities($res->middlename) . ' ' . htmlentities($res->lastname); ?>
+                                        <?php elseif ($red == 3) : ?>
+                                            <?= htmlentities($res->company_name); ?>
+                                        <?php elseif ($red == 4) : ?>
+                                            <?= htmlentities($res->firstname) . '' . htmlentities($res->middlename) . ' ' . htmlentities($res->lastname); ?>
+                                        <?php else : ?>
+                                            <?= htmlentities($res->company_name); ?>
+                                        <?php endif; ?>
+                                    </div><span class="font-size-sm"><?= htmlentities($res->date_message); ?></span>
+                                    <div class="text-muted"><?= htmlentities($res->message) ?></div>
+                                </div>
+                            </div>
+                        </a>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--end::Content-->
+    </div>
+    <!--end::Quick Panel-->	<!--begin::Chat Panel-->
 	<div class="modal modal-sticky modal-sticky-bottom-right" id="kt_chat_modal" role="dialog" data-backdrop="false">
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">

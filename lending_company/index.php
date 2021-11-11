@@ -1019,7 +1019,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
                                                 <?php
                                                     $id = $_SESSION['user_id'];
 
-                                                    $sql = "SELECT count(*) AS loan_app_id FROM loan_application WHERE loan_application.status = 'pending' AND lender_id = $id ";
+                                                    $sql = "SELECT count(*) AS loan_app_id FROM loan_application WHERE loan_application.loan_status = 'Pending' AND lender_id = $id ";
                                                     $query = $dbh->prepare($sql);
                                                     $query->execute();
                                                     $results = $query->fetchAll(PDO::FETCH_OBJ);
@@ -1049,7 +1049,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
                                                 <p class="text-primary font-size-h2 font-weight-bolder pt-3 mb-0">
                                                 <?php
                                                     $id = $_SESSION['user_id'];
-                                                    $sql = "SELECT count(*) AS loan_app_id FROM loan_application WHERE loan_application.status = 'approved' AND lender_id = $id ";
+                                                    $sql = "SELECT count(*) AS loan_app_id FROM loan_application WHERE loan_application.loan_status = 'approved' AND lender_id = $id ";
                                                     $query = $dbh->prepare($sql);
                                                     $query->execute();
                                                     $results = $query->fetchAll(PDO::FETCH_OBJ);
@@ -1065,6 +1065,37 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
                                         <div class="card-footer border-0 d-flex align-items-center justify-content-between pt-0">
                                             <span></span>
                                             <a href="lending_company/approved_loan.php" class="btn btn-sm btn-primary font-weight-bolder px-6">View</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="card card-custom card-stretch gutter-b">
+                                        <div class="card-body">
+                                            <div class="d-flex align-items-center justify-content-between flex-wrap">
+                                                <span class="font-size-h6 text-muted font-weight-bolder text-uppercase pr-2">Released Loan</span>
+                                            </div>
+                                            <div class="card-body d-flex align-items-center justify-content-between pt-7 flex-wrap">
+                                                <span class="font-weight-bolder display5 text-dark-75 py-4 pl-5 pr-5">
+                                                <p class="text-primary font-size-h2 font-weight-bolder pt-3 mb-0">
+                                                <?php
+                                                    $id = $_SESSION['user_id'];
+
+                                                    $sql = "SELECT count(*) AS loan_app_id FROM loan_application WHERE loan_application.loan_status = 'released' AND lender_id = $id ";
+                                                    $query = $dbh->prepare($sql);
+                                                    $query->execute();
+                                                    $results = $query->fetchAll(PDO::FETCH_OBJ);
+
+                                                    if ($query->rowCount() > 0) {
+                                                        foreach ($results as $result) { ?>
+                                                            <?php echo htmlentities($result->loan_app_id); ?>
+                                                    <?php }
+                                                    } ?>
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="card-footer border-0 d-flex align-items-center justify-content-between pt-0">
+                                            <span></span>
+                                            <a href="lending_company/released_loan.php" class="btn btn-sm btn-primary font-weight-bolder px-6">View</a>
                                         </div>
                                     </div>
                                 </div>

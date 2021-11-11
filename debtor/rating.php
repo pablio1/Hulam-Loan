@@ -46,48 +46,54 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 	<!--begin::Layout Themes(used by all pages)-->
 	<!--end::Layout Themes-->
 	<link rel="shortcut icon" href="assets/keen/media/logos/Hulam_Logo.png" />
-    <link href="css/heroic-features.css" rel="stylesheet">
-    <style type="text/css">
-    .rate {
-        float: left;
-        height: 46px;
-        padding: 0 10px;
-    }
-    .rate:not(:checked) > input {
-        position:absolute;
-        top:-9999px;
-    }
-    .rate:not(:checked) > label {
-        float:right;
-        width:1em;
-        overflow:hidden;
-        white-space:nowrap;
-        cursor:pointer;
-        font-size:30px;
-        color:#000;
-    }
-    .rate:not(:checked) > label:before {
-        content: '★ ';
-    }
-    .rate > input:checked ~ label {
-        color: #ffc700;    
-    }
-    .rate:not(:checked) > label:hover,
-    .rate:not(:checked) > label:hover ~ label {
-        color: #deb217;  
-    }
-    .rate > input:checked + label:hover,
-    .rate > input:checked + label:hover ~ label,
-    .rate > input:checked ~ label:hover,
-    .rate > input:checked ~ label:hover ~ label,
-    .rate > label:hover ~ input:checked ~ label {
-        color: #c59b08;
-    }
+	<link href="css/heroic-features.css" rel="stylesheet">
+	<style type="text/css">
+		.rate {
+			float: left;
+			height: 46px;
+			padding: 0 10px;
+		}
 
-    .hideme {
-      display: none;
-    }
-  </style>
+		.rate:not(:checked)>input {
+			position: absolute;
+			top: -9999px;
+		}
+
+		.rate:not(:checked)>label {
+			float: right;
+			width: 1em;
+			overflow: hidden;
+			white-space: nowrap;
+			cursor: pointer;
+			font-size: 30px;
+			color: #000;
+		}
+
+		.rate:not(:checked)>label:before {
+			content: '★ ';
+		}
+
+		.rate>input:checked~label {
+			color: #ffc700;
+		}
+
+		.rate:not(:checked)>label:hover,
+		.rate:not(:checked)>label:hover~label {
+			color: #deb217;
+		}
+
+		.rate>input:checked+label:hover,
+		.rate>input:checked+label:hover~label,
+		.rate>input:checked~label:hover,
+		.rate>input:checked~label:hover~label,
+		.rate>label:hover~input:checked~label {
+			color: #c59b08;
+		}
+
+		.hideme {
+			display: none;
+		}
+	</style>
 </head>
 <!--end::Head-->
 <!--begin::Body-->
@@ -161,37 +167,20 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 			<div class="topbar">
 				<!--begin::Chat-->
 				<div class="topbar-item mr-1">
-					<div class="btn btn-icon btn-hover-transparent-black btn-clean btn-lg" data-toggle="modal" data-target="#kt_chat_modal">
-						<span class="svg-icon svg-icon-xl svg-icon-primary">
-							<!--begin::Svg Icon | path:assets/media/svg/icons/Communication/Chat6.svg-->
-							<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-								<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-									<rect x="0" y="0" width="24" height="24" />
-									<path opacity="0.3" fill-rule="evenodd" clip-rule="evenodd" d="M14.4862 18L12.7975 21.0566C12.5304 21.54 11.922 21.7153 11.4386 21.4483C11.2977 21.3704 11.1777 21.2597 11.0887 21.1255L9.01653 18H5C3.34315 18 2 16.6569 2 15V6C2 4.34315 3.34315 3 5 3H19C20.6569 3 22 4.34315 22 6V15C22 16.6569 20.6569 18 19 18H14.4862Z" fill="black" />
-									<path fill-rule="evenodd" clip-rule="evenodd" d="M6 7H15C15.5523 7 16 7.44772 16 8C16 8.55228 15.5523 9 15 9H6C5.44772 9 5 8.55228 5 8C5 7.44772 5.44772 7 6 7ZM6 11H11C11.5523 11 12 11.4477 12 12C12 12.5523 11.5523 13 11 13H6C5.44772 13 5 12.5523 5 12C5 11.4477 5.44772 11 6 11Z" fill="black" />
-								</g>
-							</svg>
-							<!--end::Svg Icon-->
-						</span>
-					</div>
-				</div>
-				<!--end::Chat-->
-				<!--begin::Quick panel-->
-				<div class="topbar-item mr-1">
-					<div class="btn btn-icon btn-clean btn-lg" id="kt_quick_panel_toggle">
-						<span class="svg-icon svg-icon-xl svg-icon-primary">
-							<!--begin::Svg Icon | path:assets/media/svg/icons/Layout/Layout-4-blocks.svg-->
-							<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-								<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-									<rect x="0" y="0" width="24" height="24" />
-									<rect fill="#000000" x="4" y="4" width="7" height="7" rx="1.5" />
-									<path d="M5.5,13 L9.5,13 C10.3284271,13 11,13.6715729 11,14.5 L11,18.5 C11,19.3284271 10.3284271,20 9.5,20 L5.5,20 C4.67157288,20 4,19.3284271 4,18.5 L4,14.5 C4,13.6715729 4.67157288,13 5.5,13 Z M14.5,4 L18.5,4 C19.3284271,4 20,4.67157288 20,5.5 L20,9.5 C20,10.3284271 19.3284271,11 18.5,11 L14.5,11 C13.6715729,11 13,10.3284271 13,9.5 L13,5.5 C13,4.67157288 13.6715729,4 14.5,4 Z M14.5,13 L18.5,13 C19.3284271,13 20,13.6715729 20,14.5 L20,18.5 C20,19.3284271 19.3284271,20 18.5,20 L14.5,20 C13.6715729,20 13,19.3284271 13,18.5 L13,14.5 C13,13.6715729 13.6715729,13 14.5,13 Z" fill="#000000" opacity="0.3" />
-								</g>
-							</svg>
-							<!--end::Svg Icon-->
-						</span>
-					</div>
-				</div>
+                    <div class="btn btn-icon btn-hover-transparent-black btn-clean btn-lg" data-toggle="modal" id="kt_quick_panel_toggle">
+                        <span class="svg-icon svg-icon-xl svg-icon-primary">
+                            <!--begin::Svg Icon | path:assets/media/svg/icons/Communication/Chat6.svg-->
+                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                    <rect x="0" y="0" width="24" height="24" />
+                                    <path opacity="0.3" fill-rule="evenodd" clip-rule="evenodd" d="M14.4862 18L12.7975 21.0566C12.5304 21.54 11.922 21.7153 11.4386 21.4483C11.2977 21.3704 11.1777 21.2597 11.0887 21.1255L9.01653 18H5C3.34315 18 2 16.6569 2 15V6C2 4.34315 3.34315 3 5 3H19C20.6569 3 22 4.34315 22 6V15C22 16.6569 20.6569 18 19 18H14.4862Z" fill="black" />
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M6 7H15C15.5523 7 16 7.44772 16 8C16 8.55228 15.5523 9 15 9H6C5.44772 9 5 8.55228 5 8C5 7.44772 5.44772 7 6 7ZM6 11H11C11.5523 11 12 11.4477 12 12C12 12.5523 11.5523 13 11 13H6C5.44772 13 5 12.5523 5 12C5 11.4477 5.44772 11 6 11Z" fill="black" />
+                                </g>
+                            </svg>
+                            <!--end::Svg Icon-->
+                        </span>
+                    </div>
+                </div>
 				<!--end::Quick panel-->
 				<!--begin::User-->
 				<div class="topbar-item mr-3">
@@ -222,205 +211,179 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 			<div class="d-flex flex-column-fluid">
 				<!--begin::Container-->
 				<div class="container">
-
-					<div class="col-12">
 					<?php
-							if(isset($_GET['submit'])){
-								$rating = $_GET['rating'];
-								$user_id = $_GET['user_id'];
-								$lending_id = $_GET['lender_id'];
-								$comment = $_GET['comment'];
-								$date = $_GET['date'];
+					if (isset($_GET['submit'])) {
+						$rating = $_GET['rating'];
+						$user_id = $_GET['user_id'];
+						$lending_id = $_GET['lender_id'];
+						$comment = $_GET['comment'];
+						$date = $_GET['date'];
 
-								$query_rating = "INSERT INTO feedback (lender_id,debtor_id,comments,ratings,dateOfRate) VALUES ('$lending_id', '$user_id', '$comment' , '$rating' , '$date')";
-								if(mysqli_query($conn, $query_rating)){ ?>
-								
-								<div class="alert alert-success" role="alert">
-									Thank you for your valuable feedback!
-								</div>
-								
-								<?php }else{ ?>
-									<div class="alert alert-danger" role="alert">
-										Something went wrong!
-									</div>
-								<?php }
-							
+						$query_rating = "INSERT INTO feedback (lender_id,debtor_id,comments,ratings,dateOfRate) VALUES ('$lending_id', '$user_id', '$comment' , '$rating' , '$date')";
+						if (mysqli_query($conn, $query_rating)) { ?>
+
+							<div class="alert alert-success" role="alert">
+								Thank you for your valuable feedback!
+							</div>
+
+						<?php } else { ?>
+							<div class="alert alert-danger" role="alert">
+								Something went wrong!
+							</div>
+						<?php }
+
 						?>
-						
-						<?php } ?>
-	
-						<div class="form-group">
-							<div class="card card-custom card-stretch card-stretch-half gutter-b">
-								<div class="card-body d-flex flex-column">
-									<div class="d-flex align-items-center">
-										<div class="d-flex flex-column">
-											<h4>Rate 
-												 <?php 
-												 if(isset($_GET['lender_id']))
-												 	$lender_id= $_GET['lender_id'];
-												// $id = intval($_GET['lender_id']);
-												//echo $lender_id;
-												//pabs
-												if(isset($_GET['user_id']))
-													$user_id = $_GET['user_id'];
-												
-												$query_lending = "SELECT * FROM user WHERE user_id = $lender_id";
-												$query_lending_result = mysqli_query($conn, $query_lending);
-												$lending_result = mysqli_fetch_array($query_lending_result);
-												echo $lending_result['company_name'];
-												//echo $_SESSION['user_id'];
-												
-												//cho "<pre>";
-												///print_r($result);
-												 ?></h4>
-												 <?php
-												 if(isset($_GET['user_id']))
-												 $id=$_GET['user_id'];
-												 ?>
 
-										</div>
-									</div>
-									<form method="get" autocomplete="off">
-										<div class="row">
-											<div class="col-lg-2">
-												<div class="form-group">
-                                                    <?php
-                                                    if(isset($_POST['submit']))
-                                                    {
-														$lender = mysqli_real_escape_string($conn,$_POST['lender_id']);
-														$debtor_id = mysqli_real_escape_string($conn,$_POST['debtor_id']);
-                                                        $comments = mysqli_real_escape_string($conn,$_POST['comments']);
-                                                        $rating = mysqli_real_escape_string($conn,$_POST['rating']);
-														$dateOfRate = mysqli_real_escape_string($conn,$_POST['dateOfRate']);
-                                                        if(empty($ratings))
-                                                        {
-                                                            $ratings=0;
-                                                        }
+					<?php } ?>
+					<div class="card card-custom gutter-b card-stretch">
+						<div class="card-header border-0 pt-6">
+							<h3 class="card-title align-items-start flex-column">
+								<span class="card-label font-weight-bolder font-size-h4 text-dark-75">
+									Rate
+									<?php
+									if (isset($_GET['lender_id']))
+										$lender_id = $_GET['lender_id'];
+									if (isset($_GET['user_id']))
+										$user_id = $_GET['user_id'];
 
-                                                        $result =mysqli_query($conn,"INSERT INTO feedback(lender_id,debtor_id,comments,ratings,dateOfRate) VALUES ('$lender','$debtor_id','$comments','$ratings','$dateOfRate')");
+									$query_lending = "SELECT * FROM user WHERE user_id = $lender_id";
+									$query_lending_result = mysqli_query($conn, $query_lending);
+									$lending_result = mysqli_fetch_array($query_lending_result);
+									echo $lending_result['company_name'];
+									?></h4>
+									<?php
+									if (isset($_GET['user_id']))
+										$id = $_GET['user_id'];
+									?>
+								</span>
+							</h3>
+							<div class="my-lg-0 my-1">
+								<a href="debtor/loan_information.php" class="btn btn-sm btn-light-primary font-weight-bolder mr-2">
+									<< Back</a>
+							</div>
+						</div>
+
+						<div class="col-12">
+							<div class="form-group">
+								<form method="get" autocomplete="off">
+									<div class="row">
+										<div class="col-lg-2">
+											<div class="form-group">
+												<?php
+												if (isset($_POST['submit'])) {
+													$lender = mysqli_real_escape_string($conn, $_POST['lender_id']);
+													$debtor_id = mysqli_real_escape_string($conn, $_POST['debtor_id']);
+													$comments = mysqli_real_escape_string($conn, $_POST['comments']);
+													$rating = mysqli_real_escape_string($conn, $_POST['rating']);
+													$dateOfRate = mysqli_real_escape_string($conn, $_POST['dateOfRate']);
+													if (empty($ratings)) {
+														$ratings = 0;
+													}
+
+													$result = mysqli_query($conn, "INSERT INTO feedback(lender_id,debtor_id,comments,ratings,dateOfRate) VALUES ('$lender','$debtor_id','$comments','$ratings','$dateOfRate')");
 
 													//	echo "<script>alert('Thank you for rating!');window.location.href='debtor/index.php'</script>";
-                                                    }
-                                                    ?>
-												
-												
-                                                <form method="GET">
-													
-                                                    <table style="margin-left:300px">
-                                                        <tr>
-                                                            <td>Rate</td>
-                                                            <td>
-                                                                <div class="rate">
-                                                                    <input type="radio" name="rating" id="star5" value="5"/>
-                                                                    <label for="star5" title="5 stars">5 stars</label>
-                                                                    <input type="radio" name="rating" id="star4" value="4"/>
-                                                                    <label for="star4" title="4 stars">4 stars</label>
-                                                                    <input type="radio" name="rating" id="star3" value="3"/>
-                                                                    <label for="star3" title="3 stars">3 stars</label>
-                                                                    <input type="radio" name="rating" id="star2" value="2"/>
-                                                                    <label for="star2" title="2 stars">2 stars</label>
-                                                                    <input type="radio" name="rating" id="star1" value="1"/>
-                                                                    <label for="star1" title="1 star">1 star</label>
-                                                                    <input class="hideme" type="radio" name="rating" id="star0" value="0" checked/>
-                                                                    <label class="hideme" for="star0" title="0 stars">0 stars</label>
-                                                                </div>    
-                                                                <br><br>
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
+												}
+												?>
+
+
+												<form method="GET">
+
+													<table style="margin-left:300px">
+														<tr>
+															<td>Rate</td>
+															<td>
+																<div class="rate">
+																	<input type="radio" name="rating" id="star5" value="5" />
+																	<label for="star5" title="5 stars">5 stars</label>
+																	<input type="radio" name="rating" id="star4" value="4" />
+																	<label for="star4" title="4 stars">4 stars</label>
+																	<input type="radio" name="rating" id="star3" value="3" />
+																	<label for="star3" title="3 stars">3 stars</label>
+																	<input type="radio" name="rating" id="star2" value="2" />
+																	<label for="star2" title="2 stars">2 stars</label>
+																	<input type="radio" name="rating" id="star1" value="1" />
+																	<label for="star1" title="1 star">1 star</label>
+																	<input class="hideme" type="radio" name="rating" id="star0" value="0" checked />
+																	<label class="hideme" for="star0" title="0 stars">0 stars</label>
+																</div>
+																<br><br>
+															</td>
+														</tr>
+														<tr>
 															<input type="hidden" name="user_id" value="<?php echo $_SESSION['user_id']; ?>">
 															<input type="hidden" name="lender_id" value="<?php echo $lender_id; ?>">
-                                                            <td>COMMENT </td>
-                                                            <td><textarea type="text" name="comment" style="width:500px; height:100px;"></textarea></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td> <label><input type="hidden" name="date" value="<?php echo date('Y-m-d'); ?>" ></label></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <!-- <input type="hidden" name="debtor" value="<?php  echo $user_id;?>" > -->
-                                                        </tr>
-                                                            <!-- <input type="hidden" name="lender" value="<?php  if(isset($_GET['lender']))
-                                                            echo $_GET['company_name ']; ?>" > -->
+															<td>COMMENT </td>
+															<td><textarea type="text" name="comment" style="width:500px; height:100px;"></textarea></td>
 														</tr>
-                                                        <tr>
-                                                            <td><input type="submit" class="btn btn-primary btn-block font-weight-bolder" name="submit" value="Submit"></td>
-                                                        </tr>
-                                                    </table>
-													
-                                                    <?php
-                                                        function drawStars(int $starRating)
-                                                        {
-                                                            echo "<span style='color: yellow;'>";
-                                                            for ($i = 0; $i < $starRating; $i++)
-                                                            {
-                                                                echo "&#x2605;";
-                                                            }
-                                                            echo "</span>";
-                                                            for ($i = 5 - $starRating; $i > 0; $i--)
-                                                            {
-                                                            echo "&#x2605;";
-                                                            }
-                                                        }
-                                                    ?>	
-												</div>
-                                            </div>    
-										</div>
-									</form>
-									<div class="col-6">
-										<?php
-										$lender_id = intval($_GET['lender_id']);
-										$query = "SELECT * FROM feedback INNER JOIN user ON feedback.debtor_id = user.user_id WHERE lender_id = $lender_id";
-										$result = mysqli_query($conn, $query);
-										$ratingTotal = $ratingCount=0;
-										//$arr = (array) $result;
-										//echo "<pre>";
-										//print_r($result);
-										//echo "<script>console.log('Debug Objects: " . $arr . "' );</script>";
-										// $row = mysqli_fetch_array($result);
-										// echo "<pre>";
-										// print_r($row);
-										while($row = mysqli_fetch_array($result)){
-											$ratingTotal += $row['ratings'];
-											$ratingCount++;
-										}
-										
-										echo "<h5>Average Rating :</h5>";
-										echo "<p>". number_format(($ratingTotal/$ratingCount),2)." ".
-													drawStars(round($ratingTotal/$ratingCount)).
-													"</p>";
-										$ratingTotal = 0;
-										$ratingCount = 0;
+														<tr>
+															<td> <label><input type="hidden" name="date" value="<?php echo date('Y-m-d'); ?>"></label></td>
+														</tr>
+														<tr>
+															<!-- <input type="hidden" name="debtor" value="<?php echo $user_id; ?>" > -->
+														</tr>
+														<!-- <input type="hidden" name="lender" value="<?php if (isset($_GET['lender']))
+																											echo $_GET['company_name ']; ?>" > -->
+														</tr>
+														<tr>
+															<td><input type="submit" class="btn btn-primary btn-block font-weight-bolder" name="submit" value="Submit"></td>
+														</tr>
+													</table>
 
-										$lender_id = intval($_GET['lender_id']);
-										$query = "SELECT * FROM feedback INNER JOIN user ON feedback.debtor_id = user.user_id WHERE lender_id = $lender_id";
-										$result = mysqli_query($conn, $query);
-										while($row = mysqli_fetch_array($result)){
-											$ratingTotal += $row['ratings'];
-											$ratingCount++;
-											//echo"<tr><td><span class='starbox'>";
-											//drawStars($row['ratings']);
-											//echo "</span></td><td>" .$row['firstname']." ".$row['lastname']." ".$row['comments']." ".$row['dateOfRate']."</td></tr>";
-        									//echo "<td></td>";
-											
-											?>
-											<div class="card">
-												<div class="card-body">
-													<h5 class="card-title"><?php echo "".$row['firstname']." ".$row['lastname']; ?></h5>
-													<p class="card-text"><?php drawStars($row['ratings']); ?>
-													<?php echo "".$row['comments']; ?></p>
-													<?php echo $row['dateOfRate']; ?>
-												</div class="card-body">
-													
-												<div class=""></div>
+													<?php
+													function drawStars(int $starRating)
+													{
+														echo "<span style='color: yellow;'>";
+														for ($i = 0; $i < $starRating; $i++) {
+															echo "&#x2605;";
+														}
+														echo "</span>";
+														for ($i = 5 - $starRating; $i > 0; $i--) {
+															echo "&#x2605;";
+														}
+													}
+													?>
 											</div>
-
-
-										<?php }
-										//echo "<tr><td>Average rating: <span class='starbox'>" . number_format(($ratingTotal / $ratingCount), 2) . " ";
-										//drawStars(round($ratingTotal / $ratingCount));
-										//echo "</span></td></tr>";
-										?>
+										</div>
 									</div>
+								</form>
+								<div class="col-6">
+									<?php
+									$lender_id = intval($_GET['lender_id']);
+									$query = "SELECT * FROM feedback INNER JOIN user ON feedback.debtor_id = user.user_id WHERE lender_id = $lender_id";
+									$result = mysqli_query($conn, $query);
+									$ratingTotal = $ratingCount = 0;
+									while ($row = mysqli_fetch_array($result)) {
+										$ratingTotal += $row['ratings'];
+										$ratingCount++;
+									}
+
+									echo "<h5>Average Rating :</h5>";
+									echo "<p>" . number_format(($ratingTotal / $ratingCount), 2) . " " .
+										drawStars(round($ratingTotal / $ratingCount)) .
+										"</p>";
+									$ratingTotal = 0;
+									$ratingCount = 0;
+
+									$lender_id = intval($_GET['lender_id']);
+									$query = "SELECT * FROM feedback INNER JOIN user ON feedback.debtor_id = user.user_id WHERE lender_id = $lender_id";
+									$result = mysqli_query($conn, $query);
+									while ($row = mysqli_fetch_array($result)) {
+										$ratingTotal += $row['ratings'];
+										$ratingCount++;
+									?>
+										<div class="card">
+											<div class="card-body">
+												<h5 class="card-title"><?php echo "" . $row['firstname'] . " " . $row['lastname']; ?></h5>
+												<p class="card-text"><?php drawStars($row['ratings']); ?>
+													<?php echo "" . $row['comments']; ?></p>
+												<?php echo $row['dateOfRate']; ?>
+											</div class="card-body">
+
+											<div class=""></div>
+										</div>
+									<?php }
+									?>
 								</div>
 							</div>
 						</div>
@@ -433,7 +396,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 			<div class="container d-flex flex-column flex-md-row align-items-center justify-content-between">
 				<div class="text-dark order-2 order-md-1">
 					<span class="text-muted font-weight-bold mr-2">2021©</span>
-					<a href="http://keenthemes.com/keen" target="_blank" class="text-dark-75 text-hover-primary">Keenthemes</a>
+					<a href="http://keenthemes.com/keen" target="_blank" class="text-dark-75 text-hover-primary">Hulam</a>
 				</div>
 				<div class="nav nav-dark order-1 order-md-2">
 					<a href="http://keenthemes.com/keen" target="_blank" class="nav-link pr-3 pl-0">About</a>
@@ -445,6 +408,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 	</div>
 	</div>
 	</div>
+
 
 	<!-- begin::User Panel-->
 	<div id="kt_quick_user" class="offcanvas offcanvas-right p-10">
@@ -615,261 +579,70 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 	</div>
 	<!-- end::User Panel-->
 
-	<!--begin::Quick Panel-->
-	<div id="kt_quick_panel" class="offcanvas offcanvas-right pt-5 pb-10">
-		<!--begin::Header-->
-		<div class="offcanvas-header offcanvas-header-navs d-flex align-items-center justify-content-between mb-5">
-			<ul class="nav nav-bold nav-tabs nav-tabs-line nav-tabs-line-3x nav-tabs-primary flex-grow-1 px-10" role="tablist">
-				<li class="nav-item">
-					<a class="nav-link" data-toggle="tab" href="#kt_quick_panel_notifications">Notifications</a>
-				</li>
-			</ul>
-			<div class="offcanvas-close mt-n1 pr-5">
-				<a href="#" class="btn btn-xs btn-icon btn-light btn-hover-primary" id="kt_quick_panel_close">
-					<i class="ki ki-close icon-xs text-muted"></i>
-				</a>
-			</div>
-		</div>
-		<!--end::Header-->
 
-		<!--begin::Content-->
-		<div class="offcanvas-content px-10">
-			<div class="tab-content">
-				<!--begin::Tabpane-->
-				<!--begin::Nav-->
-				<div class="navi navi-icon-circle navi-spacer-x-0">
-					<!--begin::Item-->
-					<a href="#" class="navi-item">
-						<div class="navi-link rounded">
-							<div class="symbol symbol-50 mr-3">
-								<div class="symbol-label">
-									<i class="flaticon-bell text-success icon-lg"></i>
-								</div>
-							</div>
-							<div class="navi-text">
-								<div class="font-weight-bold font-size-lg">5 new user generated report</div>
-								<div class="text-muted">Reports based on sales</div>
-							</div>
-						</div>
-					</a>
-					<!--end::Item-->
-					<!--begin::Item-->
-					<a href="#" class="navi-item">
-						<div class="navi-link rounded">
-							<div class="symbol symbol-50 mr-3">
-								<div class="symbol-label">
-									<i class="flaticon2-box text-danger icon-lg"></i>
-								</div>
-							</div>
-							<div class="navi-text">
-								<div class="font-weight-bold font-size-lg">2 new items submited</div>
-								<div class="text-muted">by Grog John</div>
-							</div>
-						</div>
-					</a>
-					<!--end::Item-->
-					<!--begin::Item-->
-					<a href="#" class="navi-item">
-						<div class="navi-link rounded">
-							<div class="symbol symbol-50 mr-3">
-								<div class="symbol-label">
-									<i class="flaticon-psd text-primary icon-lg"></i>
-								</div>
-							</div>
-							<div class="navi-text">
-								<div class="font-weight-bold font-size-lg">79 PSD files generated</div>
-								<div class="text-muted">Reports based on sales</div>
-							</div>
-						</div>
-					</a>
-					<!--end::Item-->
-					<!--begin::Item-->
-					<a href="#" class="navi-item">
-						<div class="navi-link rounded">
-							<div class="symbol symbol-50 mr-3">
-								<div class="symbol-label">
-									<i class="flaticon2-supermarket text-warning icon-lg"></i>
-								</div>
-							</div>
-							<div class="navi-text">
-								<div class="font-weight-bold font-size-lg">$2900 worth producucts sold</div>
-								<div class="text-muted">Total 234 items</div>
-							</div>
-						</div>
-					</a>
-					<!--end::Item-->
-					<!--begin::Item-->
-					<a href="#" class="navi-item">
-						<div class="navi-link rounded">
-							<div class="symbol symbol-50 mr-3">
-								<div class="symbol-label">
-									<i class="flaticon-paper-plane-1 text-success icon-lg"></i>
-								</div>
-							</div>
-							<div class="navi-text">
-								<div class="font-weight-bold font-size-lg">4.5h-avarage response time</div>
-								<div class="text-muted">Fostest is Barry</div>
-							</div>
-						</div>
-					</a>
-					<!--end::Item-->
-					<!--begin::Item-->
-					<a href="#" class="navi-item">
-						<div class="navi-link rounded">
-							<div class="symbol symbol-50 mr-3">
-								<div class="symbol-label">
-									<i class="flaticon-safe-shield-protection text-danger icon-lg"></i>
-								</div>
-							</div>
-							<div class="navi-text">
-								<div class="font-weight-bold font-size-lg">3 Defence alerts</div>
-								<div class="text-muted">40% less alerts thar last week</div>
-							</div>
-						</div>
-					</a>
-					<!--end::Item-->
-					<!--begin::Item-->
-					<a href="#" class="navi-item">
-						<div class="navi-link rounded">
-							<div class="symbol symbol-50 mr-3">
-								<div class="symbol-label">
-									<i class="flaticon-notepad text-primary icon-lg"></i>
-								</div>
-							</div>
-							<div class="navi-text">
-								<div class="font-weight-bold font-size-lg">Avarage 4 blog posts per author</div>
-								<div class="text-muted">Most posted 12 time</div>
-							</div>
-						</div>
-					</a>
-					<!--end::Item-->
-					<!--begin::Item-->
-					<a href="#" class="navi-item">
-						<div class="navi-link rounded">
-							<div class="symbol symbol-50 mr-3">
-								<div class="symbol-label">
-									<i class="flaticon-users-1 text-warning icon-lg"></i>
-								</div>
-							</div>
-							<div class="navi-text">
-								<div class="font-weight-bold font-size-lg">16 authors joined last week</div>
-								<div class="text-muted">9 photodrapehrs, 7 designer</div>
-							</div>
-						</div>
-					</a>
-					<!--end::Item-->
-					<!--begin::Item-->
-					<a href="#" class="navi-item">
-						<div class="navi-link rounded">
-							<div class="symbol symbol-50 mr-3">
-								<div class="symbol-label">
-									<i class="flaticon2-box text-info icon-lg"></i>
-								</div>
-							</div>
-							<div class="navi-text">
-								<div class="font-weight-bold font-size-lg">2 new items have been submited</div>
-								<div class="text-muted">by Grog John</div>
-							</div>
-						</div>
-					</a>
-					<!--end::Item-->
-					<!--begin::Item-->
-					<a href="#" class="navi-item">
-						<div class="navi-link rounded">
-							<div class="symbol symbol-50 mr-3">
-								<div class="symbol-label">
-									<i class="flaticon2-download text-success icon-lg"></i>
-								</div>
-							</div>
-							<div class="navi-text">
-								<div class="font-weight-bold font-size-lg">2.8 GB-total downloads size</div>
-								<div class="text-muted">Mostly PSD end AL concepts</div>
-							</div>
-						</div>
-					</a>
-					<!--end::Item-->
-					<!--begin::Item-->
-					<a href="#" class="navi-item">
-						<div class="navi-link rounded">
-							<div class="symbol symbol-50 mr-3">
-								<div class="symbol-label">
-									<i class="flaticon2-supermarket text-danger icon-lg"></i>
-								</div>
-							</div>
-							<div class="navi-text">
-								<div class="font-weight-bold font-size-lg">$2900 worth producucts sold</div>
-								<div class="text-muted">Total 234 items</div>
-							</div>
-						</div>
-					</a>
-					<!--end::Item-->
-				</div>
-				<!--end::Nav-->
-			</div>
-			<!--end::Tabpane-->
-			<!--begin::Tabpane-->
-			<div class="tab-pane fade pt-3 pr-5 mr-n5" id="kt_quick_panel_settings" role="tabpanel">
-				<form class="form">
-					<!--begin::Section-->
-					<div class="pt-1">
-						<h4 class="mb-7">Privacy Settings:</h4>
-						<div class="pb-5">
-							<div class="checkbox-inline mb-2">
-								<label class="checkbox">
-									<input type="checkbox" />
-									<span></span>You have new notifications.</label>
-							</div>
-							<div class="checkbox-inline mb-2">
-								<label class="checkbox">
-									<input type="checkbox" />
-									<span></span>You're sent a direct message</label>
-							</div>
-							<div class="checkbox-inline mb-2">
-								<label class="checkbox">
-									<input type="checkbox" checked="checked" />
-									<span></span>Someone adds you as a connection</label>
-							</div>
-							<div class="checkbox-inline mb-2">
-								<label class="checkbox checkbox-success">
-									<input type="checkbox" />
-									<span></span>Upon new order</label>
-							</div>
-							<div class="checkbox-inline mb-2">
-								<label class="checkbox checkbox-success">
-									<input type="checkbox" />
-									<span></span>New membership approval</label>
-							</div>
-						</div>
-						<!--begin::Group-->
-						<div class="text-muted">After you log in, you will be asked for additional information to confirm your identity.</div>
-						<!--end::Group-->
-					</div>
-					<!--end::Section-->
-					<div class="separator separator-dashed my-8"></div>
-					<!--begin::Section-->
-					<div class="pt-1">
-						<h4 class="mb-7">Security Settings:</h4>
-						<div class="pb-5">
-							<div class="checkbox-inline">
-								<label class="checkbox mb-2">
-									<input type="checkbox" />
-									<span></span>Personal information safety</label>
-							</div>
-							<p class="form-text text-muted pb-5 mb-0">After you log in, you will be asked for additional information to confirm your identity. For extra security, this requires you to confirm your email.
-								<a href="#" class="font-weight-bold">Learn more</a>.
-							</p>
-							<button type="button" class="btn btn-light-danger font-weight-bolder btn-sm">Setup login verification</button>
-						</div>
-					</div>
-					<!--end::Section-->
-				</form>
-			</div>
-			<!--end::Tabpane-->
-		</div>
-	</div>
-	<!--end::Content-->
-	</div>
-	<!--end::Quick Panel-->
+    <!--begin::Quick Panel-->
+    <div id="kt_quick_panel" class="offcanvas offcanvas-right pt-5 pb-10">
+        <!--begin::Header-->
+        <div class="offcanvas-header offcanvas-header-navs d-flex align-items-center justify-content-between mb-5">
+            <ul class="nav nav-bold nav-tabs nav-tabs-line nav-tabs-line-3x nav-tabs-primary flex-grow-1 px-10" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" data-toggle="tab" href="#kt_chat_modal">Messages</a>
+                </li>
+            </ul>
+            <div class="offcanvas-close mt-n1 pr-5">
+                <a href="#" class="btn btn-xs btn-icon btn-light btn-hover-primary" id="kt_quick_panel_close">
+                    <i class="ki ki-close icon-xs text-muted"></i>
+                </a>
+            </div>
+        </div>
+        <!--end::Header-->
+        <!--begin::Content-->
+        <div class="offcanvas-content px-10">
+            <div class="tab-content">
+                <div class="navi navi-icon-circle navi-spacer-x-0">
+                    <?php
+                    $user_id = $_SESSION['user_id'];
+
+                    $sql = "SELECT * FROM message INNER JOIN user ON message.sender_id = user.user_id WHERE message.receiver_id = $user_id";
+                    $query = $dbh->prepare($sql);
+                    $query->execute();
+                    $results = $query->fetchAll(PDO::FETCH_OBJ);
+
+                    foreach ($results as $res) :
+
+                    ?> <a href="debtor/messages.php?sender_id=<?= htmlentities($res->sender_id) ?>">
+                            <div class="navi-link rounded">
+                                <div class="symbol symbol-50 mr-3">
+                                </div>
+                                <div class="navi-text">
+                                    <div class="font-weight-bold font-size-lg">
+                                        <?php
+                                        $red = htmlentities($res->user_type);
+
+                                        if ($red == 1) : ?>
+                                            <?= htmlentities($res->firstname) . '' . htmlentities($res->middlename) . ' ' . htmlentities($res->lastname); ?>
+                                        <?php elseif ($red == 2) : ?>
+                                            <?= htmlentities($res->firstname) . '' . htmlentities($res->middlename) . ' ' . htmlentities($res->lastname); ?>
+                                        <?php elseif ($red == 3) : ?>
+                                            <?= htmlentities($res->company_name); ?>
+                                        <?php elseif ($red == 4) : ?>
+                                            <?= htmlentities($res->firstname) . '' . htmlentities($res->middlename) . ' ' . htmlentities($res->lastname); ?>
+                                        <?php else : ?>
+                                            <?= htmlentities($res->company_name); ?>
+                                        <?php endif; ?>
+                                    </div><span class="font-size-sm"><?= htmlentities($res->date_message); ?></span>
+                                    <div class="text-muted"><?= htmlentities($res->message) ?></div>
+                                </div>
+                            </div>
+                        </a>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--end::Content-->
+    </div>
+    <!--end::Quick Panel-->
 	<!--begin::Chat Panel-->
 	<div class="modal modal-sticky modal-sticky-bottom-right" id="kt_chat_modal" role="dialog" data-backdrop="false">
 		<div class="modal-dialog" role="document">

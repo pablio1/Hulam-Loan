@@ -122,7 +122,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 						<div class="topbar">
 							<!--begin::Chat-->
 							<div class="topbar-item mr-1">
-								<div class="btn btn-icon btn-hover-transparent-black btn-clean btn-lg" data-toggle="modal" data-target="#kt_chat_modal">
+								<div class="btn btn-icon btn-hover-transparent-black btn-clean btn-lg" data-toggle="modal" id="kt_quick_panel_toggle">
 									<span class="svg-icon svg-icon-xl svg-icon-primary">
 										<!--begin::Svg Icon | path:assets/media/svg/icons/Communication/Chat6.svg-->
 										<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
@@ -136,24 +136,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 									</span>
 								</div>
 							</div>
-							<!--end::Chat-->
-							<!--begin::Quick panel-->
-							<div class="topbar-item mr-1">
-									<div class="btn btn-icon btn-clean btn-lg" id="kt_quick_panel_toggle">
-										<span class="svg-icon svg-icon-xl svg-icon-primary">
-											<!--begin::Svg Icon | path:assets/media/svg/icons/Layout/Layout-4-blocks.svg-->
-											<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-												<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-													<rect x="0" y="0" width="24" height="24" />
-													<rect fill="#000000" x="4" y="4" width="7" height="7" rx="1.5" />
-													<path d="M5.5,13 L9.5,13 C10.3284271,13 11,13.6715729 11,14.5 L11,18.5 C11,19.3284271 10.3284271,20 9.5,20 L5.5,20 C4.67157288,20 4,19.3284271 4,18.5 L4,14.5 C4,13.6715729 4.67157288,13 5.5,13 Z M14.5,4 L18.5,4 C19.3284271,4 20,4.67157288 20,5.5 L20,9.5 C20,10.3284271 19.3284271,11 18.5,11 L14.5,11 C13.6715729,11 13,10.3284271 13,9.5 L13,5.5 C13,4.67157288 13.6715729,4 14.5,4 Z M14.5,13 L18.5,13 C19.3284271,13 20,13.6715729 20,14.5 L20,18.5 C20,19.3284271 19.3284271,20 18.5,20 L14.5,20 C13.6715729,20 13,19.3284271 13,18.5 L13,14.5 C13,13.6715729 13.6715729,13 14.5,13 Z" fill="#000000" opacity="0.3" />
-												</g>
-											</svg>
-											<!--end::Svg Icon-->
-										</span>
-									</div>
-								</div>
-								<!--end::Quick panel-->
+							<!--end::Quick panel-->
 							<!--begin::User-->
 							<div class="topbar-item mr-3">
 								<div class="btn btn-icon btn-hover-transparent-black w-auto d-flex align-items-center btn-lg px-2" id="kt_quick_user_toggle">
@@ -958,126 +941,71 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 		</div>
 		<!-- end::User Panel-->
 		
-		
-		<!--begin::Quick Panel-->
-		<div id="kt_quick_panel" class="offcanvas offcanvas-right pt-5 pb-10">
-			<!--begin::Header-->
-			<div class="offcanvas-header offcanvas-header-navs d-flex align-items-center justify-content-between mb-5">
-				<ul class="nav nav-bold nav-tabs nav-tabs-line nav-tabs-line-3x nav-tabs-primary flex-grow-1 px-10" role="tablist">
-					<li class="nav-item">
-						<a class="nav-link active" data-toggle="tab" href="#kt_quick_panel_notifications">Notifications</a>
-					</li>
-				</ul>
-				<div class="offcanvas-close mt-n1 pr-5">
-					<a href="#" class="btn btn-xs btn-icon btn-light btn-hover-primary" id="kt_quick_panel_close">
-						<i class="ki ki-close icon-xs text-muted"></i>
-					</a>
-				</div>
-			</div>
-			<!--end::Header-->
-			<!--begin::Content-->
-			<div class="offcanvas-content px-10" >
-				<div class="tab-content">
-					<!--begin::Tabpane-->
-					<!-- <div class="tab-pane fade pt-2 pr-5 mr-n5" id="kt_quick_panel_notifications" role="tabpanel"> -->
-						<!--begin::Nav-->
-						<div class="navi navi-icon-circle navi-spacer-x-0">
-							<!--begin::Item-->
-							<a href="#" class="navi-item">
-								<div class="navi-link rounded">
-									<div class="symbol symbol-50 mr-3">
-										<div class="symbol-label">
-											<i class="flaticon-bell text-success icon-lg"></i>
-										</div>
-									</div>
-									<div class="navi-text">
-										<div class="font-weight-bold font-size-lg">5 new user generated report</div>
-										<div class="text-muted">Reports based on sales</div>
-									</div>
-								</div>
-							</a>
-							<!--end::Item-->
-							<!--begin::Item-->
-							<a href="#" class="navi-item">
-								<div class="navi-link rounded">
-									<div class="symbol symbol-50 mr-3">
-										<div class="symbol-label">
-											<i class="flaticon2-box text-danger icon-lg"></i>
-										</div>
-									</div>
-									<div class="navi-text">
-										<div class="font-weight-bold font-size-lg">2 new items submited</div>
-										<div class="text-muted">by Grog John</div>
-									</div>
-								</div>
-							</a>
-							<!--end::Item-->
-							<!--begin::Item-->
-							<a href="#" class="navi-item">
-								<div class="navi-link rounded">
-									<div class="symbol symbol-50 mr-3">
-										<div class="symbol-label">
-											<i class="flaticon-psd text-primary icon-lg"></i>
-										</div>
-									</div>
-									<div class="navi-text">
-										<div class="font-weight-bold font-size-lg">79 PSD files generated</div>
-										<div class="text-muted">Reports based on sales</div>
-									</div>
-								</div>
-							</a>
-							<!--end::Item-->
-							<!--begin::Item-->
-							<a href="#" class="navi-item">
-								<div class="navi-link rounded">
-									<div class="symbol symbol-50 mr-3">
-										<div class="symbol-label">
-											<i class="flaticon2-supermarket text-warning icon-lg"></i>
-										</div>
-									</div>
-									<div class="navi-text">
-										<div class="font-weight-bold font-size-lg">$2900 worth producucts sold</div>
-										<div class="text-muted">Total 234 items</div>
-									</div>
-								</div>
-							</a>
-							<!--end::Item-->
-							<!--begin::Item-->
-							<a href="#" class="navi-item">
-								<div class="navi-link rounded">
-									<div class="symbol symbol-50 mr-3">
-										<div class="symbol-label">
-											<i class="flaticon-paper-plane-1 text-success icon-lg"></i>
-										</div>
-									</div>
-									<div class="navi-text">
-										<div class="font-weight-bold font-size-lg">4.5h-avarage response time</div>
-										<div class="text-muted">Fostest is Barry</div>
-									</div>
-								</div>
-							</a>
-							<!--end::Item-->
-							<!--begin::Item-->
-							<a href="#" class="navi-item">
-								<div class="navi-link rounded">
-									<div class="symbol symbol-50 mr-3">
-										<div class="symbol-label">
-											<i class="flaticon-paper-plane-1 text-success icon-lg"></i>
-										</div>
-									</div>
-									<div class="navi-text">
-										<div class="font-weight-bold font-size-lg">4.5h-avarage response time</div>
-										<div class="text-muted">Fostest is Barry</div>
-									</div>
-								</div>
-							</a>
-						</div>
-					</div>
-				</div>
-			</div>
-			<!--end::Content-->
-		</div>
-		<!--end::Quick Panel-->
+
+
+    <!--begin::Quick Panel-->
+    <div id="kt_quick_panel" class="offcanvas offcanvas-right pt-5 pb-10">
+        <!--begin::Header-->
+        <div class="offcanvas-header offcanvas-header-navs d-flex align-items-center justify-content-between mb-5">
+            <ul class="nav nav-bold nav-tabs nav-tabs-line nav-tabs-line-3x nav-tabs-primary flex-grow-1 px-10" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" data-toggle="tab" href="#kt_chat_modal">Messages</a>
+                </li>
+            </ul>
+            <div class="offcanvas-close mt-n1 pr-5">
+                <a href="#" class="btn btn-xs btn-icon btn-light btn-hover-primary" id="kt_quick_panel_close">
+                    <i class="ki ki-close icon-xs text-muted"></i>
+                </a>
+            </div>
+        </div>
+        <!--end::Header-->
+        <!--begin::Content-->
+        <div class="offcanvas-content px-10">
+            <div class="tab-content">
+                <div class="navi navi-icon-circle navi-spacer-x-0">
+                    <?php
+                    $user_id = $_SESSION['user_id'];
+
+                    $sql = "SELECT * FROM message INNER JOIN user ON message.sender_id = user.user_id WHERE message.receiver_id = $user_id";
+                    $query = $dbh->prepare($sql);
+                    $query->execute();
+                    $results = $query->fetchAll(PDO::FETCH_OBJ);
+
+                    foreach ($results as $res) :
+
+                    ?> <a href="debtor/messages.php?sender_id=<?= htmlentities($res->sender_id) ?>">
+                            <div class="navi-link rounded">
+                                <div class="symbol symbol-50 mr-3">
+                                </div>
+                                <div class="navi-text">
+                                    <div class="font-weight-bold font-size-lg">
+                                        <?php
+                                        $red = htmlentities($res->user_type);
+
+                                        if ($red == 1) : ?>
+                                            <?= htmlentities($res->firstname) . '' . htmlentities($res->middlename) . ' ' . htmlentities($res->lastname); ?>
+                                        <?php elseif ($red == 2) : ?>
+                                            <?= htmlentities($res->firstname) . '' . htmlentities($res->middlename) . ' ' . htmlentities($res->lastname); ?>
+                                        <?php elseif ($red == 3) : ?>
+                                            <?= htmlentities($res->company_name); ?>
+                                        <?php elseif ($red == 4) : ?>
+                                            <?= htmlentities($res->firstname) . '' . htmlentities($res->middlename) . ' ' . htmlentities($res->lastname); ?>
+                                        <?php else : ?>
+                                            <?= htmlentities($res->company_name); ?>
+                                        <?php endif; ?>
+                                    </div><span class="font-size-sm"><?= htmlentities($res->date_message); ?></span>
+                                    <div class="text-muted"><?= htmlentities($res->message) ?></div>
+                                </div>
+                            </div>
+                        </a>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--end::Content-->
+    </div>
+    <!--end::Quick Panel-->
 		
 		<!--begin::Chat Panel-->
 		<div class="modal modal-sticky modal-sticky-bottom-right" id="kt_chat_modal" role="dialog" data-backdrop="false">

@@ -3,22 +3,7 @@ session_start();
 error_reporting(-1);
 include('../db_connection/config.php');
 ?>
-<?php
-if (isset($_POST['submit'])) {
 
-	$id = intval($_GET['id']);
-	$sql = "UPDATE loan_application SET status = 'approved' WHERE id = $id ";
-	$query = $dbh->prepare($sql);
-	$query->execute();
-	if ($query) {
-		echo ("<SCRIPT LANGUAGE='JavaScript'>
-	      window.alert('Approved Loan Successfully')
-	       window.location.href='pending_loan.php';
-	  </SCRIPT>");
-	} else {
-		echo '<script language="javascript">alert("Something went wrong. Please try again")</script>';
-	}
-} ?>
 <?php
 $id = intval($_GET['loan_app_id']);
 
@@ -58,10 +43,12 @@ if (isset($_POST['send_message'])) {
 if (isset($_POST['approved_loan'])) {
 	$id = intval($_GET['loan_app_id']);
 	$approval_date = $_POST['approval_date'];
+	$release_schedule =$_POST['release_schedule'];
 
-	$update = "UPDATE loan_application SET status = 'Approved', approval_date = :approval_date WHERE loan_app_id = $id";
+	$update = "UPDATE loan_application SET loan_status = 'Approved', approval_date = :approval_date, release_schedule = :release_schedule WHERE loan_app_id = $id";
 	$query2 = $dbh->prepare($update);
 	$query2->bindParam(':approval_date',$approval_date,PDO::PARAM_STR);
+	$query2->bindParam(':release_schedule',$release_schedule,PDO::PARAM_STR);
 
 	if($query2->execute()){
 		$_SESSION['status'] = "Loan Approved!";
@@ -436,7 +423,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 								<!--begin::Header Nav-->
 								<ul class="menu-nav">
 									<li class="menu-item menu-item-open menu-item-here menu-item-submenu menu-item-rel menu-item-open menu-item-here menu-item-active" data-menu-toggle="click" aria-haspopup="true">
-										<h4 class="menu-text" style="color:blue">Welcome to Hulam! <h4>&nbsp;&nbsp;<h6><?php echo $_SESSION['firstname']; ?></h6>
+										<h4 class="menu-text" style="color:blue">Welcome to Hulam! <h4>&nbsp;&nbsp;<h6></h6>
 												<i class="menu-arrow"></i>
 									</li>
 								</ul>
@@ -1308,16 +1295,6 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 										<!--end::Header-->
 										<!--begin::Body-->
 										<div class="card-body pt-0">
-											<?php
-											if (isset($_SESSION['status'])) {
-											?>
-												<div class="alert alert-success alert-dismissable" id="flash-msg">
-													<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
-													<h4>Success!</h4>
-												</div>
-											<?php
-												unset($_SESSION['status']);
-											} ?>
 											<table class="table table-bordered">
 												<thead>
 													<tr>
@@ -1403,14 +1380,15 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 													<div class="modal-dialog modal-dialog-centered modal-sm" role="document">
 														<div class="modal-content">
 															<div class="modal-header">
-																<h5 class="modal-title" id="exampleModalLabel">Approve Loan?</h5>
+																<h5 class="modal-title" id="exampleModalLabel">Approve Loan</h5>
 																<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 																	<i aria-hidden="true" class="ki ki-close"></i>
 																</button>
 															</div>
-															<!-- <div class="modal-body">
-																			 Approve loan?
-																		</div> -->
+															<div class="modal-body">
+																	<label>Set Releasing Date:</label>
+																	<input type="date" name="release_schedule">
+															</div>
 																<?php
 																date_default_timezone_set('Asia/Manila');
 																$todays_date = date("y-m-d h:i:sa");
@@ -1421,7 +1399,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 																<input type="hidden" name="approval_date" value="<?= $det; ?>">
 															<div class="modal-footer">
 																<!-- <button type="button" class="btn btn-light-primary font-weight-bold" data-dismiss="modal">No</button> -->
-																<button type="submit" name="approved_loan" class="btn btn-primary font-weight-bold">Yes</button>
+																<button type="submit" name="approved_loan" class="btn btn-primary font-weight-bold">Submit</button>
 															</div>
 														</div>
 													</div>
@@ -1513,7 +1491,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 													<?php
 													$loan_app_id = intval($_GET['loan_app_id']);
 
-													$sql = "SELECT * FROM loan_application WHERE loan_app_id = $loan_app_id AND status = 'Approved'";
+													$sql = "SELECT * FROM loan_application WHERE loan_app_id = $loan_app_id AND loan_status = 'Approved'";
 													$query = $dbh->prepare($sql);
 													$query->execute();
 													$results = $query->fetchAll(PDO::FETCH_OBJ);
