@@ -51,7 +51,7 @@ if (isset($_POST['forgot'])) {
     $mail->SMTPSecure = 'tls';
     $mail->Port = 587;
     $mail->Username = 'hulamloan@gmail.com';
-    $mail->Password = 'Hulam2021!';
+    $mail->Password = 'Capstone@42';
     $mail->Subject = 'Forgot Password';
     $mail->setFrom('hulamloan@gmail.com', 'Hulam');
     $mail->isHTML(true);
