@@ -505,12 +505,12 @@ $loan = $sql->fetch();
 				</a>
 				<!--end:Item-->
 				<!--begin::Item-->
-				<a href="custom/apps/userprofile-1/overview.html" class="navi-item">
+				<!--<a href="custom/apps/userprofile-1/overview.html" class="navi-item">
 					<div class="navi-link">
 						<div class="symbol symbol-40 bg-light mr-3">
 							<div class="symbol-label">
 								<span class="svg-icon svg-icon-md svg-icon-info">
-									<!--begin::Svg Icon | path:assets/media/svg/icons/Communication/Mail-opened.svg-->
+									<!--begin::Svg Icon | path:assets/media/svg/icons/Communication/Mail-opened.svg
 									<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
 										<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
 											<rect x="0" y="0" width="24" height="24" />
@@ -518,7 +518,7 @@ $loan = $sql->fetch();
 											<path d="M3.79274528,6.57253826 L12,12.5 L20.2072547,6.57253826 C20.4311176,6.4108595 20.7436609,6.46126971 20.9053396,6.68513259 C20.9668779,6.77033951 21,6.87277228 21,6.97787787 L21,17 C21,18.1045695 20.1045695,19 19,19 L5,19 C3.8954305,19 3,18.1045695 3,17 L3,6.97787787 C3,6.70173549 3.22385763,6.47787787 3.5,6.47787787 C3.60510559,6.47787787 3.70753836,6.51099993 3.79274528,6.57253826 Z" fill="#000000" />
 										</g>
 									</svg>
-									<!--end::Svg Icon-->
+									<!--end::Svg Icon
 								</span>
 							</div>
 						</div>
@@ -527,7 +527,7 @@ $loan = $sql->fetch();
 							<div class="text-muted">latest tasks and projects</div>
 						</div>
 					</div>
-				</a>
+				</a>-->
 				<!--end:Item-->
 				<!--begin::Item-->
 				<span class="navi-item mt-2">
