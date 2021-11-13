@@ -1,6 +1,6 @@
 <?php
 session_start();
-error_reporting(0);
+error_reporting(-1);
 include('../db_connection/config.php');
 ?>
 
@@ -97,11 +97,11 @@ if (isset($_POST['released_loan'])) {
 
 	if($query->execute()){
 		$_SESSION['status'] = "Loan Released!";
-		header("Location: view_released.php?loan_app_id=$id");
+		header("Location: view_approved.php?loan_app_id=$id");
 		exit();
 	} else {
 		$_SESSION['status'] = "Error!";
-		header('Location: view_released.php?loan_app_id=$id');
+		header('Location: view_approved.php?loan_app_id=$id');
 		exit();
 	}
 }
@@ -1468,8 +1468,8 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
                                                                 <input type="hidden" name="receiver_id" value="<?= htmlentities($res->debtor_id) ?>"> 
 																<input type="hidden" name="sender_id" value="<?= $_SESSION['user_id'] ?>">
 																<input type="hidden" name="remaining_balance" value="<?= htmlentities($res->total_amount)?>">
-																<input type="hidden" name="monthly_interest" value="<?php echo $m = htmlentities($res->loan_amount) * (htmlentities($res->fix_rate)/100) ?>">
-																<input type="hidden" name="monthly_payable" value="<?= htmlentities($res->monthly_payment)- $m; ?>"> 
+																<input type="hidden" name="monthly_interest" value="<?php echo $m = htmlentities($res->loan_amount) * (htmlentities($res->fix_rate)/100) ?>">">
+																<input type="text" name="monthly_payable" value="<?= htmlentities($res->monthly_payment)- $m; ?>"> 
 															
 																
 																<?php 
@@ -1576,7 +1576,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 													<?php
 													$loan_app_id = intval($_GET['loan_app_id']);
 
-													$sql = "SELECT * FROM loan_payment INNER JOIN loan_application ON loan_payment.loan_app_id = loan_application.loan_app_id WHERE loan_payment.loan_app_id = $loan_app_id AND loan_application.loan_status = 'Released'";
+													$sql = "SELECT * FROM loan_payment INNER JOIN loan_application ON loan_payment.loan_app_id = loan_application.loan_app_id WHERE loan_payment.loan_app_id = $loan_app_id";
 													$query = $dbh->prepare($sql);
 													$query->execute();
 													$results = $query->fetchAll(PDO::FETCH_OBJ);

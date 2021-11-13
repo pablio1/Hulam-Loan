@@ -1,6 +1,6 @@
 <?php
 session_start();
-error_reporting(-1);
+error_reporting(0);
 include('../db_connection/config.php');
 
 
@@ -965,53 +965,54 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 					<div class="d-flex flex-column-fluid">
 						<!--begin::Container-->
 						<div class="container">
-							<!--begin::Body-->
-							<div class="card-body pt-2">
-								<!--end::Nav-->
-								<!--begin::Tab Content-->
-								<div class="tab-content mt-9" id="myTabMixed2">
-									<!--begin::Tab Pane-->
-									<div class="tab-pane fade active show" id="kt_tab_mixed_2_1" role="tabpanel" aria-labelledby="kt_tab_mixed_2_1">
-										<!--begin::Card-->
-										<div class="card card-custom">
-											<div class="card-body">
-												<h5> Pending Loan Application</h5>
-												<table class="table table-bordered">
-													<thead>
-														<tr>
-															<th>Name</th>
-															<th>Loan Application Date</th>
-															<th>Loan Amount</th>
-															<th>Action</th>
-														</tr>
-													</thead>
-													<tbody>
-														<?php
-														$lender_id = $_SESSION['user_id'];
+							<div class="card card-custom">
+								<div class="card-body">
+									<h5>Declined Loan Application</h5>
+									<table class="table table-bordered">
+										<thead>
+											<tr>
+												<th>Borrower</th>
+												<th>Loan Details</th>
+												<th>Action</th>
+											</tr>
+										</thead>
+										<tbody>
+											<?php
+											$lender_id = $_SESSION['user_id'];
 
-														$sql = "SELECT loan_application.*, user.* FROM loan_application INNER JOIN user ON loan_application.debtor_id = user.user_id WHERE loan_application.lender_id = '$lender_id' AND loan_application.status = 'pending'";
-														$query = $dbh->prepare($sql);
-														$query->execute();
-														$res = $query->fetchAll(PDO::FETCH_OBJ);
-														if ($query->rowCount() > 0) {
-															foreach ($res as $rem) { ?>
+											$sql = "SELECT loan_application.*, user.* FROM loan_application INNER JOIN user ON loan_application.debtor_id = user.user_id WHERE loan_application.lender_id = '$lender_id' AND loan_application.loan_status = 'declined'";
+											$query = $dbh->prepare($sql);
+											$query->execute();
+											$res = $query->fetchAll(PDO::FETCH_OBJ);
+											if ($query->rowCount() > 0) {
+												foreach ($res as $rem) { ?>
 
-																<tr>
-																	<th scope="row"><?= htmlentities($rem->firstname); ?>&nbsp;<?= htmlentities($rem->lastname); ?></th>
-																	<td><?= htmlentities($rem->date); ?></td>
-																	<td><?= htmlentities($rem->total_amount); ?></td>
-																	<td>
-																		<a href="lending_company/view_application.php?id=<?= htmlentities($rem->id) ?>" class="kt-nav__link">
-																			<span class="kt-nav__link-text">View Application</span>
-																		</a>
-																	</td>
-																</tr>
-													</tbody>
-												</table>
-												<?php }} ?>
-											</div>
-										</div>
-									</div>
+												<tr>
+													<th scope="row">
+														Name:&nbsp;<?= htmlentities($rem->firstname); ?>&nbsp;<?= htmlentities($rem->lastname); ?></br>
+														Current Address:&nbsp;<?= htmlentities($rem->c_street) . ' ' . htmlentities($rem->c_barangay); ?><?= htmlentities($rem->c_city) . ' ' . htmlentities($rem->c_province) . ' ' . htmlentities($rem->c_zipcode); ?></br>
+														Mobile No: <?= htmlentities($rem->mobile)?>
+													</th>
+													<td>
+														Loan Application No: <?= htmlentities($rem->loan_app_id)?></br>
+														Application Date: <?= htmlentities($rem->date); ?></br>
+														Loan Amount: <?= htmlentities($rem->loan_amount)?></br>
+														Total Payable Amount: <?= htmlentities($rem->total_amount)?></br>
+														Loan Term: <?= htmlentities($rem->loan_term)?></br>
+														Interest Rate: <?= htmlentities($rem->fix_rate)?>%</br>
+														Monthly Payable: <?= htmlentities($rem->monthly_payment)?>
+													</td>
+													<td>
+														<a href="lending_company/view_application.php?loan_app_id=<?= htmlentities($rem->loan_app_id) ?>" class="kt-nav__link">
+															<span class="kt-nav__link-text">View</span>
+														</a>
+													</td>
+												</tr>
+
+										</tbody>
+									</table>
+							<?php }
+											} ?>
 								</div>
 							</div>
 						</div>

@@ -222,7 +222,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 							<?php
 							if (!isset($_GET['amount']) && !isset($_GET['type'])) {
 
-								$sql = $dbh->prepare("SELECT * FROM user INNER JOIN loan_features ON user.user_id = loan_features.lender_id WHERE (user_type = 3 OR user_type = 4) AND loan_features.status = 'Approved'");
+								$sql = $dbh->prepare("SELECT * FROM user INNER JOIN loan_features ON user.user_id = loan_features.lender_id WHERE (user_type = 3 OR user_type = 4) AND loan_features.status = 'Approved' AND user.eligible = 'yes'");
 								$sql->execute();
 								$lenders = $sql->fetchAll();
 							} else {

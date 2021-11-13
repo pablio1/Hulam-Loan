@@ -42,13 +42,24 @@ if (isset($_POST['send_message'])) {
 <?php
 if (isset($_POST['approved_loan'])) {
 	$id = intval($_GET['loan_app_id']);
+	$sender_id = $_POST['sender_id'];
+	$receiver_id = $_POST['receiver_id'];
 	$approval_date = $_POST['approval_date'];
 	$release_schedule =$_POST['release_schedule'];
+	$message = "Your loan is approved. Please visit our office for the releasing of loan dated on your releasing schedule. Thank you.";
 
 	$update = "UPDATE loan_application SET loan_status = 'Approved', approval_date = :approval_date, release_schedule = :release_schedule WHERE loan_app_id = $id";
 	$query2 = $dbh->prepare($update);
 	$query2->bindParam(':approval_date',$approval_date,PDO::PARAM_STR);
 	$query2->bindParam(':release_schedule',$release_schedule,PDO::PARAM_STR);
+
+	$insert = "INSERT INTO message(sender_id,receiver_id,message,date_message)VALUES(:sender_id,:receiver_id,:message,:date_message)";
+	$query = $dbh->prepare($insert);
+	$query->bindParam(':sender_id', $sender_id, PDO::PARAM_STR);
+	$query->bindParam(':receiver_id', $receiver_id, PDO::PARAM_STR);
+    $query->bindParam(':message', $message, PDO::PARAM_STR);
+	$query->bindParam(':date_message', $approval_date, PDO::PARAM_STR);
+	$query->execute();
 
 	if($query2->execute()){
 		$_SESSION['status'] = "Loan Approved!";
@@ -65,11 +76,23 @@ if (isset($_POST['approved_loan'])) {
 <?php
 if (isset($_POST['declined_loan'])) {
 	$id = intval($_GET['loan_app_id']);
+	$sender_id = $_POST['sender_id'];
+	$receiver_id = $_POST['receiver_id'];
+	$declined_date = $_POST['declined_date'];
+	$message = "We regret to inform you that your loan application has been declined!";
 
-	$update = "UPDATE loan_application SET status = 'Declined' WHERE loan_app_id = $id";
+	$update = "UPDATE loan_application SET loan_status = 'Declined' WHERE loan_app_id = $id";
 	$query2 = $dbh->prepare($update);
+	$query2->execute();
 
-	if($query2->execute()){
+	$insert = "INSERT INTO message(sender_id,receiver_id,message,date_message)VALUES(:sender_id,:receiver_id,:message,:declined_date)";
+	$query = $dbh->prepare($insert);
+	$query->bindParam(':sender_id', $sender_id, PDO::PARAM_STR);
+	$query->bindParam(':receiver_id', $receiver_id, PDO::PARAM_STR);
+    $query->bindParam(':message', $message, PDO::PARAM_STR);
+	$query->bindParam(':declined_date', $declined_date, PDO::PARAM_STR);
+
+	if($query->execute()){
 		$_SESSION['status'] = "Loan Declined!";
 		header("Location: view_application.php?loan_app_id=$id");
 		exit();
@@ -1119,7 +1142,17 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 												<!--begin::User-->
 												<div class="mr-3">
 													<!--begin::Name-->
-													<a href="#" class="d-flex align-items-center text-dark text-hover-primary font-size-h5 font-weight-bold mr-3"><?= $user['firstname'] . ' ' . $user['middlename'] . ' ' . $user['lastname'] ?></a>
+													<h4 class="d-flex align-items-center text-dark text-hover-primary font-size-h5 font-weight-bold mr-3"><?= $user['firstname'] . ' ' . $user['middlename'] . ' ' . $user['lastname'] ?></h4>
+													<?php
+													if($user['loan_status']=='Pending'):?>
+														<span class="text-warning font-weight-bolder mr-2">&nbsp;<?= $user['loan_status']?></span>
+													<?php elseif($user['loan_status']=='Approved'):?>
+														<span class="text-primary font-weight-bolder mr-2">&nbsp;<?= $user['loan_status']?></span>
+													<?php elseif($user['loan_status']=='Released'):?>
+														<span class="text-info font-weight-bolder mr-2">&nbsp;<?= $user['loan_status']?></span>
+													<?php else:?>
+														<span class="text-danger font-weight-bolder mr-2">&nbsp;<?= $user['loan_status']?></span>
+													<?php endif; ?>
 													<!--end::Name-->
 													<!--begin::Contacts-->
 													<div class="d-flex flex-wrap my-2">
@@ -1386,8 +1419,10 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 																</button>
 															</div>
 															<div class="modal-body">
-																	<label>Set Releasing Date:</label>
-																	<input type="date" name="release_schedule">
+																<label>Set Releasing Date:</label>
+																<input type="date" name="release_schedule">
+																<input type="hidden" name="receiver_id" value="<?= htmlentities($res->debtor_id) ?>">
+																<input type="hidden" name="sender_id" value="<?= $_SESSION['user_id'] ?>">
 															</div>
 																<?php
 																date_default_timezone_set('Asia/Manila');
@@ -1413,9 +1448,18 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 														<div class="modal-content">
 															<div class="modal-header">
 																<h5 class="modal-title" id="exampleModalLabel">Decline Loan?</h5>
+																<input type="hidden" name="receiver_id" value="<?= htmlentities($res->debtor_id) ?>">
+																<input type="hidden" name="sender_id" value="<?= $_SESSION['user_id'] ?>">
 																<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 																	<i aria-hidden="true" class="ki ki-close"></i>
 																</button>
+																<?php
+																	date_default_timezone_set('Asia/Manila');
+																	$todays_date = date("y-m-d h:i:sa");
+																	$today = strtotime($todays_date);
+																	$det = date("Y-m-d h:i:sa", $today);
+																?>
+																<input type="hidden" name="declined_date" value="<?= $det; ?>">
 															</div>
 															<div class="modal-footer">
 																<!-- <button type="button" class="btn btn-light-primary font-weight-bold" data-dismiss="modal">No</button> -->

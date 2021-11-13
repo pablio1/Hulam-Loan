@@ -1003,7 +1003,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 														Monthly Payable: <?= htmlentities($rem->monthly_payment)?>
 													</td>
 													<td>
-														<a href="lending_company/view_application.php?loan_app_id=<?= htmlentities($rem->loan_app_id) ?>" class="kt-nav__link">
+														<a href="lending_company/view_released.php?loan_app_id=<?= htmlentities($rem->loan_app_id) ?>" class="kt-nav__link">
 															<span class="kt-nav__link-text">View</span>
 														</a>
 													</td>

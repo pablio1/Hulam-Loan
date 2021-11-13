@@ -1,6 +1,6 @@
 <?php
 session_start();
-error_reporting(0);
+error_reporting(-1);
 include('../db_connection/config.php');
 
 if ($_SESSION['user_type'] != 2) {
@@ -11,6 +11,45 @@ $sql = $dbh->prepare("SELECT * FROM user INNER JOIN debtors_info ON user.user_id
 $sql->execute(['user_id' => $_SESSION['user_id']]);
 $user = $sql->fetch();
 
+?>
+<?php
+	if(isset($_POST['valid_id'])){
+		$loan_app_id = intval($_GET['loan_app_id']);
+
+		$images =$_FILES['valid_id']['name'];
+		$tmp_dir = $_FILES['valid_id']['tmp_name'];
+		$imageSize=$_FILES['valid_id']['size'];
+
+		$upload_dir='../../assets/keen/debtors/';
+		$imgExt=strtolower(pathinfo($images,PATHINFO_EXTENSION));
+		$valid_extensions=array('jpeg','jpg','gif','pdf','doc','docx');
+		$valid_id=rand(1000,10000000).".".$imgExt;
+		move_uploaded_file($tmp_dir,$upload_dir2.$valid_id);
+
+		$sql = "SELECT * FROM loan_application WHERE loan_app_id = $loan_app_id";
+		$query = $dbh->prepare($sql);
+		$query->execute();
+		if($query->rowCount()==0){
+			$insert = "INSERT INTO loan_application(valid_id)VALUES(:valid_id)";
+			$insert_query = $dbh->prepare($insert);
+			$insert_query->bindParam(':valid_id',$valid_id,PDO::PARAM_STR);
+			$insert_query->execute();
+		}else{
+			$update = "UPDATE loan_application SET valid_id = :valid_id WHERE loan_app_id = $loan_app_id";
+			$update_query = $dbh->prepare($update);
+			$update_query->bindParam(':valid_id',$valid_id,PDO::PARAM_STR);
+			$update_query->execute();
+		}
+		if($update_query){
+			$_SESSION['status'] = "Success";
+			header("location: update-information.php?loan_app_id=$loan_app_id");
+			exit();
+		}else{
+			$_SESSION['status'] = "Error!";
+			header("location: update_information.php?loan_app_id=$loan_app_id");
+			exit();
+		}
+	}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -70,21 +109,21 @@ $user = $sql->fetch();
 				</div>
 			</div>
 			<div class="topbar">
-			<div class="topbar-item mr-1">
-                    <div class="btn btn-icon btn-hover-transparent-black btn-clean btn-lg" data-toggle="modal" id="kt_quick_panel_toggle">
-                        <span class="svg-icon svg-icon-xl svg-icon-primary">
-                            <!--begin::Svg Icon | path:assets/media/svg/icons/Communication/Chat6.svg-->
-                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-                                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                    <rect x="0" y="0" width="24" height="24" />
-                                    <path opacity="0.3" fill-rule="evenodd" clip-rule="evenodd" d="M14.4862 18L12.7975 21.0566C12.5304 21.54 11.922 21.7153 11.4386 21.4483C11.2977 21.3704 11.1777 21.2597 11.0887 21.1255L9.01653 18H5C3.34315 18 2 16.6569 2 15V6C2 4.34315 3.34315 3 5 3H19C20.6569 3 22 4.34315 22 6V15C22 16.6569 20.6569 18 19 18H14.4862Z" fill="black" />
-                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M6 7H15C15.5523 7 16 7.44772 16 8C16 8.55228 15.5523 9 15 9H6C5.44772 9 5 8.55228 5 8C5 7.44772 5.44772 7 6 7ZM6 11H11C11.5523 11 12 11.4477 12 12C12 12.5523 11.5523 13 11 13H6C5.44772 13 5 12.5523 5 12C5 11.4477 5.44772 11 6 11Z" fill="black" />
-                                </g>
-                            </svg>
-                            <!--end::Svg Icon-->
-                        </span>
-                    </div>
-                </div>
+				<div class="topbar-item mr-1">
+					<div class="btn btn-icon btn-hover-transparent-black btn-clean btn-lg" data-toggle="modal" id="kt_quick_panel_toggle">
+						<span class="svg-icon svg-icon-xl svg-icon-primary">
+							<!--begin::Svg Icon | path:assets/media/svg/icons/Communication/Chat6.svg-->
+							<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+								<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+									<rect x="0" y="0" width="24" height="24" />
+									<path opacity="0.3" fill-rule="evenodd" clip-rule="evenodd" d="M14.4862 18L12.7975 21.0566C12.5304 21.54 11.922 21.7153 11.4386 21.4483C11.2977 21.3704 11.1777 21.2597 11.0887 21.1255L9.01653 18H5C3.34315 18 2 16.6569 2 15V6C2 4.34315 3.34315 3 5 3H19C20.6569 3 22 4.34315 22 6V15C22 16.6569 20.6569 18 19 18H14.4862Z" fill="black" />
+									<path fill-rule="evenodd" clip-rule="evenodd" d="M6 7H15C15.5523 7 16 7.44772 16 8C16 8.55228 15.5523 9 15 9H6C5.44772 9 5 8.55228 5 8C5 7.44772 5.44772 7 6 7ZM6 11H11C11.5523 11 12 11.4477 12 12C12 12.5523 11.5523 13 11 13H6C5.44772 13 5 12.5523 5 12C5 11.4477 5.44772 11 6 11Z" fill="black" />
+								</g>
+							</svg>
+							<!--end::Svg Icon-->
+						</span>
+					</div>
+				</div>
 				<div class="topbar-item mr-3">
 					<div class="btn btn-icon btn-hover-transparent-black w-auto d-flex align-items-center btn-lg px-2" id="kt_quick_user_toggle">
 						<span class="svg-icon svg-icon-xl svg-icon-primary">
@@ -133,7 +172,7 @@ $user = $sql->fetch();
 												<label class="col-xl-3 col-lg-3 col-form-label text-right"></label>
 												<div class="col-lg-9 col-xl-6">
 													<div class="image-input image-input-outline" id="kt_image_1">
-														<div class="image-input-wrapper" style="background-image: url(/hulam/assets/keen/debtors/<?= $user['profile_pic']?>"></div>
+														<div class="image-input-wrapper" style="background-image: url(/hulam/assets/keen/debtors/<?= $user['profile_pic'] ?>"></div>
 														<label class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow" data-action="change" data-toggle="tooltip" title="" data-original-title="upload photo">
 															<i class="fa fa-pen icon-sm text-muted" style="margin-left: 27px;"></i>
 															<!-- <input type="file" name="profile" accept=".png, .jpg, .jpeg" /> -->
@@ -211,7 +250,7 @@ $user = $sql->fetch();
 													<div class="form-group">
 														<label>Mobile</label> <span class="text-danger">*</span>
 														<input type="number" class="form-control" required name="mobile" value="<?= isset($_GET['e']) ? $_GET['mobile'] :  $_SESSION['mobile'] ?>" placeholder="Enter mobile number" />
-															<label><span style="color:green">&#x2714;</span><span style="font-family: Courier New; font-size: 11px"> Atleast 11 digits</label></span>
+														<label><span style="color:green">&#x2714;</span><span style="font-family: Courier New; font-size: 11px"> Atleast 11 digits</label></span>
 													</div>
 
 												</div>
@@ -310,8 +349,8 @@ $user = $sql->fetch();
 											</div>
 											<h4 class="mb-10 font-weight-bold text-dark">Source of Income</h4>
 											<?php
-											$user_id =$_SESSION['user_id'];
-											
+											$user_id = $_SESSION['user_id'];
+
 											$sql = "SELECT * FROM debtors_info WHERE user_id = $user_id";
 											$query = $dbh->prepare($sql);
 											$query->execute();
@@ -425,57 +464,113 @@ $user = $sql->fetch();
 												</div>
 											</div>
 											<div class="row">
-												<div class="col-xl-6">
-													<div class="form-group">
-														<label class="form-control-label">Upload Valid ID</label>
-														<div class="dropzone-panel mb-lg-0 mb-2">
-															<input type="file" name="valid_id" class="dropzone-select btn btn-light-primary font-weight-bold"  value="<?= $set['valid_id'];?>"/></br>
-															<span class="text-muted font-size-sm">UMID/SSS ID, PASSPORT ID, NATIONAL ID</span>
-															<p class="text-muted font-size-sm">Accept files docx, jpeg, png, pdf</p>
-															<label class="form-control-label" for="input-username">Uploaded Valid ID: &nbsp;</label>
-                            								<a href="/hulam/assets/keen/debtors/<?=$set['valid_id']; ?>" target="_blank"><?= $set['valid_id']; ?></a>
-														</div>
+												<h5>Uploaded Requirements</h5>
+												<?php
+												if (isset($_SESSION['status'])) {
+												?>
+													<div class="alert alert-success alert-dismissable" id="flash-msg">
+														<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+														<h4>Success!</h4>
 													</div>
-												</div>
-												<!-- <div class="col-xl-6">
-                                                    <div class="form-group">
-                                                        <label class="form-control-label">PROOF OF BILLING ADDRESS</label>
-                                                        <div class="dropzone-panel mb-lg-0 mb-2">
-                                                            <input type="file" name="proof_id" class="dropzone-select btn btn-light-primary font-weight-bold" /></br>
-															<span class="text-muted font-size-sm">UMID/SSS ID, PASSPORT ID, NATIONAL ID</span>
-															<p class="text-muted font-size-sm">Accept files docx, jpeg, png, pdf</p>
-                                                        </div>
-                                                    </div>
-                                                </div> -->
+												<?php
+													unset($_SESSION['status']);
+												} ?>
+												<table class="table table-bordered">
+													<thead>
+														<tr>
+															<th>Type of Documents</th>
+															<th>Uploaded Documents</th>
+															<th>Action</th>
+														</tr>
+													</thead>
+													<tbody>
+														<?php
+														$user_id = $_SESSION['user_id'];
+
+														$sql = "SELECT * FROM user WHERE user_id = $user_id";
+														$query = $dbh->prepare($sql);
+														$query->execute();
+														$results = $query->fetchAll(PDO::FETCH_OBJ);
+														if ($query->rowCount() > 0) {
+															foreach ($results as $res) {
+														?>
+																<tr>
+																	<td>Valid ID</br>
+																		<span class="text-muted font-size-sm">UMID/SSS ID, PASSPORT ID, NATIONAL ID</span>
+																		<p class="text-muted font-size-sm">Accept files docx, jpeg, png, pdf</p>
+																	</td>
+																	<td><a href="/hulam/assets/keen/requirements/<?= htmlentities($res->valid_id) ?>" target="_blank"><?= htmlentities($res->valid_id); ?></a></td>
+																	<td><a href="" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#view">Update</a></td>
+																	<!-- <button type="submit" class="btn btn-sm btn-light-danger font-weight-bolder mr-2" data-toggle="modal" data-target="#view2">Remove</button></td> -->
+																</tr>
+																<tr>
+																	<td>Selfie Holding Your ID</td>
+																	<td><a href="/hulam/assets/keen/requirements/<?= htmlentities($res->barangay_clearance) ?>" target="_blank"><?= htmlentities($res->barangay_clearance); ?></a></td>
+																	<td><a href="" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#bselfie">Update</a></td>
+																</tr>
+														<?php }
+														} ?>
+													</tbody>
+												</table>
 											</div>
-											<div class="d-flex justify-content-between border-top mt-5 pt-10">
-												<div></div>
-												<div>
-													<button type="submit" name="submit" class="btn btn-success font-weight-bolder px-10 py-3">Submit</button>
-												</div>
-											</div>
-										</form>
+										</div>
 									</div>
+								
+							</div>
+							<div class="d-flex justify-content-between border-top mt-5 pt-10">
+								<div></div>
+								<div>
+									<button type="submit" name="submit" class="btn btn-success font-weight-bolder px-10 py-3">Submit</button>
 								</div>
 							</div>
+							</form>
+							<!-- Start Modal -->
+							<form action="" method="post" enctype="multipart/form-data">
+									<div class="modal fade" id="view" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
+										<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+											<div class="modal-content">
+												<div class="modal-header">
+													<h5 class="modal-title" id="exampleModalLabel">VALID ID</h5>
+													<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+														<i aria-hidden="true" class="ki ki-close"></i>
+													</button>
+												</div>
+													<div class="col-xl-4">
+														<label class="font-weight-bolder font-size-lg" for="input-username">Upload/Edit Valid ID</label>
+														<div class="form-group">
+															<input type="file" name="valid_id" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3" />
+														</div>
+													</div>
+													<div class="modal-footer">
+														<button type="button" class="btn btn-light-primary font-weight-bold" data-dismiss="modal">Close</button>
+														<button type="submit" name="valid_id" class="btn btn-primary font-weight-bold">Save changes</button>
+													</div>
+												</div>
+											</div>
+										</div>
+									</form>
+									<!-- End Modal -->
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-		<div class="footer bg-white py-4 d-flex flex-lg-column" id="kt_footer">
-			<div class="container d-flex flex-column flex-md-row align-items-center justify-content-between">
-				<div class="text-dark order-2 order-md-1">
-					<span class="text-muted font-weight-bold mr-2">2021©</span>
-					<a href="http://keenthemes.com/keen" target="_blank" class="text-dark-75 text-hover-primary">The Hulam Team</a>
-				</div>
-				<div class="nav nav-dark order-1 order-md-2">
-					<a href="http://keenthemes.com/keen" target="_blank" class="nav-link pr-3 pl-0">About</a>
-					<a href="http://keenthemes.com/keen" target="_blank" class="nav-link px-3">Team</a>
-					<a href="http://keenthemes.com/keen" target="_blank" class="nav-link pl-3 pr-0">Contact</a>
-				</div>
+	</div>
+	</div>
+	</div>
+	<div class="footer bg-white py-4 d-flex flex-lg-column" id="kt_footer">
+		<div class="container d-flex flex-column flex-md-row align-items-center justify-content-between">
+			<div class="text-dark order-2 order-md-1">
+				<span class="text-muted font-weight-bold mr-2">2021©</span>
+				<a href="http://keenthemes.com/keen" target="_blank" class="text-dark-75 text-hover-primary">The Hulam Team</a>
+			</div>
+			<div class="nav nav-dark order-1 order-md-2">
+				<a href="http://keenthemes.com/keen" target="_blank" class="nav-link pr-3 pl-0">About</a>
+				<a href="http://keenthemes.com/keen" target="_blank" class="nav-link px-3">Team</a>
+				<a href="http://keenthemes.com/keen" target="_blank" class="nav-link pl-3 pr-0">Contact</a>
 			</div>
 		</div>
+	</div>
 	</div>
 	</div>
 	</div>
@@ -616,69 +711,69 @@ $user = $sql->fetch();
 
 
 
-    <!--begin::Quick Panel-->
-    <div id="kt_quick_panel" class="offcanvas offcanvas-right pt-5 pb-10">
-        <!--begin::Header-->
-        <div class="offcanvas-header offcanvas-header-navs d-flex align-items-center justify-content-between mb-5">
-            <ul class="nav nav-bold nav-tabs nav-tabs-line nav-tabs-line-3x nav-tabs-primary flex-grow-1 px-10" role="tablist">
-                <li class="nav-item">
-                    <a class="nav-link active" data-toggle="tab" href="#kt_chat_modal">Messages</a>
-                </li>
-            </ul>
-            <div class="offcanvas-close mt-n1 pr-5">
-                <a href="#" class="btn btn-xs btn-icon btn-light btn-hover-primary" id="kt_quick_panel_close">
-                    <i class="ki ki-close icon-xs text-muted"></i>
-                </a>
-            </div>
-        </div>
-        <!--end::Header-->
-        <!--begin::Content-->
-        <div class="offcanvas-content px-10">
-            <div class="tab-content">
-                <div class="navi navi-icon-circle navi-spacer-x-0">
-                    <?php
-                    $user_id = $_SESSION['user_id'];
+	<!--begin::Quick Panel-->
+	<div id="kt_quick_panel" class="offcanvas offcanvas-right pt-5 pb-10">
+		<!--begin::Header-->
+		<div class="offcanvas-header offcanvas-header-navs d-flex align-items-center justify-content-between mb-5">
+			<ul class="nav nav-bold nav-tabs nav-tabs-line nav-tabs-line-3x nav-tabs-primary flex-grow-1 px-10" role="tablist">
+				<li class="nav-item">
+					<a class="nav-link active" data-toggle="tab" href="#kt_chat_modal">Messages</a>
+				</li>
+			</ul>
+			<div class="offcanvas-close mt-n1 pr-5">
+				<a href="#" class="btn btn-xs btn-icon btn-light btn-hover-primary" id="kt_quick_panel_close">
+					<i class="ki ki-close icon-xs text-muted"></i>
+				</a>
+			</div>
+		</div>
+		<!--end::Header-->
+		<!--begin::Content-->
+		<div class="offcanvas-content px-10">
+			<div class="tab-content">
+				<div class="navi navi-icon-circle navi-spacer-x-0">
+					<?php
+					$user_id = $_SESSION['user_id'];
 
-                    $sql = "SELECT * FROM message INNER JOIN user ON message.sender_id = user.user_id WHERE message.receiver_id = $user_id";
-                    $query = $dbh->prepare($sql);
-                    $query->execute();
-                    $results = $query->fetchAll(PDO::FETCH_OBJ);
+					$sql = "SELECT * FROM message INNER JOIN user ON message.sender_id = user.user_id WHERE message.receiver_id = $user_id";
+					$query = $dbh->prepare($sql);
+					$query->execute();
+					$results = $query->fetchAll(PDO::FETCH_OBJ);
 
-                    foreach ($results as $res) :
+					foreach ($results as $res) :
 
-                    ?> <a href="debtor/messages.php?sender_id=<?= htmlentities($res->sender_id) ?>">
-                            <div class="navi-link rounded">
-                                <div class="symbol symbol-50 mr-3">
-                                </div>
-                                <div class="navi-text">
-                                    <div class="font-weight-bold font-size-lg">
-                                        <?php
-                                        $red = htmlentities($res->user_type);
+					?> <a href="debtor/messages.php?sender_id=<?= htmlentities($res->sender_id) ?>">
+							<div class="navi-link rounded">
+								<div class="symbol symbol-50 mr-3">
+								</div>
+								<div class="navi-text">
+									<div class="font-weight-bold font-size-lg">
+										<?php
+										$red = htmlentities($res->user_type);
 
-                                        if ($red == 1) : ?>
-                                            <?= htmlentities($res->firstname) . '' . htmlentities($res->middlename) . ' ' . htmlentities($res->lastname); ?>
-                                        <?php elseif ($red == 2) : ?>
-                                            <?= htmlentities($res->firstname) . '' . htmlentities($res->middlename) . ' ' . htmlentities($res->lastname); ?>
-                                        <?php elseif ($red == 3) : ?>
-                                            <?= htmlentities($res->company_name); ?>
-                                        <?php elseif ($red == 4) : ?>
-                                            <?= htmlentities($res->firstname) . '' . htmlentities($res->middlename) . ' ' . htmlentities($res->lastname); ?>
-                                        <?php else : ?>
-                                            <?= htmlentities($res->company_name); ?>
-                                        <?php endif; ?>
-                                    </div><span class="font-size-sm"><?= htmlentities($res->date_message); ?></span>
-                                    <div class="text-muted"><?= htmlentities($res->message) ?></div>
-                                </div>
-                            </div>
-                        </a>
-                    <?php endforeach; ?>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!--end::Content-->
-    </div>
-    <!--end::Quick Panel-->
+										if ($red == 1) : ?>
+											<?= htmlentities($res->firstname) . '' . htmlentities($res->middlename) . ' ' . htmlentities($res->lastname); ?>
+										<?php elseif ($red == 2) : ?>
+											<?= htmlentities($res->firstname) . '' . htmlentities($res->middlename) . ' ' . htmlentities($res->lastname); ?>
+										<?php elseif ($red == 3) : ?>
+											<?= htmlentities($res->company_name); ?>
+										<?php elseif ($red == 4) : ?>
+											<?= htmlentities($res->firstname) . '' . htmlentities($res->middlename) . ' ' . htmlentities($res->lastname); ?>
+										<?php else : ?>
+											<?= htmlentities($res->company_name); ?>
+										<?php endif; ?>
+									</div><span class="font-size-sm"><?= htmlentities($res->date_message); ?></span>
+									<div class="text-muted"><?= htmlentities($res->message) ?></div>
+								</div>
+							</div>
+						</a>
+					<?php endforeach; ?>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--end::Content-->
+	</div>
+	<!--end::Quick Panel-->
 	<div class="modal modal-sticky modal-sticky-bottom-right" id="kt_chat_modal" role="dialog" data-backdrop="false">
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">

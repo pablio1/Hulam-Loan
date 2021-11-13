@@ -862,7 +862,7 @@ if(isset($_POST['submit'])){
 									<!--begin::Page Heading-->
 									<div class="d-flex align-items-baseline flex-wrap mr-5">
 										<!--begin::Page Title-->
-										<h4 class="text-white font-weight-bold my-1 mr-5">Dashboard |</h4><h5 class="text-white font-weight-bold my-1 mr-5">Payment Centre</h5>
+										<h2 class="text-white font-weight-bold my-1 mr-5">Upload Payment</h4>
 										<!--end::Page Title-->
 									</div>
 									<!--end::Page Heading-->
@@ -902,26 +902,27 @@ if(isset($_POST['submit'])){
 													<div class="offset-xxl-2 col-xxl-8">
 														<form action="" method="post">
 															<div class="pb-5" data-wizard-type="step-content" data-wizard-state="current">
-																<h4 class="mb-10 font-weight-bold text-dark">Sender Details</h4>
+																<h3 class="mb-10 font-weight-bold text-dark">Payment Details</h4>
 																<div class="row">
 																	<div class="col-lg-6">
 																		<div class="form-group">
-																			<label>Loan Account No:</label>
-																			<input type="text" class="form-control " name="loan_id"/>
+																			<label>Payment Center</label>
+																			<input type="text" class="form-control " name="paycenter_name"/>
 																		</div>
 																	</div>
 																</div>
+																<h6 class="mb-10 font-weight-bold text-dark">Recepient Details</h6>
 																<div class="row">
 																	<div class="col-lg-6">
 																		<div class="form-group">
 																			<label>Last Name</label>
-																			<input type="text" class="form-control " name="l_name"/>
+																			<input type="text" class="form-control " name="paycenter_lname"/>
 																		</div>
 																	</div>
 																	<div class="col-lg-6">
 																		<div class="form-group">
 																			<label>First Name</label>
-																			<input type="text" class="form-control " name="f_name"/>
+																			<input type="text" class="form-control " name="paycenter_fname"/>
 																		</div>
 																	</div>
 																</div>
@@ -929,17 +930,17 @@ if(isset($_POST['submit'])){
 																	<div class="col-lg-6">
 																		<div class="form-group">
 																			<label>Middle Name</label>
-																			<input type="text" class="form-control " name="m_name"/>
+																			<input type="text" class="form-control " name="paycenter_mname"/>
 																		</div>
 																	</div>
 																	<div class="col-lg-6">
 																		<div class="form-group">
-																			<label>Phone No:</label>
+																			<label>Mobile/Phone No:</label>
 																			<input type="text" class="form-control " name="phone_no"/>
 																		</div>
 																	</div>
 																</div>
-																<h4 class="mb-10 font-weight-bold text-dark">Recepient Details</h4>
+										
                                                                 <div class="row">
 																	<div class="col-lg-6">
 																		<div class="form-group">
@@ -949,26 +950,18 @@ if(isset($_POST['submit'])){
 																	</div>
 																	<div class="col-lg-6">
 																		<div class="form-group">
-																			<label>Bank Name:</label>
-																			<input type="text" class="form-control " name="bank_name"/>
+																			<label>Account Number:</label>
+																			<input type="text" class="form-control " name="account_num"/>
 																		</div>
 																	</div>
 																</div>
 																<div class="row">
-																	<div class="col-lg-6">
-																		<div class="form-group">
-																			<label>Bank Account No:</label>
-																			<input type="text" class="form-control " name="bank_account_no"/>
-																		</div>
-																	</div>
 																	<div class="col-lg-6">
 																		<div class="form-group">
 																			<label>Payment Reference No:</label>
 																			<input type="text" class="form-control " name="reference_no"/>
 																		</div>
 																	</div>
-																</div>
-																<div class="row">
 																	<div class="col-xl-6">
 																		<div class="form-group">
 																			<label>Amount Paid</label>
@@ -982,16 +975,25 @@ if(isset($_POST['submit'])){
 																			<input type="hidden" name="posted_date" value="<?= date('Y-m-d H:i:s')?>"/>
 																		</div>
 																	</div>
+																	<div class="col-xl-6">
+																	<label>Upload a File</label>
+																	<div class="custom-file">
+																			<input type="file" class="custom-file-input" id="customFile">
+																			<label class="custom-file-label" for="customFile">Choose file</label>
+																	</div>
 																</div>
 															</div>
 															<div class="d-flex justify-content-between border-top mt-5 pt-10">
 																<div class="mr-2">
+
 																</div>
 																<div>
-																	<button type="submit" name="submit" class="btn btn-success font-weight-bolder px-10 py-3" data-wizard-type="action-submit">Submit
-																	</button>
+																<button type="submit" name="submit" class="btn btn-success font-weight-bolder px-10 py-3" data-wizard-type="action-submit">Submit
+																</button>
 																</div>
+																
 															</div>
+															
 															<!--end: Wizard Actions-->
 														</form>
 													</div>
@@ -1558,7 +1560,7 @@ if(isset($_POST['submit'])){
 		<script>var HOST_URL = "https://preview.keenthemes.com/keen/theme/tools/preview";</script>
 		<!--begin::Global Config(global config for global JS scripts)-->
 		<script>var KTAppSettings = { "breakpoints": { "sm": 576, "md": 768, "lg": 992, "xl": 1200, "xxl": 1400 }, "colors": { "theme": { "base": { "white": "#ffffff", "primary": "#3E97FF", "secondary": "#E5EAEE", "success": "#08D1AD", "info": "#844AFF", "warning": "#F5CE01", "danger": "#FF3D60", "light": "#E4E6EF", "dark": "#181C32" }, "light": { "white": "#ffffff", "primary": "#DEEDFF", "secondary": "#EBEDF3", "success": "#D6FBF4", "info": "#6125E1", "warning": "#FFF4DE", "danger": "#FFE2E5", "light": "#F3F6F9", "dark": "#D6D6E0" }, "inverse": { "white": "#ffffff", "primary": "#ffffff", "secondary": "#3F4254", "success": "#ffffff", "info": "#ffffff", "warning": "#ffffff", "danger": "#ffffff", "light": "#464E5F", "dark": "#ffffff" } }, "gray": { "gray-100": "#F3F6F9", "gray-200": "#EBEDF3", "gray-300": "#E4E6EF", "gray-400": "#D1D3E0", "gray-500": "#B5B5C3", "gray-600": "#7E8299", "gray-700": "#5E6278", "gray-800": "#3F4254", "gray-900": "#181C32" } }, "font-family": "Poppins" };</script>
-		<!--end::Global Config-->
+		<!--end::Global Config-->dx
 		<!--begin::Global Theme Bundle(used by all pages)-->
 		<script src="assets/admin/plugins/global/plugins.bundle.js"></script>
 		<script src="assets/admin/plugins/custom/prismjs/prismjs.bundle.js"></script>
@@ -1570,6 +1572,12 @@ if(isset($_POST['submit'])){
 		<!--begin::Page Scripts(used by this page)-->
 		<script src="assets/admin/js/pages/widgets.js"></script>
 		<!--end::Page Scripts-->
-	</body>
+		<script>
+		$(".custom-file-input").on("change", function() {
+		var fileName = $(this).val().split("\\").pop();
+		$(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+		});
+		</script>
+		</body>
 	<!--end::Body-->
 </html>

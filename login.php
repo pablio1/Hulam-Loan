@@ -100,7 +100,7 @@
                     <div class="col-md-6 col-md-6">
                         <div class="payment_form white-bg wow fadeInDown" data-wow-duration="1.2s" data-wow-delay=".2s">
                             <div class="info text-center">
-                                <h4>Log In - Email</h4>
+                                <h4>Log In</h4>
                                 <?php if (isset($_GET['e'])) : ?>
                                     <div class="alert alert-danger alert-dismissible fade show" role="alert">
                                         <strong><i class="fa fa-exclamation-triangle"></i></strong> <?= $_GET['e'] ?>
