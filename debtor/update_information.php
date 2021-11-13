@@ -636,7 +636,7 @@ $user = $sql->fetch();
 						</div>
 					</div>
 				</a>
-				<a href="custom/apps/user/profile-3.html" class="navi-item">
+				<!--<a href="custom/apps/user/profile-3.html" class="navi-item">
 					<div class="navi-link">
 						<div class="symbol symbol-40 bg-light mr-3">
 							<div class="symbol-label">
@@ -656,8 +656,8 @@ $user = $sql->fetch();
 							<div class="text-muted">Todo and tasks</div>
 						</div>
 					</div>
-				</a>
-				<a href="custom/apps/user/profile-2.html" class="navi-item">
+				</a>-->
+				<!--<a href="custom/apps/user/profile-2.html" class="navi-item">
 					<div class="navi-link">
 						<div class="symbol symbol-40 bg-light mr-3">
 							<div class="symbol-label">
@@ -677,8 +677,8 @@ $user = $sql->fetch();
 							<div class="text-muted">Logs and notifications</div>
 						</div>
 					</div>
-				</a>
-				<a href="custom/apps/userprofile-1/overview.html" class="navi-item">
+				</a>-->
+				<!--<a href="custom/apps/userprofile-1/overview.html" class="navi-item">
 					<div class="navi-link">
 						<div class="symbol symbol-40 bg-light mr-3">
 							<div class="symbol-label">
@@ -698,7 +698,7 @@ $user = $sql->fetch();
 							<div class="text-muted">latest tasks and projects</div>
 						</div>
 					</div>
-				</a>
+				</a>-->
 				<span class="navi-item mt-2">
 					<span class="navi-link">
 						<a href="logout.php" class="btn btn-sm btn-light-primary font-weight-bolder py-3 px-6">Sign Out</a>
