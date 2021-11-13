@@ -936,15 +936,15 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 							</div>
 						</div>
 					</div>
-				</a>
-				<!--end:Item-->
-				<!--begin::Item-->
+				<!--</a>
+				end:Item
+				begin::Item
 				<a href="custom/apps/user/profile-3.html" class="navi-item">
 					<div class="navi-link">
 						<div class="symbol symbol-40 bg-light mr-3">
 							<div class="symbol-label">
 								<span class="svg-icon svg-icon-md svg-icon-success">
-									<!--begin::Svg Icon | path:assets/media/svg/icons/General/Settings-1.svg-->
+									begin::Svg Icon | path:assets/media/svg/icons/General/Settings-1.svg
 									<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
 										<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
 											<rect x="0" y="0" width="24" height="24" />
@@ -952,7 +952,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 											<path d="M7,13 L17,13 C19.209139,13 21,14.790861 21,17 C21,19.209139 19.209139,21 17,21 L7,21 C4.790861,21 3,19.209139 3,17 C3,14.790861 4.790861,13 7,13 Z M17,19 C18.1045695,19 19,18.1045695 19,17 C19,15.8954305 18.1045695,15 17,15 C15.8954305,15 15,15.8954305 15,17 C15,18.1045695 15.8954305,19 17,19 Z" fill="#000000" opacity="0.3" />
 										</g>
 									</svg>
-									<!--end::Svg Icon-->
+									end::Svg Icon
 								</span>
 							</div>
 						</div>
@@ -961,15 +961,15 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 							<div class="text-muted">Todo and tasks</div>
 						</div>
 					</div>
-				</a>
+				</a>-->
 				<!--end:Item-->
 				<!--begin::Item-->
-				<a href="custom/apps/user/profile-2.html" class="navi-item">
+				<!--<a href="custom/apps/user/profile-2.html" class="navi-item">
 					<div class="navi-link">
 						<div class="symbol symbol-40 bg-light mr-3">
 							<div class="symbol-label">
 								<span class="svg-icon svg-icon-md svg-icon-primary">
-									<!--begin::Svg Icon | path:assets/media/svg/icons/General/Half-star.svg-->
+									begin::Svg Icon | path:assets/media/svg/icons/General/Half-star.svg
 									<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
 										<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
 											<polygon points="0 0 24 0 24 24 0 24" />
@@ -977,7 +977,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 											<path d="M12,4.25932872 L12,18 L7.91561963,20.1472858 C7.42677504,20.4042866 6.82214789,20.2163401 6.56514708,19.7274955 C6.46280801,19.5328351 6.42749334,19.309867 6.46467018,19.0931094 L7.24471742,14.545085 L3.94038429,11.3241562 C3.54490071,10.938655 3.5368084,10.3055417 3.92230962,9.91005817 C4.07581822,9.75257453 4.27696063,9.65008735 4.49459766,9.61846284 L9.06107374,8.95491503 L11.1032639,4.81698575 C11.277344,4.464261 11.6315987,4.25960807 12,4.25932872 Z" fill="#000000" />
 										</g>
 									</svg>
-									<!--end::Svg Icon-->
+									<!--end::Svg Icon
 								</span>
 							</div>
 						</div>
@@ -986,15 +986,15 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 							<div class="text-muted">Logs and notifications</div>
 						</div>
 					</div>
-				</a>
+				</a>-->
 				<!--end:Item-->
 				<!--begin::Item-->
-				<a href="custom/apps/userprofile-1/overview.html" class="navi-item">
+				<!--<a href="custom/apps/userprofile-1/overview.html" class="navi-item">
 					<div class="navi-link">
 						<div class="symbol symbol-40 bg-light mr-3">
 							<div class="symbol-label">
 								<span class="svg-icon svg-icon-md svg-icon-info">
-									<!--begin::Svg Icon | path:assets/media/svg/icons/Communication/Mail-opened.svg-->
+									<!--begin::Svg Icon | path:assets/media/svg/icons/Communication/Mail-opened.svg
 									<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
 										<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
 											<rect x="0" y="0" width="24" height="24" />
@@ -1002,7 +1002,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 											<path d="M3.79274528,6.57253826 L12,12.5 L20.2072547,6.57253826 C20.4311176,6.4108595 20.7436609,6.46126971 20.9053396,6.68513259 C20.9668779,6.77033951 21,6.87277228 21,6.97787787 L21,17 C21,18.1045695 20.1045695,19 19,19 L5,19 C3.8954305,19 3,18.1045695 3,17 L3,6.97787787 C3,6.70173549 3.22385763,6.47787787 3.5,6.47787787 C3.60510559,6.47787787 3.70753836,6.51099993 3.79274528,6.57253826 Z" fill="#000000" />
 										</g>
 									</svg>
-									<!--end::Svg Icon-->
+									<!--end::Svg Icon
 								</span>
 							</div>
 						</div>
@@ -1011,7 +1011,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 							<div class="text-muted">latest tasks and projects</div>
 						</div>
 					</div>
-				</a>
+				</a>-->
 				<!--end:Item-->
 				<!--begin::Item-->
 				<span class="navi-item mt-2">
