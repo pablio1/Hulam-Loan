@@ -7,18 +7,7 @@ include('../db_connection/config.php');
 ?>
 
 <!DOCTYPE html>
-<!--
-Template Name: Keen - The Ultimate Bootstrap 4 HTML Admin Dashboard Theme
-Author: KeenThemes
-Website: http://www.keenthemes.com/
-Contact: support@keenthemes.com
-Follow: www.twitter.com/keenthemes
-Dribbble: www.dribbble.com/keenthemes
-Like: www.facebook.com/keenthemes
-Purchase: https://themes.getbootstrap.com/product/keen-the-ultimate-bootstrap-admin-theme/
-Support: https://keenthemes.com/theme-support
-License: You must have a valid license purchased only from themes.getbootstrap.com(the above link) in order to legally use the theme for your project.
--->
+
 <html lang="en">
 <!--begin::Head-->
 
@@ -236,6 +225,14 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 												<span class="menu-text">Approved Loan</span>
 											</a>
 										</li>
+										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+                                            <a href="lending_company/released_loan.php" class="menu-link menu-toggle">
+                                                <i class="menu-bullet">
+                                                    <span></span>
+                                                </i>
+                                                <span class="menu-text">Release Loan</span>
+                                            </a>
+                                        </li>
 										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
 											<a href="lending_company/declined_loan.php" class="menu-link menu-toggle">
 												<i class="menu-bullet">

@@ -180,7 +180,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 									<table class="table table-bordered">
 										<thead>
 											<tr>
-												<th>Application Date</th>
+												<th>Loan Account No</th>
 												<th>Lending Investor</th>
 												<th>Total Loan Amount</th>
 												<th>Loan Status</th>
@@ -199,7 +199,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 												foreach ($results as $res) {
 											?>
 													<tr>
-														<th scope="row"><?= htmlentities($res->date); ?></th>
+														<th scope="row"><?= htmlentities($res->loan_app_id); ?></th>
 														<td><?= htmlentities($res->company_name); ?></td>
 														<td><?= number_format(htmlentities($res->total_amount), 2); ?></td>
 														<td><?php 
@@ -239,6 +239,8 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 																		<li class="navi-item"> 
 																			<a href="debtor/rating.php?lender_id=<?php echo htmlentities($res->lender_id); ?>" class="navi-link"> <span class="navi-icon"><i class="la la-file-text-o"></i></span> <span class="navi-text">Rate this Investor</span> </a> </li>
 																		<!-- <li class="navi-item"> <a href="#" class="navi-link"> <span class="navi-icon"><i class="la la-file-pdf-o"></i></span> <span class="navi-text">PDF</span> </a> </li> -->
+																		<li class="navi-item"> 
+																			<a href="debtor/view_payment2.php?loan_app_id=<?php echo htmlentities($res->loan_app_id); ?>" class="navi-link"> <span class="navi-icon"><i class="la la-file-text-o"></i></span> <span class="navi-text">Payment History</span> </a> </li>
 																	</ul>
 																</div>
 															</div>

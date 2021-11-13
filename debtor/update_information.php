@@ -13,44 +13,114 @@ $user = $sql->fetch();
 
 ?>
 <?php
-	if(isset($_POST['valid_id'])){
-		$loan_app_id = intval($_GET['loan_app_id']);
+if (isset($_POST['valid_id'])) {
+	$user_id = $_SESSION['user_id'];
 
-		$images =$_FILES['valid_id']['name'];
-		$tmp_dir = $_FILES['valid_id']['tmp_name'];
-		$imageSize=$_FILES['valid_id']['size'];
+	$images = $_FILES['valid_id']['name'];
+	$tmp_dir = $_FILES['valid_id']['tmp_name'];
+	$imageSize = $_FILES['valid_id']['size'];
 
-		$upload_dir='../../assets/keen/debtors/';
-		$imgExt=strtolower(pathinfo($images,PATHINFO_EXTENSION));
-		$valid_extensions=array('jpeg','jpg','gif','pdf','doc','docx');
-		$valid_id=rand(1000,10000000).".".$imgExt;
-		move_uploaded_file($tmp_dir,$upload_dir2.$valid_id);
+	$upload_dir = '../assets/keen/debtors/';
+	$imgExt = strtolower(pathinfo($images, PATHINFO_EXTENSION));
+	$valid_extensions = array('jpeg', 'jpg', 'gif', 'pdf', 'doc', 'docx');
+	$valid_id = rand(1000, 10000000) . "." . $imgExt;
+	move_uploaded_file($tmp_dir, $upload_dir . $valid_id);
 
-		$sql = "SELECT * FROM loan_application WHERE loan_app_id = $loan_app_id";
-		$query = $dbh->prepare($sql);
-		$query->execute();
-		if($query->rowCount()==0){
-			$insert = "INSERT INTO loan_application(valid_id)VALUES(:valid_id)";
-			$insert_query = $dbh->prepare($insert);
-			$insert_query->bindParam(':valid_id',$valid_id,PDO::PARAM_STR);
-			$insert_query->execute();
-		}else{
-			$update = "UPDATE loan_application SET valid_id = :valid_id WHERE loan_app_id = $loan_app_id";
-			$update_query = $dbh->prepare($update);
-			$update_query->bindParam(':valid_id',$valid_id,PDO::PARAM_STR);
-			$update_query->execute();
-		}
-		if($update_query){
-			$_SESSION['status'] = "Success";
-			header("location: update-information.php?loan_app_id=$loan_app_id");
-			exit();
-		}else{
-			$_SESSION['status'] = "Error!";
-			header("location: update_information.php?loan_app_id=$loan_app_id");
-			exit();
-		}
+	$sql = "SELECT * FROM debtors_info WHERE user_id = $user_id";
+	$query = $dbh->prepare($sql);
+	$query->execute();
+	if ($query->rowCount() == 0) {
+		$insert = "INSERT INTO debtors_info(valid_id)VALUES(:valid_id)";
+		$insert_query = $dbh->prepare($insert);
+		$insert_query->bindParam(':valid_id', $valid_id, PDO::PARAM_STR);
+		$insert_query->execute();
+	} else {
+		$update = "UPDATE debtors_info SET valid_id = :valid_id WHERE user_id = $user_id";
+		$update_query = $dbh->prepare($update);
+		$update_query->bindParam(':valid_id', $valid_id, PDO::PARAM_STR);
+		$update_query->execute();
 	}
+	if ($update_query) {
+		$_SESSION['status'] = "Updated Valid ID!";
+		header("location: update_information.php");
+		exit();
+	} else {
+		$_SESSION['status'] = "Error!";
+		header("location: update_information.php");
+		exit();
+	}
+}
 ?>
+<?php
+if (isset($_POST['selfie_id'])) {
+	$user_id = $_SESSION['user_id'];
+
+	$images = $_FILES['selfie_id']['name'];
+	$tmp_dir = $_FILES['selfie_id']['tmp_name'];
+	$imageSize = $_FILES['selfie_id']['size'];
+
+	$upload_dir = '../assets/keen/debtors/';
+	$imgExt = strtolower(pathinfo($images, PATHINFO_EXTENSION));
+	$valid_extensions = array('jpeg', 'jpg', 'gif', 'pdf', 'doc', 'docx');
+	$selfie_id = rand(1000, 10000000) . "." . $imgExt;
+	move_uploaded_file($tmp_dir, $upload_dir . $selfie_id);
+
+	$sql = "SELECT * FROM debtors_info WHERE user_id = $user_id";
+	$query = $dbh->prepare($sql);
+	$query->execute();
+	if ($query->rowCount() == 0) {
+		$insert = "INSERT INTO debtors_info(selfie_id)VALUES(:bselfie_id)";
+		$insert_query = $dbh->prepare($insert);
+		$insert_query->bindParam(':selfie_id', $selfie_id, PDO::PARAM_STR);
+		$insert_query->execute();
+	} else {
+		$update = "UPDATE debtors_info SET selfie_id = :selfie_id WHERE user_id = $user_id";
+		$update_query = $dbh->prepare($update);
+		$update_query->bindParam(':selfie_id', $selfie_id, PDO::PARAM_STR);
+		$update_query->execute();
+	}
+	if ($update_query) {
+		$_SESSION['status'] = "Updated Selfie with ID!";
+		header("location: update_information.php");
+		exit();
+	} else {
+		$_SESSION['status'] = "Error!";
+		header("location: update_information.php");
+		exit();
+	}
+}
+?>
+<?php
+if (isset($_POST['upload_photo'])) {
+	$user_id = $_SESSION['user_id'];
+
+	$images = $_FILES['profile_pic']['name'];
+	$tmp_dir = $_FILES['profile_pic']['tmp_name'];
+	$imageSize = $_FILES['profile_pic']['size'];
+
+	$upload_dir = '../assets/keen/debtors/';
+	$imgExt = strtolower(pathinfo($images, PATHINFO_EXTENSION));
+	$valid_extensions = array('jpeg', 'jpg', 'gif', 'pdf', 'doc', 'docx');
+	$profile_pic = rand(1000, 10000000) . "." . $imgExt;
+	move_uploaded_file($tmp_dir, $upload_dir . $profile_pic);
+
+	$update = "UPDATE user SET profile_pic = :profile_pic WHERE user_id = $user_id";
+	$update_query = $dbh->prepare($update);
+	$update_query->bindParam(':profile_pic', $profile_pic, PDO::PARAM_STR);
+	$update_query->execute();
+
+	if ($update_query) {
+		$_SESSION['status'] = "Updated Profile Photo!";
+		header("location: update_information.php");
+		exit();
+	} else {
+		$_SESSION['status'] = "Error!";
+		header("location: update_information.php");
+		exit();
+	}
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -165,9 +235,18 @@ $user = $sql->fetch();
 												<?= $_GET['e'] ?>
 											</div>
 										<?php endif; ?>
+										<?php
+										if (isset($_SESSION['status'])) {
+										?>
+											<div class="alert alert-success alert-dismissable" id="flash-msg">
+												<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+												<h4><?= $_SESSION['status'] ?></h4>
+											</div>
+										<?php
+											unset($_SESSION['status']);
+										} ?>
 										<h4 class="mb-10 font-weight-bold text-dark">Update Your Information</h4>
-										<form action="debtor/logic/update_information.php" method="post" id="kt_form" enctype="multipart/form-data">
-
+										<form action="" method="post" id="kt_form" enctype="multipart/form-data">
 											<div class="form-group row">
 												<label class="col-xl-3 col-lg-3 col-form-label text-right"></label>
 												<div class="col-lg-9 col-xl-6">
@@ -179,12 +258,15 @@ $user = $sql->fetch();
 															<input type="file" name="profile_pic" class="form-control" accept="*/image">
 															<input type="hidden" name="profile_avatar_remove" />
 														</label>
-														<span class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow" data-action="cancel" data-toggle="tooltip" title="Cancel Photo">
+														<span class="btn btn-xs btn-white btn-hover-text-primary btn-shadow" data-action="cancel" data-toggle="tooltip" title="Cancel Photo">
 															<i class="ki ki-bold-close icon-xs text-muted"></i>
 														</span>
 													</div>
+													&nbsp;&nbsp;<button type="submit" name="upload_photo" class="btn btn-primary btn-sm">confirm photo</button>
 												</div>
 											</div>
+										</form>
+										<form action="debtor/logic/update_information.php" method="post" id="kt_form">
 											<div class="row">
 												<div class="col-lg-4">
 													<div class="form-group">
@@ -241,7 +323,7 @@ $user = $sql->fetch();
 												<div class="col-xl-4">
 													<div class="form-group">
 														<label>Date Of Birth</label> <span class="text-danger">*</span>
-														<input type="date" class="form-control" required name="b_day" value="<?= isset($_GET['e']) ? $_GET['b_day'] :  $_SESSION['b_day'] ?>" />
+														<input type="date" class="form-control" required name="b_day" value="<?= isset($_GET['e']) ? $_GET['b_day'] :  $user['b_day'] ?>" />
 													</div>
 												</div>
 											</div>
@@ -249,7 +331,7 @@ $user = $sql->fetch();
 												<div class="col-xl-4">
 													<div class="form-group">
 														<label>Mobile</label> <span class="text-danger">*</span>
-														<input type="number" class="form-control" required name="mobile" value="<?= isset($_GET['e']) ? $_GET['mobile'] :  $_SESSION['mobile'] ?>" placeholder="Enter mobile number" />
+														<input maxlength="11" minlength="11" type="text" required="required" class="form-control" required name="mobile" placeholder="0900000000" value="<?= isset($_GET['e']) ? $_GET['mobile'] :  $user['mobile'] ?>" placeholder="Enter mobile number" />
 														<label><span style="color:green">&#x2714;</span><span style="font-family: Courier New; font-size: 11px"> Atleast 11 digits</label></span>
 													</div>
 
@@ -257,8 +339,8 @@ $user = $sql->fetch();
 												<div class="col-xl-4">
 													<div class="form-group">
 														<label>Landline</label> <span class="text-danger">*</span>
-														<input type="number" class="form-control" name="landline" value="<?= isset($_GET['e']) ? $_GET['landline'] :  $_SESSION['landline'] ?>" placeholder="Enter landline number" />
-														<label><span style="color:green">&#x2714;</span><span style="font-family: Courier New; font-size: 11px"> Atleast 7 digits</label></span>
+														<input maxlength="7" minlength="7" type="text" class="form-control" name="landline" placeholder="0000000" value="<?= isset($_GET['e']) ? $_GET['landline'] :  $user['landline'] ?>" placeholder="Enter landline number" />
+														<label><span style="color:green">&#x2714;</span><span style="font-family: Courier New; font-size: 11px"> Atleast 7 digits.</label></span>
 													</div>
 												</div>
 											</div>
@@ -274,19 +356,19 @@ $user = $sql->fetch();
 												<div class="col-xl-4">
 													<div class="form-group">
 														<label>Street</label> <span class="text-danger">*</span>
-														<input type="text" class="form-control" name="c_street" value="<?= isset($_GET['e']) ? $_GET['c_street'] : $_SESSION['c_street'] ?>" placeholder="Enter street" />
+														<input type="text" class="form-control" name="c_street" value="<?= isset($_GET['e']) ? $_GET['c_street'] : $user['c_street'] ?>" placeholder="Enter street" />
 													</div>
 												</div>
 												<div class="col-xl-4">
 													<div class="form-group">
 														<label>Barangay</label> <span class="text-danger">*</span>
-														<input type="text" class="form-control" required name="c_barangay" value="<?= isset($_GET['e']) ? $_GET['c_barangay'] : $_SESSION['c_barangay'] ?>" placeholder="Enter barangay" />
+														<input type="text" class="form-control" required name="c_barangay" value="<?= isset($_GET['e']) ? $_GET['c_barangay'] : $user['c_barangay'] ?>" placeholder="Enter barangay" />
 													</div>
 												</div>
 												<div class="col-xl-4">
 													<div class="form-group">
 														<label>City/Municipality</label> <span class="text-danger">*</span>
-														<input type="text" class="form-control" required name="c_city" value="<?= isset($_GET['e']) ? $_GET['c_city'] : $_SESSION['c_city'] ?>" placeholder="Enter city" />
+														<input type="text" class="form-control" required name="c_city" value="<?= isset($_GET['e']) ? $_GET['c_city'] : $user['c_city'] ?>" placeholder="Enter city" />
 													</div>
 												</div>
 											</div>
@@ -294,13 +376,13 @@ $user = $sql->fetch();
 												<div class="col-xl-4">
 													<div class="form-group">
 														<label>Province</label> <span class="text-danger">*</span>
-														<input type="text" class="form-control" required name="c_province" value="<?= isset($_GET['e']) ? $_GET['c_province'] : $_SESSION['c_province'] ?>" placeholder="Enter barangay" />
+														<input type="text" class="form-control" required name="c_province" value="<?= isset($_GET['e']) ? $_GET['c_province'] : $user['c_province'] ?>" placeholder="Enter barangay" />
 													</div>
 												</div>
 												<div class="col-xl-4">
 													<div class="form-group">
 														<label>Zip Code</label> <span class="text-danger">*</span>
-														<input type="text" class="form-control" required name="c_zipcode" value="<?= isset($_GET['e']) ? $_GET['c_zipcode'] : $_SESSION['c_zipcode'] ?>" placeholder="Enter zipcode" />
+														<input type="text" class="form-control" required name="c_zipcode" value="<?= isset($_GET['e']) ? $_GET['c_zipcode'] : $user['c_zipcode'] ?>" placeholder="Enter zipcode" />
 														<label><span style="color:green">&#x2714;</span><span style="font-family: Courier New; font-size: 11px"> Atleast 4 digits</label></span>
 													</div>
 												</div>
@@ -316,19 +398,19 @@ $user = $sql->fetch();
 												<div class="col-xl-4">
 													<div class="form-group">
 														<label>Street</label> <span class="text-danger">*</span>
-														<input type="text" class="form-control" name="p_street" value="<?= isset($_GET['e']) ? $_GET['p_street'] : $_SESSION['p_street'] ?>" placeholder="Enter street" />
+														<input type="text" class="form-control" name="p_street" value="<?= isset($_GET['e']) ? $_GET['p_street'] : $user['p_street'] ?>" placeholder="Enter street" />
 													</div>
 												</div>
 												<div class="col-xl-4">
 													<div class="form-group">
 														<label>Barangay</label> <span class="text-danger">*</span>
-														<input type="text" class="form-control" required name="p_barangay" value="<?= isset($_GET['e']) ? $_GET['p_barangay'] : $_SESSION['p_barangay'] ?>" placeholder="Enter barangay" />
+														<input type="text" class="form-control" required name="p_barangay" value="<?= isset($_GET['e']) ? $_GET['p_barangay'] : $user['p_barangay'] ?>" placeholder="Enter barangay" />
 													</div>
 												</div>
 												<div class="col-xl-4">
 													<div class="form-group">
 														<label>City/Municipality</label> <span class="text-danger">*</span>
-														<input type="text" class="form-control" required name="p_city" value="<?= isset($_GET['e']) ? $_GET['p_city'] : $_SESSION['p_city'] ?>" placeholder="Enter city" />
+														<input type="text" class="form-control" required name="p_city" value="<?= isset($_GET['e']) ? $_GET['p_city'] :$user['p_city'] ?>" placeholder="Enter city" />
 													</div>
 												</div>
 											</div>
@@ -336,13 +418,13 @@ $user = $sql->fetch();
 												<div class="col-xl-4">
 													<div class="form-group">
 														<label>Province</label> <span class="text-danger">*</span>
-														<input type="text" class="form-control" required name="p_province" value="<?= isset($_GET['e']) ? $_GET['p_province'] : $_SESSION['p_province'] ?>" placeholder="Enter barangay" />
+														<input type="text" class="form-control" required name="p_province" value="<?= isset($_GET['e']) ? $_GET['p_province'] : $user['p_province'] ?>" placeholder="Enter barangay" />
 													</div>
 												</div>
 												<div class="col-xl-4">
 													<div class="form-group">
 														<label>Zip Code</label> <span class="text-danger">*</span>
-														<input type="text" class="form-control" required name="p_zipcode" value="<?= isset($_GET['e']) ? $_GET['p_zipcode'] : $_SESSION['p_zipcode'] ?>" placeholder="Enter zipcode" />
+														<input type="text" class="form-control" required name="p_zipcode" value="<?= isset($_GET['e']) ? $_GET['p_zipcode'] : $user['p_zipcode'] ?>" placeholder="Enter zipcode" />
 														<label><span style="color:green">&#x2714;</span><span style="font-family: Courier New; font-size: 11px"> Atleast 4 digits</label></span>
 													</div>
 												</div>
@@ -372,7 +454,7 @@ $user = $sql->fetch();
 												<div class="col-xl-4">
 													<div class="form-group">
 														<label>Mobile No.<span class="text-danger">*</span>
-															<input type="text" class="form-control" required name="company_mobile" value="<?= isset($_GET['e']) ? $_GET['company_mobile'] : $set['company_mobile'] ?>" placeholder="Enter company mobile" />
+															<input maxlength="11" minlength="11" type="text" class="form-control" required name="company_mobile" value="<?= isset($_GET['e']) ? $_GET['company_mobile'] : $set['company_mobile'] ?>" placeholder="Enter company mobile" />
 															<label><span style="color:green">&#x2714;</span><span style="font-family: Courier New; font-size: 11px"> Atleast 11 digits</label></span>
 													</div>
 												</div>
@@ -381,7 +463,7 @@ $user = $sql->fetch();
 												<div class="col-xl-4">
 													<div class="form-group">
 														<label>Landline No.</label> <span class="text-danger">*</span>
-														<input type="text" class="form-control" required name="company_landline" value="<?= isset($_GET['e']) ? $_GET['company_landline'] : $set['company_landline'] ?>" placeholder="Enter company landline" />
+														<input maxlength="7" minlength="7" type="text" class="form-control" required name="company_landline" value="<?= isset($_GET['e']) ? $_GET['company_landline'] : $set['company_landline'] ?>" placeholder="Enter company landline" />
 														<label><span style="color:green">&#x2714;</span><span style="font-family: Courier New; font-size: 11px"> Atleast 7 digits</label></span>
 													</div>
 												</div>
@@ -429,8 +511,8 @@ $user = $sql->fetch();
 												<div class="col-xl-4">
 													<div class="form-group">
 														<label>Zip Code</label> <span class="text-danger">*</span>
-														<input type="text" class="form-control" required name="company_zipcode" value="<?= isset($_GET['e']) ? $_GET['company_zipcode'] : $set['company_zipcode'] ?>" placeholder="Enter zipcode" />
-														<<label><span style="color:green">&#x2714;</span><span style="font-family: Courier New; font-size: 11px"> Atleast 4 digits</label></span>
+														<input maxlength="4" minlength="4" type="text" class="form-control" required name="company_zipcode" value="<?= isset($_GET['e']) ? $_GET['company_zipcode'] : $set['company_zipcode'] ?>" placeholder="Enter zipcode" />
+														<label><span style="color:green">&#x2714;</span><span style="font-family: Courier New; font-size: 11px"> Atleast 4 digits</label></span>
 													</div>
 												</div>
 											</div>
@@ -452,7 +534,7 @@ $user = $sql->fetch();
 												<div class="col-xl-4">
 													<div class="form-group">
 														<label>Mobile No:</label>
-														<input type="number" class="form-control" name="rel_mobile" value="<?= isset($_GET['e']) ? $_GET['rel_mobile'] : $set['rel_mobile'] ?>" />
+														<input maxlength="11" minlength="11" type="text" class="form-control" name="rel_mobile" value="<?= isset($_GET['e']) ? $_GET['rel_mobile'] : $set['rel_mobile'] ?>" />
 														<label><span style="color:green">&#x2714;</span><span style="font-family: Courier New; font-size: 11px"> Atleast 11 digits</label></span>
 													</div>
 												</div>
@@ -463,78 +545,70 @@ $user = $sql->fetch();
 													</div>
 												</div>
 											</div>
-											<div class="row">
-												<h5>Uploaded Requirements</h5>
-												<?php
-												if (isset($_SESSION['status'])) {
-												?>
-													<div class="alert alert-success alert-dismissable" id="flash-msg">
-														<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
-														<h4>Success!</h4>
-													</div>
-												<?php
-													unset($_SESSION['status']);
-												} ?>
-												<table class="table table-bordered">
-													<thead>
-														<tr>
-															<th>Type of Documents</th>
-															<th>Uploaded Documents</th>
-															<th>Action</th>
-														</tr>
-													</thead>
-													<tbody>
-														<?php
-														$user_id = $_SESSION['user_id'];
-
-														$sql = "SELECT * FROM user WHERE user_id = $user_id";
-														$query = $dbh->prepare($sql);
-														$query->execute();
-														$results = $query->fetchAll(PDO::FETCH_OBJ);
-														if ($query->rowCount() > 0) {
-															foreach ($results as $res) {
-														?>
-																<tr>
-																	<td>Valid ID</br>
-																		<span class="text-muted font-size-sm">UMID/SSS ID, PASSPORT ID, NATIONAL ID</span>
-																		<p class="text-muted font-size-sm">Accept files docx, jpeg, png, pdf</p>
-																	</td>
-																	<td><a href="/hulam/assets/keen/requirements/<?= htmlentities($res->valid_id) ?>" target="_blank"><?= htmlentities($res->valid_id); ?></a></td>
-																	<td><a href="" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#view">Update</a></td>
-																	<!-- <button type="submit" class="btn btn-sm btn-light-danger font-weight-bolder mr-2" data-toggle="modal" data-target="#view2">Remove</button></td> -->
-																</tr>
-																<tr>
-																	<td>Selfie Holding Your ID</td>
-																	<td><a href="/hulam/assets/keen/requirements/<?= htmlentities($res->barangay_clearance) ?>" target="_blank"><?= htmlentities($res->barangay_clearance); ?></a></td>
-																	<td><a href="" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#bselfie">Update</a></td>
-																</tr>
-														<?php }
-														} ?>
-													</tbody>
-												</table>
+											<div class="d-flex justify-content-between border-top mt-5 pt-10">
+												<div></div>
+												<div>
+													<button type="submit" name="submit" class="btn btn-success font-weight-bolder px-10 py-3">Submit</button>
+												</div>
 											</div>
+										</form>
+										<div class="separator separator-solid my-7"></div>
+										<div class="row">
+											<h5>Upload Requirements</h5>
+											<table class="table table-bordered">
+												<thead>
+													<tr>
+														<th>Type of Documents</th>
+														<th>Uploaded Documents</th>
+														<th>Action</th>
+													</tr>
+												</thead>
+												<tbody>
+													<?php
+													$user_id = $_SESSION['user_id'];
+
+													$sql = "SELECT * FROM debtors_info WHERE user_id = $user_id";
+													$query = $dbh->prepare($sql);
+													$query->execute();
+													$results = $query->fetchAll(PDO::FETCH_OBJ);
+													if ($query->rowCount() > 0) {
+														foreach ($results as $res) {
+													?>
+															<tr>
+																<td>Valid ID</br>
+																	<span class="text-muted font-size-sm">UMID/SSS ID, PASSPORT ID, NATIONAL ID</span>
+																	<p class="text-muted font-size-sm">Accept files docx, jpeg, png, pdf</p>
+																</td>
+																<td><a href="/hulam/assets/keen/debtors/<?= htmlentities($res->valid_id) ?>" target="_blank"><?= htmlentities($res->valid_id); ?></a></td>
+																<td><a href="" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#valid_id">Update</a></td>
+															</tr>
+															<tr>
+																<td>Selfie Holding Your ID</br>
+																	<span class="text-muted font-size-sm">Hold your ID just below your chin and take photo.</span>
+																	<p class="text-muted font-size-sm">Accept files docx, jpeg, png, pdf</p>
+																</td>
+																<td><a href="/hulam/assets/keen/debtors/<?= htmlentities($res->selfie_id) ?>" target="_blank"><?= htmlentities($res->selfie_id); ?></a></td>
+																<td><a href="" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#bselfie">Update</a></td>
+															</tr>
+													<?php }
+													} ?>
+												</tbody>
+											</table>
 										</div>
 									</div>
-								
-							</div>
-							<div class="d-flex justify-content-between border-top mt-5 pt-10">
-								<div></div>
-								<div>
-									<button type="submit" name="submit" class="btn btn-success font-weight-bolder px-10 py-3">Submit</button>
-								</div>
-							</div>
-							</form>
-							<!-- Start Modal -->
-							<form action="" method="post" enctype="multipart/form-data">
-									<div class="modal fade" id="view" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
-										<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-											<div class="modal-content">
-												<div class="modal-header">
-													<h5 class="modal-title" id="exampleModalLabel">VALID ID</h5>
-													<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-														<i aria-hidden="true" class="ki ki-close"></i>
-													</button>
-												</div>
+									
+									
+									<!-- Start Modal -->
+									<form action="" method="post" enctype="multipart/form-data">
+										<div class="modal fade" id="valid_id" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
+											<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+												<div class="modal-content">
+													<div class="modal-header">
+														<h5 class="modal-title" id="exampleModalLabel">VALID ID</h5>
+														<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+															<i aria-hidden="true" class="ki ki-close"></i>
+														</button>
+													</div>
 													<div class="col-xl-4">
 														<label class="font-weight-bolder font-size-lg" for="input-username">Upload/Edit Valid ID</label>
 														<div class="form-group">
@@ -550,13 +624,38 @@ $user = $sql->fetch();
 										</div>
 									</form>
 									<!-- End Modal -->
+									<!-- Start Modal -->
+									<form action="" method="post" enctype="multipart/form-data">
+										<div class="modal fade" id="bselfie" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
+											<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+												<div class="modal-content">
+													<div class="modal-header">
+														<h5 class="modal-title" id="exampleModalLabel">SELFIE HOLDING YOUR ID</h5>
+														<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+															<i aria-hidden="true" class="ki ki-close"></i>
+														</button>
+													</div>
+													<div class="col-xl-4">
+														<label class="font-weight-bolder font-size-lg" for="input-username">Upload/Edit Selfie Holding Your ID</label>
+														<div class="form-group">
+															<input type="file" name="selfie_id" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3" />
+														</div>
+													</div>
+													<div class="modal-footer">
+														<button type="button" class="btn btn-light-primary font-weight-bold" data-dismiss="modal">Close</button>
+														<button type="submit" name="selfie_id" class="btn btn-primary font-weight-bold">Save changes</button>
+													</div>
+												</div>
+											</div>
+										</div>
+									</form>
+									<!-- End Modal -->
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>
-	</div>
 	</div>
 	<div class="footer bg-white py-4 d-flex flex-lg-column" id="kt_footer">
 		<div class="container d-flex flex-column flex-md-row align-items-center justify-content-between">

@@ -63,11 +63,11 @@ if (isset($_POST['approved_loan'])) {
 
 	if($query2->execute()){
 		$_SESSION['status'] = "Loan Approved!";
-		header("Location: view_application.php?loan_app_id=$id");
+		header("Location: view_approved.php?loan_app_id=$id");
 		exit();
 	} else {
 		$_SESSION['status'] = "Error!";
-		header('Location: view_application.php?loan_app_id=$id');
+		header('Location: view_approved.php?loan_app_id=$id');
 		exit();
 	}
 }
@@ -94,11 +94,11 @@ if (isset($_POST['declined_loan'])) {
 
 	if($query->execute()){
 		$_SESSION['status'] = "Loan Declined!";
-		header("Location: view_application.php?loan_app_id=$id");
+		header("Location: view_declined.php?loan_app_id=$id");
 		exit();
 	} else {
 		$_SESSION['status'] = "Error!";
-		header('Location: view_application.php?loan_app_id=$id');
+		header('Location: view_declined.php?loan_app_id=$id');
 		exit();
 	}
 }
@@ -335,6 +335,14 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 												<span class="menu-text">Approved Loan</span>
 											</a>
 										</li>
+										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+                                            <a href="lending_company/released_loan.php" class="menu-link menu-toggle">
+                                                <i class="menu-bullet">
+                                                    <span></span>
+                                                </i>
+                                                <span class="menu-text">Release Loan</span>
+                                            </a>
+                                        </li>
 										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
 											<a href="lending_company/declined_loan.php" class="menu-link menu-toggle">
 												<i class="menu-bullet">

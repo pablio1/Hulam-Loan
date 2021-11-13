@@ -60,15 +60,15 @@ include('db_connection/config.php');
                                     <nav>
                                         <ul id="navigation">
                                             <li><a href="index.php">home</a></li>
-                                            <li><a href="loan.php">Loan</a></li>
-                                            <li><a href="index.php">about</a></li>
+                                            <!-- <li><a href="loan.php">Loan</a></li>
+                                            <li><a href="index.php">about</a></li> -->
                                             <!-- <li><a href="#">pages <i class="ti-angle-down"></i></a>
                                                 <ul class="submenu">
                                                     <li><a href="apply.php">apply loan</a></li>
                                                     <li><a href="elements.php">elements</a></li>
                                                 </ul>
                                             </li> -->
-                                            <li><a href="index.php">FAQ</a></li>
+                                            <!-- <li><a href="index.php">FAQ</a></li> -->
                                             <li><a href="#contact">Contact</a></li>
                                         </ul>
                                     </nav>

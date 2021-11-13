@@ -235,6 +235,14 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 											</a>
 										</li>
 										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+                                            <a href="lending_company/released_loan.php" class="menu-link menu-toggle">
+                                                <i class="menu-bullet">
+                                                    <span></span>
+                                                </i>
+                                                <span class="menu-text">Release Loan</span>
+                                            </a>
+                                        </li>
+										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
 											<a href="lending_company/declined_loan.php" class="menu-link menu-toggle">
 												<i class="menu-bullet">
 													<span></span>
@@ -958,19 +966,11 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 						</div>
 						<!--end::Subheader-->
 						<!--begin::Entry-->
-						<div class="d-flex flex-column-fluid">
-							<!--begin::Container-->
-							<div class="container">
-								<!--begin::Body-->
-								<div class="card-body pt-2">
-										<!--end::Nav-->
-										<!--begin::Tab Content-->
-										<div class="tab-content mt-9" id="myTabMixed2">
-											<!--begin::Tab Pane-->
-											<div class="tab-pane fade active show" id="kt_tab_mixed_2_1" role="tabpanel" aria-labelledby="kt_tab_mixed_2_1">
-													<!--begin::Card-->
-												<div class="card card-custom">
-													<div class="card-body">
+							<div class="d-flex flex-column-fluid">
+								<!--begin::Container-->
+								<div class="container">
+									<div class="card card-custom">
+										<div class="card-body">
 														<h5> Approved Loan</h5>
 														<table class="table table-bordered">
 															<thead>

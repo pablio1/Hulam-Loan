@@ -111,16 +111,16 @@ if (isset($_POST['released_loan'])) {
 if (isset($_POST['declined_loan'])) {
 	$id = intval($_GET['loan_app_id']);
 
-	$update = "UPDATE loan_application SET status = 'Declined' WHERE loan_app_id = $id";
+	$update = "UPDATE loan_application SET loan_status = 'Declined' WHERE loan_app_id = $id";
 	$query2 = $dbh->prepare($update);
 
 	if($query2->execute()){
 		$_SESSION['status'] = "Loan Declined!";
-		header("Location: view_application.php?loan_app_id=$id");
+		header("Location: view_declined.php?loan_app_id=$id");
 		exit();
 	} else {
 		$_SESSION['status'] = "Error!";
-		header('Location: view_application.php?loan_app_id=$id');
+		header('Location: view_declined.php?loan_app_id=$id');
 		exit();
 	}
 }
@@ -357,6 +357,14 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 												<span class="menu-text">Approved Loan</span>
 											</a>
 										</li>
+										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+                                            <a href="lending_company/released_loan.php" class="menu-link menu-toggle">
+                                                <i class="menu-bullet">
+                                                    <span></span>
+                                                </i>
+                                                <span class="menu-text">Release Loan</span>
+                                            </a>
+                                        </li>
 										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
 											<a href="lending_company/declined_loan.php" class="menu-link menu-toggle">
 												<i class="menu-bullet">
@@ -1212,13 +1220,11 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 												<!--begin::User-->
 												<!--begin::Actions-->
 												<div class="my-lg-0 my-1">
-													<?php if($user['loan_status']=='Released'):?>
-														<a href="#" class="btn btn-sm btn-light-danger font-weight-bolder mr-2" data-toggle="modal" data-target="#declined_loan">Declined Loan</a>
-													<?php elseif($user['loan_status']=='Approved'):?>
-													<a href="#" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#released_loan">Released Loan</a>
+													<?php if($user['loan_status']=='Approved'):?>
+														<a href="#" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#released_loan">Released Loan</a>
 													<?php endif;?>
 													<a href="#" class="btn btn-sm btn-light-success font-weight-bolder mr-2" data-toggle="modal" data-target="#message">Send Message</a>
-													<!-- <a href="#" class="btn btn-sm btn-light-danger font-weight-bolder mr-2" data-toggle="modal" data-target="#declined_loan">Declined Loan</a> -->
+													<a href="#" class="btn btn-sm btn-light-danger font-weight-bolder mr-2" data-toggle="modal" data-target="#declined_loan">Declined Loan</a>
 												</div>
 												<!--end::Actions-->
 											</div>
@@ -1302,6 +1308,14 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 													if ($query->rowCount() > 0) {
 														foreach ($results as $res) {
 													?>
+															<tr>
+																<td>Approval Date</td>
+																<td><?= htmlentities($res->approval_date); ?></td>
+															</tr>
+															<tr>
+																<td>Releasing Schedule</td>
+																<td><?= htmlentities($res->release_schedule); ?></td>
+															</tr>
 															<tr>
 																<td>Application Date</td>
 																<td><?= htmlentities($res->date); ?></td>

@@ -53,9 +53,9 @@
                                     <nav>
                                         <ul id="navigation">
                                             <li><a href="index.php">home</a></li>
-                                            <li><a href="Loan.php">Loan</a></li>
-                                            <li><a href="index.php">about</a></li>
-                                            <li><a href="index.php">FAQ</a></li>
+                                            <!-- <li><a href="Loan.php">Loan</a></li> -->
+                                            <!-- <li><a href="index.php">about</a></li>
+                                            <li><a href="index.php">FAQ</a></li> -->
                                             <li><a href="#contact">Contact</a></li>
                                         </ul>
                                     </nav>

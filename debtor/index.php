@@ -7,11 +7,55 @@ if ($_SESSION['user_type'] != 2) {
 	header('location: ../index.php');
 }
 
-$sql = $dbh->prepare('SELECT * FROM loan_application WHERE debtor_id = :user_id');
+$sql = $dbh->prepare('SELECT * FROM loan_application INNER JOIN loan_features ON loan_features.lender_id = loan_application.lender_id INNER JOIN user ON loan_application.lender_id = user.user_id WHERE loan_application.debtor_id = :user_id AND loan_application.loan_status ="Released"');
 $sql->execute(['user_id' => $_SESSION['user_id']]);
 $loan = $sql->fetch();
-
 ?>
+
+<?php
+if (isset($_POST['upload_payment'])) {
+	$loan_app_id = $_POST['loan_app_id'];
+	$lender_id = $_POST['lender_id'];
+	$debtor_id = $_SESSION['user_id'];
+	$upload_date = $_POST['upload_date'];
+	$message = "Uploaded proof of payment.";
+
+	$images =$_FILES['receipt']['name'];
+	$tmp_dir = $_FILES['receipt']['tmp_name'];
+	$imageSize=$_FILES['receipt']['size'];
+
+	$upload_dir='../assets/keen/receipts/';
+	$imgExt=strtolower(pathinfo($images,PATHINFO_EXTENSION));
+	$valid_extensions=array('jpeg','jpg','gif','pdf','doc','docx');
+	$receipt=rand(1000,10000000).".".$imgExt;
+	move_uploaded_file($tmp_dir,$upload_dir.$receipt);
+
+	$insert = "INSERT INTO message(sender_id,receiver_id,message,date_message)VALUES(:sender_id,:receiver_id,:message,:date_message)";
+	$query = $dbh->prepare($insert);
+	$query->bindParam(':sender_id', $debtor_id, PDO::PARAM_STR);
+	$query->bindParam(':receiver_id', $lender_id, PDO::PARAM_STR);
+	$query->bindParam(':message', $message, PDO::PARAM_STR);
+	$query->bindParam(':date_message', $upload_date, PDO::PARAM_STR);
+	$query->execute();
+
+	$insert = "INSERT INTO loan_receipt(loan_app_id,receipt,upload_date)VALUES(:loan_app_id,:receipt,:upload_date)";
+	$query = $dbh->prepare($insert);
+	$query->bindParam(':loan_app_id', $loan_app_id, PDO::PARAM_STR);
+	$query->bindParam(':receipt', $receipt, PDO::PARAM_STR);
+	$query->bindParam(':upload_date', $upload_date, PDO::PARAM_STR);
+
+	if ($query->execute()) {
+		$_SESSION['status'] = "Message Sent";
+		header("Location: view_payment.php");
+		exit();
+	} else {
+		$_SESSION['status'] = "Message Not Sent";
+		header('Location: view_payment.php');
+		exit();
+	}
+}
+?>
+
 
 
 <!DOCTYPE html>
@@ -111,320 +155,163 @@ $loan = $sql->fetch();
 			<div class="d-flex flex-column-fluid">
 				<div class="container">
 					<h4 class="text-white my-1 mr-5">Hi, <?= $_SESSION['firstname']; ?>! Welcome to Hulam.</h4></br>
-					<div class="row">
-						<div class="col-xl-6">
-							<div class="form-group">
-								<div class="card card-custom card-stretch card-stretch-half gutter-b">
-									<div class="card-body d-flex flex-column">
-										<div class="d-flex align-items-center">
-											<span class="symbol symbol-circle symbol-light-primary symbol-60 mr-5">
-											</span>
-											<div class="d-flex flex-column">
-												<a href="#" class="text-dark-75 text-hover-primary font-weight-bolder font-size-h5">Loan Information
-												<?php
 
-
-												?>
-
-												</a>
-												<span class="font-weight-bolder text-primary">
-													<?php
-													date_default_timezone_set('Asia/Manila');
-													$todays_date = date("y-m-d h:i:sa");
-													$today = strtotime($todays_date);
-													$det = date("F-m-Y h:i:sa", $today);
-
-													?>
-												as of <?= $det ?></span>
-											</div>
+					<div class="card card-custom gutter-b">
+						<div class="card-body">
+							<div class="d-flex">
+								<div class="flex-shrink-0 mr-7">
+									<h4 class="font-weight-bolder">Loan Account NO: <?= $loan['loan_app_id']; ?></h4>
+									<span>Lending Account Name:&nbsp;<?= $loan['company_name'] ?> </span>
+								</div>
+								<div class="flex-grow-1">
+									<div class="d-flex align-items-center justify-content-between flex-wrap mt-2">
+										<div class="mr-3">
+											<!-- <a href="#" class="d-flex align-items-center text-dark text-hover-primary font-size-h5 font-weight-bold mr-3"><?= $loan['firstname'] ?></a> -->
 										</div>
-										<div class="card-footer d-flex align-items-center justify-content-between flex-wrap py-4">
-											<h3>Remaining Balance: &nbsp; PHP
-												<?= number_format($loan['loan_amount'] + $loan['total_interest'], 2) ?></h3>
+										<div class="my-lg-0 my-1">
+											<a href="debtor/view_approved_application2.php?loan_app_id=<?= $loan['loan_app_id'] ?>" class="btn btn-sm btn-light-primary font-weight-bolder mr-2">View Details</a>
+											<a href="" class="btn btn-sm btn-primary font-weight-bolder" data-toggle="modal" data-target="#upload_payment"></data-target> Upload Proof of Payment</a>
 										</div>
-									</div>
-									<div class="card-footer d-flex align-items-center justify-content-between flex-wrap py-4">
-										<div class="symbol-group symbol-hover py-1 mr-2">
-										</div>
-										<!-- <a href="debtor/view_statement.php?id=<?= $loan['id']; ?>">
-													<button type="submit" class="btn btn-sm btn-primary font-weight-bolder px-6">View Statement of Account</button> -->
-										</a>
 									</div>
 								</div>
-							</div>
-						</div>
+							</div></br>
+							<div class="d-flex align-items-center">
+								<div class="d-flex flex-column">
+									<a href="#" class="text-dark-75 text-hover-primary font-weight-bolder font-size-h5">Loan Information
+									</a>
+									<span class="font-weight-bolder text-primary">
+										<?php
+										date_default_timezone_set('Asia/Manila');
+										$todays_date = date("y-m-d h:i:sa");
+										$today = strtotime($todays_date);
+										$det = date("F-m-Y h:i:sa", $today);
 
-						<!-- display modal of Statement of Account details -->
-						<div class="modal fade" id="soa" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdrop" aria-hidden="true">
-							<div class="modal-dialog modal-dialog-centered modal-xl" role="document">
-								<div class="modal-content">
-									<div class="modal-header">
-										<div class="kt-portlet__head-label">
-											<h3 class="kt-portlet__head-title"><?php echo $get['fullname']; ?></h3>&nbsp;&nbsp;
-											<span>Loans - Statement of Account</span>
-										</div>
-										<div class="kt-portlet__head-toolbar">
-											<div class="kt-portlet__head-toolbar-wrapper">
-												<div class="dropdown dropdown-inline">
-													<button type="button" class="btn btn-clean btn-sm btn-icon btn-icon-md" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-														<i class="flaticon-more-1"></i>
-													</button>
-													<div class="dropdown-menu dropdown-menu-right">
-														<ul class="kt-nav">
-															<li class="kt-nav__section kt-nav__section--first">
-																<span class="kt-nav__section-text">Export Tools</span>
-															</li>
-															<li class="kt-nav__item">
-																<a href="payee/payeeinfo.php?payeeid=<?php echo $get22['payeeid']; ?>" onclick="download_employeedetails_as_csv('employeedetails');" class="kt-nav__link">
-																	<i class="kt-nav__link-icon la la-file-text-o"></i>
-																	<span class="kt-nav__link-text">CSV</span>
-																</a>
-															</li>
-														</ul>
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>
-
-									<div class="content d-flex flex-column flex-column-fluid" id="kt_content">
-										<div class="gutter-b" id="kt_breadcrumbs">
-											<div class="container d-flex align-items-center justify-content-between flex-wrap flex-sm-nowrap">
-												<div class="d-flex align-items-center flex-wrap mr-1">
-												</div>
-											</div>
-										</div>
-										<div class="d-flex flex-column-fluid">
-											<div class="container">
-												<div class="card card-custom overflow-hidden">
-													<div class="card-body p-0">
-														<div class="row justify-content-center bgi-size-cover bgi-no-repeat py-8 px-8 py-md-27 px-md-0" style="background-image: url(assets/keen/media/misc/bg-3.jpg);">
-															<div class="col-md-9">
-																<div class="d-flex justify-content-between pb-10 pb-md-20 flex-column flex-md-row">
-																	<div class="d-flex flex-column flex-root">
-																		<h2 class="display-4 text-white font-weight-boldest mb-4">STATEMENT OF ACCOUNT</h2>
-																		<h6 class="text-white mb-2">Hulam Online Lending System</h6>
-																	</div>
-																	<div class="d-flex flex-column align-items-md-end px-0">
-																		<a href="#" class="mb-5">
-																			<img src="assets/keen/media/logos/h_small.png" alt="" />
-																		</a>
-																		<span class="text-white d-flex flex-column align-items-md-end opacity-70">
-																			<span>Mactan, Lapu-Lapu City </span>
-																			<span>Cebu 6015</span>
-																		</span>
-																	</div>
-																</div>
-																<div class="border-bottom w-100 opacity-20"></div>
-																<div class="d-flex justify-content-between text-white pt-6">
-																	<div class="d-flex flex-column flex-root">
-																		<span class="font-weight-bolder mb-2">LOAN ACCOUNT NO.</span>
-																		<span class="opacity-70">HL000014</span><br />
-																		<span class="font-weight-bolde mb-2r">LOAN DATE</span>
-																		<span class="opacity-70">Sept 17, 2021</span><br />
-																		<span class="font-weight-bolder mb-2">FIRST MONTHLY AMORTIZATION</span>
-																		<span class="opacity-70">December 05, 2021</span>
-																	</div>
-																	<div class="d-flex flex-column flex-root">
-																		<span class="font-weight-bolder mb-2">DEBTOR DETAILS</span>
-																		<span class="opacity-70">Aname Perdiguez</span>
-																		<span class="opacity-70">Phone: 09454909530</span><br />
-																		<span class="font-weight-bolder mb-2">ADDRESS</span>
-																		<span class="opacity-70">Isuya, Mactan Lapu-Lapu City Cebu 6015</span>
-																	</div>
-																	<div class="d-flex flex-column flex-root">
-																		<span class="font-weight-bolder mb-2">LENDER DETAILS</span>
-																		<span class="opacity-70">ASIA LINK FINANCE CORPORATION</span>
-																		<span class="opacity-70">Phone: 09454909530</span><br />
-																		<span class="font-weight-bolder mb-2">ADDRESS</span>
-																		<span class="opacity-70">Isuya, Mactan Lapu-Lapu City Cebu 6015</span>
-																	</div>
-																</div>
-															</div>
-														</div>
-														<div class="row justify-content-center bg-gray-100 py-8 px-8 py-md-10 px-md-0">
-															<div class="col-md-9">
-																<label class="font-weight-boldest border-bottom-0 font-size-l text-uppercase">As of September 20, 2021</label></br>
-																<table class="table">
-																	<thead style="background-color:DodgerBlue;">
-																		<label class="font-weight-boldest border-bottom-0 font-size-l text-uppercase">PAST DUE</lable>
-																			<tr>
-																				<th class="font-weight-boldest border-bottom-0 font-size-l text-uppercase">Principal Amount</th>
-																				<th class="font-weight-boldest border-bottom-0 font-size-l text-uppercase">Interest Rate</th>
-																				<th class="font-weight-boldest border-bottom-0 font-size-l text-uppercase">Monthly Payment</th>
-																				<th class="font-weight-boldest border-bottom-0 font-size-l text-uppercase">Penalty</th>
-																				<th class="font-weight-boldest border-bottom-0 font-size-l text-uppercase">Amount</th>
-																			</tr>
-																	</thead>
-																	<tbody>
-																		<tr class="font-weight-boldest font-size-l">
-																			<td>0</td>
-																			<td>0</td>
-																			<td>0</td>
-																			<td>0</td>
-																		</tr>
-																	</tbody>
-																	<table>
-																		<table class="table">
-																			<thead style="background-color:DodgerBlue;">
-																				<label class="font-weight-boldest border-bottom-0 font-size-l text-uppercase">CURRENT DUE</lable>
-																					<tr>
-																						<th class="font-weight-boldest border-bottom-0 font-size-l text-uppercase">Principal Amount</th>
-																						<th class="font-weight-boldest border-bottom-0 font-size-l text-uppercase">Interest Rate</th>
-																						<th class="font-weight-boldest border-bottom-0 font-size-l text-uppercase">Monthly Payment</th>
-																						<th class="font-weight-boldest border-bottom-0 font-size-l text-uppercase">Penalty</th>
-																						<th class="font-weight-boldest border-bottom-0 font-size-l text-uppercase">Amount</th>
-																					</tr>
-																			</thead>
-																			<tbody>
-																				<tr class="font-weight-boldest font-size-l">
-																					<td>10,000</td>
-																					<td>933.00</td>
-																					<td>0</td>
-																					<td>933.00</td>
-																				</tr>
-																			</tbody>
-																		</table>
-																		<div class="d-flex flex-column text-md-right">
-																			<span class="font-size-lg font-weight-bolder mb-1">TOTAL AMOUNT DUE</span>
-																			<span class="font-size-h4 font-weight-boldest text-danger mb-1">933.00</span>
-																		</div>
-																		<div class="row justify-content-center bg-gray-100 py-8 px-8 py-md-10 px-md-0">
-																			<table class="table">
-																				<thead style="background-color:DodgerBlue;">
-																					<label class="font-weight-boldest border-bottom-0 font-size-l text-uppercase">CREDITED PAYMENTS</lable>
-																						<tr>
-																							<th class="font-weight-boldest border-bottom-0 font-size-l text-uppercase">Date of Payment</th>
-																							<th class="font-weight-boldest border-bottom-0 font-size-l text-uppercase">Post Date</th>
-																							<th class="font-weight-boldest border-bottom-0 font-size-l text-uppercase">Transaction No.</th>
-																							<th class="font-weight-boldest border-bottom-0 font-size-l text-uppercase">Transaction Date</th>
-																							<th class="font-weight-boldest border-bottom-0 font-size-l text-uppercase">Payment Method</th>
-																							<th class="font-weight-boldest border-bottom-0 font-size-l text-uppercase">Amount</th>
-																						</tr>
-																				</thead>
-																				<tbody>
-																					<tr class="font-weight-boldest font-size-l ">
-																						<td>09-20-2021</td>
-																						<td>09-22-2021</td>
-																						<td>HL012345</td>
-																						<td>09-20-2021</td>
-																						<td>Palawan Pawnshop</td>
-																						<td>933.00</td>
-																					</tr>
-																				</tbody>
-																			</table>
-																		</div>
-																		<div class="d-flex flex-column text-md-right">
-																			<span class="font-size-lg font-weight-bolder mb-1">TOTAL AMOUNT</span>
-																			<span class="font-size-h4 font-weight-boldest text-danger mb-1">933.00</span>
-																		</div>
-																		<div class="d-flex flex-column text-md-right">
-																			<span class="font-size-lg font-weight-bolder mb-1">REMAINING BALANCE</span>
-																			<span class="font-size-h4 font-weight-boldest text-danger mb-1">10,267.00</span>
-																		</div>
-															</div>
-														</div>
-														<div class="row justify-content-center py-8 px-8 py-md-10 px-md-0">
-															<div class="col-md-9">
-																<div class="d-flex justify-content-between">
-																	<button type="button" class="btn btn-light-primary font-weight-bold" onclick="window.print();">Download SOA</button>
-																	<button type="button" class="btn btn-light-primary font-weight-bold" onclick="window.print();">Print SOA</button>
-																</div>
-															</div>
-														</div>
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>
-									<div class="modal-footer">
-										<button type="button" class="btn btn-light-primary font-weight-bold py-4" data-toggle="modal" data-target="#upload_payment">Upload Payment Receipt</button>
-										<button type="button" class="btn btn-light-primary font-weight-bold" data-dismiss="modal">Close</button>
-									</div>
+										?>
+										as of <?= $det ?></span>
 								</div>
 							</div>
-						</div>
+							<div class="d-flex align-items-center flex-wrap">
+								<div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
+									<div class="d-flex flex-column text-dark-75">
+										<span class="font-weight-bolder font-size-lg">Remaining Balance: &nbsp; PHP
+											<?php
+											$user_id = $_SESSION['user_id'];
+											$loan_app_id = $loan['loan_app_id'];
 
-						<div class="col-xl-6">
-							<div class="form-group">
-								<div class="card card-custom card-stretch card-stretch-half gutter-b">
-									<div class="card-body d-flex flex-column">
-										<div class="d-flex align-items-center">
-											<div class="d-flex flex-column">
-												<a href="#" class="text-dark-75 text-hover-primary font-weight-bolder font-size-h5">Balance Due</a>
-												<span class="font-weight-bolder text-primary">
-												<?php
-
-												$select = "SELECT * FROM ";
-													date_default_timezone_set('Asia/Manila');
-													$released_date = strtotime($loan['released_date']);
-													$nextdate = strtotime("+1 month", $released_date);
-													$det = date("F-m-Y h:i:sa", $nextdate);
-													?>
-												as of <?= $det ?></span></div>
-										</div>
-										<div class="card-footer d-flex align-items-center justify-content-between flex-wrap py-4">
-											<h3>Amount Due:&nbsp; PHP <?= number_format($loan['monthly_payment'], 2) ?></h3>
-										</div>
+											$sql = "SELECT * FROM loan_payment WHERE loan_app_id = $loan_app_id";
+											$query = $dbh->prepare($sql);
+											$query->execute();
+											$loan_pay = $query->fetch();
+											echo number_format($loan_pay['remaining_balance'], 2);
+											?>
+										</span>
 									</div>
-									<div class="card-footer d-flex align-items-center justify-content-between flex-wrap py-4">
-										<div class="symbol-group symbol-hover py-1 mr-2">
-										</div>
-										<!-- <a href="#" class="btn btn-sm btn-primary font-weight-bolder px-6" data-toggle="modal" data-target="#upload_payment" >Upload Payment Receipt</a> -->
+								</div>
+								<div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
+									<div class="d-flex flex-column text-dark-75">
+										<span class="font-weight-bolder font-size-lg">Previous Balance:
+											<?php
+											$late_charge = $loan_pay['late_charge'];
+											$overdue_charge = $loan_pay['overdue_charge'];
+											$total_overdue = $late_charge + $overdue_charge;
+											echo number_format($total_overdue, 2)
+											?>
+										</span>
+									</div>
+								</div>
+								<div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
+									<div class="d-flex flex-column text-dark-75">
+										<span class="font-weight-bolder font-size-lg">Current Balance:&nbsp; PHP
+										<?php
+											$monthly_payable = $loan_pay['monthly_payable'];
+											$monthly_interest = $loan_pay['monthly_interest'];
+											$total_current = $monthly_payable + $monthly_interest;
+											echo number_format($total_current, 2);
+											?>
+										</span>
+									</div>
+								</div>
+								<div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
+									<div class="d-flex flex-column text-dark-75">
+										<span class="font-weight-bolder font-size-lg">Total Amount Due:&nbsp; PHP
+											<?php
+											$totalamount = $total_overdue + $total_current;
+											echo number_format($total_current, 2) 
+											?>
+										</span>
+										<span class="font-weight-bolder text-primary">
+											<?php
+
+											date_default_timezone_set('Asia/Manila');
+											$nextdate = strtotime($loan_pay['monthly_due_date']);
+											$det2 = date("F-m-Y", $nextdate);
+											?>
+											Next due date: <?= $det2 ?></span>
 									</div>
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-			</div>
-		</div>
-		<!--end::Content-->
+				</div>
 
-		<!-- begin: display modal of upload payment -->
-		<div class="modal fade" id="upload_payment" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdrop" aria-hidden="true">
-			<div class="modal-dialog modal-dialog-centered modal-m" role="document">
-				<div class="modal-content">
-					<div class="modal-header">
-						<div class="kt-portlet__head-label">
-							<span class="font-weight-boldest font-size-l">Upload Proof of Payment</span>
-						</div>
-					</div></br>
-					<div class="container">
-						<div class="col-xl-6">
-							<div class="form-group">
-								<input type="file" name="file" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm" />
+			<!-- begin: display modal of upload payment -->
+			<form action="" method="post" enctype="multipart/form-data">
+			<div class="modal fade" id="upload_payment" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdrop" aria-hidden="true">
+				<div class="modal-dialog modal-dialog-centered modal-m" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<div class="kt-portlet__head-label">
+								<span class="font-weight-boldest font-size-l">Upload Proof of Payment</span>
+							</div>
+						</div></br>
+						<div class="container">
+							<div class="col-xl-6">
+								<div class="form-group">
+								<?php
+									date_default_timezone_set('Asia/Manila');
+									$todays_date = date("y-m-d h:i:sa");
+									$today = strtotime($todays_date);
+									$det = date("Y-m-d h:i:sa", $today);
+
+									?>
+									<input type="hidden" name="upload_date" value="<?= $det; ?>">
+									<input type="hidden" name="loan_app_id" value="<?= $loan['loan_app_id']?>">
+									<input type="hidden" name="lender_id" value="<?= $loan['lender_id']?>">
+									<input type="file" name="receipt" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm" />
+								</div>
 							</div>
 						</div>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-light-primary font-weight-bold" data-dismiss="modal">Close</button>
+						<div class="modal-footer">
+							<button type="button" name="" class="btn btn-light-danger font-weight-bold" data-dismiss="modal">Close</button>
+							<button type="submit" name="upload_payment" class="btn btn-light-info font-weight-bold">Submit</button>
+						</div>
 					</div>
 				</div>
 			</div>
+			</form>
 		</div>
-	</div>
-	<!--end: display modal of upload payment -->
+		<!--end: display modal of upload payment -->
 
-	<!--begin::Footer-->
-	<div class="footer bg-white py-4 d-flex flex-lg-column" id="kt_footer">
-		<!--begin::Container-->
-		<div class="container d-flex flex-column flex-md-row align-items-center justify-content-between">
-			<!--begin::Copyright-->
-			<div class="text-dark order-2 order-md-1">
-				<span class="text-muted font-weight-bold mr-2">2021©</span>
-				<a href="http://keenthemes.com/keen" target="_blank" class="text-dark-75 text-hover-primary">The Hulam Team</a>
-			</div>
-			<!--end::Copyright-->
-			<!--begin::Nav-->
-			<div class="nav nav-dark order-1 order-md-2">
-				<a href="http://keenthemes.com/keen" target="_blank" class="nav-link pr-3 pl-0">About</a>
-				<a href="http://keenthemes.com/keen" target="_blank" class="nav-link px-3">Team</a>
-				<a href="http://keenthemes.com/keen" target="_blank" class="nav-link pl-3 pr-0">Contact</a>
-			</div>
+		<!--begin::Footer-->
+		<div class="footer bg-white py-4 d-flex flex-lg-column" id="kt_footer">
+			<!--begin::Container-->
+			<div class="container d-flex flex-column flex-md-row align-items-center justify-content-between">
+				<!--begin::Copyright-->
+				<div class="text-dark order-2 order-md-1">
+					<span class="text-muted font-weight-bold mr-2">2021©</span>
+					<a href="http://keenthemes.com/keen" target="_blank" class="text-dark-75 text-hover-primary">The Hulam Team</a>
+				</div>
+				<!--end::Copyright-->
+				<!--begin::Nav-->
+				<div class="nav nav-dark order-1 order-md-2">
+					<a href="http://keenthemes.com/keen" target="_blank" class="nav-link pr-3 pl-0">About</a>
+					<a href="http://keenthemes.com/keen" target="_blank" class="nav-link px-3">Team</a>
+					<a href="http://keenthemes.com/keen" target="_blank" class="nav-link pl-3 pr-0">Contact</a>
+				</div>
 
+			</div>
 		</div>
-	</div>
 	</div>
 
 	<!-- begin::User Panel-->

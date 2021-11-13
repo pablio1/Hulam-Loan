@@ -69,9 +69,9 @@ if (isset($_SESSION['user_type'])) {
                                     <nav>
                                         <ul id="navigation">
                                             <li><a href="index.php">home</a></li>
-                                            <li><a href="loan.php">Loan</a></li>
-                                            <li><a href="#about">about</a></li>
-                                            <li><a href="#faq">FAQ</a></li>
+                                            <!-- <li><a href="loan.php">Loan</a></li> -->
+                                            <!-- <li><a href="#about">about</a></li> -->
+                                            <!-- <li><a href="#faq">FAQ</a></li> -->
                                             <li><a href="#contact">Contact</a></li>
                                         </ul>
                                     </nav>
@@ -155,9 +155,9 @@ if (isset($_SESSION['user_type'])) {
                                         <span style="color: white">and signed an agreement with us with fixed interest rate</span>
                                         <span style="color: white">and verification process is strictly monitored.</span>
                             </ul>
-                            <div class="apply_btn">
+                            <!-- <div class="apply_btn">
                                 <button class="boxed-btn3" type="submit">Apply Now</button>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                 </div>
@@ -179,9 +179,9 @@ if (isset($_SESSION['user_type'])) {
                                         <span style="color: white">and that are being offered in the various company</span>
                                         <span style="color: white">with information of its interest rate and monthly payment.</span>
                             </ul>
-                            <div class="apply_btn">
+                            <!-- <div class="apply_btn">
                                 <button class="boxed-btn3" type="submit">Apply Now</button>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                 </div>
@@ -191,7 +191,7 @@ if (isset($_SESSION['user_type'])) {
     <!-- service_area_end  -->
 
     <!-- about_area_start  -->
-    <div class="about_area" id="about">
+    <!-- <div class="about_area" id="about">
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-lg-6 col-md-6">
@@ -220,7 +220,7 @@ if (isset($_SESSION['user_type'])) {
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
     <!-- about_area_end  -->
 
     <div class="works_area" id="how">
@@ -276,7 +276,7 @@ if (isset($_SESSION['user_type'])) {
         </div>
     </div>
 
-    <div class="accordion_area" id="faq">
+    <!-- <div class="accordion_area" id="faq">
         <div class="container">
             <div class="row justify-content-end">
                 <div class="col-lg-6">
@@ -318,7 +318,7 @@ if (isset($_SESSION['user_type'])) {
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
 
     <div class="apply_loan overlay">
         <div class="container">
@@ -329,11 +329,11 @@ if (isset($_SESSION['user_type'])) {
                             education or company</h3>
                     </div>
                 </div>
-                <div class="col-lg-4 col-md-5">
+                <!-- <div class="col-lg-4 col-md-5">
                     <div class="assets/finloans/loan_btn wow fadeInUp" data-wow-duration="1.2s" data-wow-delay=".4s">
                         <a class="boxed-btn3" href="login.php">Apply Now</a>
                     </div>
-                </div>
+                </div> -->
             </div>
         </div>
     </div>
@@ -359,19 +359,19 @@ if (isset($_SESSION['user_type'])) {
                     <div class="col-xl-2 col-md-6 col-lg-3">
                         <div class="footer_widget wow fadeInUp" data-wow-duration="1.1s" data-wow-delay=".4s">
                             <h3 class="footer_title">
-                                Services
+                                <!-- Services -->
                             </h3>
                         </div>
                     </div>
                     <div class="col-xl-2 col-md-6 col-lg-2">
                         <div class="footer_widget wow fadeInUp" data-wow-duration="1.2s" data-wow-delay=".5s">
                             <h3 class="footer_title">
-                                Useful Links
+                                <!-- Useful Links -->
                             </h3>
                             <ul>
-                                <li><a href="#about">About</a></li>
+                                <!-- <li><a href="#about">About</a></li> -->
                                 <!-- <li><a href="#">Blog</a></li> -->
-                                <li><a href="#contact"> Contact</a></li>
+                                <!-- <li><a href="#contact"> Contact</a></li> -->
                                 <!-- <li><a href="#">Support</a></li> -->
                             </ul>
                         </div>
@@ -379,14 +379,14 @@ if (isset($_SESSION['user_type'])) {
                     <div class="col-xl-4 col-md-6 col-lg-4">
                         <div class="footer_widget wow fadeInUp" data-wow-duration="1.3s" data-wow-delay=".6s">
                             <h3 class="footer_title">
-                                Subscribe
+                                <!-- Subscribe -->
                             </h3>
-                            <form action="#" class="newsletter_form">
+                            <!-- <form action="#" class="newsletter_form">
                                 <input type="text" placeholder="Enter your mail">
                                 <button type="submit">Subscribe</button>
                             </form>
                             <p class="newsletter_text">You may send us your email if you wish to receive a newsletter for the updates of loan rates.</p>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </div>
