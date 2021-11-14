@@ -129,7 +129,7 @@ if ($_SESSION['user_type'] != 5) {
 										<span class="menu-text">Dashboard</span>
 									</a>
 								</li>
-								<li class="menu-section">
+                                <li class="menu-section">
                                 <h4 class="menu-text">Manage Account</h4>
                                 <i class="menu-icon ki ki-bold-more-hor icon-md"></i>
                             </li>
@@ -237,7 +237,7 @@ if ($_SESSION['user_type'] != 5) {
 									<!--begin::Header Nav-->
 									<ul class="menu-nav">
 										<li class="menu-item menu-item-open menu-item-here menu-item-submenu menu-item-rel menu-item-open menu-item-here menu-item-active" data-menu-toggle="click" aria-haspopup="true">
-										<h4 class="menu-text" style="color:blue">Welcome to Hulam! <h4>&nbsp;&nbsp;
+											<h4 class="menu-text" style="color:blue">Welcome to Hulam! <h4>&nbsp;&nbsp;
 												<h6 class="text-danger">
 													<?php
 													$id = $_SESSION['user_id'];
@@ -960,7 +960,7 @@ if ($_SESSION['user_type'] != 5) {
                                                     <span>NA</span>
                                                 <?php endif; ?>
 												</td>
-												<td><a href="/hulam/assets/keen/payment_files/<?= htmlentities($rem->files)?>" target="_blank">Download</a></td>
+												<td><a href="/hulam/assets/keen/payment_files/<?= htmlentities($rem->files)?>" target="_blank">Download</td>
                                             </tr>
 											<?php $cnt = $cnt+1; }}}
 											}else{

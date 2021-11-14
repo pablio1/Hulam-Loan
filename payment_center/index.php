@@ -1,7 +1,20 @@
 <?php
 session_start();
 error_reporting(0);
-include('db_connection/config.php');
+include('../db_connection/config.php');
+
+
+if ($_SESSION['user_type'] != 5) {
+	header('location: ../index.php');
+}?>
+
+<?php
+$user_id = $_SESSION['user_id'];
+
+$sql = "SELECT * FROM user WHERE user_id =$user_id";
+$query = $dbh->prepare($sql);
+$query->execute();
+$user = $query->fetch();
 
 ?>
 
@@ -125,6 +138,31 @@ include('db_connection/config.php');
 										<span class="menu-text">Dashboard</span>
 									</a>
 								</li>
+							<li class="menu-section">
+                                <h4 class="menu-text">Manage Account</h4>
+                                <i class="menu-icon ki ki-bold-more-hor icon-md"></i>
+                            </li>
+                            <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+                                <a href="javascript:;" class="menu-link menu-toggle">
+                                    <span class="svg-icon menu-icon">
+                                    </span>
+                                    <span class="menu-text">My Account</span>
+                                    <i class="menu-arrow"></i>
+                                </a>
+                                <div class="menu-submenu">
+                                    <i class="menu-arrow"></i>
+                                    <ul class="menu-subnav">
+                                        <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+                                            <a href="payment_center/update_profile.php" class="menu-link menu-toggle">
+                                                <i class="menu-bullet">
+                                                    <span></span>
+                                                </i>
+                                                <span class="menu-text">My Profile</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                           	 </li>
 								<li class="menu-section">
 									<h4 class="menu-text">Manage Payment</h4>
 								</li>
@@ -178,11 +216,11 @@ include('db_connection/config.php');
 										<i class="menu-arrow"></i>
 										<ul class="menu-subnav">
 											<li class="menu-item" aria-haspopup="true">
-												<a href="layout/themes/aside-light.html" class="menu-link">
+												<a href="payment_center/report.php" class="menu-link">
 													<i class="menu-bullet menu-bullet-dot">
 														<span></span>
 													</i>
-													<span class="menu-text">Payment Record</span>
+													<span class="menu-text">Payment File Record</span>
 												</a>
 											</li>
 										</ul>
@@ -208,7 +246,22 @@ include('db_connection/config.php');
 									<!--begin::Header Nav-->
 									<ul class="menu-nav">
 										<li class="menu-item menu-item-open menu-item-here menu-item-submenu menu-item-rel menu-item-open menu-item-here menu-item-active" data-menu-toggle="click" aria-haspopup="true">
-											<h4 class="menu-text" style="color:blue">Welcome to Hulam! <h4>&nbsp;&nbsp;<h6><?php echo $_SESSION['firstname'];?></h6>
+											<h4 class="menu-text" style="color:blue">Welcome to Hulam! <h4>&nbsp;&nbsp;
+												<h6 class="text-danger">
+													<?php
+													$id = $_SESSION['user_id'];
+
+													$sql = "SELECT * FROM user WHERE user_id = $id";
+													$query = $dbh->prepare($sql);
+													$query->execute();
+													$result = $query->fetch();
+													$notice = $result['notice_message'];
+													if ($result['eligible'] == 'no') {
+
+														echo $notice;
+													}
+													?>
+												</h6>
 											<i class="menu-arrow"></i>
 										 </li>
 								    </ul>
@@ -272,6 +325,7 @@ include('db_connection/config.php');
 															<!--end::Content-->
 														</div>
 														<!--end::Item-->
+														
 														<!--begin::Item-->
 														<div class="d-flex align-items-center mb-6">
 															<!--begin::Symbol-->
@@ -841,10 +895,32 @@ include('db_connection/config.php');
 											</div>
 											<div class="card-footer border-0 d-flex align-items-center justify-content-between pt-0">
 												<span></span>
-												<a href="payment_center/upload_payment.php" class="btn btn-sm btn-primary font-weight-bolder px-6">Add</a>
+												<?php
+												if($user['eligible']=='no'): ?>
+													<a href="" class="btn btn-sm btn-primary font-weight-bolder px-6" data-target="#notice" data-toggle="modal">Add</a>
+												<?php else :?>
+													<a href="payment_center/upload_payment.php" class="btn btn-sm btn-primary font-weight-bolder px-6">Add</a>
+												<?php endif;?>
 											</div>
 										</div>
 									</div>
+									<!-- Start Modal -->
+										<div class="modal fade" id="notice" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
+											<div class="modal-dialog modal-dialog-centered modal-m" role="document">
+												<div class="modal-content">
+													<div class="modal-header">
+														<h5 class="modal-title" id="exampleModalLabel" >Account Not Activated.</h5>
+														<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+															<i aria-hidden="true" class="ki ki-close"></i>
+														</button>
+													</div>
+													<div class="modal-body">
+														<label class="font-weight-bolder font-size-lg" for="input-username">To activate your account you need to complete updating your profile information and required to visit Hulam office for the signing of Memorandum of Agreement.</label>
+													</div>
+												</div>
+											</div>
+										</div>
+									<!-- End Modal -->
 									<div class="col-lg-4">
 										<div class="card card-custom card-stretch gutter-b">
 											<div class="card-body">
@@ -861,7 +937,12 @@ include('db_connection/config.php');
 											</div>
 											<div class="card-footer border-0 d-flex align-items-center justify-content-between pt-0">
 												<span></span>
-												<a href="payment_center/uploaded_payment.php" class="btn btn-sm btn-primary font-weight-bolder px-6">Show</a>
+												<?php
+												if($user['eligible']=='no'): ?>
+													<a href="" class="btn btn-sm btn-primary font-weight-bolder px-6" data-target="#notice" data-toggle="modal">Show</a>
+												<?php else :?>
+													<a href="payment_center/upload_payment.php" class="btn btn-sm btn-primary font-weight-bolder px-6">Show</a>
+												<?php endif;?>
 											</div>
 										</div>
 									</div>

@@ -2,175 +2,182 @@
 session_start();
 error_reporting(0);
 include('../db_connection/config.php');
-?>
 
-<!--codes to insert the image -->
-<?php
-
-if (isset($_POST['add_mode'])) {
-
-    $mode_name = $_POST['mode_name'];
-    $remarks = $_POST['remarks'];
-    // $lender_id = $_SESSION['user_id']; 
-
-    // foreach($req_name as $index => $names){
-    //     $s_req_name = $names;
-    //     $s_remarks = $remarks[$index];
-    $lender_id = $_SESSION['user_id'];
-
-    $sql = "INSERT INTO mode_payment(lender_id,mode_name,remarks)VALUES('$lender_id','$mode_name','$remarks')";
-    $query = $dbh->prepare($sql);
-    $query->execute();
-
-    if ($query) {
-        $_SESSION['status'] = "Added successfully";
-        header("Location: setup_payment.php");
-        exit();
-    } else {
-        $_SESSION['status'] = "Error! Not Added";
-        header("Location: setup_payment.php");
-        exit();
-    }
+if ($_SESSION['user_type'] != 5) {
+	header('location: ../index.php');
 }
 
 ?>
 
+<?php
+if (isset($_POST['upload_file'])) {
+
+	$uploader_id = $_POST['uploader_id'];//sender
+	$lender_id = $_POST['lender_id'];//receiver
+	$filedate_upload = $_POST['filedate_upload']; //date_message
+	$file_status = $_POST['file_status'];
+
+    $images = $_FILES['upload_file']['name'];
+	$tmp_dir = $_FILES['upload_file']['tmp_name'];
+	$imageSize = $_FILES['upload_file']['size'];
+
+	$upload_dir = '../assets/keen/payment_files/';
+	$imgExt = strtolower(pathinfo($images, PATHINFO_EXTENSION));
+	$valid_extensions = array('jpeg', 'jpg', 'gif', 'pdf', 'doc', 'docx');
+	$upload_file= rand(1000, 10000000) . "." . $imgExt;
+	move_uploaded_file($tmp_dir, $upload_dir . $upload_file);
+
+    $insert ="INSERT INTO uploadfile_payment(uploader_id,lender_id,files,filedate_upload,file_status)VALUES(:uploader_id,:lender_id,:files,:filedate_upload,:file_status)";
+    $query = $dbh->prepare($insert);
+    $query->bindParam(':uploader_id',$uploader_id, PDO::PARAM_STR);
+	$query->bindParam(':lender_id',$lender_id, PDO::PARAM_STR);
+    $query->bindParam(':files', $upload_file, PDO::PARAM_STR);
+    $query->bindParam(':filedate_upload', $filedate_upload, PDO::PARAM_STR);
+	$query->bindParam(':file_status', $file_status, PDO::PARAM_STR);
+    $query->execute();
+
+    $message = "Please view uploaded payment files.";
+
+    $insert2 = "INSERT INTO message(sender_id,receiver_id,message,date_message)VALUES(:sender_id,:receiver_id,:message,:date_message)";
+	$query2 = $dbh->prepare($insert2);
+	$query2->bindParam(':sender_id', $uploader_id, PDO::PARAM_STR);
+	$query2->bindParam(':receiver_id', $lender_id, PDO::PARAM_STR);
+	$query2->bindParam(':message', $message, PDO::PARAM_STR);
+	$query2->bindParam(':date_message', $filedate_upload, PDO::PARAM_STR);
+
+	if($query2->execute()){
+		$_SESSION['status'] = "Uploaded Successfully!";
+		header("Location: upload_file.php?user_id=$lender_id");
+		exit();
+	} else {
+		$_SESSION['status'] = "Error!";
+		header('Location: upload_file.php?user_id=$lender_id');
+		exit();
+	}
+}
+?>
+
 <!DOCTYPE html>
-<!--
-Template Name: Keen - The Ultimate Bootstrap 4 HTML Admin Dashboard Theme
-Author: KeenThemes
-Website: http://www.keenthemes.com/
-Contact: support@keenthemes.com
-Follow: www.twitter.com/keenthemes
-Dribbble: www.dribbble.com/keenthemes
-Like: www.facebook.com/keenthemes
-Purchase: https://themes.getbootstrap.com/product/keen-the-ultimate-bootstrap-admin-theme/
-Support: https://keenthemes.com/theme-support
-License: You must have a valid license purchased only from themes.getbootstrap.com(the above link) in order to legally use the theme for your project.
--->
 <html lang="en">
-<!--begin::Head-->
-
-<head>
-    <base href="../">
-    <meta charset="utf-8" />
-    <title>Hulam | Admin | Lending Company</title>
-    <meta name="description" content="Updates and statistics" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <!--begin::Fonts-->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" />
-    <!--end::Fonts-->
-    <!--begin::Page Vendors Styles(used by this page)-->
-    <link href="assets/admin/plugins/custom/fullcalendar/fullcalendar.bundle.css" rel="stylesheet" type="text/css" />
-    <!--end::Page Vendors Styles-->
-    <!--begin::Global Theme Styles(used by all pages)-->
-    <link href="assets/admin/plugins/global/plugins.bundle.css" rel="stylesheet" type="text/css" />
-    <link href="assets/admin/plugins/custom/prismjs/prismjs.bundle.css" rel="stylesheet" type="text/css" />
-    <link href="assets/admin/css/style.bundle.css" rel="stylesheet" type="text/css" />
-    <!--end::Global Theme Styles-->
-    <!--begin::Layout Themes(used by all pages)-->
-    <link href="assets/admin/css/themes/layout/header/base/light.css" rel="stylesheet" type="text/css" />
-    <link href="assets/admin/css/themes/layout/header/menu/light.css" rel="stylesheet" type="text/css" />
-    <link href="assets/admin/css/themes/layout/brand/dark.css" rel="stylesheet" type="text/css" />
-    <link href="assets/admin/css/themes/layout/aside/dark.css" rel="stylesheet" type="text/css" />
-    <!--end::Layout Themes-->
-    <link rel="shortcut icon" href="assets/admin/media/logos/Hulam_Logo.png" />
-</head>
-<!--end::Head-->
-<!--begin::Body-->
-
-<body id="kt_body" class="quick-panel-right demo-panel-right offcanvas-right header-fixed header-mobile-fixed subheader-enabled aside-enabled aside-fixed aside-minimize-hoverable page-loading">
-    <!--begin::Main-->
-    <!--begin::Header Mobile-->
-    <div id="kt_header_mobile" class="header-mobile align-items-center header-mobile-fixed">
-        <!--begin::Logo-->
-        <a href="lending_company/index.php">
-            <img alt="Logo" src="assets/admin/media/logos/Hulam_Logo.png" class="h-60px w-60px" style="padding-top: 10%; padding: right 50%;" />
-        </a>
-        <!--end::Logo-->
-        <!--begin::Toolbar-->
-        <div class="d-flex align-items-center">
-            <!--begin::Aside Mobile Toggle-->
-            <button class="btn p-0 burger-icon burger-icon-left" id="kt_aside_mobile_toggle">
-                <span></span>
-            </button>
-            <!--end::Aside Mobile Toggle-->
-            <!--begin::Header Menu Mobile Toggle-->
-            <button class="btn p-0 burger-icon ml-5" id="kt_header_mobile_toggle">
-                <span></span>
-            </button>
-            <!--end::Header Menu Mobile Toggle-->
-            <!--begin::Topbar Mobile Toggle-->
-            <button class="btn btn-hover-text-primary p-0 ml-3" id="kt_header_mobile_topbar_toggle">
-                <span class="svg-icon svg-icon-xl">
-                    <!--begin::Svg Icon | path:assets/media/svg/icons/General/User.svg-->
-                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-                        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                            <polygon points="0 0 24 0 24 24 0 24" />
-                            <path d="M12,11 C9.790861,11 8,9.209139 8,7 C8,4.790861 9.790861,3 12,3 C14.209139,3 16,4.790861 16,7 C16,9.209139 14.209139,11 12,11 Z" fill="#000000" fill-rule="nonzero" opacity="0.3" />
-                            <path d="M3.00065168,20.1992055 C3.38825852,15.4265159 7.26191235,13 11.9833413,13 C16.7712164,13 20.7048837,15.2931929 20.9979143,20.2 C21.0095879,20.3954741 20.9979143,21 20.2466999,21 C16.541124,21 11.0347247,21 3.72750223,21 C3.47671215,21 2.97953825,20.45918 3.00065168,20.1992055 Z" fill="#000000" fill-rule="nonzero" />
-                        </g>
-                    </svg>
-                    <!--end::Svg Icon-->
-                </span>
-            </button>
-            <!--end::Topbar Mobile Toggle-->
-        </div>
-        <!--end::Toolbar-->
-    </div>
-    <!--end::Header Mobile-->
-    <div class="d-flex flex-column flex-root">
-        <!--begin::Page-->
-        <div class="d-flex flex-row flex-column-fluid page">
-            <!--begin::Aside-->
-            <div class="aside aside-left aside-fixed d-flex flex-column flex-row-auto" id="kt_aside">
-                <!--begin::Brand-->
-                <div class="brand flex-column-auto" id="kt_brand">
-                    <!--begin::Logo-->
-                    <a href="lending_company/index.php" class="brand-logo">
-                        <img alt="Logo" src="assets/admin/media/logos/Hulam_Logo.png" class="h-100px w-90px" style="padding-top: 20%; padding: right 50%;" />
-                    </a>
-                    <!--end::Logo-->
-                    <!--begin::Toggle-->
-                    <button class="brand-toggle btn btn-sm px-0" id="kt_aside_toggle">
-                        <span class="svg-icon svg-icon svg-icon-xl">
-                            <!--begin::Svg Icon | path:assets/media/svg/icons/Text/Toggle-Right.svg-->
-                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-                                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                    <rect x="0" y="0" width="24" height="24" />
-                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M22 11.5C22 12.3284 21.3284 13 20.5 13H3.5C2.6716 13 2 12.3284 2 11.5C2 10.6716 2.6716 10 3.5 10H20.5C21.3284 10 22 10.6716 22 11.5Z" fill="black" />
-                                    <path opacity="0.5" fill-rule="evenodd" clip-rule="evenodd" d="M14.5 20C15.3284 20 16 19.3284 16 18.5C16 17.6716 15.3284 17 14.5 17H3.5C2.6716 17 2 17.6716 2 18.5C2 19.3284 2.6716 20 3.5 20H14.5ZM8.5 6C9.3284 6 10 5.32843 10 4.5C10 3.67157 9.3284 3 8.5 3H3.5C2.6716 3 2 3.67157 2 4.5C2 5.32843 2.6716 6 3.5 6H8.5Z" fill="black" />
-                                </g>
-                            </svg>
-                            <!--end::Svg Icon-->
-                        </span>
-                    </button>
-                    <!--end::Toolbar-->
-                </div>
-                <!--end::Brand-->
-                <!--begin::Aside Menu-->
-                <div class="aside-menu-wrapper flex-column-fluid" id="kt_aside_menu_wrapper">
-                    <!--begin::Menu Container-->
-                    <div id="kt_aside_menu" class="aside-menu my-4" data-menu-vertical="1" data-menu-scroll="1" data-menu-dropdown-timeout="500">
-                        <!--begin::Menu Nav-->
-                        <ul class="menu-nav">
-                            <li class="menu-item menu-item-active" aria-haspopup="true">
-                                <a href="lending_company/index.php" class="menu-link">
-                                    <span class="svg-icon menu-icon">
-                                        <!--begin::Svg Icon | path:assets/media/svg/icons/Design/Layers.svg-->
-                                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-                                            <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                                <polygon points="0 0 24 0 24 24 0 24" />
-                                                <path d="M12.9336061,16.072447 L19.36,10.9564761 L19.5181585,10.8312381 C20.1676248,10.3169571 20.2772143,9.3735535 19.7629333,8.72408713 C19.6917232,8.63415859 19.6104327,8.55269514 19.5206557,8.48129411 L12.9336854,3.24257445 C12.3871201,2.80788259 11.6128799,2.80788259 11.0663146,3.24257445 L4.47482784,8.48488609 C3.82645598,9.00054628 3.71887192,9.94418071 4.23453211,10.5925526 C4.30500305,10.6811601 4.38527899,10.7615046 4.47382636,10.8320511 L4.63,10.9564761 L11.0659024,16.0730648 C11.6126744,16.5077525 12.3871218,16.5074963 12.9336061,16.072447 Z" fill="#000000" fill-rule="nonzero" />
-                                                <path d="M11.0563554,18.6706981 L5.33593024,14.122919 C4.94553994,13.8125559 4.37746707,13.8774308 4.06710397,14.2678211 C4.06471678,14.2708238 4.06234874,14.2738418 4.06,14.2768747 L4.06,14.2768747 C3.75257288,14.6738539 3.82516916,15.244888 4.22214834,15.5523151 C4.22358765,15.5534297 4.2250303,15.55454 4.22647627,15.555646 L11.0872776,20.8031356 C11.6250734,21.2144692 12.371757,21.2145375 12.909628,20.8033023 L19.7677785,15.559828 C20.1693192,15.2528257 20.2459576,14.6784381 19.9389553,14.2768974 C19.9376429,14.2751809 19.9363245,14.2734691 19.935,14.2717619 L19.935,14.2717619 C19.6266937,13.8743807 19.0546209,13.8021712 18.6572397,14.1104775 C18.654352,14.112718 18.6514778,14.1149757 18.6486172,14.1172508 L12.9235044,18.6705218 C12.377022,19.1051477 11.6029199,19.1052208 11.0563554,18.6706981 Z" fill="#000000" opacity="0.3" />
-                                            </g>
-                                        </svg>
-                                        <!--end::Svg Icon-->
-                                    </span>
-                                    <span class="menu-text">Dashboard</span>
-                                </a>
-                            </li>
-                            <li class="menu-section">
+	<!--begin::Head-->
+	<head><base href="../">
+		<meta charset="utf-8" />
+		<title>Hulam | Admin | Lending Company</title>
+		<meta name="description" content="Updates and statistics" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+		<!--begin::Fonts-->
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" />
+		<!--end::Fonts-->
+		<!--begin::Page Vendors Styles(used by this page)-->
+		<link href="assets/admin/plugins/custom/fullcalendar/fullcalendar.bundle.css" rel="stylesheet" type="text/css" />
+		<!--end::Page Vendors Styles-->
+		<!--begin::Global Theme Styles(used by all pages)-->
+		<link href="assets/admin/plugins/global/plugins.bundle.css" rel="stylesheet" type="text/css" />
+		<link href="assets/admin/plugins/custom/prismjs/prismjs.bundle.css" rel="stylesheet" type="text/css" />
+		<link href="assets/admin/css/style.bundle.css" rel="stylesheet" type="text/css" />
+		<!--end::Global Theme Styles-->
+		<!--begin::Layout Themes(used by all pages)-->
+		<link href="assets/admin/css/themes/layout/header/base/light.css" rel="stylesheet" type="text/css" />
+		<link href="assets/admin/css/themes/layout/header/menu/light.css" rel="stylesheet" type="text/css" />
+		<link href="assets/admin/css/themes/layout/brand/dark.css" rel="stylesheet" type="text/css" />
+		<link href="assets/admin/css/themes/layout/aside/dark.css" rel="stylesheet" type="text/css" />
+		<!--end::Layout Themes-->
+		<link rel="shortcut icon" href="assets/admin/media/logos/Hulam_Logo.png" />
+	</head>
+	<!--end::Head-->
+	<!--begin::Body-->
+	<body id="kt_body" class="quick-panel-right demo-panel-right offcanvas-right header-fixed header-mobile-fixed subheader-enabled aside-enabled aside-fixed aside-minimize-hoverable page-loading">
+		<!--begin::Main-->
+		<!--begin::Header Mobile-->
+		<div id="kt_header_mobile" class="header-mobile align-items-center header-mobile-fixed">
+			<!--begin::Logo-->
+			<a href="payment_center/index.php">
+			<img alt="Logo" src="assets/admin/media/logos/Hulam_Logo.png" class="h-60px w-60px" style="padding-top: 10%; padding: right 50%;"/>
+			</a>
+			<!--end::Logo-->
+			<!--begin::Toolbar-->
+			<div class="d-flex align-items-center">
+				<!--begin::Aside Mobile Toggle-->
+				<button class="btn p-0 burger-icon burger-icon-left" id="kt_aside_mobile_toggle">
+					<span></span>
+				</button>
+				<!--end::Aside Mobile Toggle-->
+				<!--begin::Header Menu Mobile Toggle-->
+				<button class="btn p-0 burger-icon ml-5" id="kt_header_mobile_toggle">
+					<span></span>
+				</button>
+				<!--end::Header Menu Mobile Toggle-->
+				<!--begin::Topbar Mobile Toggle-->
+				<button class="btn btn-hover-text-primary p-0 ml-3" id="kt_header_mobile_topbar_toggle">
+					<span class="svg-icon svg-icon-xl">
+						<!--begin::Svg Icon | path:assets/media/svg/icons/General/User.svg-->
+						<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+							<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+								<polygon points="0 0 24 0 24 24 0 24" />
+								<path d="M12,11 C9.790861,11 8,9.209139 8,7 C8,4.790861 9.790861,3 12,3 C14.209139,3 16,4.790861 16,7 C16,9.209139 14.209139,11 12,11 Z" fill="#000000" fill-rule="nonzero" opacity="0.3" />
+								<path d="M3.00065168,20.1992055 C3.38825852,15.4265159 7.26191235,13 11.9833413,13 C16.7712164,13 20.7048837,15.2931929 20.9979143,20.2 C21.0095879,20.3954741 20.9979143,21 20.2466999,21 C16.541124,21 11.0347247,21 3.72750223,21 C3.47671215,21 2.97953825,20.45918 3.00065168,20.1992055 Z" fill="#000000" fill-rule="nonzero" />
+							</g>
+						</svg>
+						<!--end::Svg Icon-->
+					</span>
+				</button>
+				<!--end::Topbar Mobile Toggle-->
+			</div>
+			<!--end::Toolbar-->
+		</div>
+		<!--end::Header Mobile-->
+		<div class="d-flex flex-column flex-root">
+			<!--begin::Page-->
+			<div class="d-flex flex-row flex-column-fluid page">
+				<!--begin::Aside-->
+				<div class="aside aside-left aside-fixed d-flex flex-column flex-row-auto" id="kt_aside">
+					<!--begin::Brand-->
+					<div class="brand flex-column-auto" id="kt_brand">
+						<!--begin::Logo-->
+						<a href="payment_center/index.php" class="brand-logo">
+						<img alt="Logo" src="assets/admin/media/logos/Hulam_Logo.png" class="h-100px w-90px" style="padding-top: 20%; padding: right 50%;"/>
+						</a>
+						<!--end::Logo-->
+						<!--begin::Toggle-->
+						<button class="brand-toggle btn btn-sm px-0" id="kt_aside_toggle">
+							<span class="svg-icon svg-icon svg-icon-xl">
+								<!--begin::Svg Icon | path:assets/media/svg/icons/Text/Toggle-Right.svg-->
+								<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+									<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+										<rect x="0" y="0" width="24" height="24" />
+										<path fill-rule="evenodd" clip-rule="evenodd" d="M22 11.5C22 12.3284 21.3284 13 20.5 13H3.5C2.6716 13 2 12.3284 2 11.5C2 10.6716 2.6716 10 3.5 10H20.5C21.3284 10 22 10.6716 22 11.5Z" fill="black" />
+										<path opacity="0.5" fill-rule="evenodd" clip-rule="evenodd" d="M14.5 20C15.3284 20 16 19.3284 16 18.5C16 17.6716 15.3284 17 14.5 17H3.5C2.6716 17 2 17.6716 2 18.5C2 19.3284 2.6716 20 3.5 20H14.5ZM8.5 6C9.3284 6 10 5.32843 10 4.5C10 3.67157 9.3284 3 8.5 3H3.5C2.6716 3 2 3.67157 2 4.5C2 5.32843 2.6716 6 3.5 6H8.5Z" fill="black" />
+									</g>
+								</svg>
+								<!--end::Svg Icon-->
+							</span>
+						</button>
+						<!--end::Toolbar-->
+					</div>
+					<!--end::Brand-->
+					<!--begin::Aside Menu-->
+					<div class="aside-menu-wrapper flex-column-fluid" id="kt_aside_menu_wrapper">
+						<!--begin::Menu Container-->
+						<div id="kt_aside_menu" class="aside-menu my-4" data-menu-vertical="1" data-menu-scroll="1" data-menu-dropdown-timeout="500">
+							<!--begin::Menu Nav-->
+							<ul class="menu-nav">
+								<li class="menu-item menu-item-active" aria-haspopup="true">
+									<a href="payment_center/index.php" class="menu-link">
+										<span class="svg-icon menu-icon">
+											<!--begin::Svg Icon | path:assets/media/svg/icons/Design/Layers.svg-->
+											<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+												<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+													<polygon points="0 0 24 0 24 24 0 24" />
+													<path d="M12.9336061,16.072447 L19.36,10.9564761 L19.5181585,10.8312381 C20.1676248,10.3169571 20.2772143,9.3735535 19.7629333,8.72408713 C19.6917232,8.63415859 19.6104327,8.55269514 19.5206557,8.48129411 L12.9336854,3.24257445 C12.3871201,2.80788259 11.6128799,2.80788259 11.0663146,3.24257445 L4.47482784,8.48488609 C3.82645598,9.00054628 3.71887192,9.94418071 4.23453211,10.5925526 C4.30500305,10.6811601 4.38527899,10.7615046 4.47382636,10.8320511 L4.63,10.9564761 L11.0659024,16.0730648 C11.6126744,16.5077525 12.3871218,16.5074963 12.9336061,16.072447 Z" fill="#000000" fill-rule="nonzero" />
+													<path d="M11.0563554,18.6706981 L5.33593024,14.122919 C4.94553994,13.8125559 4.37746707,13.8774308 4.06710397,14.2678211 C4.06471678,14.2708238 4.06234874,14.2738418 4.06,14.2768747 L4.06,14.2768747 C3.75257288,14.6738539 3.82516916,15.244888 4.22214834,15.5523151 C4.22358765,15.5534297 4.2250303,15.55454 4.22647627,15.555646 L11.0872776,20.8031356 C11.6250734,21.2144692 12.371757,21.2145375 12.909628,20.8033023 L19.7677785,15.559828 C20.1693192,15.2528257 20.2459576,14.6784381 19.9389553,14.2768974 C19.9376429,14.2751809 19.9363245,14.2734691 19.935,14.2717619 L19.935,14.2717619 C19.6266937,13.8743807 19.0546209,13.8021712 18.6572397,14.1104775 C18.654352,14.112718 18.6514778,14.1149757 18.6486172,14.1172508 L12.9235044,18.6705218 C12.377022,19.1051477 11.6029199,19.1052208 11.0563554,18.6706981 Z" fill="#000000" opacity="0.3" />
+												</g>
+											</svg>
+											<!--end::Svg Icon-->
+										</span>
+										<span class="menu-text">Dashboard</span>
+									</a>
+								</li>
+                                <li class="menu-section">
                                 <h4 class="menu-text">Manage Account</h4>
                                 <i class="menu-icon ki ki-bold-more-hor icon-md"></i>
                             </li>
@@ -185,7 +192,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
                                     <i class="menu-arrow"></i>
                                     <ul class="menu-subnav">
                                         <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-                                            <a href="lending_company/update_profile.php" class="menu-link menu-toggle">
+                                            <a href="payment_center/update_profile.php" class="menu-link menu-toggle">
                                                 <i class="menu-bullet">
                                                     <span></span>
                                                 </i>
@@ -194,274 +201,169 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
                                         </li>
                                     </ul>
                                 </div>
-                            </li>
-                            <li class="menu-section">
-                                <h4 class="menu-text">Manage Loan</h4>
-                                <i class="menu-icon ki ki-bold-more-hor icon-md"></i>
-                            </li>
-                            <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-                                <a href="javascript:;" class="menu-link menu-toggle">
-                                    <span class="svg-icon menu-icon">
-                                    </span>
-                                    <span class="menu-text">Setup Loan</span>
-                                    <i class="menu-arrow"></i>
-                                </a>
-                                <div class="menu-submenu">
-                                    <ul class="menu-subnav">
-                                        <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-                                            <a href="lending_company/setup_loan.php" class="menu-link menu-toggle">
-                                                <span class="svg-icon menu-icon">
-                                                </span>
-                                                <span class="menu-text">Setup Loan Features</span>
-                                            </a>
-                                        </li>
-                                        <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-                                            <a href="lending_company/set_requirements.php" class="menu-link menu-toggle">
-                                                <span class="svg-icon menu-icon">
-                                                </span>
-                                                <span class="menu-text">Set Requirements</span>
-                                            </a>
-                                        </li>
-                                        <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-                                            <a href="lending_company/setup_payment.php" class="menu-link menu-toggle">
-                                                <span class="svg-icon menu-icon">
-                                                </span>
-                                                <span class="menu-text">Set Mode of Payment</span>
-                                            </a>
-                                        </li>
-                                        <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-                                            <a href="lending_company/set_notice.php" class="menu-link menu-toggle">
-                                                <span class="svg-icon menu-icon">
-                                                </span>
-                                                <span class="menu-text">Set Loan Notice</span>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </li>
-                            <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-                                <a href="javascript:;" class="menu-link menu-toggle">
-                                    <span class="svg-icon menu-icon">
-                                    </span>
-                                    <span class="menu-text">Loan Application</span>
-                                    <i class="menu-arrow"></i>
-                                </a>
-                                <div class="menu-submenu">
-                                    <i class="menu-arrow"></i>
-                                    <ul class="menu-subnav">
-                                        <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-                                            <a href="lending_company/pending_loan.php" class="menu-link menu-toggle">
-                                                <i class="menu-bullet">
-                                                    <span></span>
-                                                </i>
-                                                <span class="menu-text">Pending Loan</span>
-                                            </a>
-                                        </li>
-                                        <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-                                            <a href="lending_company/approved_loan.php" class="menu-link menu-toggle">
-                                                <i class="menu-bullet">
-                                                    <span></span>
-                                                </i>
-                                                <span class="menu-text">Approved Loan</span>
-                                            </a>
-                                        </li>
-                                        <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-                                            <a href="lending_company/released_loan.php" class="menu-link menu-toggle">
-                                                <i class="menu-bullet">
-                                                    <span></span>
-                                                </i>
-                                                <span class="menu-text">Release Loan</span>
-                                            </a>
-                                        </li>
-                                        <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-                                            <a href="lending_company/declined_loan.php" class="menu-link menu-toggle">
-                                                <i class="menu-bullet">
-                                                    <span></span>
-                                                </i>
-                                                <span class="menu-text">Declined Loan</span>
-                                            </a>
-                                        </li>
-
-                                    </ul>
-                                </div>
-                            </li>
-                            <li class="menu-section">
-                                <h4 class="menu-text">Manage Payment</h4>
-                                <i class="menu-icon ki ki-bold-more-hor icon-md"></i>
-                            </li>
-                            <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-                                <a href="javascript:;" class="menu-link menu-toggle">
-                                    <span class="svg-icon menu-icon">
-                                    </span>
-                                    <span class="menu-text">Payment Information</span>
-                                    <i class="menu-arrow"></i>
-                                </a>
-                                <div class="menu-submenu">
-                                    <i class="menu-arrow"></i>
-                                    <ul class="menu-subnav">
-                                        <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-                                            <a href="lending_company/payment_received.php" class="menu-link menu-toggle">
-                                                <i class="menu-bullet">
-                                                    <span></span>
-                                                </i>
-                                                <span class="menu-text">Payment Received</span>
-                                                <span class="menu-label">
-                                                </span>
-                                                <i class="menu-arrow"></i>
-                                            </a>
-                                        </li>
-                                        <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-                                            <a href="lending_company/payment_records.php" class="menu-link menu-toggle">
-                                                <i class="menu-bullet">
-                                                    <span></span>
-                                                </i>
-                                                <span class="menu-text">Payment Records</span>
-                                                <span class="menu-label">
-                                                </span>
-                                                <i class="menu-arrow"></i>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </li>
-
-                            <li class="menu-section">
-                                <h4 class="menu-text">Manage Report</h4>
-                                <i class="menu-icon ki ki-bold-more-hor icon-md"></i>
-                            </li>
-                            <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-                                <a href="javascript:;" class="menu-link menu-toggle">
-                                    <span class="svg-icon menu-icon">
-                                    </span>
-                                    <span class="menu-text">Generate Report</span>
-                                    <i class="menu-arrow"></i>
-                                </a>
-                                <div class="menu-submenu">
-                                    <i class="menu-arrow"></i>
-                                    <ul class="menu-subnav">
-                                        <li class="menu-item menu-item-parent" aria-haspopup="true">
-                                            <span class="menu-link">
-                                                <span class="menu-text">Themes</span>
-                                            </span>
-                                        </li>
-                                        <li class="menu-item" aria-haspopup="true">
-                                            <a href="layout/themes/aside-light.html" class="menu-link">
-                                                <i class="menu-bullet menu-bullet-dot">
-                                                    <span></span>
-                                                </i>
-                                                <span class="menu-text">Light Aside</span>
-                                            </a>
-                                        </li>
-                                        <li class="menu-item" aria-haspopup="true">
-                                            <a href="layout/themes/header-dark.html" class="menu-link">
-                                                <i class="menu-bullet menu-bullet-dot">
-                                                    <span></span>
-                                                </i>
-                                                <span class="menu-text">Dark Header</span>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </li>
-                            <!--end::Menu Nav-->
-                    </div>
-                    <!--end::Menu Container-->
-                </div>
-                <!--end::Aside Menu-->
-            </div>
-            <!--end::Aside-->
-            <!--begin::Wrapper-->
-            <div class="d-flex flex-column flex-row-fluid wrapper" id="kt_wrapper">
-                <!--begin::Header-->
-                <div id="kt_header" class="header header-fixed">
-                    <!--begin::Container-->
-                    <div class="container-fluid d-flex align-items-stretch justify-content-between">
-                        <!--begin::Header Menu Wrapper-->
-                        <div class="header-menu-wrapper header-menu-wrapper-left" id="kt_header_menu_wrapper">
-                            <!--begin::Header Menu-->
-                            <div id="kt_header_menu" class="header-menu header-menu-mobile header-menu-layout-default">
-                                <!--begin::Header Nav-->
-                                <ul class="menu-nav">
-                                <li class="menu-item menu-item-open menu-item-here menu-item-submenu menu-item-rel menu-item-open menu-item-here menu-item-active" data-menu-toggle="click" aria-haspopup="true">
-										<h4 class="menu-text" style="color:blue">Welcome to Hulam!</h4>&nbsp;&nbsp;
-                                        <h6>
-											<?php
-											$id = $_SESSION['user_id'];
-
-											$sql = "SELECT * FROM loan_features WHERE lender_id = $id";
-											$query = $dbh->prepare($sql);
-											$query->execute();
-											$result = $query->fetch();
-											$notice = $result['notice_message'];
-											if ($result['status'] == 'Pending') {
-
-												echo $notice;
-											}
-											?>
-										</h6>
+                           	 </li>
+								<li class="menu-section">
+									<h4 class="menu-text">Manage Payment</h4>
+								</li>
+								<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+									<a href="javascript:;" class="menu-link menu-toggle">
+										<span class="svg-icon menu-icon">
+										</span>
+										<span class="menu-text">Payment Information</span>
 										<i class="menu-arrow"></i>
-									</li>
-                                </ul>
-                                <!--end::Header Nav-->
-                            </div>
-                            <!--end::Header Menu-->
-                        </div>
-                        <!--end::Header Menu Wrapper-->
-                        <!--begin::Topbar-->
+									</a>
+									<div class="menu-submenu">
+										<ul class="menu-subnav">
+											<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+												<a href="payment_center/upload_payment.php" class="menu-link menu-toggle">
+													<i class="menu-bullet">
+														<span></span>
+													</i>
+													<span class="menu-text">Upload Payment</span>
+													<span class="menu-label">
+													</span>
+													<i class="menu-arrow"></i>
+												</a>
+											</li>
+											<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+												<a href="payment_center/uploaded_payment.php" class="menu-link menu-toggle">
+													<i class="menu-bullet">
+														<span></span>
+													</i>
+													<span class="menu-text">View Uploaded Payment</span>
+													<span class="menu-label">
+													</span>
+													<i class="menu-arrow"></i>
+												</a>
+											</li>
+										</ul>
+									</div>
+								</li>
+								
+								<li class="menu-section">
+									<h4 class="menu-text">Manage Report</h4>
+									<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
+								</li>
+								<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+									<a href="javascript:;" class="menu-link menu-toggle">
+										<span class="svg-icon menu-icon">
+										</span>
+										<span class="menu-text">Generate Report</span>
+										<i class="menu-arrow"></i>
+									</a>
+									<div class="menu-submenu">
+										<i class="menu-arrow"></i>
+										<ul class="menu-subnav">
+											<li class="menu-item" aria-haspopup="true">
+												<a href="layout/themes/aside-light.html" class="menu-link">
+													<i class="menu-bullet menu-bullet-dot">
+														<span></span>
+													</i>
+													<span class="menu-text">Payment Record</span>
+												</a>
+											</li>
+										</ul>
+									</div>
+								</li>
+							<!--end::Menu Nav-->
+						</div>
+						<!--end::Menu Container-->
+					</div>
+					<!--end::Aside Menu-->
+				</div>
+				<!--end::Aside-->
+				<!--begin::Wrapper-->
+				<div class="d-flex flex-column flex-row-fluid wrapper" id="kt_wrapper">
+					<!--begin::Header-->
+					<div id="kt_header" class="header header-fixed">
+						<!--begin::Container-->
+						<div class="container-fluid d-flex align-items-stretch justify-content-between">
+							<!--begin::Header Menu Wrapper-->
+							<div class="header-menu-wrapper header-menu-wrapper-left" id="kt_header_menu_wrapper">
+								<!--begin::Header Menu-->
+								<div id="kt_header_menu" class="header-menu header-menu-mobile header-menu-layout-default">
+									<!--begin::Header Nav-->
+									<ul class="menu-nav">
+										<li class="menu-item menu-item-open menu-item-here menu-item-submenu menu-item-rel menu-item-open menu-item-here menu-item-active" data-menu-toggle="click" aria-haspopup="true">
+                                        <h4 class="menu-text" style="color:blue">Welcome to Hulam! <h4>&nbsp;&nbsp;
+												<h6 class="text-danger">
+													<?php
+													$id = $_SESSION['user_id'];
+
+													$sql = "SELECT * FROM user WHERE user_id = $id";
+													$query = $dbh->prepare($sql);
+													$query->execute();
+													$result = $query->fetch();
+													$notice = $result['notice_message'];
+													if ($result['eligible'] == 'no') {
+
+														echo $notice;
+													}
+													?>
+												</h6>
+											<i class="menu-arrow"></i>
+										 </li>
+								    </ul>
+									<!--end::Header Nav-->
+								</div>
+								<!--end::Header Menu-->
+							</div>
+							<!--end::Header Menu Wrapper-->
+						<!--begin::Topbar-->
                         <div class="topbar">
-                            <!--begin::Notifications-->
-                            <div class="dropdown mr-1">
-                                <!--begin::Dropdown-->
-                                <div class="dropdown-menu p-0 m-0 dropdown-menu-right dropdown-menu-anim-up dropdown-menu-lg">
-                                    <form>
-                                        <!--begin::Header-->
-                                        <!--end::Header-->
-                                        <!--begin::Content-->
-                                        <div class="tab-content">
-                                            <!--begin::Tabpane-->
-                                            <div class="tab-pane active show p-8" id="topbar_notifications_notifications" role="tabpanel">
-                                                <!--begin::Scroll-->
-                                                <div class="scroll pr-7 mr-n7" data-scroll="true" data-height="300" data-mobile-height="200">
-                                                    <!--begin::Item-->
-                                                    <div class="d-flex align-items-center mb-6">
-                                                        <!--begin::Symbol-->
-                                                        <div class="symbol symbol-35 flex-shrink-0 mr-3">
-                                                            <img alt="Pic" src="assets/media/users/150-5.jpg" />
-                                                        </div>
-                                                        <!--end::Symbol-->
-                                                        <!--begin::Content-->
-                                                        <div class="d-flex flex-wrap flex-row-fluid">
-                                                            <!--begin::Text-->
-                                                            <div class="d-flex flex-column pr-5 flex-grow-1">
-                                                                <a href="#" class="text-dark text-hover-primary mb-1 font-weight-bold font-size-lg">Marcus Smart</a>
-                                                                <span class="text-muted font-weight-bold">UI/UX, Art Director</span>
-                                                            </div>
-                                                            <!--end::Text-->
-                                                            <!--begin::Section-->
-                                                            <div class="d-flex align-items-center py-2">
-                                                                <!--begin::Label-->
-                                                                <span class="text-success font-weight-bolder font-size-sm pr-6">+65%</span>
-                                                                <!--end::Label-->
-                                                                <!--begin::Btn-->
-                                                                <a href="#" class="btn btn-icon btn-light btn-sm">
-                                                                    <span class="svg-icon svg-icon-md svg-icon-success">
-                                                                        <!--begin::Svg Icon | path:assets/media/svg/icons/Navigation/Angle-right.svg-->
-                                                                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-                                                                            <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                                                                <polygon points="0 0 24 0 24 24 0 24" />
-                                                                                <path d="M6.70710678,15.7071068 C6.31658249,16.0976311 5.68341751,16.0976311 5.29289322,15.7071068 C4.90236893,15.3165825 4.90236893,14.6834175 5.29289322,14.2928932 L11.2928932,8.29289322 C11.6714722,7.91431428 12.2810586,7.90106866 12.6757246,8.26284586 L18.6757246,13.7628459 C19.0828436,14.1360383 19.1103465,14.7686056 18.7371541,15.1757246 C18.3639617,15.5828436 17.7313944,15.6103465 17.3242754,15.2371541 L12.0300757,10.3841378 L6.70710678,15.7071068 Z" fill="#000000" fill-rule="nonzero" transform="translate(12.000003, 11.999999) rotate(-270.000000) translate(-12.000003, -11.999999)" />
-                                                                            </g>
-                                                                        </svg>
-                                                                        <!--end::Svg Icon-->
-                                                                    </span>
-                                                                </a>
-                                                                <!--end::Btn-->
-                                                            </div>
-                                                            <!--end::Section-->
-                                                        </div>
-                                                        <!--end::Content-->
-                                                    </div>
-                                                    <!--end::Item-->
+								<!--begin::Notifications-->
+								<div class="dropdown mr-1">
+									<!--begin::Dropdown-->
+									<div class="dropdown-menu p-0 m-0 dropdown-menu-right dropdown-menu-anim-up dropdown-menu-lg">
+										<form>
+											<!--begin::Header-->
+											<!--end::Header-->
+											<!--begin::Content-->
+											<div class="tab-content">
+												<!--begin::Tabpane-->
+												<div class="tab-pane active show p-8" id="topbar_notifications_notifications" role="tabpanel">
+													<!--begin::Scroll-->
+													<div class="scroll pr-7 mr-n7" data-scroll="true" data-height="300" data-mobile-height="200">
+														<!--begin::Item-->
+														<div class="d-flex align-items-center mb-6">
+															<!--begin::Symbol-->
+															<div class="symbol symbol-35 flex-shrink-0 mr-3">
+																<img alt="Pic" src="assets/media/users/150-5.jpg" />
+															</div>
+															<!--end::Symbol-->
+															<!--begin::Content-->
+															<div class="d-flex flex-wrap flex-row-fluid">
+																<!--begin::Text-->
+																<div class="d-flex flex-column pr-5 flex-grow-1">
+																	<a href="#" class="text-dark text-hover-primary mb-1 font-weight-bold font-size-lg">Marcus Smart</a>
+																	<span class="text-muted font-weight-bold">UI/UX, Art Director</span>
+																</div>
+																<!--end::Text-->
+																<!--begin::Section-->
+																<div class="d-flex align-items-center py-2">
+																	<!--begin::Label-->
+																	<span class="text-success font-weight-bolder font-size-sm pr-6">+65%</span>
+																	<!--end::Label-->
+																	<!--begin::Btn-->
+																	<a href="#" class="btn btn-icon btn-light btn-sm">
+																		<span class="svg-icon svg-icon-md svg-icon-success">
+																			<!--begin::Svg Icon | path:assets/media/svg/icons/Navigation/Angle-right.svg-->
+																			<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+																				<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+																					<polygon points="0 0 24 0 24 24 0 24" />
+																					<path d="M6.70710678,15.7071068 C6.31658249,16.0976311 5.68341751,16.0976311 5.29289322,15.7071068 C4.90236893,15.3165825 4.90236893,14.6834175 5.29289322,14.2928932 L11.2928932,8.29289322 C11.6714722,7.91431428 12.2810586,7.90106866 12.6757246,8.26284586 L18.6757246,13.7628459 C19.0828436,14.1360383 19.1103465,14.7686056 18.7371541,15.1757246 C18.3639617,15.5828436 17.7313944,15.6103465 17.3242754,15.2371541 L12.0300757,10.3841378 L6.70710678,15.7071068 Z" fill="#000000" fill-rule="nonzero" transform="translate(12.000003, 11.999999) rotate(-270.000000) translate(-12.000003, -11.999999)" />
+																				</g>
+																			</svg>
+																			<!--end::Svg Icon-->
+																		</span>
+																	</a>
+																	<!--end::Btn-->
+																</div>
+																<!--end::Section-->
+															</div>
+															<!--end::Content-->
+														</div>
+														<!--end::Item-->
                                                     <!--begin::Item-->
                                                     <div class="d-flex align-items-center mb-6">
                                                         <!--begin::Symbol-->
@@ -925,11 +827,12 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
                                 <!--end::Dropdown-->
                             </div>
                             <!--end::Notifications-->
+
                             <!--begin::Quick panel-->
-                            <!--<div class="topbar-item mr-1">
+                            <div class="topbar-item mr-1">
                                 <div class="btn btn-icon btn-clean btn-lg" id="kt_quick_panel_toggle">
                                     <span class="svg-icon svg-icon-xl svg-icon-primary">
-                                        <!--begin::Svg Icon | path:assets/media/svg/icons/Layout/Layout-4-blocks.svg
+                                        <!--begin::Svg Icon | path:assets/media/svg/icons/Layout/Layout-4-blocks.svg-->
                                         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
                                             <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                                                 <rect x="0" y="0" width="24" height="24" />
@@ -937,10 +840,10 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
                                                 <path d="M5.5,13 L9.5,13 C10.3284271,13 11,13.6715729 11,14.5 L11,18.5 C11,19.3284271 10.3284271,20 9.5,20 L5.5,20 C4.67157288,20 4,19.3284271 4,18.5 L4,14.5 C4,13.6715729 4.67157288,13 5.5,13 Z M14.5,4 L18.5,4 C19.3284271,4 20,4.67157288 20,5.5 L20,9.5 C20,10.3284271 19.3284271,11 18.5,11 L14.5,11 C13.6715729,11 13,10.3284271 13,9.5 L13,5.5 C13,4.67157288 13.6715729,4 14.5,4 Z M14.5,13 L18.5,13 C19.3284271,13 20,13.6715729 20,14.5 L20,18.5 C20,19.3284271 19.3284271,20 18.5,20 L14.5,20 C13.6715729,20 13,19.3284271 13,18.5 L13,14.5 C13,13.6715729 13.6715729,13 14.5,13 Z" fill="#000000" opacity="0.3" />
                                             </g>
                                         </svg>
-                                        <!--end::Svg Icon
+                                        <!--end::Svg Icon-->
                                     </span>
                                 </div>
-                            </div>-->
+                            </div>
                             <!--end::Quick panel-->
                             <!--begin::Chat-->
                             <div class="topbar-item">
@@ -983,6 +886,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
                     <!--end::Container-->
                 </div>
                 <!--end::Header-->
+
                 <!--begin::Content-->
                 <div class="content d-flex flex-column flex-column-fluid" id="kt_content" style="background-image:url('assets/keen/media/logos/banner.png')">
                     <!--begin::Subheader-->
@@ -994,19 +898,22 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
                                 <div class="d-flex align-items-baseline flex-wrap mr-5">
                                     <!--begin::Page Title-->
                                     <h4 class="text-white font-weight-bold my-1 mr-5">Dashboard |</h4>
-                                    <h5 class="text-white font-weight-bold my-1 mr-5">Lending Investor</h5>
+                                    <h5 class="text-white font-weight-bold my-1 mr-5">Payment Center</h5>
                                     <!--end::Page Title-->
                                 </div>
-                                <?php
-                                if (isset($_SESSION['status'])) {
-                                ?>
-                                    <h4 class="alert alert-success"><?php echo $_SESSION['status']; ?></h4>
-                                <?php
-                                    unset($_SESSION['status']);
-                                } ?>
                                 <!--end::Page Heading-->
                             </div>
                             <!--end::Info-->
+                            <!--begin::Toolbar-->
+                            <div class="d-flex align-items-center flex-wrap">
+                                <!--begin::Daterange-->
+                                <a href="#" class="btn btn-fixed-height btn-bg-white btn-text-dark-50 btn-hover-text-primary btn-icon-primary font-weight-bolder font-size-sm px-5 my-1 mr-3" id="kt_dashboard_daterangepicker" data-toggle="tooltip" title="Select dashboard daterange" data-placement="top">
+                                    <span class="opacity-60 font-weight-bolder mr-2" id="kt_dashboard_daterangepicker_title">Today</span>
+                                    <span class="font-weight-bolder" id="kt_dashboard_daterangepicker_date">Aug 16</span>
+                                </a>
+                                <!--end::Daterange-->
+                            </div>
+                            <!--end::Toolbar-->
                         </div>
                     </div>
                     <!--end::Subheader-->
@@ -1014,185 +921,127 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
                     <div class="d-flex flex-column-fluid">
                         <!--begin::Container-->
                         <div class="container">
-                            <div class="row">
-                                <div class="col-lg-4">
-                                    <div class="card card-custom card-stretch gutter-b">
-                                        <div class="card-body">
-                                            <div class="d-flex align-items-center justify-content-between flex-wrap">
-                                                <span class="font-size-h6 text-muted font-weight-bolder text-uppercase pr-2">Pending Loan Application</span>
+                            <div class="card card-custom">
+                                <div class="card-body">
+                                    <h5>Upload Files</h5>
+                                    <?php
+                                    if (isset($_SESSION['status'])) {
+                                    ?>
+                                        <div class="alert alert-success alert-dismissable" id="flash-msg">
+                                            <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+                                            <h4><?= $_SESSION['status'] ?></h4>
+                                        </div>
+                                    <?php
+                                        unset($_SESSION['status']);
+                                    } ?>
+                                    <form action="" method="post" enctype="multipart/form-data">
+                                        <div class="col-xl-4">
+                                            <div class="form-group">
+                                                <input type="file" name="upload_file" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3" />
                                             </div>
-                                            <div class="card-body d-flex align-items-center justify-content-between pt-7 flex-wrap">
-                                                <span class="font-weight-bolder display5 text-dark-75 py-4 pl-5 pr-5">
-                                                <p class="text-primary font-size-h2 font-weight-bolder pt-3 mb-0">
+                                            <?php
+                                            date_default_timezone_set('Asia/Manila');
+                                            $todays_date = date("y-m-d h:i:sa");
+                                            $today = strtotime($todays_date);
+                                            $det = date("Y-m-d h:i:sa", $today);
+
+                                            ?>
+                                            <input type="hidden" name="filedate_upload" value="<?= $det; ?>">
+                                            <input type="hidden" name="uploader_id" value="<?= $_SESSION['user_id']?>">
+                                            <input type="hidden" name="lender_id" value="<?= intval($_GET['user_id'])?>">
+                                            <input type="hidden" name="file_status" value="Sent">
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="submit" name="upload_file" class="btn btn-primary font-weight-bold">Save changes</button>
+                                        </div>
+                                    </form>
+                                    <h5>Uploaded Payment Files</h5>
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Date Uploaded</th>
+                                                <th>File</th>
+                                                <th>Status</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php
+                                            $lender_id = intval($_GET['user_id']);
+                                            $user_id =  $_SESSION['user_id'];
+                                            
+                                            $sql = "SELECT * FROM uploadfile_payment WHERE lender_id = $lender_id AND uploader_id = $user_id ORDER BY filedate_upload desc";
+                                            $query = $dbh->prepare($sql);
+                                            $query->execute();
+                                            $res = $query->fetchAll(PDO::FETCH_OBJ);
+                                            if ($query->rowCount() > 0) {
+                                                foreach ($res as $rem) {
+                                                   $sed = htmlentities($rem->file_status);
+
+                                                    ?>
+                                            <tr>
+                                                <td class="font-size-lg">
                                                 <?php
-                                                    $id = $_SESSION['user_id'];
+                                                date_default_timezone_set('Asia/Manila');
+                                                $d = htmlentities($rem->filedate_upload);
+                                                $filedate_upload = strtotime($d);
+                                                $det = date("F-m-Y h:i:sa", $filedate_upload); ?>
 
-                                                    $sql = "SELECT count(*) AS loan_app_id FROM loan_application WHERE loan_application.loan_status = 'Pending' AND lender_id = $id ";
-                                                    $query = $dbh->prepare($sql);
-                                                    $query->execute();
-                                                    $results = $query->fetchAll(PDO::FETCH_OBJ);
-
-                                                    if ($query->rowCount() > 0) {
-                                                        foreach ($results as $result) { ?>
-                                                            <?php echo htmlentities($result->loan_app_id); ?>
-                                                    <?php }
-                                                    } ?>
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <div class="card-footer border-0 d-flex align-items-center justify-content-between pt-0">
-                                            <span></span>
-                                            <a href="lending_company/pending_loan.php" class="btn btn-sm btn-primary font-weight-bolder px-6">View</a>
-                                        </div>
-                                    </div>
+                                                <?= $det?></td>
+                                                <td class="font-size-lg"><?= htmlentities($rem->files)?></td>
+                                                <td><?php if($sed == "Sent"): ?>
+                                                    <span class="font-size-lg text-warning">Sent</span>
+                                                <?php elseif($sed == "Received"): ?>
+                                                    <span class="font-size-lg text-success">Received</span>
+                                                <?php else: ?>
+                                                    <span>NA</span>
+                                                <?php endif; ?>
+                                                </td>
+                                                <td class="font-size-lg"><a href="/hulam/assets/keen/payment_files/<?= htmlentities($rem->files)?>" target="_blank">Download</td>
+                                            </tr>
+                                        </tbody>
+                                        <?php } } ?>
+                                    </table>
                                 </div>
-                                <div class="col-lg-4">
-                                    <div class="card card-custom card-stretch gutter-b">
-                                        <div class="card-body">
-                                            <div class="d-flex align-items-center justify-content-between flex-wrap">
-                                                <span class="font-size-h6 text-muted font-weight-bolder text-uppercase pr-2">Approved Loan Application</span>
-                                            </div>
-                                            <div class="card-body d-flex align-items-center justify-content-between pt-7 flex-wrap">
-                                                <span class="font-weight-bolder display5 text-dark-75 py-4 pl-5 pr-5">
-                                                <p class="text-primary font-size-h2 font-weight-bolder pt-3 mb-0">
-                                                <?php
-                                                    $id = $_SESSION['user_id'];
-                                                    $sql = "SELECT count(*) AS loan_app_id FROM loan_application WHERE loan_application.loan_status = 'approved' AND lender_id = $id ";
-                                                    $query = $dbh->prepare($sql);
-                                                    $query->execute();
-                                                    $results = $query->fetchAll(PDO::FETCH_OBJ);
-
-                                                    if ($query->rowCount() > 0) {
-                                                        foreach ($results as $result) { ?>
-                                                            <?php echo htmlentities($result->loan_app_id); ?>
-                                                    <?php }
-                                                    } ?>
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <div class="card-footer border-0 d-flex align-items-center justify-content-between pt-0">
-                                            <span></span>
-                                            <a href="lending_company/approved_loan.php" class="btn btn-sm btn-primary font-weight-bolder px-6">View</a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-4">
-                                    <div class="card card-custom card-stretch gutter-b">
-                                        <div class="card-body">
-                                            <div class="d-flex align-items-center justify-content-between flex-wrap">
-                                                <span class="font-size-h6 text-muted font-weight-bolder text-uppercase pr-2">Released Loan</span>
-                                            </div>
-                                            <div class="card-body d-flex align-items-center justify-content-between pt-7 flex-wrap">
-                                                <span class="font-weight-bolder display5 text-dark-75 py-4 pl-5 pr-5">
-                                                <p class="text-primary font-size-h2 font-weight-bolder pt-3 mb-0">
-                                                <?php
-                                                    $id = $_SESSION['user_id'];
-
-                                                    $sql = "SELECT count(*) AS loan_app_id FROM loan_application WHERE loan_application.loan_status = 'released' AND lender_id = $id ";
-                                                    $query = $dbh->prepare($sql);
-                                                    $query->execute();
-                                                    $results = $query->fetchAll(PDO::FETCH_OBJ);
-
-                                                    if ($query->rowCount() > 0) {
-                                                        foreach ($results as $result) { ?>
-                                                            <?php echo htmlentities($result->loan_app_id); ?>
-                                                    <?php }
-                                                    } ?>
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <div class="card-footer border-0 d-flex align-items-center justify-content-between pt-0">
-                                            <span></span>
-                                            <a href="lending_company/released_loan.php" class="btn btn-sm btn-primary font-weight-bolder px-6">View</a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-4">
-                                    <div class="card card-custom card-stretch gutter-b">
-                                        <div class="card-body">
-                                            <div class="d-flex align-items-center justify-content-between flex-wrap">
-                                                <span class="font-size-h6 text-muted font-weight-bolder text-uppercase pr-2">Payment Received</span>
-                                            </div>
-                                            <div class="card-body d-flex align-items-center justify-content-between pt-7 flex-wrap">
-                                                <span class="font-weight-bolder display5 text-dark-75 py-4 pl-5 pr-5">
-                                                <p class="text-primary font-size-h2 font-weight-bolder pt-3 mb-0">
-                                                <?php
-                                                    $lender_id = $_SESSION['user_id'];
-
-                                                    $select = "SELECT * FROM loan_application WHERE lender_id = $lender_id";
-                                                    $query = $dbh->prepare($select);
-                                                    $query->execute();
-                                                    $res2 = $query->fetch();
-                                                    $query_count = $query->rowCount();
-                                                    if ($query_count == 0) {
-                                                        //wala sud
-                                                        echo '0';
-                                                    } else {
-                                                        $loan_id = $res2['loan_app_id'];
-
-                                                        $sql = "SELECT count(*) AS loan_payment_id FROM payment_details WHERE payment_details.confirm = 'no' AND payment_details.loan_id= $loan_id";
-                                                        $query = $dbh->prepare($sql);
-                                                        $query->execute();
-                                                        $results = $query->fetchAll(PDO::FETCH_OBJ);
-
-                                                        if ($query->rowCount() > 0) {
-                                                            foreach ($results as $result) { ?>
-                                                                <?php echo htmlentities($result->loan_payment_id); ?>
-                                                    <?php }
-                                                        }
-                                                    }
-                                                    ?>   
-                                                </p>
-                                            </div>
-                                        </div>
-
-                                        <div class="card-footer border-0 d-flex align-items-center justify-content-between pt-0">
-                                            <span></span>
-                                            <a href="lending_company/payment_received.php" class="btn btn-sm btn-primary font-weight-bolder px-6">View</a>
-                                        </div>
-                                    </div>
-                                </div>
+                           
                             </div>
                         </div>
                     </div>
                 </div>
-                <!--end::Content-->
-                <!--begin::Footer-->
-                <div class="footer bg-white py-4 d-flex flex-lg-column" id="kt_footer">
-                    <!--begin::Container-->
-                    <div class="container d-flex flex-column flex-md-row align-items-center justify-content-between">
-                        <!--begin::Copyright-->
-                        <div class="text-dark order-2 order-md-1">
-                            <span class="text-muted font-weight-bold mr-2">2021©</span>
-                            <a href="https://keenthemes.com/keen" target="_blank" class="text-dark-75 text-hover-primary">The Hulam Team</a>
-                        </div>
-                        <!--end::Copyright-->
-                        <!--begin::Nav-->
-                        <div class="nav nav-dark">
-                            <a href="https://keenthemes.com/keen" target="_blank" class="nav-link pl-0 pr-2">About</a>
-                            <a href="https://keenthemes.com/keen" target="_blank" class="nav-link pr-2">Team</a>
-                            <a href="https://keenthemes.com/keen" target="_blank" class="nav-link pr-0">Contact</a>
-                        </div>
-                        <!--end::Nav-->
-                    </div>
-                    <!--end::Container-->
-                </div>
-                <!--end::Footer-->
             </div>
-            <!--end::Wrapper-->
         </div>
-        <!--end::Page-->
     </div>
-    <!--end::Main-->
+
+    <!--end::Content-->
+    <!--begin::Footer-->
+    <!-- <div class="footer bg-white py-4 d-flex flex-lg-column" id="kt_footer"> -->
+    <!--begin::Container-->
+    <div class="container d-flex flex-column flex-md-row align-items-center justify-content-between">
+        <!--begin::Copyright-->
+        <!-- <div class="text-dark order-2 order-md-1">
+							<span class="text-muted font-weight-bold mr-2">2021©</span>
+							<a href="https://keenthemes.com/keen" target="_blank" class="text-dark-75 text-hover-primary">The Hulam Team</a>
+						</div> -->
+        <!--end::Copyright-->
+        <!--begin::Nav-->
+        <!-- <div class="nav nav-dark">
+							<a href="https://keenthemes.com/keen" target="_blank" class="nav-link pl-0 pr-2">About</a>
+							<a href="https://keenthemes.com/keen" target="_blank" class="nav-link pr-2">Team</a>
+							<a href="https://keenthemes.com/keen" target="_blank" class="nav-link pr-0">Contact</a>
+						</div> -->
+        <!--end::Nav-->
+    </div>
+    </div>
+
 
     <!-- begin::User Panel-->
     <div id="kt_quick_user" class="offcanvas offcanvas-right p-10">
         <!--begin::Header-->
         <div class="offcanvas-header d-flex align-items-center justify-content-between pb-5">
-            <h3 class="font-weight-bold m-0">Profile
-                <a href="#" class="btn btn-xs btn-icon btn-light btn-hover-primary" id="kt_quick_user_close">
-                    <i class="ki ki-close icon-xs text-muted"></i>
-                </a>
+            <h3 class="font-weight-bold m-0">Profile</h3>
+            <a href="#" class="btn btn-xs btn-icon btn-light btn-hover-primary" id="kt_quick_user_close">
+                <i class="ki ki-close icon-xs text-muted"></i>
+            </a>
         </div>
         <!--end::Header-->
         <!--begin::Content-->
@@ -1222,20 +1071,25 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
                                         <!--end::Svg Icon-->
                                     </span>
                                 </span>
-                                <span class="navi-text text-muted text-hover-primary"><?= $_SESSION['email']; ?></span>
+                                <span class="navi-text text-muted text-hover-primary">hulamloan@gmail.com</span>
                             </span>
                         </a>
                     </div>
                 </div>
             </div>
+            <!--end::Header-->
+            <!--begin::Separator-->
             <div class="separator separator-dashed mt-8 mb-5"></div>
+            <!--end::Separator-->
+            <!--begin::Nav-->
             <div class="navi navi-spacer-x-0 p-0">
+                <!--begin::Item-->
                 <a href="lending_company/update_profile.php" class="navi-item">
                     <div class="navi-link">
                         <div class="symbol symbol-40 bg-light mr-3">
                             <div class="symbol-label">
-                                <span class="svg-icon svg-icon-md svg-icon-info">
-                                    <!--begin::Svg Icon | path:assets/media/svg/icons/Communication/Mail-opened.svg-->
+                                <span class="svg-icon svg-icon-md svg-icon-danger">
+                                    <!--begin::Svg Icon | path:assets/media/svg/icons/Communication/Adress-book2.svg-->
                                     <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
                                         <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                                             <rect x="0" y="0" width="24" height="24" />
@@ -1249,18 +1103,28 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
                         </div>
                         <div class="navi-text">
                             <div class="font-weight-bold">My Account</div>
-                            <div class="text-muted">Update Information</div>
+                            <div class="text-muted">Profile info
+                                <span class="label label-light-danger label-inline font-weight-bold">update</span>
+                            </div>
                         </div>
                     </div>
                 </a>
+                <!--begin::Item-->
                 <span class="navi-item mt-2">
                     <span class="navi-link">
                         <a href="logout.php" class="btn btn-sm btn-light-primary font-weight-bolder py-3 px-6">Sign Out</a>
                     </span>
                 </span>
+                <!--end:Item-->
             </div>
+            <!--end::Nav-->
+            <!--begin::Separator-->
             <div class="separator separator-dashed my-7"></div>
+            <!--end::Separator-->
+
+
         </div>
+        <!--end::Content-->
     </div>
     <!-- end::User Panel-->
 
@@ -1270,7 +1134,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
         <div class="offcanvas-header offcanvas-header-navs d-flex align-items-center justify-content-between mb-5">
             <ul class="nav nav-bold nav-tabs nav-tabs-line nav-tabs-line-3x nav-tabs-primary flex-grow-1 px-10" role="tablist">
                 <li class="nav-item">
-                    <a class="nav-link active" data-toggle="tab" href="#kt_quick_panel_notifications">Notifications</a>
+                    <a class="nav-link" data-toggle="tab" href="#kt_quick_panel_notifications">Notifications</a>
                 </li>
             </ul>
             <div class="offcanvas-close mt-n1 pr-5">
@@ -1283,19 +1147,18 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
         <!--begin::Content-->
         <div class="offcanvas-content px-10">
             <div class="tab-content">
-                <!--begin::Nav-->
                 <div class="navi navi-icon-circle navi-spacer-x-0">
                     <!--begin::Item-->
                     <a href="#" class="navi-item">
                         <div class="navi-link rounded">
                             <div class="symbol symbol-50 mr-3">
                                 <div class="symbol-label">
-                                    <i class="flaticon-safe-shield-protection text-danger icon-lg"></i>
+                                    <i class="flaticon-bell text-success icon-lg"></i>
                                 </div>
                             </div>
                             <div class="navi-text">
-                                <div class="font-weight-bold font-size-lg">3 Defence alerts</div>
-                                <div class="text-muted">40% less alerts thar last week</div>
+                                <div class="font-weight-bold font-size-lg">5 new user generated report</div>
+                                <div class="text-muted">Reports based on sales</div>
                             </div>
                         </div>
                     </a>
@@ -1305,91 +1168,18 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
                         <div class="navi-link rounded">
                             <div class="symbol symbol-50 mr-3">
                                 <div class="symbol-label">
-                                    <i class="flaticon-notepad text-primary icon-lg"></i>
+                                    <i class="flaticon2-box text-danger icon-lg"></i>
                                 </div>
                             </div>
                             <div class="navi-text">
-                                <div class="font-weight-bold font-size-lg">Avarage 4 blog posts per author</div>
-                                <div class="text-muted">Most posted 12 time</div>
-                            </div>
-                        </div>
-                    </a>
-                    <!--end::Item-->
-                    <!--begin::Item-->
-                    <a href="#" class="navi-item">
-                        <div class="navi-link rounded">
-                            <div class="symbol symbol-50 mr-3">
-                                <div class="symbol-label">
-                                    <i class="flaticon-users-1 text-warning icon-lg"></i>
-                                </div>
-                            </div>
-                            <div class="navi-text">
-                                <div class="font-weight-bold font-size-lg">16 authors joined last week</div>
-                                <div class="text-muted">9 photodrapehrs, 7 designer</div>
+                                <div class="font-weight-bold font-size-lg">2 new items submited</div>
+                                <div class="text-muted">by Grog John</div>
                             </div>
                         </div>
                     </a>
                     <!--end::Item-->
                 </div>
                 <!--end::Nav-->
-            </div>
-            <!--end::Tabpane-->
-            <!--begin::Tabpane-->
-            <div class="tab-pane fade pt-3 pr-5 mr-n5" id="kt_quick_panel_settings" role="tabpanel">
-                <form class="form">
-                    <!--begin::Section-->
-                    <div class="pt-1">
-                        <h4 class="mb-7">Privacy Settings:</h4>
-                        <div class="pb-5">
-                            <div class="checkbox-inline mb-2">
-                                <label class="checkbox">
-                                    <input type="checkbox" />
-                                    <span></span>You have new notifications.</label>
-                            </div>
-                            <div class="checkbox-inline mb-2">
-                                <label class="checkbox">
-                                    <input type="checkbox" />
-                                    <span></span>You're sent a direct message</label>
-                            </div>
-                            <div class="checkbox-inline mb-2">
-                                <label class="checkbox">
-                                    <input type="checkbox" checked="checked" />
-                                    <span></span>Someone adds you as a connection</label>
-                            </div>
-                            <div class="checkbox-inline mb-2">
-                                <label class="checkbox checkbox-success">
-                                    <input type="checkbox" />
-                                    <span></span>Upon new order</label>
-                            </div>
-                            <div class="checkbox-inline mb-2">
-                                <label class="checkbox checkbox-success">
-                                    <input type="checkbox" />
-                                    <span></span>New membership approval</label>
-                            </div>
-                        </div>
-                        <!--begin::Group-->
-                        <div class="text-muted">After you log in, you will be asked for additional information to confirm your identity.</div>
-                        <!--end::Group-->
-                    </div>
-                    <!--end::Section-->
-                    <div class="separator separator-dashed my-8"></div>
-                    <!--begin::Section-->
-                    <div class="pt-1">
-                        <h4 class="mb-7">Security Settings:</h4>
-                        <div class="pb-5">
-                            <div class="checkbox-inline">
-                                <label class="checkbox mb-2">
-                                    <input type="checkbox" />
-                                    <span></span>Personal information safety</label>
-                            </div>
-                            <p class="form-text text-muted pb-5 mb-0">After you log in, you will be asked for additional information to confirm your identity. For extra security, this requires you to confirm your email.
-                                <a href="#" class="font-weight-bold">Learn more</a>.
-                            </p>
-                            <button type="button" class="btn btn-light-danger font-weight-bolder btn-sm">Setup login verification</button>
-                        </div>
-                    </div>
-                    <!--end::Section-->
-                </form>
             </div>
             <!--end::Tabpane-->
         </div>
@@ -1764,6 +1554,107 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
             </a>
         </div>
         <!--end::Header-->
+        <!--begin::Content-->
+        <div class="offcanvas-content">
+            <!--begin::Wrapper-->
+            <div class="offcanvas-wrapper mb-5 scroll-pull">
+                <h5 class="font-weight-bold mb-4 text-center">Demo 1</h5>
+                <div class="overlay rounded-lg mb-8 offcanvas-demo offcanvas-demo-active">
+                    <div class="overlay-wrapper rounded-lg">
+                        <img src="assets/media/demos/demo1.png" alt="" class="w-100" />
+                    </div>
+                    <div class="overlay-layer">
+                        <a href="../../demo1/dist" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">HTML</a>
+                        <a href="https://preview.keenthemes.com/keen/demo1/rtl/index.html" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">RTL</a>
+                    </div>
+                </div>
+                <h5 class="font-weight-bold mb-4 text-center">Demo 2</h5>
+                <div class="overlay rounded-lg mb-8 offcanvas-demo">
+                    <div class="overlay-wrapper rounded-lg">
+                        <img src="assets/media/demos/demo2.png" alt="" class="w-100" />
+                    </div>
+                    <div class="overlay-layer">
+                        <a href="../../demo2/dist" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">HTML</a>
+                        <a href="https://preview.keenthemes.com/keen/demo2/rtl/index.html" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">RTL</a>
+                    </div>
+                </div>
+                <h5 class="font-weight-bold mb-4 text-center">Demo 3</h5>
+                <div class="overlay rounded-lg mb-8 offcanvas-demo">
+                    <div class="overlay-wrapper rounded-lg">
+                        <img src="assets/media/demos/demo3.png" alt="" class="w-100" />
+                    </div>
+                    <div class="overlay-layer">
+                        <a href="../../demo3/dist" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">HTML</a>
+                        <a href="https://preview.keenthemes.com/keen/demo3/rtl/index.html" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">RTL</a>
+                    </div>
+                </div>
+                <h5 class="font-weight-bold mb-4 text-center">Demo 4</h5>
+                <div class="overlay rounded-lg mb-8 offcanvas-demo">
+                    <div class="overlay-wrapper rounded-lg">
+                        <img src="assets/media/demos/demo4.png" alt="" class="w-100" />
+                    </div>
+                    <div class="overlay-layer">
+                        <a href="../../demo4/dist" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">HTML</a>
+                        <a href="https://preview.keenthemes.com/keen/demo4/rtl/index.html" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">RTL</a>
+                    </div>
+                </div>
+                <h5 class="font-weight-bold mb-4 text-center">Demo 5</h5>
+                <div class="overlay rounded-lg mb-8 offcanvas-demo">
+                    <div class="overlay-wrapper rounded-lg">
+                        <img src="assets/media/demos/demo5.png" alt="" class="w-100" />
+                    </div>
+                    <div class="overlay-layer">
+                        <a href="../../demo5/dist" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">HTML</a>
+                        <a href="https://preview.keenthemes.com/keen/demo5/rtl/index.html" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">RTL</a>
+                    </div>
+                </div>
+                <h5 class="font-weight-bold mb-4 text-center">Demo 6</h5>
+                <div class="overlay rounded-lg mb-8 offcanvas-demo">
+                    <div class="overlay-wrapper rounded-lg">
+                        <img src="assets/media/demos/demo6.png" alt="" class="w-100" />
+                    </div>
+                    <div class="overlay-layer">
+                        <a href="../../demo6/dist" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">HTML</a>
+                        <a href="https://preview.keenthemes.com/keen/demo6/rtl/index.html" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">RTL</a>
+                    </div>
+                </div>
+                <h5 class="font-weight-bold mb-4 text-center">Demo 7</h5>
+                <div class="overlay rounded-lg mb-8 offcanvas-demo">
+                    <div class="overlay-wrapper rounded-lg">
+                        <img src="assets/media/demos/demo7.png" alt="" class="w-100" />
+                    </div>
+                    <div class="overlay-layer">
+                        <a href="../../demo7/dist" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">HTML</a>
+                        <a href="https://preview.keenthemes.com/keen/demo7/rtl/index.html" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">RTL</a>
+                    </div>
+                </div>
+                <h5 class="font-weight-bold mb-4 text-center">Demo 8</h5>
+                <div class="overlay rounded-lg mb-8 offcanvas-demo">
+                    <div class="overlay-wrapper rounded-lg">
+                        <img src="assets/media/demos/demo8.png" alt="" class="w-100" />
+                    </div>
+                    <div class="overlay-layer">
+                        <a href="#" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow disabled opacity-90">Coming soon</a>
+                    </div>
+                </div>
+                <h5 class="font-weight-bold mb-4 text-center">Demo 9</h5>
+                <div class="overlay rounded-lg mb-8 offcanvas-demo">
+                    <div class="overlay-wrapper rounded-lg">
+                        <img src="assets/media/demos/demo9.png" alt="" class="w-100" />
+                    </div>
+                    <div class="overlay-layer">
+                        <a href="#" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow disabled opacity-90">Coming soon</a>
+                    </div>
+                </div>
+            </div>
+            <!--end::Wrapper-->
+            <!--begin::Purchase-->
+            <div class="offcanvas-footer">
+                <a href="https://themes.getbootstrap.com/product/keen-the-ultimate-bootstrap-admin-theme/" target="_blank" class="btn btn-block btn-danger btn-shadow font-weight-bolder text-uppercase">Buy Keen Now!</a>
+            </div>
+            <!--end::Purchase-->
+        </div>
+        <!--end::Content-->
     </div>
     <!--end::Demo Panel-->
     <script>
@@ -1841,37 +1732,6 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
     <!--end::Page Vendors-->
     <!--begin::Page Scripts(used by this page)-->
     <script src="assets/admin/js/pages/widgets.js"></script>
-    <script src="assets/keen/js/pages/features/file-upload/image-input.js"></script>
-    <script scr="https://code.jquery.com/jquery-3.6.0.js"></script>
-    <script>
-        $(document).ready(function() {
-            $(document).on('click', '.remove-btn', function() {
-                $(this).closest('.pb-5').remove();
-            });
-            $(document).on('click', '.add-more-form', function() {
-                $('.paste-new-forms').append('<div class="pb-5" data-wizard-type="step-content" data-wizard-state="current">\
-                                <div class="row">\
-                                    <div class="col-lg-6">\
-                                        <div class="form-group">\
-                                            <input type="text" class="form-control" name="req_name[]" autocomplete="off">\
-                                        </div>\
-                                    </div>\
-                                    <div class="col-lg-4">\
-                                        <div class="form-group">\
-                                            <input type="text" class="form-control" name="remarks[]" autocomplete="off">\
-                                        </div>\
-                                    </div>\
-                                    <div class="col-lg-2">\
-                                        <div class="form-group">\
-                                            <button type="button" class="remove-btn btn btn-danger">Remove</button>\
-                                        </div>\
-                                    </div>\
-                                </div>\
-                            </div>');
-
-            });
-        });
-    </script>
     <!--end::Page Scripts-->
 </body>
 <!--end::Body-->

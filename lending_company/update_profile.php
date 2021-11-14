@@ -10,12 +10,14 @@ include('../db_connection/config.php');
 if (isset($_POST['submit'])) {
 
 	$lender_id = $_SESSION['user_id'];
+	$company_name = $_POST['company_name'];
 	$description = $_POST['description'];
 	$company_street = $_POST['company_street'];
 	$company_barangay = $_POST['company_barangay'];
 	$company_city = $_POST['company_city'];
 	$company_province = $_POST['company_province'];
 	$company_zipcode = $_POST['company_zipcode'];
+	$mobile = $_POST['mobile'];
 	$company_landline = $_POST['company_landline'];
 	$notice_message = $_POST['notice_message'];
 	$status = 'Pending';
@@ -29,6 +31,12 @@ if (isset($_POST['submit'])) {
 	$valid_extensions = array('jpeg', 'jpg', 'gif', 'pdf', 'doc', 'docx');
 	$pic1 = rand(1000, 10000000) . "." . $imgExt;
 	move_uploaded_file($tmp_dir, $upload_dir . $pic1);
+
+	$updateuser = "UPDATE user SET company_name=:company_name,mobile=:mobile WHERE user_id = $lender_id";
+    $que = $dbh->prepare($updateuser);
+    $que->bindParam(':company_name', $company_name, PDO::PARAM_STR);
+    $que->bindParam(':mobile', $mobile, PDO::PARAM_STR);
+    $que->execute();
 
 	$lender_id = $_SESSION['user_id'];
 	$sql = "SELECT * FROM loan_features WHERE lender_id = $lender_id";
@@ -96,7 +104,7 @@ if (isset($_POST['b_permit'])) {
 	$imageSize3 = $_FILES['b_permit']['size'];
 
 	$upload_dir3 = '../assets/keen/company_credentials/';
-	$imgExt3 = strtolower(pathinfo($images2, PATHINFO_EXTENSION));
+	$imgExt3 = strtolower(pathinfo($images3, PATHINFO_EXTENSION));
 	$valid_extensions = array('jpeg', 'jpg', 'gif', 'pdf', 'doc', 'docx');
 	$pic3 = rand(1000, 10000000) . "." . $imgExt3;
 	move_uploaded_file($tmp_dir3, $upload_dir3 . $pic3);
@@ -109,6 +117,7 @@ if (isset($_POST['b_permit'])) {
 	$sql = "INSERT INTO loan_features(lender_id,b_permit)
 	VALUES(:lender_id,:dti_permit,:b_permit)";
 		$query = $dbh->prepare($sql);
+		$query->bindParam(':lender_id',$lender_id,PDO::PARAM_STR);
 		$query->bindParam(':b_permit', $pic3, PDO::PARAM_STR);
 		$query->execute();
 	} else{
@@ -116,7 +125,7 @@ if (isset($_POST['b_permit'])) {
 		$query = $dbh->prepare($sql);
 		$query->bindParam(':b_permit', $pic3, PDO::PARAM_STR);
 	}
-	if ($update_query) {
+	if ($query->execute()) {
 		$_SESSION['status'] = "Business Permit Updated!";
 		header("location: update_profile.php");
 		exit();
@@ -137,7 +146,7 @@ if (isset($_POST['dti_permit'])) {
 	$imageSize3 = $_FILES['dti_permit']['size'];
 
 	$upload_dir3 = '../assets/keen/company_credentials/';
-	$imgExt3 = strtolower(pathinfo($images2, PATHINFO_EXTENSION));
+	$imgExt3 = strtolower(pathinfo($images3, PATHINFO_EXTENSION));
 	$valid_extensions = array('jpeg', 'jpg', 'gif', 'pdf', 'doc', 'docx');
 	$dti_permit = rand(1000, 10000000) . "." . $imgExt3;
 	move_uploaded_file($tmp_dir3, $upload_dir3 . $dti_permit);
@@ -150,6 +159,7 @@ if (isset($_POST['dti_permit'])) {
 	$sql = "INSERT INTO loan_features(lender_id,dti_permit)
 	VALUES(:lender_id,:dti_permit,:dti_permit)";
 		$query = $dbh->prepare($sql);
+		$query->bindParam(':lender_id',$lender_id,PDO::PARAM_STR);
 		$query->bindParam(':dti_permit', $dti_permit, PDO::PARAM_STR);
 		$query->execute();
 	} else{
@@ -157,7 +167,7 @@ if (isset($_POST['dti_permit'])) {
 		$query = $dbh->prepare($sql);
 		$query->bindParam(':dti_permit', $dti_permit, PDO::PARAM_STR);
 	}
-	if ($update_query) {
+	if ($query->execute()) {
 		$_SESSION['status'] = "DTI Permit Updated!";
 		header("location: update_profile.php");
 		exit();

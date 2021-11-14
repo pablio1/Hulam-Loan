@@ -3,6 +3,10 @@ session_start();
 error_reporting(-1);
 include('../db_connection/config.php');
 
+if ($_SESSION['user_type'] != 5) {
+	header('location: ../index.php');
+}
+
 ?>
 
 <?php
@@ -168,7 +172,31 @@ if (isset($_POST['submit'])) {
 									<span class="menu-text">Dashboard</span>
 								</a>
 							</li>
-
+							<li class="menu-section">
+                                <h4 class="menu-text">Manage Account</h4>
+                                <i class="menu-icon ki ki-bold-more-hor icon-md"></i>
+                            </li>
+                            <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+                                <a href="javascript:;" class="menu-link menu-toggle">
+                                    <span class="svg-icon menu-icon">
+                                    </span>
+                                    <span class="menu-text">My Account</span>
+                                    <i class="menu-arrow"></i>
+                                </a>
+                                <div class="menu-submenu">
+                                    <i class="menu-arrow"></i>
+                                    <ul class="menu-subnav">
+                                        <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+                                            <a href="payment_center/update_profile.php" class="menu-link menu-toggle">
+                                                <i class="menu-bullet">
+                                                    <span></span>
+                                                </i>
+                                                <span class="menu-text">My Profile</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                           	 </li>
 							<li class="menu-section">
 								<h4 class="menu-text">Manage Payment</h4>
 								<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
@@ -266,8 +294,23 @@ if (isset($_POST['submit'])) {
 								<!--begin::Header Nav-->
 								<ul class="menu-nav">
 									<li class="menu-item menu-item-open menu-item-here menu-item-submenu menu-item-rel menu-item-open menu-item-here menu-item-active" data-menu-toggle="click" aria-haspopup="true">
-										<h4 class="menu-text" style="color:blue">Welcome to Hulam! <h4>&nbsp;&nbsp;<h6><?php echo $_SESSION['firstname']; ?></h6>
-												<i class="menu-arrow"></i>
+									<h4 class="menu-text" style="color:blue">Welcome to Hulam! <h4>&nbsp;&nbsp;
+												<h6 class="text-danger">
+													<?php
+													$id = $_SESSION['user_id'];
+
+													$sql = "SELECT * FROM user WHERE user_id = $id";
+													$query = $dbh->prepare($sql);
+													$query->execute();
+													$result = $query->fetch();
+													$notice = $result['notice_message'];
+													if ($result['eligible'] == 'no') {
+
+														echo $notice;
+													}
+													?>
+												</h6>
+											<i class="menu-arrow"></i>
 									</li>
 								</ul>
 								<!--end::Header Nav-->
@@ -893,6 +936,11 @@ if (isset($_POST['submit'])) {
 							<div class="card card-custom">
 								<div class="card-body">
 									<h5> Manage Payment</h5>
+									<form method="post" class="quick-search-form">
+										<div class="col-lg-4">
+											<input type="text" name="search_input" class="form-control" placeholder="Search..." />
+										</div>
+									</form></br>
 									<table class="table table-bordered">
                                         <thead>
                                             <tr>
@@ -903,36 +951,131 @@ if (isset($_POST['submit'])) {
                                         </thead>
                                         <tbody>
                                         <?php
-                                            $sql = "SELECT  * FROM user WHERE user_type ='3' AND user_type ='4' AND eligible = 'yes'";
+											if(isset($_POST['search_input'])){
+											error_reporting(E_ALL);
+
+											$search_input = $_POST['search_input'];
+
+											if(empty($search_input)){
+                                            $sql = "SELECT * FROM user WHERE (user_type ='3' OR user_type = '4') AND eligible ='yes'";
                                             $query = $dbh->prepare($sql);
                                             $query->execute();
                                             $res = $query->fetchAll(PDO::FETCH_OBJ);
+											$cnt=1;
                                             if ($query->rowCount() > 0) {
                                                 foreach ($res as $rem) {
 													$type = htmlentities($rem->user_type);?>
                                             <tr>
+												<td><?= htmlentities($rem->user_id)?></td>
 												<td>
 												<?php if($type=='3'): ?>
 													<?= htmlentities($rem->company_name); ?>
-												<?php else: ?>
+												<?php else:?>
 													<?= htmlentities($rem->firstname); ?>&nbsp;<?= htmlentities($rem->middlename); ?>&nbsp;<?= htmlentities($rem->lastname); ?>
 												<?php endif; ?>
+												<td>
+													<div class="dropdown dropdown-inline">
+														<a href="javascript:;" class="btn btn-sm btn-clean btn-icon mr-2" data-toggle="dropdown">
+															<span class="svg-icon svg-icon-md">
+															<i class="flaticon2-gear text-primary"></i></span></a>
+														<div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+															<ul class="navi flex-column navi-hover py-2">
+																<li class="navi-header font-weight-bolder text-uppercase font-size-xs text-primary pb-2">
+																	Choose an action:
+																</li>
+																<li class="navi-item"> 
+																	<a href="payment_center/upload_file.php?user_id=<?= htmlentities($rem->user_id); ?>" class="navi-link"> <span class="navi-icon"><i class="la la-copy"></i></span> <span class="navi-text">Upload File</span> </a> </li>
+																<li class="navi-item"> 
+																	<a href="payment_center/view_file.php?user_id=<?= htmlentities($rem->user_id); ?>" class="navi-link"> <span class="navi-icon"><i class="la la-copy" data-toggle="modal" data-target="#upload_file"></i></span> <span class="navi-text">View Files</span> </a> </li>
+																<li class="navi-item"> 
+																	<a href="payment_center/send_message.php?user_id=<?= htmlentities($rem->user_id); ?>" class="navi-link"> <span class="navi-icon"><i class="la la-file-excel-o" data-toggle="modal" data-target="#send_message"></i></span> <span class="navi-text">Send Message</span> </a> </li>
+															</ul>
+														</div>
+													</div>
 												</td>
-                                                <td><?= htmlentities($rem->email); ?></td>
-                                                <td><?= htmlentities($rem->mobile); ?><br><?= htmlentities($rem->landline); ?> </td>
-                                                <td><?= htmlentities($rem->c_street); ?>&nbsp;<?= htmlentities($rem->c_barangay); ?>&nbsp;<?= htmlentities($rem->c_city); ?>&nbsp;<?= htmlentities($rem->c_province); ?>&nbsp;<?= htmlentities($rem->c_zipcode); ?></td>
-                                                <td>
-                                                    <a href="admin/view_request.php?user_id=<?= htmlentities($rem->user_id) ?>" class="kt-nav__link">
-                                                        <span class="kt-nav__link-text">Show</span>
-                                                    </a>
-                                                </td>
                                             </tr>
-                                            <?php }} ?>
+											<?php $cnt = $cnt+1; }}}
+											else{
+											$sql = "SELECT * FROM user WHERE user.company_name LIKE '%$search_input%' OR user.email LIKE '%$search_input%' OR user.lastname LIKE '%$search_input%' 
+											OR user.firstname LIKE '%$search_input%' OR user.middlename LIKE '%$search_input%' AND (user_type ='3' OR user_type = '4') AND eligible ='yes'";
+                                            $query = $dbh->prepare($sql);
+                                            $query->execute();
+                                            $res = $query->fetchAll(PDO::FETCH_OBJ);
+											$cnt=1;
+                                            if ($query->rowCount() > 0) {
+                                                foreach ($res as $rem) {
+													$type = htmlentities($rem->user_type);?>
+                                            <tr>
+												<td><?= htmlentities($rem->user_id)?></td>
+												<td>
+												<?php if($type=='3'): ?>
+													<?= htmlentities($rem->company_name); ?>
+												<?php else:?>
+													<?= htmlentities($rem->firstname); ?>&nbsp;<?= htmlentities($rem->middlename); ?>&nbsp;<?= htmlentities($rem->lastname); ?>
+												<?php endif; ?>
+												<td>
+													<div class="dropdown dropdown-inline">
+														<a href="javascript:;" class="btn btn-sm btn-clean btn-icon mr-2" data-toggle="dropdown">
+															<span class="svg-icon svg-icon-md">
+															<i class="flaticon2-gear text-primary"></i></span></a>
+														<div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+															<ul class="navi flex-column navi-hover py-2">
+																<li class="navi-header font-weight-bolder text-uppercase font-size-xs text-primary pb-2">
+																	Choose an action:
+																</li>
+																<li class="navi-item"> 
+																	<a href="payment_center/upload_file.php?user_id=<?= htmlentities($rem->user_id); ?>" class="navi-link"> <span class="navi-icon"><i class="la la-copy" data-toggle="modal" data-target="#upload_file"></i></span> <span class="navi-text">Upload File</span> </a> </li>
+																<li class="navi-item"> 
+																	<a href="payment_center/view_file.php?user_id=<?= htmlentities($rem->user_id); ?>" class="navi-link"> <span class="navi-icon"><i class="la la-copy" data-toggle="modal" data-target="#upload_file"></i></span> <span class="navi-text">View Files</span> </a> </li>
+																<li class="navi-item"> 
+																	<a href="payment_center/send_message.php?user_id=<?= htmlentities($rem->user_id); ?>" class="navi-link"> <span class="navi-icon"><i class="la la-file-excel-o"></i></span> <span class="navi-text">Send Message</span> </a> </li>
+															</ul>
+														</div>
+													</div>
+												</td>
+                                            </tr>
+											<?php $cnt = $cnt+1; }}}
+											}else{
+												$sql = "SELECT * FROM user WHERE (user_type ='3' OR user_type = '4') AND eligible ='yes'";
+												$query = $dbh->prepare($sql);
+												$query->execute();
+												$res = $query->fetchAll(PDO::FETCH_OBJ);
+												$cnt=1;
+												if ($query->rowCount() > 0) {
+													foreach ($res as $rem) {
+														$type = htmlentities($rem->user_type);?>
+												<tr>
+													<td><?= htmlentities($rem->user_id)?></td>
+													<td>
+													<?php if($type=='3'): ?>
+														<?= htmlentities($rem->company_name); ?>
+													<?php else:?>
+														<?= htmlentities($rem->firstname); ?>&nbsp;<?= htmlentities($rem->middlename); ?>&nbsp;<?= htmlentities($rem->lastname); ?>
+													<?php endif; ?>
+													<td>
+														<div class="dropdown dropdown-inline">
+															<a href="javascript:;" class="btn btn-sm btn-clean btn-icon mr-2" data-toggle="dropdown">
+																<span class="svg-icon svg-icon-md">
+																<i class="flaticon2-gear text-primary"></i></span></a>
+															<div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+																<ul class="navi flex-column navi-hover py-2">
+																	<li class="navi-header font-weight-bolder text-uppercase font-size-xs text-primary pb-2">
+																		Choose an action:
+																	</li>
+																	<li class="navi-item"> 
+																		<a href="payment_center/upload_file.php?user_id=<?= htmlentities($rem->user_id); ?>" class="navi-link"> <span class="navi-icon"><i class="la la-copy" data-toggle="modal" data-target="#upload_file"></i></span> <span class="navi-text">Upload File</span> </a> </li>
+																	<li class="navi-item"> 
+																		<a href="payment_center/view_file.php?user_id=<?= htmlentities($rem->user_id); ?>" class="navi-link"> <span class="navi-icon"><i class="la la-copy" data-toggle="modal" data-target="#upload_file"></i></span> <span class="navi-text">View Files</span> </a> </li>
+																	<li class="navi-item"> 
+																		<a href="payment_center/send_message.php?user_id=<?= htmlentities($rem->user_id); ?>" class="navi-link"> <span class="navi-icon"><i class="la la-file-excel-o"></i></span> <span class="navi-text">Send Message</span> </a> </li>
+																</ul>
+															</div>
+														</div>
+													</td>
+												</tr>
+											<?php $cnt = $cnt+1; }}} ?>
                                         </tbody>
-                                            
-                                        </tbody>
-                                    </table>     
-							        
+                                    </table>   
 								</div>
 							</div>
 						</div>

@@ -2,52 +2,205 @@
 session_start();
 error_reporting(0);
 include('../db_connection/config.php');
-?>
+if ($_SESSION['user_type'] != 5) {
+    header('location: ../index.php');
+} ?>
 
-<!--codes to insert the image -->
+
 <?php
+if (isset($_POST['submit'])) {
 
-if (isset($_POST['add_mode'])) {
+    $paycenter_id = $_SESSION['user_id'];
+    $company_name = $_POST['company_name'];
+    $description = $_POST['description'];
+    $company_street = $_POST['company_street'];
+    $company_barangay = $_POST['company_barangay'];
+    $company_city = $_POST['company_city'];
+    $company_province = $_POST['company_province'];
+    $company_zipcode = $_POST['company_zipcode'];
+    $mobile = $_POST['mobile'];
+    $company_landline = $_POST['company_landline'];
+    $notice_message = $_POST['notice_message'];
+    $status = 'Pending';
 
-    $mode_name = $_POST['mode_name'];
-    $remarks = $_POST['remarks'];
-    // $lender_id = $_SESSION['user_id']; 
+    $updateuser = "UPDATE user SET company_name=:company_name,mobile=:mobile WHERE user_id = $paycenter_id";
+    $que = $dbh->prepare($updateuser);
+    $que->bindParam(':company_name', $company_name, PDO::PARAM_STR);
+    $que->bindParam(':mobile', $mobile, PDO::PARAM_STR);
+    $que->execute();
 
-    // foreach($req_name as $index => $names){
-    //     $s_req_name = $names;
-    //     $s_remarks = $remarks[$index];
-    $lender_id = $_SESSION['user_id'];
+    $paycenter_id = $_SESSION['user_id'];
+    $sql = "SELECT * FROM loan_features WHERE paycenter_id = $paycenter_id";
+    $q = $dbh->prepare($sql);
+    $q->execute();
+    if ($q->rowCount() == 0) {
 
-    $sql = "INSERT INTO mode_payment(lender_id,mode_name,remarks)VALUES('$lender_id','$mode_name','$remarks')";
-    $query = $dbh->prepare($sql);
-    $query->execute();
+        $sql = "INSERT INTO loan_features(paycenter_id,description,company_street,company_barangay,company_city,company_province,company_zipcode,company_landline,dti_permit,b_permit,notice_message,status)
+VALUES(:paycenter_id,:description,:company_street,:company_barangay,:company_city,:company_province,:company_zipcode,:company_landline,:dti_permit,:b_permit,:notice_message,:status)";
+        $query = $dbh->prepare($sql);
+        $query->bindParam(':paycenter_id', $paycenter_id, PDO::PARAM_STR);
+        $query->bindParam(':description', $description, PDO::PARAM_STR);
+        $query->bindParam(':company_street', $company_street, PDO::PARAM_STR);
+        $query->bindParam(':company_barangay', $company_barangay, PDO::PARAM_STR);
+        $query->bindParam(':company_city', $company_city, PDO::PARAM_STR);
+        $query->bindParam(':company_province', $company_province, PDO::PARAM_STR);
+        $query->bindParam(':company_zipcode', $company_zipcode, PDO::PARAM_STR);
+        $query->bindParam(':company_landline', $company_landline, PDO::PARAM_STR);
+        $query->bindParam(':dti_permit', $pic2, PDO::PARAM_STR);
+        $query->bindParam(':b_permit', $pic3, PDO::PARAM_STR);
+        $query->bindParam(':notice_message', $notice_message, PDO::PARAM_STR);
+        $query->bindParam(':status', $status, PDO::PARAM_STR);
+    } else {
 
-    if ($query) {
-        $_SESSION['status'] = "Added successfully";
-        header("Location: setup_payment.php");
+        $sql = "UPDATE loan_features SET description=:description,company_street=:company_street,company_barangay=:company_barangay,company_city=:company_city,
+    company_province=:company_province,company_zipcode=:company_zipcode,company_landline=:company_landline
+    WHERE paycenter_id = :paycenter_id";
+        $query = $dbh->prepare($sql);
+        $query->bindParam(':paycenter_id', $paycenter_id, PDO::PARAM_STR);
+        $query->bindParam(':description', $description, PDO::PARAM_STR);
+        $query->bindParam(':company_street', $company_street, PDO::PARAM_STR);
+        $query->bindParam(':company_barangay', $company_barangay, PDO::PARAM_STR);
+        $query->bindParam(':company_city', $company_city, PDO::PARAM_STR);
+        $query->bindParam(':company_province', $company_province, PDO::PARAM_STR);
+        $query->bindParam(':company_zipcode', $company_zipcode, PDO::PARAM_STR);
+        $query->bindParam(':company_landline', $company_landline, PDO::PARAM_STR);
+    }
+    if ($query->execute()) {
+        $_SESSION['status_message'] = "Updated Successfully";
+        header("location: update_profile.php");
         exit();
     } else {
-        $_SESSION['status'] = "Error! Not Added";
-        header("Location: setup_payment.php");
+        $_SESSION['status_message'] = "Error!";
+        header("location: update_profile.php");
         exit();
     }
 }
-
 ?>
 
+<?php
+$user_id = $_SESSION['user_id'];
+$sql = "SELECT * FROM user WHERE user_id = $user_id";
+$query = $dbh->prepare($sql);
+$query->execute();
+$user = $query->fetch();
+?>
+
+<?php
+if (isset($_POST['upload_photo'])) {
+    $user_id = $_SESSION['user_id'];
+
+    $images = $_FILES['profile_pic']['name'];
+    $tmp_dir = $_FILES['profile_pic']['tmp_name'];
+    $imageSize = $_FILES['profile_pic']['size'];
+
+    $upload_dir = '../assets/keen/images/';
+    $imgExt = strtolower(pathinfo($images, PATHINFO_EXTENSION));
+    $valid_extensions = array('jpeg', 'jpg', 'gif', 'pdf', 'doc', 'docx');
+    $profile_pic = rand(1000, 10000000) . "." . $imgExt;
+    move_uploaded_file($tmp_dir, $upload_dir . $profile_pic);
+
+    $update = "UPDATE user SET profile_pic = :profile_pic WHERE user_id = $user_id";
+    $update_query = $dbh->prepare($update);
+    $update_query->bindParam(':profile_pic', $profile_pic, PDO::PARAM_STR);
+    $update_query->execute();
+
+    if ($update_query) {
+        $_SESSION['status_message'] = "Updated Profile Photo!";
+        header("location: update_profile.php");
+        exit();
+    } else {
+        $_SESSION['status_message'] = "Error!";
+        header("location: update_profile.php");
+        exit();
+    }
+}
+?>
+<?php
+if (isset($_POST['b_permit'])) {
+    $paycenter_id = $_SESSION['user_id'];
+
+    $images3 = $_FILES['b_permit']['name'];
+    $tmp_dir3 = $_FILES['b_permit']['tmp_name'];
+    $imageSize3 = $_FILES['b_permit']['size'];
+
+    $upload_dir3 = '../assets/keen/files/';
+    $imgExt3 = strtolower(pathinfo($images3, PATHINFO_EXTENSION));
+    $valid_extensions = array('jpeg', 'jpg', 'gif', 'pdf', 'doc', 'docx');
+    $pic3 = rand(1000, 10000000) . "." . $imgExt3;
+    move_uploaded_file($tmp_dir3, $upload_dir3 . $pic3);
+
+    $paycenter_id = $_SESSION['user_id'];
+    $sql = "SELECT * FROM loan_features WHERE paycenter_id = $paycenter_id";
+    $q = $dbh->prepare($sql);
+    $q->execute();
+    if ($q->rowCount() == 0) {
+        $sql = "INSERT INTO loan_features(paycenter_id,b_permit)
+	VALUES(:paycenter_id,:b_permit)";
+        $query = $dbh->prepare($sql);
+        $query->bindParam(':paycenter_id', $paycenter_id, PDO::PARAM_STR);
+        $query->bindParam(':b_permit', $pic3, PDO::PARAM_STR);
+        $query->execute();
+    } else {
+        $sql = "UPDATE loan_features SET b_permit=:b_permit WHERE paycenter_id = $paycenter_id";
+        $query = $dbh->prepare($sql);
+        $query->bindParam(':b_permit', $pic3, PDO::PARAM_STR);
+    }
+    if ($query->execute()) {
+        $_SESSION['status_message'] = "Business Permit Updated!";
+        header("location: update_profile.php");
+        exit();
+    } else {
+        $_SESSION['status_message'] = "Error!";
+        header("location: update_profile.php");
+        exit();
+    }
+}
+?>
+
+<?php
+if (isset($_POST['dti_permit'])) {
+    $paycenter_id = $_SESSION['user_id'];
+
+    $images3 = $_FILES['dti_permit']['name'];
+    $tmp_dir3 = $_FILES['dti_permit']['tmp_name'];
+    $imageSize3 = $_FILES['dti_permit']['size'];
+
+    $upload_dir3 = '../assets/keen/files/';
+    $imgExt3 = strtolower(pathinfo($images3, PATHINFO_EXTENSION));
+    $valid_extensions = array('jpeg', 'jpg', 'gif', 'pdf', 'doc', 'docx');
+    $dti_permit = rand(1000, 10000000) . "." . $imgExt3;
+    move_uploaded_file($tmp_dir3, $upload_dir3 . $dti_permit);
+
+    $paycenter_id = $_SESSION['user_id'];
+    $sql = "SELECT * FROM loan_features WHERE paycenter_id = $paycenter_id";
+    $q = $dbh->prepare($sql);
+    $q->execute();
+    if ($q->rowCount() == 0) {
+        $sql = "INSERT INTO loan_features(paycenter_id,dti_permit)
+	VALUES(:paycenter_id,:dti_permit)";
+        $query = $dbh->prepare($sql);
+        $query->bindParam(':paycenter_id', $paycenter_id, PDO::PARAM_STR);
+        $query->bindParam(':dti_permit', $dti_permit, PDO::PARAM_STR);
+        $query->execute();
+    } else {
+        $sql = "UPDATE loan_features SET dti_permit=:dti_permit WHERE paycenter_id = $paycenter_id";
+        $query = $dbh->prepare($sql);
+        $query->bindParam(':dti_permit', $dti_permit, PDO::PARAM_STR);
+    }
+    if ($query->execute()) {
+        $_SESSION['status_message'] = "DTI Permit Updated!";
+        header("location: update_profile.php");
+        exit();
+    } else {
+        $_SESSION['status_message'] = "Error!";
+        header("location: update_profile.php");
+        exit();
+    }
+}
+?>
+
+
 <!DOCTYPE html>
-<!--
-Template Name: Keen - The Ultimate Bootstrap 4 HTML Admin Dashboard Theme
-Author: KeenThemes
-Website: http://www.keenthemes.com/
-Contact: support@keenthemes.com
-Follow: www.twitter.com/keenthemes
-Dribbble: www.dribbble.com/keenthemes
-Like: www.facebook.com/keenthemes
-Purchase: https://themes.getbootstrap.com/product/keen-the-ultimate-bootstrap-admin-theme/
-Support: https://keenthemes.com/theme-support
-License: You must have a valid license purchased only from themes.getbootstrap.com(the above link) in order to legally use the theme for your project.
--->
 <html lang="en">
 <!--begin::Head-->
 
@@ -84,7 +237,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
     <!--begin::Header Mobile-->
     <div id="kt_header_mobile" class="header-mobile align-items-center header-mobile-fixed">
         <!--begin::Logo-->
-        <a href="lending_company/index.php">
+        <a href="payment_center/index.php">
             <img alt="Logo" src="assets/admin/media/logos/Hulam_Logo.png" class="h-60px w-60px" style="padding-top: 10%; padding: right 50%;" />
         </a>
         <!--end::Logo-->
@@ -127,7 +280,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
                 <!--begin::Brand-->
                 <div class="brand flex-column-auto" id="kt_brand">
                     <!--begin::Logo-->
-                    <a href="lending_company/index.php" class="brand-logo">
+                    <a href="payment_center/index.php" class="brand-logo">
                         <img alt="Logo" src="assets/admin/media/logos/Hulam_Logo.png" class="h-100px w-90px" style="padding-top: 20%; padding: right 50%;" />
                     </a>
                     <!--end::Logo-->
@@ -155,7 +308,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
                         <!--begin::Menu Nav-->
                         <ul class="menu-nav">
                             <li class="menu-item menu-item-active" aria-haspopup="true">
-                                <a href="lending_company/index.php" class="menu-link">
+                                <a href="payment_center/index.php" class="menu-link">
                                     <span class="svg-icon menu-icon">
                                         <!--begin::Svg Icon | path:assets/media/svg/icons/Design/Layers.svg-->
                                         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
@@ -185,7 +338,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
                                     <i class="menu-arrow"></i>
                                     <ul class="menu-subnav">
                                         <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-                                            <a href="lending_company/update_profile.php" class="menu-link menu-toggle">
+                                            <a href="payment_center/update_profile.php" class="menu-link menu-toggle">
                                                 <i class="menu-bullet">
                                                     <span></span>
                                                 </i>
@@ -196,98 +349,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
                                 </div>
                             </li>
                             <li class="menu-section">
-                                <h4 class="menu-text">Manage Loan</h4>
-                                <i class="menu-icon ki ki-bold-more-hor icon-md"></i>
-                            </li>
-                            <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-                                <a href="javascript:;" class="menu-link menu-toggle">
-                                    <span class="svg-icon menu-icon">
-                                    </span>
-                                    <span class="menu-text">Setup Loan</span>
-                                    <i class="menu-arrow"></i>
-                                </a>
-                                <div class="menu-submenu">
-                                    <ul class="menu-subnav">
-                                        <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-                                            <a href="lending_company/setup_loan.php" class="menu-link menu-toggle">
-                                                <span class="svg-icon menu-icon">
-                                                </span>
-                                                <span class="menu-text">Setup Loan Features</span>
-                                            </a>
-                                        </li>
-                                        <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-                                            <a href="lending_company/set_requirements.php" class="menu-link menu-toggle">
-                                                <span class="svg-icon menu-icon">
-                                                </span>
-                                                <span class="menu-text">Set Requirements</span>
-                                            </a>
-                                        </li>
-                                        <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-                                            <a href="lending_company/setup_payment.php" class="menu-link menu-toggle">
-                                                <span class="svg-icon menu-icon">
-                                                </span>
-                                                <span class="menu-text">Set Mode of Payment</span>
-                                            </a>
-                                        </li>
-                                        <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-                                            <a href="lending_company/set_notice.php" class="menu-link menu-toggle">
-                                                <span class="svg-icon menu-icon">
-                                                </span>
-                                                <span class="menu-text">Set Loan Notice</span>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </li>
-                            <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-                                <a href="javascript:;" class="menu-link menu-toggle">
-                                    <span class="svg-icon menu-icon">
-                                    </span>
-                                    <span class="menu-text">Loan Application</span>
-                                    <i class="menu-arrow"></i>
-                                </a>
-                                <div class="menu-submenu">
-                                    <i class="menu-arrow"></i>
-                                    <ul class="menu-subnav">
-                                        <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-                                            <a href="lending_company/pending_loan.php" class="menu-link menu-toggle">
-                                                <i class="menu-bullet">
-                                                    <span></span>
-                                                </i>
-                                                <span class="menu-text">Pending Loan</span>
-                                            </a>
-                                        </li>
-                                        <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-                                            <a href="lending_company/approved_loan.php" class="menu-link menu-toggle">
-                                                <i class="menu-bullet">
-                                                    <span></span>
-                                                </i>
-                                                <span class="menu-text">Approved Loan</span>
-                                            </a>
-                                        </li>
-                                        <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-                                            <a href="lending_company/released_loan.php" class="menu-link menu-toggle">
-                                                <i class="menu-bullet">
-                                                    <span></span>
-                                                </i>
-                                                <span class="menu-text">Release Loan</span>
-                                            </a>
-                                        </li>
-                                        <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-                                            <a href="lending_company/declined_loan.php" class="menu-link menu-toggle">
-                                                <i class="menu-bullet">
-                                                    <span></span>
-                                                </i>
-                                                <span class="menu-text">Declined Loan</span>
-                                            </a>
-                                        </li>
-
-                                    </ul>
-                                </div>
-                            </li>
-                            <li class="menu-section">
                                 <h4 class="menu-text">Manage Payment</h4>
-                                <i class="menu-icon ki ki-bold-more-hor icon-md"></i>
                             </li>
                             <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
                                 <a href="javascript:;" class="menu-link menu-toggle">
@@ -297,25 +359,24 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
                                     <i class="menu-arrow"></i>
                                 </a>
                                 <div class="menu-submenu">
-                                    <i class="menu-arrow"></i>
                                     <ul class="menu-subnav">
                                         <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-                                            <a href="lending_company/payment_received.php" class="menu-link menu-toggle">
+                                            <a href="payment_center/upload_payment.php" class="menu-link menu-toggle">
                                                 <i class="menu-bullet">
                                                     <span></span>
                                                 </i>
-                                                <span class="menu-text">Payment Received</span>
+                                                <span class="menu-text">Upload Payment</span>
                                                 <span class="menu-label">
                                                 </span>
                                                 <i class="menu-arrow"></i>
                                             </a>
                                         </li>
                                         <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-                                            <a href="lending_company/payment_records.php" class="menu-link menu-toggle">
+                                            <a href="payment_center/uploaded_payment.php" class="menu-link menu-toggle">
                                                 <i class="menu-bullet">
                                                     <span></span>
                                                 </i>
-                                                <span class="menu-text">Payment Records</span>
+                                                <span class="menu-text">View Uploaded Payment</span>
                                                 <span class="menu-label">
                                                 </span>
                                                 <i class="menu-arrow"></i>
@@ -339,25 +400,12 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
                                 <div class="menu-submenu">
                                     <i class="menu-arrow"></i>
                                     <ul class="menu-subnav">
-                                        <li class="menu-item menu-item-parent" aria-haspopup="true">
-                                            <span class="menu-link">
-                                                <span class="menu-text">Themes</span>
-                                            </span>
-                                        </li>
                                         <li class="menu-item" aria-haspopup="true">
-                                            <a href="layout/themes/aside-light.html" class="menu-link">
+                                            <a href="payment_center/report.php" class="menu-link">
                                                 <i class="menu-bullet menu-bullet-dot">
                                                     <span></span>
                                                 </i>
-                                                <span class="menu-text">Light Aside</span>
-                                            </a>
-                                        </li>
-                                        <li class="menu-item" aria-haspopup="true">
-                                            <a href="layout/themes/header-dark.html" class="menu-link">
-                                                <i class="menu-bullet menu-bullet-dot">
-                                                    <span></span>
-                                                </i>
-                                                <span class="menu-text">Dark Header</span>
+                                                <span class="menu-text">Payment File Record</span>
                                             </a>
                                         </li>
                                     </ul>
@@ -382,25 +430,25 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
                             <div id="kt_header_menu" class="header-menu header-menu-mobile header-menu-layout-default">
                                 <!--begin::Header Nav-->
                                 <ul class="menu-nav">
-                                <li class="menu-item menu-item-open menu-item-here menu-item-submenu menu-item-rel menu-item-open menu-item-here menu-item-active" data-menu-toggle="click" aria-haspopup="true">
-										<h4 class="menu-text" style="color:blue">Welcome to Hulam!</h4>&nbsp;&nbsp;
-                                        <h6>
-											<?php
-											$id = $_SESSION['user_id'];
+                                    <li class="menu-item menu-item-open menu-item-here menu-item-submenu menu-item-rel menu-item-open menu-item-here menu-item-active" data-menu-toggle="click" aria-haspopup="true">
+                                    <h4 class="menu-text" style="color:blue">Welcome to Hulam! <h4>&nbsp;&nbsp;
+												<h6 class="text-danger">
+													<?php
+													$id = $_SESSION['user_id'];
 
-											$sql = "SELECT * FROM loan_features WHERE lender_id = $id";
-											$query = $dbh->prepare($sql);
-											$query->execute();
-											$result = $query->fetch();
-											$notice = $result['notice_message'];
-											if ($result['status'] == 'Pending') {
+													$sql = "SELECT * FROM user WHERE user_id = $id";
+													$query = $dbh->prepare($sql);
+													$query->execute();
+													$result = $query->fetch();
+													$notice = $result['notice_message'];
+													if ($result['eligible'] == 'no') {
 
-												echo $notice;
-											}
-											?>
-										</h6>
-										<i class="menu-arrow"></i>
-									</li>
+														echo $notice;
+													}
+													?>
+												</h6>
+											<i class="menu-arrow"></i>
+                                    </li>
                                 </ul>
                                 <!--end::Header Nav-->
                             </div>
@@ -462,6 +510,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
                                                         <!--end::Content-->
                                                     </div>
                                                     <!--end::Item-->
+
                                                     <!--begin::Item-->
                                                     <div class="d-flex align-items-center mb-6">
                                                         <!--begin::Symbol-->
@@ -926,10 +975,10 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
                             </div>
                             <!--end::Notifications-->
                             <!--begin::Quick panel-->
-                            <!--<div class="topbar-item mr-1">
+                            <div class="topbar-item mr-1">
                                 <div class="btn btn-icon btn-clean btn-lg" id="kt_quick_panel_toggle">
                                     <span class="svg-icon svg-icon-xl svg-icon-primary">
-                                        <!--begin::Svg Icon | path:assets/media/svg/icons/Layout/Layout-4-blocks.svg
+                                        <!--begin::Svg Icon | path:assets/media/svg/icons/Layout/Layout-4-blocks.svg-->
                                         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
                                             <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                                                 <rect x="0" y="0" width="24" height="24" />
@@ -937,10 +986,10 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
                                                 <path d="M5.5,13 L9.5,13 C10.3284271,13 11,13.6715729 11,14.5 L11,18.5 C11,19.3284271 10.3284271,20 9.5,20 L5.5,20 C4.67157288,20 4,19.3284271 4,18.5 L4,14.5 C4,13.6715729 4.67157288,13 5.5,13 Z M14.5,4 L18.5,4 C19.3284271,4 20,4.67157288 20,5.5 L20,9.5 C20,10.3284271 19.3284271,11 18.5,11 L14.5,11 C13.6715729,11 13,10.3284271 13,9.5 L13,5.5 C13,4.67157288 13.6715729,4 14.5,4 Z M14.5,13 L18.5,13 C19.3284271,13 20,13.6715729 20,14.5 L20,18.5 C20,19.3284271 19.3284271,20 18.5,20 L14.5,20 C13.6715729,20 13,19.3284271 13,18.5 L13,14.5 C13,13.6715729 13.6715729,13 14.5,13 Z" fill="#000000" opacity="0.3" />
                                             </g>
                                         </svg>
-                                        <!--end::Svg Icon
+                                        <!--end::Svg Icon-->
                                     </span>
                                 </div>
-                            </div>-->
+                            </div>
                             <!--end::Quick panel-->
                             <!--begin::Chat-->
                             <div class="topbar-item">
@@ -994,19 +1043,22 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
                                 <div class="d-flex align-items-baseline flex-wrap mr-5">
                                     <!--begin::Page Title-->
                                     <h4 class="text-white font-weight-bold my-1 mr-5">Dashboard |</h4>
-                                    <h5 class="text-white font-weight-bold my-1 mr-5">Lending Investor</h5>
+                                    <h5 class="text-white font-weight-bold my-1 mr-5">Payment Centre</h5>
                                     <!--end::Page Title-->
                                 </div>
-                                <?php
-                                if (isset($_SESSION['status'])) {
-                                ?>
-                                    <h4 class="alert alert-success"><?php echo $_SESSION['status']; ?></h4>
-                                <?php
-                                    unset($_SESSION['status']);
-                                } ?>
                                 <!--end::Page Heading-->
                             </div>
                             <!--end::Info-->
+                            <!--begin::Toolbar-->
+                            <div class="d-flex align-items-center flex-wrap">
+                                <!--begin::Daterange-->
+                                <a href="#" class="btn btn-fixed-height btn-bg-white btn-text-dark-50 btn-hover-text-primary btn-icon-primary font-weight-bolder font-size-sm px-5 my-1 mr-3" id="kt_dashboard_daterangepicker" data-toggle="tooltip" title="Select dashboard daterange" data-placement="top">
+                                    <span class="opacity-60 font-weight-bolder mr-2" id="kt_dashboard_daterangepicker_title">Today</span>
+                                    <span class="font-weight-bolder" id="kt_dashboard_daterangepicker_date">Aug 16</span>
+                                </a>
+                                <!--end::Daterange-->
+                            </div>
+                            <!--end::Toolbar-->
                         </div>
                     </div>
                     <!--end::Subheader-->
@@ -1014,149 +1066,265 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
                     <div class="d-flex flex-column-fluid">
                         <!--begin::Container-->
                         <div class="container">
-                            <div class="row">
-                                <div class="col-lg-4">
-                                    <div class="card card-custom card-stretch gutter-b">
-                                        <div class="card-body">
-                                            <div class="d-flex align-items-center justify-content-between flex-wrap">
-                                                <span class="font-size-h6 text-muted font-weight-bolder text-uppercase pr-2">Pending Loan Application</span>
-                                            </div>
-                                            <div class="card-body d-flex align-items-center justify-content-between pt-7 flex-wrap">
-                                                <span class="font-weight-bolder display5 text-dark-75 py-4 pl-5 pr-5">
-                                                <p class="text-primary font-size-h2 font-weight-bolder pt-3 mb-0">
+                            <div class="card card-custom">
+                                <div class="card-body p-0">
+                                    <!--begin: Wizard Body-->
+                                    <div class="wizard-body py-8 px-8 py-lg-20 px-lg-10">
+                                        <!--begin: Wizard Form-->
+                                        <div class="row">
+                                            <div class="offset-xxl-2 col-xxl-8">
                                                 <?php
-                                                    $id = $_SESSION['user_id'];
+                                                if (isset($_SESSION['status'])) {
+                                                ?>
+                                                    <div class="alert alert-success alert-dismissable" id="flash-msg">
+                                                        <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+                                                        <h4><?= $_SESSION['status_message'] ?></h4>
+                                                    </div>
+                                                <?php
+                                                    unset($_SESSION['status_message']);
+                                                } ?>
+                                                <form action="" method="post" id="kt_form" enctype="multipart/form-data">
+                                                    <?php
+                                                    $pay_id = $_SESSION['user_id'];
 
-                                                    $sql = "SELECT count(*) AS loan_app_id FROM loan_application WHERE loan_application.loan_status = 'Pending' AND lender_id = $id ";
+                                                    $sql = "SELECT * FROM loan_features INNER JOIN user ON loan_features.paycenter_id = user.user_id WHERE paycenter_id = $pay_id";
                                                     $query = $dbh->prepare($sql);
                                                     $query->execute();
-                                                    $results = $query->fetchAll(PDO::FETCH_OBJ);
+                                                    $res = $query->fetch();
+                                                    ?>
+                                                    <!--begin: Wizard Step 1-->
+                                                    <div class="pb-5" data-wizard-type="step-content" data-wizard-state="current">
+                                                        <h4 class="mb-10 font-weight-bold text-dark">Enter your Company Details</h4>
 
-                                                    if ($query->rowCount() > 0) {
-                                                        foreach ($results as $result) { ?>
-                                                            <?php echo htmlentities($result->loan_app_id); ?>
-                                                    <?php }
-                                                    } ?>
-                                                </p>
+                                                        <form action="" method="post" id="kt_form" enctype="multipart/form-data">
+                                                            <div class="form-group row">
+                                                                <label class="col-xl-3 col-lg-3 col-form-label text-right"></label>
+                                                                <div class="col-lg-9 col-xl-6">
+                                                                    <div class="image-input image-input-outline" id="kt_image_1">
+                                                                        <div class="image-input-wrapper" style="background-image: url(/hulam/assets/keen/payment_center/<?= $user['profile_pic'] ?>"></div>
+                                                                        <label class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow" data-action="change" data-toggle="tooltip" title="" data-original-title="upload logo">
+                                                                            <i class="fa fa-pen icon-sm text-muted" style="margin-left: 27px;"></i>
+                                                                            <!-- <input type="file" name="profile" accept=".png, .jpg, .jpeg" /> -->
+                                                                            <input type="file" name="profile_pic" class="form-control" accept="*/image">
+                                                                            <input type="hidden" name="profile_avatar_remove" />
+                                                                        </label>
+                                                                        <span class="btn btn-xs btn-white btn-hover-text-primary btn-shadow" data-action="cancel" data-toggle="tooltip" title="Cancel Photo">
+                                                                            <i class="ki ki-bold-close icon-xs text-muted"></i>
+                                                                        </span>
+                                                                    </div>
+                                                                    &nbsp;&nbsp;<button type="submit" name="upload_photo" class="btn btn-primary btn-sm">Confirm Logo</button>
+                                                                </div>
+                                                            </div>
+                                                        </form>
+                                                        <div class="form-group row">
+                                                            <label class="col-xl-3 col-lg-3 col-form-label text-right">Company Name</label>
+                                                            <div class="col-lg-9 col-xl-6">
+                                                                <input class="form-control" type="text" name="company_name" value="<?= $user['company_name']; ?>" />
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group row">
+                                                            <label class="col-xl-3 col-lg-3 col-form-label text-right">Description</label>
+                                                            <div class="col-lg-9 col-xl-6">
+                                                                <textarea rows="4" cols="50" name="description" class="form-control"><?= $res['description']; ?></textarea>
+                                                            </div>
+                                                        </div>
+                                                        <div class="separator separator-dashed mt-8 mb-5"></div>
+                                                        <div class="row">
+                                                            <div class="col-lg-9 col-xl-6">
+                                                                <h5 class="font-weight-bold mt-10 mb-6">Company Contact Information</h5>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-xl-4">
+                                                                <!--begin::Input-->
+                                                                <div class="form-group">
+                                                                    <label>Mobile</label>
+                                                                    <input type="text" minlength="11" maxlength="11" class="form-control" name="mobile" value="<?= $res['mobile']; ?>" />
+                                                                    <label><span style="color:green">&#x2714;</span><span style="font-family: Courier New; font-size: 11px"> Atleast 11 digits</label></span>
+                                                                </div>
+                                                                <!--end::Input-->
+                                                            </div>
+                                                            <div class="col-xl-4">
+                                                                <!--begin::Input-->
+                                                                <div class="form-group">
+                                                                    <label>Landline</label>
+                                                                    <input type="text" minlength="7" maxlength="7" class="form-control" name="company_landline" value="<?= $res['company_landline']; ?>" />
+                                                                    <label><span style="color:green">&#x2714;</span><span style="font-family: Courier New; font-size: 11px"> Atleast 7 digits</label></span>
+                                                                </div>
+                                                                <!--end::Input-->
+                                                            </div>
+                                                            <div class="col-xl-4">
+                                                                <!--begin::Input-->
+                                                                <div class="form-group">
+                                                                    <label>Email Address</label>
+                                                                    <input type="text" disabled class="form-control" name="email" value="<?= $_SESSION['email']; ?>" />
+                                                                </div>
+                                                                <!--end::Input-->
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-lg-9 col-xl-6">
+                                                                <h5 class="font-weight-bold mt-10 mb-6">Company Address</h5>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-xl-4">
+                                                                <!--begin::Input-->
+                                                                <div class="form-group">
+                                                                    <label>Street</label>
+                                                                    <input type="text" class="form-control" name="company_street" value="<?= $res['company_street']; ?>" />
+                                                                </div>
+                                                                <!--end::Input-->
+                                                            </div>
+                                                            <div class="col-xl-4">
+                                                                <!--begin::Input-->
+                                                                <div class="form-group">
+                                                                    <label>Barangay</label>
+                                                                    <input type="text" class="form-control" name="company_barangay" value="<?= $res['company_barangay']; ?>" />
+                                                                </div>
+                                                                <!--end::Input-->
+                                                            </div>
+                                                            <div class="col-xl-4">
+                                                                <!--begin::Input-->
+                                                                <div class="form-group">
+                                                                    <label>City/Municipality</label>
+                                                                    <input type="text" class="form-control" name="company_city" value="<?= $res['company_city']; ?>" />
+                                                                </div>
+                                                                <!--end::Input-->
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-xl-4">
+                                                                <!--begin::Input-->
+                                                                <div class="form-group">
+                                                                    <label>Province</label>
+                                                                    <input type="text" class="form-control" name="company_province" value="<?= $res['company_province']; ?>" />
+                                                                </div>
+                                                                <!--end::Input-->
+                                                            </div>
+                                                            <div class="col-xl-4">
+                                                                <!--begin::Input-->
+                                                                <div class="form-group">
+                                                                    <label>Zip Code</label>
+                                                                    <input type="text" class="form-control" name="company_zipcode" value="<?= $res['company_zipcode']; ?>" />
+                                                                    <input type="hidden" class="form-control" name="notice_message" value="For potential debtors to view your loan features, we request you to come to the office for the signing of Memorandum of Agreement." />
+
+                                                                </div>
+                                                                <!--end::Input-->
+                                                            </div>
+
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-lg-9 col-xl-6">
+                                                                <h5 class="font-weight-bold mt-10 mb-6">Upload Company Credentials</h5>
+                                                            </div>
+                                                        </div>
+                                                        <div class="separator separator-solid my-7"></div>
+                                                        <div class="row">
+                                                            <h5>Upload Requirements</h5>
+                                                            <table class="table table-bordered">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>Type of Documents</th>
+                                                                        <th>Uploaded Documents</th>
+                                                                        <th>Action</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td>
+                                                                            <label class="form-control-label" for="input-username">Business Permit</label>
+                                                                            <p class="text-muted font-size-sm">Accept files docx, jpeg, png, pdf</p>
+                                                                        </td>
+                                                                        <td><a href="/hulam/assets/keen/files/<?= $res['b_permit']; ?>" target="_blank"><?= $res['b_permit']; ?></a></td>
+                                                                        <td><a href="" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#b_permit">Update</a></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>
+                                                                            <label class="form-control-label" for="input-username">DTI Permit</label>
+                                                                            <p class="text-muted font-size-sm">Accept files docx, jpeg, png, pdf</p>
+                                                                        </td>
+                                                                        <td><a href="/hulam/assets/keen/files/<?= $res['dti_permit']; ?>" target="_blank"><?= $res['dti_permit']; ?></a></td>
+                                                                        <td><a href="" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#dti_permit">Update</a></td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                        <div class="d-flex justify-content-between border-top mt-5 pt-10">
+                                                            <div class="mr-2"></div>
+                                                            <div>
+                                                                <button type="submit" name="submit" class="btn btn-primary font-weight-bolder px-10 py-3" data-wizard-type="action-next">Submit</button>
+                                                            </div>
+                                                        </div>
+                                                        <!--end: Wizard Actions-->
+                                                    </div>
+                                                    <!--end::Body-->
+                                                </form>
+                                                <!--end::Form-->
                                             </div>
                                         </div>
-                                        <div class="card-footer border-0 d-flex align-items-center justify-content-between pt-0">
-                                            <span></span>
-                                            <a href="lending_company/pending_loan.php" class="btn btn-sm btn-primary font-weight-bolder px-6">View</a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-4">
-                                    <div class="card card-custom card-stretch gutter-b">
-                                        <div class="card-body">
-                                            <div class="d-flex align-items-center justify-content-between flex-wrap">
-                                                <span class="font-size-h6 text-muted font-weight-bolder text-uppercase pr-2">Approved Loan Application</span>
-                                            </div>
-                                            <div class="card-body d-flex align-items-center justify-content-between pt-7 flex-wrap">
-                                                <span class="font-weight-bolder display5 text-dark-75 py-4 pl-5 pr-5">
-                                                <p class="text-primary font-size-h2 font-weight-bolder pt-3 mb-0">
-                                                <?php
-                                                    $id = $_SESSION['user_id'];
-                                                    $sql = "SELECT count(*) AS loan_app_id FROM loan_application WHERE loan_application.loan_status = 'approved' AND lender_id = $id ";
-                                                    $query = $dbh->prepare($sql);
-                                                    $query->execute();
-                                                    $results = $query->fetchAll(PDO::FETCH_OBJ);
-
-                                                    if ($query->rowCount() > 0) {
-                                                        foreach ($results as $result) { ?>
-                                                            <?php echo htmlentities($result->loan_app_id); ?>
-                                                    <?php }
-                                                    } ?>
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <div class="card-footer border-0 d-flex align-items-center justify-content-between pt-0">
-                                            <span></span>
-                                            <a href="lending_company/approved_loan.php" class="btn btn-sm btn-primary font-weight-bolder px-6">View</a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-4">
-                                    <div class="card card-custom card-stretch gutter-b">
-                                        <div class="card-body">
-                                            <div class="d-flex align-items-center justify-content-between flex-wrap">
-                                                <span class="font-size-h6 text-muted font-weight-bolder text-uppercase pr-2">Released Loan</span>
-                                            </div>
-                                            <div class="card-body d-flex align-items-center justify-content-between pt-7 flex-wrap">
-                                                <span class="font-weight-bolder display5 text-dark-75 py-4 pl-5 pr-5">
-                                                <p class="text-primary font-size-h2 font-weight-bolder pt-3 mb-0">
-                                                <?php
-                                                    $id = $_SESSION['user_id'];
-
-                                                    $sql = "SELECT count(*) AS loan_app_id FROM loan_application WHERE loan_application.loan_status = 'released' AND lender_id = $id ";
-                                                    $query = $dbh->prepare($sql);
-                                                    $query->execute();
-                                                    $results = $query->fetchAll(PDO::FETCH_OBJ);
-
-                                                    if ($query->rowCount() > 0) {
-                                                        foreach ($results as $result) { ?>
-                                                            <?php echo htmlentities($result->loan_app_id); ?>
-                                                    <?php }
-                                                    } ?>
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <div class="card-footer border-0 d-flex align-items-center justify-content-between pt-0">
-                                            <span></span>
-                                            <a href="lending_company/released_loan.php" class="btn btn-sm btn-primary font-weight-bolder px-6">View</a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-4">
-                                    <div class="card card-custom card-stretch gutter-b">
-                                        <div class="card-body">
-                                            <div class="d-flex align-items-center justify-content-between flex-wrap">
-                                                <span class="font-size-h6 text-muted font-weight-bolder text-uppercase pr-2">Payment Received</span>
-                                            </div>
-                                            <div class="card-body d-flex align-items-center justify-content-between pt-7 flex-wrap">
-                                                <span class="font-weight-bolder display5 text-dark-75 py-4 pl-5 pr-5">
-                                                <p class="text-primary font-size-h2 font-weight-bolder pt-3 mb-0">
-                                                <?php
-                                                    $lender_id = $_SESSION['user_id'];
-
-                                                    $select = "SELECT * FROM loan_application WHERE lender_id = $lender_id";
-                                                    $query = $dbh->prepare($select);
-                                                    $query->execute();
-                                                    $res2 = $query->fetch();
-                                                    $query_count = $query->rowCount();
-                                                    if ($query_count == 0) {
-                                                        //wala sud
-                                                        echo '0';
-                                                    } else {
-                                                        $loan_id = $res2['loan_app_id'];
-
-                                                        $sql = "SELECT count(*) AS loan_payment_id FROM payment_details WHERE payment_details.confirm = 'no' AND payment_details.loan_id= $loan_id";
-                                                        $query = $dbh->prepare($sql);
-                                                        $query->execute();
-                                                        $results = $query->fetchAll(PDO::FETCH_OBJ);
-
-                                                        if ($query->rowCount() > 0) {
-                                                            foreach ($results as $result) { ?>
-                                                                <?php echo htmlentities($result->loan_payment_id); ?>
-                                                    <?php }
-                                                        }
-                                                    }
-                                                    ?>   
-                                                </p>
-                                            </div>
-                                        </div>
-
-                                        <div class="card-footer border-0 d-flex align-items-center justify-content-between pt-0">
-                                            <span></span>
-                                            <a href="lending_company/payment_received.php" class="btn btn-sm btn-primary font-weight-bolder px-6">View</a>
-                                        </div>
+                                        <!--end::Content-->
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    <!--end::Entry-->
                 </div>
                 <!--end::Content-->
+                <!-- Start Modal -->
+                <form action="" method="post" enctype="multipart/form-data">
+                    <div class="modal fade" id="b_permit" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">BUSINESS PERMIT</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <i aria-hidden="true" class="ki ki-close"></i>
+                                    </button>
+                                </div>
+                                <div class="col-xl-4">
+                                    <label class="font-weight-bolder font-size-lg" for="input-username">Upload/Edit Business Permit</label>
+                                    <div class="form-group">
+                                        <input type="file" name="b_permit" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3" />
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-light-primary font-weight-bold" data-dismiss="modal">Close</button>
+                                    <button type="submit" name="b_permit" class="btn btn-primary font-weight-bold">Save changes</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <!-- End Modal -->
+                <!-- Start Modal -->
+                <form action="" method="post" enctype="multipart/form-data">
+                    <div class="modal fade" id="dti_permit" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">DTI PERMIT</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <i aria-hidden="true" class="ki ki-close"></i>
+                                    </button>
+                                </div>
+                                <div class="col-xl-4">
+                                    <label class="font-weight-bolder font-size-lg" for="input-username">Upload/Edit DTI Permit</label>
+                                    <div class="form-group">
+                                        <input type="file" name="dti_permit" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3" />
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-light-primary font-weight-bold" data-dismiss="modal">Close</button>
+                                    <button type="submit" name="dti_permit" class="btn btn-primary font-weight-bold">Save changes</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <!-- End Modal -->
+
                 <!--begin::Footer-->
                 <div class="footer bg-white py-4 d-flex flex-lg-column" id="kt_footer">
                     <!--begin::Container-->
@@ -1204,7 +1372,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
                     <i class="symbol-badge bg-success"></i>
                 </div>
                 <div class="d-flex flex-column">
-                    <a href="#" class="font-weight-bold font-size-h5 text-dark-75 text-hover-primary">Lending Company</a>
+                    <a href="#" class="font-weight-bold font-size-h5 text-dark-75 text-hover-primary">Payment Centre</a>
                     <div class="text-muted mt-1"></div>
                     <div class="navi mt-1">
                         <a href="#" class="navi-item">
@@ -1222,20 +1390,25 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
                                         <!--end::Svg Icon-->
                                     </span>
                                 </span>
-                                <span class="navi-text text-muted text-hover-primary"><?= $_SESSION['email']; ?></span>
+                                <span class="navi-text text-muted text-hover-primary">hulamloan@gmail.com</span>
                             </span>
                         </a>
                     </div>
                 </div>
             </div>
+            <!--end::Header-->
+            <!--begin::Separator-->
             <div class="separator separator-dashed mt-8 mb-5"></div>
+            <!--end::Separator-->
+            <!--begin::Nav-->
             <div class="navi navi-spacer-x-0 p-0">
-                <a href="lending_company/update_profile.php" class="navi-item">
+                <!--begin::Item-->
+                <a href="payment_center/update_profile.php" class="navi-item">
                     <div class="navi-link">
                         <div class="symbol symbol-40 bg-light mr-3">
                             <div class="symbol-label">
-                                <span class="svg-icon svg-icon-md svg-icon-info">
-                                    <!--begin::Svg Icon | path:assets/media/svg/icons/Communication/Mail-opened.svg-->
+                                <span class="svg-icon svg-icon-md svg-icon-danger">
+                                    <!--begin::Svg Icon | path:assets/media/svg/icons/Communication/Adress-book2.svg-->
                                     <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
                                         <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                                             <rect x="0" y="0" width="24" height="24" />
@@ -1249,18 +1422,29 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
                         </div>
                         <div class="navi-text">
                             <div class="font-weight-bold">My Account</div>
-                            <div class="text-muted">Update Information</div>
+                            <div class="text-muted">Profile info
+                                <span class="label label-light-danger label-inline font-weight-bold">update</span>
+                            </div>
                         </div>
                     </div>
                 </a>
+                <!--end:Item-->
+                <!--begin::Item-->
                 <span class="navi-item mt-2">
                     <span class="navi-link">
                         <a href="logout.php" class="btn btn-sm btn-light-primary font-weight-bolder py-3 px-6">Sign Out</a>
                     </span>
                 </span>
+                <!--end:Item-->
             </div>
+            <!--end::Nav-->
+            <!--begin::Separator-->
             <div class="separator separator-dashed my-7"></div>
+            <!--end::Separator-->
+
+
         </div>
+        <!--end::Content-->
     </div>
     <!-- end::User Panel-->
 
@@ -1270,7 +1454,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
         <div class="offcanvas-header offcanvas-header-navs d-flex align-items-center justify-content-between mb-5">
             <ul class="nav nav-bold nav-tabs nav-tabs-line nav-tabs-line-3x nav-tabs-primary flex-grow-1 px-10" role="tablist">
                 <li class="nav-item">
-                    <a class="nav-link active" data-toggle="tab" href="#kt_quick_panel_notifications">Notifications</a>
+                    <a class="nav-link" data-toggle="tab" href="#kt_quick_panel_notifications">Notifications</a>
                 </li>
             </ul>
             <div class="offcanvas-close mt-n1 pr-5">
@@ -1283,6 +1467,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
         <!--begin::Content-->
         <div class="offcanvas-content px-10">
             <div class="tab-content">
+                <!--begin::Tabpane-->
                 <!--begin::Nav-->
                 <div class="navi navi-icon-circle navi-spacer-x-0">
                     <!--begin::Item-->
@@ -1290,12 +1475,12 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
                         <div class="navi-link rounded">
                             <div class="symbol symbol-50 mr-3">
                                 <div class="symbol-label">
-                                    <i class="flaticon-safe-shield-protection text-danger icon-lg"></i>
+                                    <i class="flaticon-bell text-success icon-lg"></i>
                                 </div>
                             </div>
                             <div class="navi-text">
-                                <div class="font-weight-bold font-size-lg">3 Defence alerts</div>
-                                <div class="text-muted">40% less alerts thar last week</div>
+                                <div class="font-weight-bold font-size-lg">5 new user generated report</div>
+                                <div class="text-muted">Reports based on sales</div>
                             </div>
                         </div>
                     </a>
@@ -1305,91 +1490,18 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
                         <div class="navi-link rounded">
                             <div class="symbol symbol-50 mr-3">
                                 <div class="symbol-label">
-                                    <i class="flaticon-notepad text-primary icon-lg"></i>
+                                    <i class="flaticon2-box text-danger icon-lg"></i>
                                 </div>
                             </div>
                             <div class="navi-text">
-                                <div class="font-weight-bold font-size-lg">Avarage 4 blog posts per author</div>
-                                <div class="text-muted">Most posted 12 time</div>
-                            </div>
-                        </div>
-                    </a>
-                    <!--end::Item-->
-                    <!--begin::Item-->
-                    <a href="#" class="navi-item">
-                        <div class="navi-link rounded">
-                            <div class="symbol symbol-50 mr-3">
-                                <div class="symbol-label">
-                                    <i class="flaticon-users-1 text-warning icon-lg"></i>
-                                </div>
-                            </div>
-                            <div class="navi-text">
-                                <div class="font-weight-bold font-size-lg">16 authors joined last week</div>
-                                <div class="text-muted">9 photodrapehrs, 7 designer</div>
+                                <div class="font-weight-bold font-size-lg">2 new items submited</div>
+                                <div class="text-muted">by Grog John</div>
                             </div>
                         </div>
                     </a>
                     <!--end::Item-->
                 </div>
                 <!--end::Nav-->
-            </div>
-            <!--end::Tabpane-->
-            <!--begin::Tabpane-->
-            <div class="tab-pane fade pt-3 pr-5 mr-n5" id="kt_quick_panel_settings" role="tabpanel">
-                <form class="form">
-                    <!--begin::Section-->
-                    <div class="pt-1">
-                        <h4 class="mb-7">Privacy Settings:</h4>
-                        <div class="pb-5">
-                            <div class="checkbox-inline mb-2">
-                                <label class="checkbox">
-                                    <input type="checkbox" />
-                                    <span></span>You have new notifications.</label>
-                            </div>
-                            <div class="checkbox-inline mb-2">
-                                <label class="checkbox">
-                                    <input type="checkbox" />
-                                    <span></span>You're sent a direct message</label>
-                            </div>
-                            <div class="checkbox-inline mb-2">
-                                <label class="checkbox">
-                                    <input type="checkbox" checked="checked" />
-                                    <span></span>Someone adds you as a connection</label>
-                            </div>
-                            <div class="checkbox-inline mb-2">
-                                <label class="checkbox checkbox-success">
-                                    <input type="checkbox" />
-                                    <span></span>Upon new order</label>
-                            </div>
-                            <div class="checkbox-inline mb-2">
-                                <label class="checkbox checkbox-success">
-                                    <input type="checkbox" />
-                                    <span></span>New membership approval</label>
-                            </div>
-                        </div>
-                        <!--begin::Group-->
-                        <div class="text-muted">After you log in, you will be asked for additional information to confirm your identity.</div>
-                        <!--end::Group-->
-                    </div>
-                    <!--end::Section-->
-                    <div class="separator separator-dashed my-8"></div>
-                    <!--begin::Section-->
-                    <div class="pt-1">
-                        <h4 class="mb-7">Security Settings:</h4>
-                        <div class="pb-5">
-                            <div class="checkbox-inline">
-                                <label class="checkbox mb-2">
-                                    <input type="checkbox" />
-                                    <span></span>Personal information safety</label>
-                            </div>
-                            <p class="form-text text-muted pb-5 mb-0">After you log in, you will be asked for additional information to confirm your identity. For extra security, this requires you to confirm your email.
-                                <a href="#" class="font-weight-bold">Learn more</a>.
-                            </p>
-                            <button type="button" class="btn btn-light-danger font-weight-bolder btn-sm">Setup login verification</button>
-                        </div>
-                    </div>
-                    <!--end::Section-->
-                </form>
             </div>
             <!--end::Tabpane-->
         </div>
@@ -1748,24 +1860,6 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
         </span>
     </div>
     <!--end::Scrolltop-->
-
-
-
-    <!--begin::Sticky Toolbar-->
-
-    <!--end::Sticky Toolbar-->
-    <!--begin::Demo Panel-->
-    <div id="kt_demo_panel" class="offcanvas offcanvas-right p-10">
-        <!--begin::Header-->
-        <div class="offcanvas-header d-flex align-items-center justify-content-between pb-7">
-            <h4 class="font-weight-bold m-0">Select A Demo</h4>
-            <a href="#" class="btn btn-xs btn-icon btn-light btn-hover-primary" id="kt_demo_panel_close">
-                <i class="ki ki-close icon-xs text-muted"></i>
-            </a>
-        </div>
-        <!--end::Header-->
-    </div>
-    <!--end::Demo Panel-->
     <script>
         var HOST_URL = "https://preview.keenthemes.com/keen/theme/tools/preview";
     </script>
@@ -1842,36 +1936,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
     <!--begin::Page Scripts(used by this page)-->
     <script src="assets/admin/js/pages/widgets.js"></script>
     <script src="assets/keen/js/pages/features/file-upload/image-input.js"></script>
-    <script scr="https://code.jquery.com/jquery-3.6.0.js"></script>
-    <script>
-        $(document).ready(function() {
-            $(document).on('click', '.remove-btn', function() {
-                $(this).closest('.pb-5').remove();
-            });
-            $(document).on('click', '.add-more-form', function() {
-                $('.paste-new-forms').append('<div class="pb-5" data-wizard-type="step-content" data-wizard-state="current">\
-                                <div class="row">\
-                                    <div class="col-lg-6">\
-                                        <div class="form-group">\
-                                            <input type="text" class="form-control" name="req_name[]" autocomplete="off">\
-                                        </div>\
-                                    </div>\
-                                    <div class="col-lg-4">\
-                                        <div class="form-group">\
-                                            <input type="text" class="form-control" name="remarks[]" autocomplete="off">\
-                                        </div>\
-                                    </div>\
-                                    <div class="col-lg-2">\
-                                        <div class="form-group">\
-                                            <button type="button" class="remove-btn btn btn-danger">Remove</button>\
-                                        </div>\
-                                    </div>\
-                                </div>\
-                            </div>');
-
-            });
-        });
-    </script>
+    <script src="assets/keen/js/pages/features/file-upload/dropzonejs.js"></script>
     <!--end::Page Scripts-->
 </body>
 <!--end::Body-->

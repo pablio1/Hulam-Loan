@@ -510,7 +510,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
                         <div class="scroll scroll-pull" data-height="375" data-mobile-height="300">
                             <!--begin::Messages-->
                             <div class="messages">
-
+                                    <!-- COmpany -->
                                 <!--begin::Message In-->
                                 <div class="d-flex flex-column mb-5 align-items-start">
                                     <div class="d-flex align-items-center">
@@ -540,6 +540,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
                                     <div class="mt-2 rounded p-5 bg-light-success text-dark-50 font-weight-bold font-size-lg text-left max-w-400px"><?= htmlentities($res->message) ?></div>
                                 </div>
                                 <!--end::Message In-->
+                               
                                 <!--begin::Message Out-->
                                 <div class="d-flex flex-column mb-5 align-items-end">
                                     <div class="d-flex align-items-center">
