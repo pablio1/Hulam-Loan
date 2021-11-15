@@ -193,7 +193,7 @@ if (isset($_POST['upload_payment'])) {
 											<!-- <a href="#" class="d-flex align-items-center text-dark text-hover-primary font-size-h5 font-weight-bold mr-3"><?= $loan['firstname'] ?></a> -->
 										</div>
 										<div class="my-lg-0 my-1">
-											<a href="debtor/view_approved_application2.php?loan_app_id=<?= $loan['loan_app_id'] ?>" class="btn btn-sm btn-light-primary font-weight-bolder mr-2">View Details</a>
+											<a href="debtor/loan_information.php" class="btn btn-sm btn-light-primary font-weight-bolder mr-2">View Details</a>
 											<a href="" class="btn btn-sm btn-primary font-weight-bolder" data-toggle="modal" data-target="#upload_payment"></data-target> Upload Proof of Payment</a>
 										</div>
 									</div>

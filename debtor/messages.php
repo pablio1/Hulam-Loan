@@ -1,6 +1,6 @@
 <?php
 session_start();
-error_reporting(0);
+error_reporting(-1);
 include('../db_connection/config.php');
 
 if ($_SESSION['user_type'] != 2) {
@@ -270,6 +270,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
                                                     </span>
                                                 </div>
                                             </div>
+
                                             <?php
                                             $user_id = $_SESSION['user_id'];
                                             $sender_id = intval($_GET['sender_id']);

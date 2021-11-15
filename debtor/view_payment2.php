@@ -190,6 +190,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 										<tbody>
 											<?php
 											$user_id = $_SESSION['user_id'];
+											
                                             $loan_app_id = intval($_GET['loan_app_id']);
 
 											$sql = "SELECT * FROM loan_application INNER JOIN loan_receipt ON loan_application.loan_app_id = loan_receipt.loan_app_id INNER JOIN
