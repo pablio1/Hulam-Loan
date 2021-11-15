@@ -8,41 +8,43 @@ include('../db_connection/config.php');
 $id = intval($_GET['user_id']);
 
 // $sql = "SELECT loan_application.*, user.* FROM loan_application INNER JOIN user on loan_application.debtor_id = user.user_id WHERE loan_application.loan_app_id = $id";
-$sql = "SELECT * FROM user WHERE user_id = $id";
+$sql = "SELECT * FROM user INNER JOIN loan_features ON user.user_id = loan_features.lender_id WHERE user.user_id = $id";
 $query = $dbh->prepare($sql);
 $query->execute();
 $user = $query->fetch();
-
 ?>
 
 
-
-<?php if(isset($_POST['valid_id'])){
+<?php if (isset($_POST['valid_d'])) {
 	$user_id = intval($_GET['user_id']);
-	$sql = "UPDATE debtors_info SET status_valid_id = 'valid' WHERE user_id = $user_id";
+	$sql = "UPDATE loan_features SET status_dti= 'valid' WHERE lender_id = $user_id";
 	$query = $dbh->prepare($sql);
-	$query->execute(); }?>
-<?php if(isset($_POST['invalid_id'])){
+	$query->execute();
+} ?>
+<?php if (isset($_POST['invalid_d'])) {
 	$user_id = intval($_GET['user_id']);
-	$sql = "UPDATE debtors_info SET status_valid_id = 'invalid' WHERE user_id = $user_id";
+	$sql = "UPDATE loan_features SET status_dti = 'invalid' WHERE lender_id = $user_id";
 	$query = $dbh->prepare($sql);
-	$query->execute(); }?>
-<?php if(isset($_POST['valid_selfie'])){
+	$query->execute();
+} ?>
+<?php if (isset($_POST['valid_b'])) {
 	$user_id = intval($_GET['user_id']);
-	$sql = "UPDATE debtors_info SET status_selfie_id = 'valid' WHERE user_id = $user_id";
+	$sql = "UPDATE loan_features SET status_b_permit = 'valid' WHERE lender_id = $user_id";
 	$query = $dbh->prepare($sql);
-	$query->execute(); }?>
-<?php if(isset($_POST['invalid_selfie'])){
+	$query->execute();
+} ?>
+<?php if (isset($_POST['invalid_b'])) {
 	$user_id = intval($_GET['user_id']);
-	$sql = "UPDATE debtors_info SET status_selfie_id = 'invalid' WHERE user_id = $user_id";
+	$sql = "UPDATE loan_features SET status_b_permit = 'invalid' WHERE lender_id = $user_id";
 	$query = $dbh->prepare($sql);
-	$query->execute(); }?>
+	$query->execute();
+} ?>
 
 
 
 <?php
 if (isset($_POST['send_message'])) {
-	$user_id = intval($_GET['user_id']);
+	$receiver_id = $_POST['receiver_id'];
 	$sender_id = $_POST['sender_id'];
 	$date_message = $_POST['date_message'];
 	$message = $_POST['message'];
@@ -50,16 +52,16 @@ if (isset($_POST['send_message'])) {
 	$insert = "INSERT INTO message(sender_id,receiver_id,message,date_message)VALUES(:sender_id,:receiver_id,:message,:date_message)";
 	$query = $dbh->prepare($insert);
 	$query->bindParam(':sender_id', $sender_id, PDO::PARAM_STR);
-	$query->bindParam(':receiver_id', $user_id, PDO::PARAM_STR);
+	$query->bindParam(':receiver_id', $receiver_id, PDO::PARAM_STR);
 	$query->bindParam(':message', $message, PDO::PARAM_STR);
 	$query->bindParam(':date_message', $date_message, PDO::PARAM_STR);
 	if ($query->execute()) {
 		$_SESSION['status_message'] = "Message Sent";
-		header("Location: view_information.php?user_id=$user_id");
+		header("Location: view_lendingcompany_request.php?user_id=$receiver_id");
 		exit();
 	} else {
 		$_SESSION['status_message'] = "Message Not Sent";
-		header('Location: view_information.php?user_id=$user_id');
+		header('Location: view_lendingcompany_request.php?user_id=$receiver_id');
 		exit();
 	}
 }
@@ -77,22 +79,29 @@ if (isset($_POST['activate'])) {
 	$query2->bindParam(':activation_date', $activation_date, PDO::PARAM_STR);
 	$query2->execute();
 
+	$update = "UPDATE user SET eligible = 'yes', activation_date = :activation_date WHERE user_id = $user_id";
+	$query2 = $dbh->prepare($update);
+	$query2->bindParam(':activation_date', $activation_date, PDO::PARAM_STR);
+	$query2->execute();
+
 	$insert = "INSERT INTO message(sender_id,receiver_id,message,date_message)VALUES(:sender_id,:receiver_id,:message,:date_message)";
 	$query = $dbh->prepare($insert);
 	$query->bindParam(':sender_id', $sender_id, PDO::PARAM_STR);
 	$query->bindParam(':receiver_id', $user_id, PDO::PARAM_STR);
 	$query->bindParam(':message', $message, PDO::PARAM_STR);
 	$query->bindParam(':date_message', $activation_date, PDO::PARAM_STR);
+
 	if ($query->execute()) {
 		$_SESSION['status_message'] = "Account Activated Successfully!";
-		header("Location: activated_debtors.php");
+		header("Location: activated_lendingcompany.php");
 		exit();
 	} else {
 		$_SESSION['status_message'] = "Error! Failed to Activate Account!";
-		header("Location: activated_debtors.php");
+		header("Location: activated_lendingcompany.php");
 		exit();
 	}
-}?>
+}
+?>
 
 <?php
 if (isset($_POST['deactivate'])) {
@@ -101,7 +110,7 @@ if (isset($_POST['deactivate'])) {
 	$activation_date = $_POST['date_message'];
 	$message = $_POST['message'];
 
-	$update = "UPDATE user SET eligible = 'no', activation_date = :activation_date WHERE user_id = $user_id";
+	$update = "UPDATE user SET eligible = 'deactivated', activation_date = :activation_date WHERE user_id = $user_id";
 	$query2 = $dbh->prepare($update);
 	$query2->bindParam(':activation_date', $activation_date, PDO::PARAM_STR);
 	$query2->execute();
@@ -118,217 +127,200 @@ if (isset($_POST['deactivate'])) {
 		exit();
 	} else {
 		$_SESSION['status_message'] = "Error!";
-		header("Location: deactivated_users.php");
+		header("Location: activated_lendingcompany.php");
 		exit();
 	}
-}?>
+} ?>
 
-<?php
-if (isset($_POST['declined_loan'])) {
-	$id = intval($_GET['loan_app_id']);
-	$sender_id = $_POST['sender_id'];
-	$receiver_id = $_POST['receiver_id'];
-	$declined_date = $_POST['declined_date'];
-	$message = "We regret to inform you that your loan application has been declined!";
-
-	$update = "UPDATE loan_application SET loan_status = 'Declined' WHERE loan_app_id = $id";
-	$query2 = $dbh->prepare($update);
-	$query2->execute();
-
-	$insert = "INSERT INTO message(sender_id,receiver_id,message,date_message)VALUES(:sender_id,:receiver_id,:message,:declined_date)";
-	$query = $dbh->prepare($insert);
-	$query->bindParam(':sender_id', $sender_id, PDO::PARAM_STR);
-	$query->bindParam(':receiver_id', $receiver_id, PDO::PARAM_STR);
-	$query->bindParam(':message', $message, PDO::PARAM_STR);
-	$query->bindParam(':declined_date', $declined_date, PDO::PARAM_STR);
-
-	if ($query->execute()) {
-		$_SESSION['status_message'] = "Loan Declined!";
-		header("Location: view_declined.php?loan_app_id=$id");
-		exit();
-	} else {
-		$_SESSION['status_message'] = "Error!";
-		header('Location: view_declined.php?loan_app_id=$id');
-		exit();
-	}
-}
-?>
 
 
 <!DOCTYPE html>
-
+<!--
+Template Name: Keen - The Ultimate Bootstrap 4 HTML Admin Dashboard Theme
+Author: KeenThemes
+Website: http://www.keenthemes.com/
+Contact: support@keenthemes.com
+Follow: www.twitter.com/keenthemes
+Dribbble: www.dribbble.com/keenthemes
+Like: www.facebook.com/keenthemes
+Purchase: https://themes.getbootstrap.com/product/keen-the-ultimate-bootstrap-admin-theme/
+Support: https://keenthemes.com/theme-support
+License: You must have a valid license purchased only from themes.getbootstrap.com(the above link) in order to legally use the theme for your project.
+-->
 <html lang="en">
-	<!--begin::Head-->
-	<head><base href="../index.php">
-		<meta charset="utf-8" />
-		<title>Hulam | Admin | Dashboard</title>
-		<meta name="description" content="Updates and statistics" />
-		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-		<!--begin::Fonts-->
-		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" />
-		<!--end::Fonts-->
-		<!--begin::Page Vendors Styles(used by this page)-->
-		<link href="assets/admin/plugins/custom/fullcalendar/fullcalendar.bundle.css" rel="stylesheet" type="text/css" />
-		<!--end::Page Vendors Styles-->
-		<!--begin::Global Theme Styles(used by all pages)-->
-		<link href="assets/admin/plugins/global/plugins.bundle.css" rel="stylesheet" type="text/css" />
-		<link href="assets/admin/plugins/custom/prismjs/prismjs.bundle.css" rel="stylesheet" type="text/css" />
-		<link href="assets/admin/css/style.bundle.css" rel="stylesheet" type="text/css" />
-		<!--end::Global Theme Styles-->
-		<!--begin::Layout Themes(used by all pages)-->
-		<link href="assets/admin/css/themes/layout/header/base/light.css" rel="stylesheet" type="text/css" />
-		<link href="assets/admin/css/themes/layout/header/menu/light.css" rel="stylesheet" type="text/css" />
-		<link href="assets/admin/css/themes/layout/brand/dark.css" rel="stylesheet" type="text/css" />
-		<link href="assets/admin/css/themes/layout/aside/dark.css" rel="stylesheet" type="text/css" />
-		<!--end::Layout Themes-->
-		<link rel="shortcut icon" href="assets/admin/media/logos/Hulam_Logo.png" />
-	</head>
-	<!--end::Head-->
-	<!--begin::Body-->
-	<body id="kt_body" class="quick-panel-right demo-panel-right offcanvas-right header-fixed header-mobile-fixed subheader-enabled aside-enabled aside-fixed aside-minimize-hoverable page-loading">
-		<!--begin::Main-->
-		<!--begin::Header Mobile-->
-		<div id="kt_header_mobile" class="header-mobile align-items-center header-mobile-fixed">
-			<!--begin::Logo-->
-			<a href="index.php">
-			<img alt="Logo" src="assets/admin/media/logos/Hulam_Logo.png" class="h-60px w-60px" style="padding-top: 10%; padding: right 50%;"/>
-			</a>
-			<!--end::Logo-->
-			<!--begin::Toolbar-->
-			<div class="d-flex align-items-center">
-				<!--begin::Aside Mobile Toggle-->
-				<button class="btn p-0 burger-icon burger-icon-left" id="kt_aside_mobile_toggle">
-					<span></span>
-				</button>
-				<!--end::Aside Mobile Toggle-->
-				<!--begin::Header Menu Mobile Toggle-->
-				<button class="btn p-0 burger-icon ml-5" id="kt_header_mobile_toggle">
-					<span></span>
-				</button>
-				<!--end::Header Menu Mobile Toggle-->
-				<!--begin::Topbar Mobile Toggle-->
-				<button class="btn btn-hover-text-primary p-0 ml-3" id="kt_header_mobile_topbar_toggle">
-					<span class="svg-icon svg-icon-xl">
-						<!--begin::Svg Icon | path:assets/media/svg/icons/General/User.svg-->
-						<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-							<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-								<polygon points="0 0 24 0 24 24 0 24" />
-								<path d="M12,11 C9.790861,11 8,9.209139 8,7 C8,4.790861 9.790861,3 12,3 C14.209139,3 16,4.790861 16,7 C16,9.209139 14.209139,11 12,11 Z" fill="#000000" fill-rule="nonzero" opacity="0.3" />
-								<path d="M3.00065168,20.1992055 C3.38825852,15.4265159 7.26191235,13 11.9833413,13 C16.7712164,13 20.7048837,15.2931929 20.9979143,20.2 C21.0095879,20.3954741 20.9979143,21 20.2466999,21 C16.541124,21 11.0347247,21 3.72750223,21 C3.47671215,21 2.97953825,20.45918 3.00065168,20.1992055 Z" fill="#000000" fill-rule="nonzero" />
-							</g>
-						</svg>
-						<!--end::Svg Icon-->
-					</span>
-				</button>
-				<!--end::Topbar Mobile Toggle-->
-			</div>
-			<!--end::Toolbar-->
-		</div>
-		<!--end::Header Mobile-->
-		<div class="d-flex flex-column flex-root">
-			<!--begin::Page-->
-			<div class="d-flex flex-row flex-column-fluid page">
-				<!--begin::Aside-->
-				<div class="aside aside-left aside-fixed d-flex flex-column flex-row-auto" id="kt_aside">
-					<!--begin::Brand-->
-					<div class="brand flex-column-auto" id="kt_brand">
-						<!--begin::Logo-->
-						<a href="index.php" class="brand-logo">
-							<img alt="Logo" src="assets/admin/media/logos/Hulam_Logo.png" class="h-100px w-90px" style="padding-top: 20%; padding: right 50%;"/>
-						</a> 
-						<!--end::Logo-->
-						<!--begin::Toggle-->
-						<button class="brand-toggle btn btn-sm px-0" id="kt_aside_toggle">
-							<span class="svg-icon svg-icon svg-icon-xl">
-								<!--begin::Svg Icon | path:assets/media/svg/icons/Text/Toggle-Right.svg-->
-								<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-									<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-										<rect x="0" y="0" width="24" height="24" />
-										<path fill-rule="evenodd" clip-rule="evenodd" d="M22 11.5C22 12.3284 21.3284 13 20.5 13H3.5C2.6716 13 2 12.3284 2 11.5C2 10.6716 2.6716 10 3.5 10H20.5C21.3284 10 22 10.6716 22 11.5Z" fill="black" />
-										<path opacity="0.5" fill-rule="evenodd" clip-rule="evenodd" d="M14.5 20C15.3284 20 16 19.3284 16 18.5C16 17.6716 15.3284 17 14.5 17H3.5C2.6716 17 2 17.6716 2 18.5C2 19.3284 2.6716 20 3.5 20H14.5ZM8.5 6C9.3284 6 10 5.32843 10 4.5C10 3.67157 9.3284 3 8.5 3H3.5C2.6716 3 2 3.67157 2 4.5C2 5.32843 2.6716 6 3.5 6H8.5Z" fill="black" />
-									</g>
-								</svg>
-								<!--end::Svg Icon-->
-							</span>
-						</button>
-						<!--end::Toolbar-->
-					</div>
-					<!--end::Brand-->
+<!--begin::Head-->
 
-					<!--begin::Aside Menu-->
-					<div class="aside-menu-wrapper flex-column-fluid" id="kt_aside_menu_wrapper">
-						<!--begin::Menu Container-->
-						<div id="kt_aside_menu" class="aside-menu my-4" data-menu-vertical="1" data-menu-scroll="1" data-menu-dropdown-timeout="500">
-							<!--begin::Menu Nav-->
-							<ul class="menu-nav">
-								<li class="menu-item menu-item-active" aria-haspopup="true">
-									<a href="admin/index.php" class="menu-link">
-										<span class="svg-icon menu-icon">
-											<!--begin::Svg Icon | path:assets/media/svg/icons/Design/Layers.svg-->
-											<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-												<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-													<polygon points="0 0 24 0 24 24 0 24" />
-													<path d="M12.9336061,16.072447 L19.36,10.9564761 L19.5181585,10.8312381 C20.1676248,10.3169571 20.2772143,9.3735535 19.7629333,8.72408713 C19.6917232,8.63415859 19.6104327,8.55269514 19.5206557,8.48129411 L12.9336854,3.24257445 C12.3871201,2.80788259 11.6128799,2.80788259 11.0663146,3.24257445 L4.47482784,8.48488609 C3.82645598,9.00054628 3.71887192,9.94418071 4.23453211,10.5925526 C4.30500305,10.6811601 4.38527899,10.7615046 4.47382636,10.8320511 L4.63,10.9564761 L11.0659024,16.0730648 C11.6126744,16.5077525 12.3871218,16.5074963 12.9336061,16.072447 Z" fill="#000000" fill-rule="nonzero" />
-													<path d="M11.0563554,18.6706981 L5.33593024,14.122919 C4.94553994,13.8125559 4.37746707,13.8774308 4.06710397,14.2678211 C4.06471678,14.2708238 4.06234874,14.2738418 4.06,14.2768747 L4.06,14.2768747 C3.75257288,14.6738539 3.82516916,15.244888 4.22214834,15.5523151 C4.22358765,15.5534297 4.2250303,15.55454 4.22647627,15.555646 L11.0872776,20.8031356 C11.6250734,21.2144692 12.371757,21.2145375 12.909628,20.8033023 L19.7677785,15.559828 C20.1693192,15.2528257 20.2459576,14.6784381 19.9389553,14.2768974 C19.9376429,14.2751809 19.9363245,14.2734691 19.935,14.2717619 L19.935,14.2717619 C19.6266937,13.8743807 19.0546209,13.8021712 18.6572397,14.1104775 C18.654352,14.112718 18.6514778,14.1149757 18.6486172,14.1172508 L12.9235044,18.6705218 C12.377022,19.1051477 11.6029199,19.1052208 11.0563554,18.6706981 Z" fill="#000000" opacity="0.3" />
-												</g>
-											</svg>
-											<!--end::Svg Icon-->
-										</span>
-										<span class="menu-text">Dashboard</span>
-									</a>
-								</li>
+<head>
+	<base href="../">
+	<meta charset="utf-8" />
+	<title>Hulam | Admin | Lending Company</title>
+	<meta name="description" content="Updates and statistics" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+	<!--begin::Fonts-->
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" />
+	<!--end::Fonts-->
+	<!--begin::Page Vendors Styles(used by this page)-->
+	<link href="assets/admin/plugins/custom/fullcalendar/fullcalendar.bundle.css" rel="stylesheet" type="text/css" />
+	<!--end::Page Vendors Styles-->
+	<!--begin::Global Theme Styles(used by all pages)-->
+	<link href="assets/admin/plugins/global/plugins.bundle.css" rel="stylesheet" type="text/css" />
+	<link href="assets/admin/plugins/custom/prismjs/prismjs.bundle.css" rel="stylesheet" type="text/css" />
+	<link href="assets/admin/css/style.bundle.css" rel="stylesheet" type="text/css" />
+	<!--end::Global Theme Styles-->
+	<!--begin::Layout Themes(used by all pages)-->
+	<link href="assets/admin/css/themes/layout/header/base/light.css" rel="stylesheet" type="text/css" />
+	<link href="assets/admin/css/themes/layout/header/menu/light.css" rel="stylesheet" type="text/css" />
+	<link href="assets/admin/css/themes/layout/brand/dark.css" rel="stylesheet" type="text/css" />
+	<link href="assets/admin/css/themes/layout/aside/dark.css" rel="stylesheet" type="text/css" />
+	<!--end::Layout Themes-->
+	<link rel="shortcut icon" href="assets/admin/media/logos/Hulam_Logo.png" />
+</head>
+<!--end::Head-->
+<!--begin::Body-->
+
+<body id="kt_body" class="quick-panel-right demo-panel-right offcanvas-right header-fixed header-mobile-fixed subheader-enabled aside-enabled aside-fixed aside-minimize-hoverable page-loading">
+	<!--begin::Main-->
+	<!--begin::Header Mobile-->
+	<div id="kt_header_mobile" class="header-mobile align-items-center header-mobile-fixed">
+		<!--begin::Logo-->
+		<a href="admin/index.php">
+			<img alt="Logo" src="assets/admin/media/logos/Hulam_Logo.png" class="h-60px w-60px" style="padding-top: 10%; padding: right 50%;" />
+		</a>
+		<!--end::Logo-->
+		<!--begin::Toolbar-->
+		<div class="d-flex align-items-center">
+			<!--begin::Aside Mobile Toggle-->
+			<button class="btn p-0 burger-icon burger-icon-left" id="kt_aside_mobile_toggle">
+				<span></span>
+			</button>
+			<!--end::Aside Mobile Toggle-->
+			<!--begin::Header Menu Mobile Toggle-->
+			<button class="btn p-0 burger-icon ml-5" id="kt_header_mobile_toggle">
+				<span></span>
+			</button>
+			<!--end::Header Menu Mobile Toggle-->
+			<!--begin::Topbar Mobile Toggle-->
+			<button class="btn btn-hover-text-primary p-0 ml-3" id="kt_header_mobile_topbar_toggle">
+				<span class="svg-icon svg-icon-xl">
+					<!--begin::Svg Icon | path:assets/media/svg/icons/General/User.svg-->
+					<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+						<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+							<polygon points="0 0 24 0 24 24 0 24" />
+							<path d="M12,11 C9.790861,11 8,9.209139 8,7 C8,4.790861 9.790861,3 12,3 C14.209139,3 16,4.790861 16,7 C16,9.209139 14.209139,11 12,11 Z" fill="#000000" fill-rule="nonzero" opacity="0.3" />
+							<path d="M3.00065168,20.1992055 C3.38825852,15.4265159 7.26191235,13 11.9833413,13 C16.7712164,13 20.7048837,15.2931929 20.9979143,20.2 C21.0095879,20.3954741 20.9979143,21 20.2466999,21 C16.541124,21 11.0347247,21 3.72750223,21 C3.47671215,21 2.97953825,20.45918 3.00065168,20.1992055 Z" fill="#000000" fill-rule="nonzero" />
+						</g>
+					</svg>
+					<!--end::Svg Icon-->
+				</span>
+			</button>
+			<!--end::Topbar Mobile Toggle-->
+		</div>
+		<!--end::Toolbar-->
+	</div>
+	<!--end::Header Mobile-->
+	<div class="d-flex flex-column flex-root">
+		<!--begin::Page-->
+		<div class="d-flex flex-row flex-column-fluid page">
+			<!--begin::Aside-->
+			<div class="aside aside-left aside-fixed d-flex flex-column flex-row-auto" id="kt_aside">
+				<!--begin::Brand-->
+				<div class="brand flex-column-auto" id="kt_brand">
+					<!--begin::Logo-->
+					<a href="admin/index.php" class="brand-logo">
+						<img alt="Logo" src="assets/admin/media/logos/Hulam_Logo.png" class="h-100px w-90px" style="padding-top: 20%; padding: right 50%;" />
+					</a>
+					<!--end::Logo-->
+					<!--begin::Toggle-->
+					<button class="brand-toggle btn btn-sm px-0" id="kt_aside_toggle">
+						<span class="svg-icon svg-icon svg-icon-xl">
+							<!--begin::Svg Icon | path:assets/media/svg/icons/Text/Toggle-Right.svg-->
+							<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+								<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+									<rect x="0" y="0" width="24" height="24" />
+									<path fill-rule="evenodd" clip-rule="evenodd" d="M22 11.5C22 12.3284 21.3284 13 20.5 13H3.5C2.6716 13 2 12.3284 2 11.5C2 10.6716 2.6716 10 3.5 10H20.5C21.3284 10 22 10.6716 22 11.5Z" fill="black" />
+									<path opacity="0.5" fill-rule="evenodd" clip-rule="evenodd" d="M14.5 20C15.3284 20 16 19.3284 16 18.5C16 17.6716 15.3284 17 14.5 17H3.5C2.6716 17 2 17.6716 2 18.5C2 19.3284 2.6716 20 3.5 20H14.5ZM8.5 6C9.3284 6 10 5.32843 10 4.5C10 3.67157 9.3284 3 8.5 3H3.5C2.6716 3 2 3.67157 2 4.5C2 5.32843 2.6716 6 3.5 6H8.5Z" fill="black" />
+								</g>
+							</svg>
+							<!--end::Svg Icon-->
+						</span>
+					</button>
+					<!--end::Toolbar-->
+				</div>
+				<!--end::Brand-->
+				<!--begin::Aside Menu-->
+				<div class="aside-menu-wrapper flex-column-fluid" id="kt_aside_menu_wrapper">
+					<!--begin::Menu Container-->
+					<div id="kt_aside_menu" class="aside-menu my-4" data-menu-vertical="1" data-menu-scroll="1" data-menu-dropdown-timeout="500">
+						<!--begin::Menu Nav-->
+						<ul class="menu-nav">
+							<li class="menu-item menu-item-active" aria-haspopup="true">
+								<a href="admin/index.php" class="menu-link">
+									<span class="svg-icon menu-icon">
+										<!--begin::Svg Icon | path:assets/media/svg/icons/Design/Layers.svg-->
+										<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+											<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+												<polygon points="0 0 24 0 24 24 0 24" />
+												<path d="M12.9336061,16.072447 L19.36,10.9564761 L19.5181585,10.8312381 C20.1676248,10.3169571 20.2772143,9.3735535 19.7629333,8.72408713 C19.6917232,8.63415859 19.6104327,8.55269514 19.5206557,8.48129411 L12.9336854,3.24257445 C12.3871201,2.80788259 11.6128799,2.80788259 11.0663146,3.24257445 L4.47482784,8.48488609 C3.82645598,9.00054628 3.71887192,9.94418071 4.23453211,10.5925526 C4.30500305,10.6811601 4.38527899,10.7615046 4.47382636,10.8320511 L4.63,10.9564761 L11.0659024,16.0730648 C11.6126744,16.5077525 12.3871218,16.5074963 12.9336061,16.072447 Z" fill="#000000" fill-rule="nonzero" />
+												<path d="M11.0563554,18.6706981 L5.33593024,14.122919 C4.94553994,13.8125559 4.37746707,13.8774308 4.06710397,14.2678211 C4.06471678,14.2708238 4.06234874,14.2738418 4.06,14.2768747 L4.06,14.2768747 C3.75257288,14.6738539 3.82516916,15.244888 4.22214834,15.5523151 C4.22358765,15.5534297 4.2250303,15.55454 4.22647627,15.555646 L11.0872776,20.8031356 C11.6250734,21.2144692 12.371757,21.2145375 12.909628,20.8033023 L19.7677785,15.559828 C20.1693192,15.2528257 20.2459576,14.6784381 19.9389553,14.2768974 C19.9376429,14.2751809 19.9363245,14.2734691 19.935,14.2717619 L19.935,14.2717619 C19.6266937,13.8743807 19.0546209,13.8021712 18.6572397,14.1104775 C18.654352,14.112718 18.6514778,14.1149757 18.6486172,14.1172508 L12.9235044,18.6705218 C12.377022,19.1051477 11.6029199,19.1052208 11.0563554,18.6706981 Z" fill="#000000" opacity="0.3" />
+											</g>
+										</svg>
+										<!--end::Svg Icon-->
+									</span>
+									<span class="menu-text">Dashboard</span>
+								</a>
+							</li>
 							<li class="menu-section">
-									<h4 class="menu-text">Manage Account</h4>
-									<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
-								</li>
-								<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-									<a href="javascript:;" class="menu-link menu-toggle">
-										<span class="svg-icon menu-icon">
-										</span>
-										<span class="menu-text"> Manage Users</span>
-										<i class="menu-arrow"></i>
-									</a>
-									<div class="menu-submenu">
-										<i class="menu-arrow"></i>
-										<ul class="menu-subnav">
-											<li class="menu-item menu-item-parent" aria-haspopup="true">
-												<span class="menu-link">
-													<span class="menu-text">Applications</span>
-												</span>
-											</li>
-											<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-												<a href="admin/activated_debtors.php" class="menu-link menu-toggle">
-													<i class="menu-bullet menu-bullet-dot">
-														<span></span>
-													</i>
-													<span class="menu-text">Debtors</span>
-												</a>
-											</li>
-											<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-												<a href="admin/activated_lendingcompany.php" class="menu-link menu-toggle">
-													<i class="menu-bullet menu-bullet-dot">
-														<span></span>
-													</i>
-													<span class="menu-text">Lending Companies</span>
-												</a>
-											</li>
-											<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-												<a href="admin/activated_individual_investor.php" class="menu-link menu-toggle">
-													<i class="menu-bullet menu-bullet-dot">
-														<span></span>
-													</i>
-													<span class="menu-text">Individual Investors</span>
-												</a>
-											</li>
-											<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-												<a href="admin/activated_payment_center.php" class="menu-link menu-toggle">
-													<i class="menu-bullet menu-bullet-dot">
-														<span></span>
-													</i>
-													<span class="menu-text">Payment Centre</span>
-												</a>
-											</li>
-											<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+								<h4 class="menu-text">Manage Account</h4>
+								<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
+							</li>
+							<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+								<a href="javascript:;" class="menu-link menu-toggle">
+									<span class="svg-icon menu-icon">
+									</span>
+									<span class="menu-text"> Manage Users</span>
+									<i class="menu-arrow"></i>
+								</a>
+								<div class="menu-submenu">
+									<i class="menu-arrow"></i>
+									<ul class="menu-subnav">
+										<li class="menu-item menu-item-parent" aria-haspopup="true">
+											<span class="menu-link">
+												<span class="menu-text">Applications</span>
+											</span>
+										</li>
+										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+											<a href="admin/activated_debtors.php" class="menu-link menu-toggle">
+												<i class="menu-bullet menu-bullet-dot">
+													<span></span>
+												</i>
+												<span class="menu-text">Debtors</span>
+											</a>
+										</li>
+										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+											<a href="admin/activated_lendingcompany.php" class="menu-link menu-toggle">
+												<i class="menu-bullet menu-bullet-dot">
+													<span></span>
+												</i>
+												<span class="menu-text">Lending Companies</span>
+											</a>
+										</li>
+										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+											<a href="admin/activated_individual_investor.php" class="menu-link menu-toggle">
+												<i class="menu-bullet menu-bullet-dot">
+													<span></span>
+												</i>
+												<span class="menu-text">Individual Investors</span>
+											</a>
+										</li>
+										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+											<a href="admin/activated_payment_center.php" class="menu-link menu-toggle">
+												<i class="menu-bullet menu-bullet-dot">
+													<span></span>
+												</i>
+												<span class="menu-text">Payment Centre</span>
+											</a>
+										</li>
+										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
 												<a href="admin/deactivated_users.php" class="menu-link menu-toggle">
 													<i class="menu-bullet menu-bullet-dot">
 														<span></span>
@@ -336,52 +328,52 @@ if (isset($_POST['declined_loan'])) {
 													<span class="menu-text">Deactivated User</span>
 												</a>
 											</li>
-										</ul>
-									</div>
-								</li>
-								
-								<li class="menu-section">
-									<h4 class="menu-text">Manage Report</h4>
-									<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
-								</li>
-								<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-									<a href="javascript:;" class="menu-link menu-toggle">
-										<span class="svg-icon menu-icon">
-										</span>
-										<span class="menu-text">Generate Report</span>
-										<i class="menu-arrow"></i>
-									</a>
-									<div class="menu-submenu">
-										<i class="menu-arrow"></i>
-										<ul class="menu-subnav">
-											<li class="menu-item menu-item-parent" aria-haspopup="true">
-												<span class="menu-link">
-													<span class="menu-text">Themes</span>
-												</span>
-											</li>
-											<li class="menu-item" aria-haspopup="true">
-												<a href="admin/account_user_report.php" class="menu-link">
-													<i class="menu-bullet menu-bullet-dot">
-														<span></span>
-													</i>
-													<span class="menu-text">Account User Report</span>
-												</a>
-											</li>
-											<li class="menu-item" aria-haspopup="true">
-												<a href="admin/payment_report.php" class="menu-link">
-													<i class="menu-bullet menu-bullet-dot">
-														<span></span>
-													</i>
-													<span class="menu-text">Payment Report</span>
-												</a>
-											</li>
-										</ul>
-									</div>
-								</li>
-							</div>
-						</div>
+									</ul>
+								</div>
+							</li>
+
+							<li class="menu-section">
+								<h4 class="menu-text">Manage Report</h4>
+								<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
+							</li>
+							<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+								<a href="javascript:;" class="menu-link menu-toggle">
+									<span class="svg-icon menu-icon">
+									</span>
+									<span class="menu-text">Generate Report</span>
+									<i class="menu-arrow"></i>
+								</a>
+								<div class="menu-submenu">
+									<i class="menu-arrow"></i>
+									<ul class="menu-subnav">
+										<li class="menu-item menu-item-parent" aria-haspopup="true">
+											<span class="menu-link">
+												<span class="menu-text">Themes</span>
+											</span>
+										</li>
+										<li class="menu-item" aria-haspopup="true">
+											<a href="admin/account_user_report.php" class="menu-link">
+												<i class="menu-bullet menu-bullet-dot">
+													<span></span>
+												</i>
+												<span class="menu-text">Account User Report</span>
+											</a>
+										</li>
+										<li class="menu-item" aria-haspopup="true">
+											<a href="admin/payment_report.php" class="menu-link">
+												<i class="menu-bullet menu-bullet-dot">
+													<span></span>
+												</i>
+												<span class="menu-text">Payment Report</span>
+											</a>
+										</li>
+									</ul>
+								</div>
+							</li>
 					</div>
-					<!--end::Aside-->
+				</div>
+			</div>
+			<!--end::Aside-->
 
 			<!--begin::Wrapper-->
 			<div class="d-flex flex-column flex-row-fluid wrapper" id="kt_wrapper">
@@ -1069,7 +1061,7 @@ if (isset($_POST['declined_loan'])) {
 							</div>
 						</div>
 					</div>
-					
+
 					<!--end::Subheader-->
 					<!--begin::Entry-->
 					<div class="d-flex flex-column-fluid">
@@ -1082,10 +1074,10 @@ if (isset($_POST['declined_loan'])) {
 										<!--begin::Pic-->
 										<div class="flex-shrink-0 mr-7">
 											<div class="symbol symbol-50 symbol-lg-120">
-												<img alt="Pic" src="/hulam/assets/keen/debtors/<?= $user['profile_pic'] ?>">
+												<img alt="Pic" src="/hulam/assets/keen/company_logo/<?= $user['company_logo'] ?>">
 											</div>
 										</div>
-										
+
 										<!--end::Pic-->
 										<!--begin: Info-->
 										<div class="flex-grow-1">
@@ -1094,7 +1086,7 @@ if (isset($_POST['declined_loan'])) {
 												<!--begin::User-->
 												<div class="mr-3">
 													<!--begin::Name-->
-													<h4 class="d-flex align-items-center text-dark text-hover-primary font-size-h5 font-weight-bold mr-3"><?= $user['firstname'] . ' ' . $user['middlename'] . ' ' . $user['lastname'] ?></h4>
+													<h4 class="d-flex align-items-center text-dark text-hover-primary font-size-h5 font-weight-bold mr-3"><?= $user['company_name'] ?></h4>
 
 													<!--end::Name-->
 													<!--begin::Contacts-->
@@ -1122,21 +1114,32 @@ if (isset($_POST['declined_loan'])) {
 																</g>
 															</svg>
 															<!--end::Svg Icon-->
-														</span><?= $user['p_street'] . ' ' . $user['p_barangay'] . ' ' . $user['p_city'] . ' ' . $user['p_province'] . ' ' . $user['p_zipcode'] ?>
+														</span><?= $user['company_street'] . ' ' . $user['company_barangay'] . ' ' . $user['company_city'] . ' ' . $user['company_province'] . ' ' . $user['company_zipcode'] ?>
 													</div>
 													<div class="d-flex flex-wrap my-2">
-														<span class="font-weight-bolder font-size-sm">Contact No:
+														<span class="font-weight-bolder font-size-sm">&nbsp;&nbsp;Contact No:
 														</span><?= $user['mobile'] ?>
+													</div>
+													<div class="d-flex flex-wrap my-2">
+														<span class="font-weight-bolder font-size-sm">&nbsp;&nbsp;Contact No:
+														</span><?= $user['company_landline'] ?>
 													</div>
 													<!--end::Contacts-->
 												</div>
 												<!--begin::User-->
 												<!--begin::Actions-->
 												<div class="my-lg-0 my-1">
-													<!-- <a href="#" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#activate_debtor">Activate</a> -->
+													<?php if ($user['status_dti'] == 'invalid') : ?>
+														<!-- <a href="#" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#notice1">Activate</a> -->
+													<?php elseif ($user['status_b_permit'] == 'invalid') : ?>
+														<!-- <a href="#" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#notice2">Activate</a> -->
+													<?php else : ?>
+														<!-- <a href="#" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#activate_debtor">Activate</a> -->
+													<?php endif; ?>
 													<a href="#" class="btn btn-sm btn-light-success font-weight-bolder mr-2" data-toggle="modal" data-target="#message">Send Message</a>
 													<a href="#" class="btn btn-sm btn-light-danger font-weight-bolder mr-2" data-toggle="modal" data-target="#deactivate_debtor">Deactivate</a>
-													<a href="admin/pending_debtors.php" class="btn btn-sm btn-light-primary font-weight-bolder mr-2"><< Back</a>
+													<a href="admin/pending_lendingcompany.php" class="btn btn-sm btn-light-primary font-weight-bolder mr-2">
+														<< Back</a>
 												</div>
 												<!--end::Actions-->
 											</div>
@@ -1160,236 +1163,369 @@ if (isset($_POST['declined_loan'])) {
 
 										// $id = $user['debtor_id'];
 
-										$sql = "SELECT * FROM debtors_info WHERE user_id = $id";
+										$sql = "SELECT * FROM loan_features WHERE lender_id = $id";
 										$que = $dbh->prepare($sql);
 										$que->execute();
 										$res = $que->fetch();
 										?>
-										<!--begin: Item-->
-										<div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
-											<div class="d-flex flex-column text-dark-75">
-												<span class="font-weight-bolder font-size-m">Source of Income</span>
-												<span class="font-size-sm">Company Name: &nbsp;<?= $res['company_name'] ?></span>
-												<span class="font-size-sm">Monthly Salary: &nbsp;<?= $res['monthly_salary'] ?></span>
-												<span class="font-size-sm">Monthly Salary: &nbsp;<?= $res['company_street'] . ' ' . $res['company_barangay'] . ' ' . $res['company_city']
-																										. ' ' . $res['company_province'] . ' ' . $res['company_zipcode'] ?></span>
-											</div>
-										</div>
-										<!--end: Item-->
-										<!--begin: Item-->
-										<div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
-											<div class="d-flex flex-column text-dark-75">
-												<span class="font-weight-bolder font-size-m">Relative Contact:</span>
-												<span class="font-size-sm">Relative Name: &nbsp;<?= $res['rel_name'] ?></span>
-												<span class="font-size-sm">Relative Mobile No: &nbsp;<?= $res['rel_mobile'] ?></span>
-												<span class="font-size-sm">Relation: &nbsp;<?= $res['rel_type'] ?></span>
-											</div>
-										</div>
-										<!--end: Item-->
 									</div>
-									<!--end::Bottom-->
-									<div class="card-body pt-0">
-										<table class="table table-bordered">
-											<thead>
-												<tr>
-													<th>Type of Documents</th>
-													<th>Uploaded Documents</th>
-													<th>Status</th>
-													<th>Action</th>
-												</tr>
-											</thead>
-											<tbody>
-												<tr>
-													<td>Valid ID</td>
-													<td><a href="/hulam/assets/keen/debtors/<?= $res['valid_id'] ?>" target="_blank"><?= $res['valid_id'] ?></a></td>
-													<td><?= $res['status_valid_id']?></td>
-													<td>
-													<div class="dropdown dropdown-inline">
-														<a href="javascript:;" class="btn btn-sm btn-clean btn-icon mr-2" data-toggle="dropdown">
-															<span class="svg-icon svg-icon-md">
-															<i class="flaticon2-gear text-primary"></i></span></a>
-														<div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-															<ul class="navi flex-column navi-hover py-2">
-																<li class="navi-header font-weight-bolder text-uppercase font-size-xs text-primary pb-2">
-																	Choose an action:
-																</li>
-																<li class="navi-item"> 
-																	<a href="" data-toggle="modal" data-target="#confirm_valid_id" class="navi-link"> <span class="navi-icon"><i class="la la-copy"></i></span> <span class="navi-text">Validate ID</a></li>
-															</ul>
-														</div>
-													</div>
-													</td>
-												</tr>
-												<tr>
-													<td>SELFIE ID</td>
-													<td><a href="/hulam/assets/keen/debtors/<?= $res['selfie_id']?>" target="_blank"><?= $res['selfie_id']?></a></td>
-													<td><?= $res['status_selfie_id']?></td>
-													<td>
-													<div class="dropdown dropdown-inline">
-														<a href="javascript:;" class="btn btn-sm btn-clean btn-icon mr-2" data-toggle="dropdown">
-															<span class="svg-icon svg-icon-md">
-															<i class="flaticon2-gear text-primary"></i></span></a>
-														<div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-															<ul class="navi flex-column navi-hover py-2">
-																<li class="navi-header font-weight-bolder text-uppercase font-size-xs text-primary pb-2">
-																	Choose an action:
-																</li>
-																<li class="navi-item">
-																<a href="" data-toggle="modal" data-target="#confirm_selfie" class="navi-link"> <span class="navi-icon"><i class="la la-copy"></i></span> <span class="navi-text">Validate ID</a></li>
-															</ul>
-														</div>
-													</div>
-													</td>
-												</tr>
-											</tbody>
-										</table>
-									</div>
-								</div>
-							</div>
-							<!-- Start Modal Approved Loan -->
-							<form action="" method="post">
-								<div class="modal fade" id="confirm_valid_id" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
-									<div class="modal-dialog modal-dialog-centered modal-sm" role="document">
-										<div class="modal-content">
-											<div class="modal-header">
-												<h5 class="modal-title" id="exampleModalLabel">Confirm ID?</h5>
-												<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-													<i aria-hidden="true" class="ki ki-close"></i>
-												</button>
-											</div>
-											<div class="modal-body">
-												<button type="submit" name="invalid_id" class="btn btn-light-danger font-weight-bold">Invalid ID</button>
-												<button type="submit" name="valid_id" class="btn btn-primary font-weight-bold">Valid ID</button>
-											</div>
-										</div>
-									</div>
-								</div>
-							</form>
-							<!-- End Modal -->
-							<!-- Start Modal Approved Loan -->
-							<form action="" method="post" enctype="multipart/form-data">
-								<div class="modal fade" id="confirm_selfie" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
-									<div class="modal-dialog modal-dialog-centered modal-sm" role="document">
-										<div class="modal-content">
-											<div class="modal-header">
-												<h5 class="modal-title" id="exampleModalLabel">Confirm ID?</h5>
-												<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-													<i aria-hidden="true" class="ki ki-close"></i>
-												</button>
-											</div>
-											<div class="modal-body">
-												<button type="submit" name="invalid_selfie" class="btn btn-light-danger font-weight-bold">Invalid ID</button>
-												<button type="submit" name="valid_selfie" class="btn btn-primary font-weight-bold">Valid ID</button>
-											</div>
-										</div>
-									</div>
-								</div>
-							</form>
-							<!-- End Modal -->
-							<!-- Start Modal Approved Loan -->
-							<form action="" method="post">
-								<div class="modal fade" id="activate_debtor" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
-									<div class="modal-dialog modal-dialog-centered modal-sm" role="document">
-									<div class="modal-content">
-											<div class="modal-header">
-												<h5 class="modal-title" id="exampleModalLabel">Activate Account?</h5>
-												<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-													<i aria-hidden="true" class="ki ki-close"></i>
-												</button>
-												<input type="hidden" name="receiver_id" value="<?= $res['user_id']?>">
-												<input type="hidden" name="sender_id" value="<?= $_SESSION['user_id'] ?>">
-												<?php
-												date_default_timezone_set('Asia/Manila');
-												$todays_date = date("y-m-d h:i:sa");
-												$today = strtotime($todays_date);
-												$det = date("Y-m-d h:i:sa", $today);
-												?>
-												<input type="hidden" name="date_message" value="<?= $det; ?>">
-												<input type="hidden" name="message" value="Congratulations! Your account is now activated.">
-											</div>
-											<div class="modal-footer">
-												<button type="submit" name="activate" class="btn btn-light-primary font-weight-bold">Yes</button>
-											</div>
-										</div>
-									</div>
-								</div>
-							</form>
-							<!-- End Modal -->
-							<!-- Start Modal Approved Loan -->
-							<form action="" method="post">
-								<div class="modal fade" id="deactivate_debtor" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
-									<div class="modal-dialog modal-dialog-centered modal-sm" role="document">
-									<div class="modal-content">
-											<div class="modal-header">
-												<h5 class="modal-title" id="exampleModalLabel">Deactivate Account?</h5>
-												<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-													<i aria-hidden="true" class="ki ki-close"></i>
-												</button>
-												<input type="hidden" name="receiver_id" value="<?= $res['user_id']?>">
-												<input type="hidden" name="sender_id" value="<?= $_SESSION['user_id'] ?>">
-												<?php
-												date_default_timezone_set('Asia/Manila');
-												$todays_date = date("y-m-d h:i:sa");
-												$today = strtotime($todays_date);
-												$det = date("Y-m-d h:i:sa", $today);
-												?>
-												<input type="hidden" name="date_message" value="<?= $det; ?>">
-												<input type="hidden" name="message" value="We regret to inform you that your account is now deactivated!">
-											</div>
-											<div class="modal-footer">
-												<button type="submit" name="deactivate" class="btn btn-light-primary font-weight-bold">Yes</button>
-											</div>
-										</div>
-									</div>
-								</div>
-							</form>
-							<!-- End Modal -->
-							<!-- Start Modal Approved Loan -->
-							<form action="" method="post">
-								<div class="modal fade" id="message" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
-									<div class="modal-dialog modal-dialog-centered modal-m" role="document">
-										<div class="modal-content">
-											<div class="modal-header">
-												<h5 class="modal-title" id="exampleModalLabel">Send Message</h5>
-												<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-													<i aria-hidden="true" class="ki ki-close"></i>
-												</button>
-											</div>
-											<div class="modal-body">
-												<input type="hidden" name="receiver_id" value="<?= $res['user_id']?>">
-												<input type="hidden" name="sender_id" value="<?= $_SESSION['user_id'] ?>">
-												<?php
-												date_default_timezone_set('Asia/Manila');
-												$todays_date = date("y-m-d h:i:sa");
-												$today = strtotime($todays_date);
-												$det = date("Y-m-d h:i:sa", $today);
 
-												?>
-												<input type="hidden" name="date_message" value="<?= $det; ?>">
-												<div class="col-lg-12">
-													<textarea rows="4" cols="50" name="message" class="form-control" placeholder="Type here....."></textarea>
+									<!-- Start Modal -->
+									<div class="modal fade" id="notice1" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
+										<div class="modal-dialog modal-dialog-centered modal-m" role="document">
+											<div class="modal-content">
+												<div class="modal-header">
+													<h5 class="modal-title" id="exampleModalLabel">DTI Permit is invalid.</h5>
+													<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+														<i aria-hidden="true" class="ki ki-close"></i>
+													</button>
+												</div>
+												<div class="modal-body">
+													<label class="font-weight-bolder font-size-lg" for="input-username">Please validate.</label>
 												</div>
 											</div>
-											<div class="modal-footer">
-												<!-- <button type="button" class="btn btn-light-danger" data-dismiss="modal">Cancel</button> -->
-												<button type="submit" name="send_message" class="btn btn-light-primary font-weight-bold">Send</button>
+										</div>
+									</div>
+									<!-- End Modal -->
+									<!-- Start Modal -->
+									<div class="modal fade" id="notice2" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
+										<div class="modal-dialog modal-dialog-centered modal-m" role="document">
+											<div class="modal-content">
+												<div class="modal-header">
+													<h5 class="modal-title" id="exampleModalLabel">Business Permit is invalid.</h5>
+													<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+														<i aria-hidden="true" class="ki ki-close"></i>
+													</button>
+												</div>
+												<div class="modal-body">
+													<label class="font-weight-bolder font-size-lg" for="input-username">Please validate.</label>
+												</div>
 											</div>
 										</div>
 									</div>
+									<!-- End Modal -->
+
+									<div class="row">
+										<div class="col-lg-6">
+											<div class="card card-custom card-stretch gutter-b" style="background-color:whitesmoke;">
+												<div class="card-header h-auto border-0">
+													<div class="card-title py-5">
+														<h4 class="d-flex align-items-center text-dark font-size-h5 font-weight-bold mr-3">Loan Features</h4>
+													</div>
+													<table class="table table-bordered">
+														<thead>
+															<!-- <tr>
+															<th>Application Date</th>
+
+														</tr> -->
+														</thead>
+														<tbody>
+															<tr>
+																<td>Minimum Loan</td>
+																<td><?= number_format($res['min_loan'], 2); ?></td>
+															</tr>
+															<tr>
+																<td>Maximum Loan</td>
+																<td><?= number_format($res['max_loan'], 2); ?></td>
+															</tr>
+															<tr>
+																<td>Minimum Term</td>
+																<td><?=$res['min_term']; ?></td>
+															</tr>
+															<tr>
+																<td>Maximum Term</td>
+																<td><?= $res['max_term']; ?></td>
+															</tr>
+															<tr>
+																<td>Fix Interest Rate</td>
+																<td><?= number_format($res['fix_rate'], 2); ?>%</td>
+															</tr>
+															<tr>
+																<td>Late Charges</td>
+																<td><?= number_format($res['late_charges'], 2); ?>%</td>
+															</tr>
+														</tbody>
+													</table>
+												</div>
+											</div>
+										</div>
+										<div class="col-lg-6">
+											<div class="card card-custom card-stretch gutter-b" style="background-color:whitesmoke;">
+												<div class="card-header h-auto border-0">
+													<div class="card-title py-5">
+														<h4 class="d-flex align-items-center text-dark font-size-h5 font-weight-bold mr-3">Submitted Requirements</h4>
+													</div>
+													<table class="table table-bordered">
+														<thead>
+															<tr>
+																<th>Type of Documents</th>
+																<th>Uploaded Documents</th>
+																<th>Status</th>
+																<th>Action</th>
+															</tr>
+														</thead>
+														<tbody>
+															<tr>
+																<td>DTI PERMIT</td>
+																<td><a href="/hulam/assets/keen/company_credentials/<?= $res['dti_permit'] ?>" target="_blank"><?= $res['dti_permit'] ?></a></td>
+																<td><?= $res['status_dti'] ?></td>
+																<td>
+																	<div class="dropdown dropdown-inline">
+																		<a href="javascript:;" class="btn btn-sm btn-clean btn-icon mr-2" data-toggle="dropdown">
+																			<span class="svg-icon svg-icon-md">
+																				<i class="flaticon2-gear text-primary"></i></span></a>
+																		<div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+																			<ul class="navi flex-column navi-hover py-2">
+																				<li class="navi-header font-weight-bolder text-uppercase font-size-xs text-primary pb-2">
+																					Choose an action:
+																				</li>
+																				<li class="navi-item">
+																					<a href="" data-toggle="modal" data-target="#confirm_dti" class="navi-link"> <span class="navi-icon"><i class="la la-copy"></i></span> <span class="navi-text">Validate DTI Permit</a>
+																				</li>
+																			</ul>
+																		</div>
+																	</div>
+																</td>
+															</tr>
+															<tr>
+																<td>BUSINESS PERMIT</td>
+																<td><a href="/hulam/assets/keen/company_credentials/<?= $res['b_permit'] ?>" target="_blank"><?= $res['b_permit'] ?></a></td>
+																<td><?= $res['status_b_permit'] ?></td>
+																<td>
+																	<div class="dropdown dropdown-inline">
+																		<a href="javascript:;" class="btn btn-sm btn-clean btn-icon mr-2" data-toggle="dropdown">
+																			<span class="svg-icon svg-icon-md">
+																				<i class="flaticon2-gear text-primary"></i></span></a>
+																		<div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+																			<ul class="navi flex-column navi-hover py-2">
+																				<li class="navi-header font-weight-bolder text-uppercase font-size-xs text-primary pb-2">
+																					Choose an action:
+																				</li>
+																				<li class="navi-item">
+																					<a href="" data-toggle="modal" data-target="#confirm_b_permit" class="navi-link"> <span class="navi-icon"><i class="la la-copy"></i></span> <span class="navi-text">Validate Business Permit</a>
+																				</li>
+																			</ul>
+																		</div>
+																	</div>
+																</td>
+															</tr>
+														</tbody>
+													</table>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-lg-6">
+											<div class="card card-custom card-stretch gutter-b" style="background-color:whitesmoke;">
+												<div class="card-header h-auto border-0">
+													<div class="card-title py-5">
+														<h4 class="d-flex align-items-center text-dark font-size-h5 font-weight-bold mr-3">Notice/Reminders</h4>
+													</div>
+													<table class="table table-bordered">
+														<thead>
+															<!-- <tr>
+															<th>Application Date</th>
+
+														</tr> -->
+														</thead>
+														<tbody>
+														<?php
+															$id = intval($_GET['user_id']);
+
+															$sql = "SELECT * FROM notice WHERE lender_id = $id";
+															$query = $dbh->prepare($sql);
+															$query->execute();
+															$user2 = $query->fetchAll();
+															foreach($user2 as $user22): ?>
+															
+															<tr>
+																<td><?= $user22['notice_title']?></td>
+																<td><?= $user22['remarks'] ?></td>
+															</tr>
+															<?php endforeach; ?>
+														</tbody>
+													</table>
+												</div>
+											</div>
+										</div>
+										<div class="col-lg-6">
+											<div class="card card-custom card-stretch gutter-b" style="background-color:whitesmoke;">
+												<div class="card-header h-auto border-0">
+													<div class="card-title py-5">
+														<h4 class="d-flex align-items-center text-dark font-size-h5 font-weight-bold mr-3">List of Requirements for Loan Application</h4>
+													</div>
+													<table class="table table-bordered">
+														<thead>
+															<tr>
+																<th>Type of Documents</th>
+																<th>Remarks</th>
+															</tr>
+														</thead>
+														<tbody>
+															<?php
+															$id = intval($_GET['user_id']);
+															
+															$sql = "SELECT * FROM loan_requirements WHERE lender_id = $id";
+															$query = $dbh->prepare($sql);
+															$query->execute();
+															$user2 = $query->fetchAll();
+															foreach($user2 as $us): ?>
+															<tr>
+																<td><?= $us['req_name']?></td>
+																<td><?= $us['remarks']?></td>
+																
+															</tr>
+															<?php endforeach;?>
+														</tbody>
+													</table>
+												</div>
+											</div>
+										</div>
+									</div>
+										<!-- Start Modal Approved Loan -->
+										<form action="" method="post">
+											<div class="modal fade" id="confirm_dti" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
+												<div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+													<div class="modal-content">
+														<div class="modal-header">
+															<h5 class="modal-title" id="exampleModalLabel">Confirm DTI Permit?</h5>
+															<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+																<i aria-hidden="true" class="ki ki-close"></i>
+															</button>
+														</div>
+														<div class="modal-body">
+															<button type="submit" name="invalid_d" class="btn btn-light-danger font-weight-bold">INVALID</button>
+															<button type="submit" name="valid_d" class="btn btn-primary font-weight-bold">VALID</button>
+														</div>
+													</div>
+												</div>
+											</div>
+										</form>
+										<!-- End Modal -->
+										<!-- Start Modal Approved Loan -->
+										<form action="" method="post" enctype="multipart/form-data">
+											<div class="modal fade" id="confirm_b_permit" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
+												<div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+													<div class="modal-content">
+														<div class="modal-header">
+															<h5 class="modal-title" id="exampleModalLabel">Confirm Business Permit?</h5>
+															<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+																<i aria-hidden="true" class="ki ki-close"></i>
+															</button>
+														</div>
+														<div class="modal-body">
+															<button type="submit" name="invalid_b" class="btn btn-light-danger font-weight-bold">INVALID</button>
+															<button type="submit" name="valid_b" class="btn btn-primary font-weight-bold">VALID</button>
+														</div>
+													</div>
+												</div>
+											</div>
+										</form>
+										<!-- End Modal -->
+										<!-- Start Modal Approved Loan -->
+										<form action="" method="post">
+											<div class="modal fade" id="activate_debtor" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
+												<div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+													<div class="modal-content">
+														<div class="modal-header">
+															<h5 class="modal-title" id="exampleModalLabel">Activate Account?</h5>
+															<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+																<i aria-hidden="true" class="ki ki-close"></i>
+															</button>
+															<input type="hidden" name="receiver_id" value="<?= $res['lender_id'] ?>">
+															<input type="hidden" name="sender_id" value="<?= $_SESSION['user_id'] ?>">
+															<?php
+															date_default_timezone_set('Asia/Manila');
+															$todays_date = date("y-m-d h:i:sa");
+															$today = strtotime($todays_date);
+															$det = date("Y-m-d h:i:sa", $today);
+															?>
+															<input type="hidden" name="date_message" value="<?= $det; ?>">
+															<input type="hidden" name="message" value="Congratulations! Your account is now activated.">
+														</div>
+														<div class="modal-footer">
+															<button type="submit" name="activate" class="btn btn-light-primary font-weight-bold">Yes</button>
+														</div>
+													</div>
+												</div>
+											</div>
+										</form>
+										<!-- End Modal -->
+										<!-- Start Modal Approved Loan -->
+										<form action="" method="post">
+											<div class="modal fade" id="deactivate_debtor" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
+												<div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+													<div class="modal-content">
+														<div class="modal-header">
+															<h5 class="modal-title" id="exampleModalLabel">Deactivate Account?</h5>
+															<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+																<i aria-hidden="true" class="ki ki-close"></i>
+															</button>
+															<input type="hidden" name="receiver_id" value="<?= $user['user_id'] ?>">
+															<input type="hidden" name="sender_id" value="<?= $_SESSION['user_id'] ?>">
+															<?php
+															date_default_timezone_set('Asia/Manila');
+															$todays_date = date("y-m-d h:i:sa");
+															$today = strtotime($todays_date);
+															$det = date("Y-m-d h:i:sa", $today);
+															?>
+															<input type="hidden" name="date_message" value="<?= $det; ?>">
+															<input type="hidden" name="message" value="We regret to inform you that your account is now deactivated!">
+														</div>
+														<div class="modal-footer">
+															<button type="submit" name="deactivate" class="btn btn-light-primary font-weight-bold">Yes</button>
+														</div>
+													</div>
+												</div>
+											</div>
+										</form>
+										<!-- End Modal -->
+										<!-- Start Modal Approved Loan -->
+										<form action="" method="post">
+											<div class="modal fade" id="message" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
+												<div class="modal-dialog modal-dialog-centered modal-m" role="document">
+													<div class="modal-content">
+														<div class="modal-header">
+															<h5 class="modal-title" id="exampleModalLabel">Send Message</h5>
+															<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+																<i aria-hidden="true" class="ki ki-close"></i>
+															</button>
+														</div>
+														<div class="modal-body">
+															<input type="hidden" name="receiver_id" value="<?= $user['user_id'] ?>">
+															<input type="hidden" name="sender_id" value="<?= $_SESSION['user_id'] ?>">
+															<?php
+															date_default_timezone_set('Asia/Manila');
+															$todays_date = date("y-m-d h:i:sa");
+															$today = strtotime($todays_date);
+															$det = date("Y-m-d h:i:sa", $today);
+
+															?>
+															<input type="hidden" name="date_message" value="<?= $det; ?>">
+															<div class="col-lg-12">
+																<textarea rows="4" cols="50" name="message" class="form-control" placeholder="Type here....."></textarea>
+															</div>
+														</div>
+														<div class="modal-footer">
+															<button type="submit" name="send_message" class="btn btn-light-primary font-weight-bold">Send</button>
+														</div>
+													</div>
+												</div>
+											</div>
+										</form>
+										<!-- End Modal -->
+									</div>
+									<!--end::Body-->
 								</div>
-							</form>
-							<!-- End Modal -->
+								<!--end::List Widget 11-->
+							</div>
 						</div>
-						<!--end::Body-->
 					</div>
-					<!--end::List Widget 11-->
 				</div>
 			</div>
 		</div>
-	</div>
-	</div>
-	</div>
-	<!--end::Container-->
+		<!--end::Container-->
 	</div>
 	<!--end::Entry-->
 	</div>
@@ -2616,7 +2752,7 @@ if (isset($_POST['declined_loan'])) {
 	<!--begin::Sticky Toolbar-->
 
 	<!--end::Sticky Toolbar-->
-		<script>
+	<script>
 		var HOST_URL = "https://preview.keenthemes.com/keen/theme/tools/preview";
 	</script>
 	<!--begin::Global Config(global config for global JS scripts)-->

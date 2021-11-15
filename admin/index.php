@@ -57,7 +57,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 		<!--begin::Header Mobile-->
 		<div id="kt_header_mobile" class="header-mobile align-items-center header-mobile-fixed">
 			<!--begin::Logo-->
-			<a href="index.html">
+			<a href="index.php">
 			<img alt="Logo" src="assets/admin/media/logos/Hulam_Logo.png" class="h-60px w-60px" style="padding-top: 10%; padding: right 50%;"/>
 			</a>
 			<!--end::Logo-->
@@ -129,7 +129,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 							<!--begin::Menu Nav-->
 							<ul class="menu-nav">
 								<li class="menu-item menu-item-active" aria-haspopup="true">
-									<a href="admin/index.html" class="menu-link">
+									<a href="admin/index.php" class="menu-link">
 										<span class="svg-icon menu-icon">
 											<!--begin::Svg Icon | path:assets/media/svg/icons/Design/Layers.svg-->
 											<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
@@ -164,23 +164,43 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 												</span>
 											</li>
 											<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-												<a href="admin/list_debtors.php" class="menu-link menu-toggle">
+												<a href="admin/activated_debtors.php" class="menu-link menu-toggle">
+													<i class="menu-bullet menu-bullet-dot">
+														<span></span>
+													</i>
 													<span class="menu-text">Debtors</span>
 												</a>
 											</li>
 											<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-												<a href="admin/list_lending_companies.php" class="menu-link menu-toggle">
+												<a href="admin/activated_lendingcompany.php" class="menu-link menu-toggle">
+													<i class="menu-bullet menu-bullet-dot">
+														<span></span>
+													</i>
 													<span class="menu-text">Lending Companies</span>
 												</a>
 											</li>
 											<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-												<a href="admin/list_idivInvestor.php" class="menu-link menu-toggle">
+												<a href="admin/activated_individual_investor.php" class="menu-link menu-toggle">
+													<i class="menu-bullet menu-bullet-dot">
+														<span></span>
+													</i>
 													<span class="menu-text">Individual Investors</span>
 												</a>
 											</li>
 											<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-												<a href="admin/list_payment_center.php" class="menu-link menu-toggle">
+												<a href="admin/activated_payment_center.php" class="menu-link menu-toggle">
+													<i class="menu-bullet menu-bullet-dot">
+														<span></span>
+													</i>
 													<span class="menu-text">Payment Centre</span>
+												</a>
+											</li>
+											<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+												<a href="admin/deactivated_users.php" class="menu-link menu-toggle">
+													<i class="menu-bullet menu-bullet-dot">
+														<span></span>
+													</i>
+													<span class="menu-text">Deactivated User</span>
 												</a>
 											</li>
 										</ul>
@@ -207,31 +227,28 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 												</span>
 											</li>
 											<li class="menu-item" aria-haspopup="true">
-												<a href="layout/themes/aside-light.html" class="menu-link">
+												<a href="admin/account_user_report.php" class="menu-link">
 													<i class="menu-bullet menu-bullet-dot">
 														<span></span>
 													</i>
-													<span class="menu-text">Light Aside</span>
+													<span class="menu-text">Account User Report</span>
 												</a>
 											</li>
 											<li class="menu-item" aria-haspopup="true">
-												<a href="layout/themes/header-dark.html" class="menu-link">
+												<a href="admin/payment_report.php" class="menu-link">
 													<i class="menu-bullet menu-bullet-dot">
 														<span></span>
 													</i>
-													<span class="menu-text">Dark Header</span>
+													<span class="menu-text">Payment Report</span>
 												</a>
 											</li>
 										</ul>
 									</div>
 								</li>
-															<!--end::Menu Nav-->
+							</div>
 						</div>
-						<!--end::Menu Container-->
 					</div>
-					<!--end::Aside Menu-->
-				</div>
-				<!--end::Aside-->
+					<!--end::Aside-->
 				<!--begin::Wrapper-->
 				<div class="d-flex flex-column flex-row-fluid wrapper" id="kt_wrapper">
 					<!--begin::Header-->
@@ -855,149 +872,129 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 								<!--begin::Dashboard-->
 								<!--begin::Row-->
 								<div class="row">
-									<div class="col-lg-4">
-                                    <div class="card card-custom card-stretch gutter-b">
-                                        <div class="card-body">
-                                            <div class="d-flex align-items-center justify-content-between flex-wrap">
-                                                <span class="font-size-h6 text-muted font-weight-bolder text-uppercase pr-2">Debtors Activation Request</span>
-                                            </div>
-                                            <div class="card-body d-flex align-items-center justify-content-between pt-7 flex-wrap">
-                                                <span class="font-weight-bolder display5 text-dark-75 py-4 pl-5 pr-5">
-                                                <p class="text-primary font-size-h2 font-weight-bolder pt-3 mb-0">
-												<?php
+									<div class="col-lg-3" >
+										<div class="card card-custom card-stretch gutter-b" >
+											<div class="card-body " >
+												<div class="d-flex align-items-center justify-content-between flex-wrap">
+													<span class="card-label font-weight-bolder font-size-h4 text-dark-75">Debtor Activation Request</span>
+												</div>
+												<div class="card-body d-flex align-items-center justify-content-between pt-7 flex-wrap" >
+													<span class="font-weight-bolder display5 text-dark-75 py-4 pl-5 pr-5">
+													<p class="text-primary font-size-h2 font-weight-bolder pt-3 mb-0">
+													<?php
 														$sql = "SELECT COUNT(*) AS debtor FROM user WHERE user_type ='2' AND eligible = 'no'";
 														$result= mysqli_query($conn,$sql);
 														$res = mysqli_fetch_array($result);
 														
 														echo $res['debtor'];
-													?>
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <div class="card-footer border-0 d-flex align-items-center justify-content-between pt-0">
-                                            <span></span>
-                                            <a href="admin/pending_debtors.php" class="btn btn-sm btn-primary font-weight-bolder px-6">View</a>
-                                        </div>
-                                    </div>
-                                </div>
-
-
-
-
-
-
-
-
-									<div class="col-lg-4">
-										<!--begin::Card-->
-										<div class="card card-custom gutter-b">
-											<div class="card-header">
-												<div class="card-title">
-													<h3 class="card-label">Lending Company Investor</h3>
+														?>
+													</p>
 												</div>
 											</div>
+											<div class="card-footer border-0 d-flex align-items-center justify-content-between pt-0">
+												<span></span>
+												<a href="admin/pending_debtors.php" class="btn btn-sm btn-primary font-weight-bolder px-6">View</a>
+											</div>
+										</div>
+                                	</div>
+									<div class="col-lg-3">
+										<div class="card card-custom card-stretch gutter-b">
 											<div class="card-body">
-											<div class="card-body d-flex align-items-center justify-content-between pt-7 flex-wrap">
-												<span class="font-weight-bolder display5 text-dark-75 py-4 pl-5 pr-5">
+												<div class="d-flex align-items-center justify-content-between flex-wrap">
+													<span class="card-label font-weight-bolder font-size-h4 text-dark-75">Lending Company Activation Request</span>
+												</div>
+												<div class="card-body d-flex align-items-center justify-content-between pt-7 flex-wrap" >
+													<span class="font-weight-bolder display5 text-dark-75 py-4 pl-5 pr-5">
 													<p class="text-primary font-size-h2 font-weight-bolder pt-3 mb-0">
 													<?php
-														$sql = "SELECT COUNT(*) AS investor FROM user WHERE user_type ='3'AND eligible='yes'";
+														$sql = "SELECT COUNT(*) AS investor FROM user WHERE user_type ='3'AND eligible='no'";
 														$result= mysqli_query($conn,$sql);
 														$res = mysqli_fetch_array($result);
 														
 														echo $res['investor'];
-													?>
-
-													</p>
-											</div>
-											</div>
-										</div>
-										<!--end::Card-->
-									</div>
-									<div class="col-lg-4">
-										<!--begin::Card-->
-										<div class="card card-custom gutter-b">
-											<div class="card-header">
-												<div class="card-title">
-													<h3 class="card-label">Individual Investors</h3>
+													?></p>
 												</div>
 											</div>
+											<div class="card-footer border-0 d-flex align-items-center justify-content-between pt-0">
+												<span></span>
+												<a href="admin/pending_lendingcompany.php" class="btn btn-sm btn-primary font-weight-bolder px-6">View</a>
+											</div>
+										</div>
+									</div>
+									<div class="col-lg-3">
+										<div class="card card-custom card-stretch gutter-b">
 											<div class="card-body">
-											<div class="card-body d-flex align-items-center justify-content-between pt-7 flex-wrap">
-												<span class="font-weight-bolder display5 text-dark-75 py-4 pl-5 pr-5">
+												<div class="d-flex align-items-center justify-content-between flex-wrap">
+													<span class="card-label font-weight-bolder font-size-h4 text-dark-75">Individual Investor Activation Request</span>
+												</div>
+												<div class="card-body d-flex align-items-center justify-content-between pt-7 flex-wrap">
+													<span class="font-weight-bolder display5 text-dark-75 py-4 pl-5 pr-5">
 													<p class="text-primary font-size-h2 font-weight-bolder pt-3 mb-0">
 													<?php
-													$sql = "SELECT COUNT(*) AS investor FROM user WHERE user_type ='4' AND eligible='yes'";
+													$sql = "SELECT COUNT(*) AS investor FROM user WHERE user_type ='4' AND eligible='no'";
 													$result= mysqli_query($conn,$sql);
 													$res = mysqli_fetch_array($result);
 													
 													echo $res['investor'];
-												?>
-													
-													</p>
+													?></p>
+												</div>
 											</div>
+											<div class="card-footer border-0 d-flex align-items-center justify-content-between pt-0">
+												<span></span>
+												<a href="admin/pending_individual_investor.php" class="btn btn-sm btn-primary font-weight-bolder px-6">View</a>
 											</div>
 										</div>
-										<!--end::Card-->
 									</div>
-								</div>
-								<div class="row">
-									<div class="col-lg-4">
-										<!--begin::Stats Widget 1-->
+									<div class="col-lg-3">
 										<div class="card card-custom card-stretch gutter-b">
-											<!--begin::Header-->
-											<div class="card-header border-0 pt-6">
-												<h3 class="card-title">
-													<span class="card-label font-weight-bolder font-size-h4 text-dark-75">Payment Centers</span>
-												</h3>
-											</div>
-											<!--end::Header-->
 											<div class="card-body">
-											<div class="card-body d-flex align-items-center justify-content-between pt-7 flex-wrap">
-												<span class="font-weight-bolder display5 text-dark-75 py-4 pl-5 pr-5">
+												<div class="d-flex align-items-center justify-content-between flex-wrap">
+												<span class="card-label font-weight-bolder font-size-h4 text-dark-75">Payment Centers Activation Request</span>
+												</div>
+												<div class="card-body d-flex align-items-center justify-content-between pt-7 flex-wrap">
+													<span class="font-weight-bolder display5 text-dark-75 py-4 pl-5 pr-5">
 													<p class="text-primary font-size-h2 font-weight-bolder pt-3 mb-0">
 													<?php
-														$sql = "SELECT COUNT(*) AS ps FROM user WHERE user_type ='5' AND eligible='yes'";
+														$sql = "SELECT COUNT(*) AS ps FROM user WHERE user_type ='5' AND eligible='no'";
 														$result= mysqli_query($conn,$sql);
 														$res = mysqli_fetch_array($result);
 														
 														echo $res['ps'];
-													?>
-
-													</p>
+													?></p>
+												</div>
 											</div>
+											<div class="card-footer border-0 d-flex align-items-center justify-content-between pt-0">
+												<span></span>
+												<a href="admin/pending_payment_center.php" class="btn btn-sm btn-primary font-weight-bolder px-6">View</a>
 											</div>
 										</div>
-										<!--end::Stats Widget 1-->
 									</div>
-									<div class="col-lg-4">
-										<!--begin::Stats Widget 1-->
+									 <!-- <div class="col-lg-3">
 										<div class="card card-custom card-stretch gutter-b">
-											<!--begin::Header-->
-											<div class="card-header border-0 pt-6">
-												<h3 class="card-title">
-													<span class="card-label font-weight-bolder font-size-h4 text-dark-75"> Accounts for Approval</span>
-												</h3>
-											</div>
 											<div class="card-body">
-											<div class="card-body d-flex align-items-center justify-content-between pt-7 flex-wrap">
-												<span class="font-weight-bolder display5 text-dark-75 py-4 pl-5 pr-5">
+												<div class="d-flex align-items-center justify-content-between flex-wrap">
+													<span class="card-label font-weight-bolder font-size-h4 text-dark-75">Payment Centers Activation Request</span>
+												</div>
+												<div class="card-body d-flex align-items-center justify-content-between pt-7 flex-wrap">
+													<span class="font-weight-bolder display5 text-dark-75 py-4 pl-5 pr-5">
 													<p class="text-primary font-size-h2 font-weight-bolder pt-3 mb-0">
 													<?php
-														$sql = "SELECT COUNT(*) AS accounts FROM user WHERE eligible='no' AND user_type!='1'";
-														$result= mysqli_query($conn,$sql);
-														$res = mysqli_fetch_array($result);
+														// $sql = "SELECT COUNT(*) AS ps FROM user WHERE user_type ='5' AND eligible='yes'";
+														// $result= mysqli_query($conn,$sql);
+														// $res = mysqli_fetch_array($result);
 														
-														echo $res['accounts'];
-													?>
-
-													</p>
+														// echo $res['ps'];
+													?></p>
+												</div>
 											</div>
+											<div class="card-footer border-0 d-flex align-items-center justify-content-between pt-0">
+												<span></span>
+												<a href="admin/pending_debtors.php" class="btn btn-sm btn-primary font-weight-bolder px-6">View</a>
 											</div>
 										</div>
+									</div> -->
 										<!--end::Stats Widget 1-->
 									</div>
-								</div>
 								<!--end::Row-->
 								<!--end::Dashboard-->
 							</div>
@@ -1933,119 +1930,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 		<!--begin::Sticky Toolbar-->
 
 		<!--end::Sticky Toolbar-->
-		<!--begin::Demo Panel-->
-		<div id="kt_demo_panel" class="offcanvas offcanvas-right p-10">
-			<!--begin::Header-->
-			<div class="offcanvas-header d-flex align-items-center justify-content-between pb-7">
-				<h4 class="font-weight-bold m-0">Select A Demo</h4>
-				<a href="#" class="btn btn-xs btn-icon btn-light btn-hover-primary" id="kt_demo_panel_close">
-					<i class="ki ki-close icon-xs text-muted"></i>
-				</a>
-			</div>
-			<!--end::Header-->
-			<!--begin::Content-->
-			<div class="offcanvas-content">
-				<!--begin::Wrapper-->
-				<div class="offcanvas-wrapper mb-5 scroll-pull">
-					<h5 class="font-weight-bold mb-4 text-center">Demo 1</h5>
-					<div class="overlay rounded-lg mb-8 offcanvas-demo offcanvas-demo-active">
-						<div class="overlay-wrapper rounded-lg">
-							<img src="assets/media/demos/demo1.png" alt="" class="w-100" />
-						</div>
-						<div class="overlay-layer">
-							<a href="../../demo1/dist" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">HTML</a>
-							<a href="https://preview.keenthemes.com/keen/demo1/rtl/index.html" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">RTL</a>
-						</div>
-					</div>
-					<h5 class="font-weight-bold mb-4 text-center">Demo 2</h5>
-					<div class="overlay rounded-lg mb-8 offcanvas-demo">
-						<div class="overlay-wrapper rounded-lg">
-							<img src="assets/media/demos/demo2.png" alt="" class="w-100" />
-						</div>
-						<div class="overlay-layer">
-							<a href="../../demo2/dist" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">HTML</a>
-							<a href="https://preview.keenthemes.com/keen/demo2/rtl/index.html" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">RTL</a>
-						</div>
-					</div>
-					<h5 class="font-weight-bold mb-4 text-center">Demo 3</h5>
-					<div class="overlay rounded-lg mb-8 offcanvas-demo">
-						<div class="overlay-wrapper rounded-lg">
-							<img src="assets/media/demos/demo3.png" alt="" class="w-100" />
-						</div>
-						<div class="overlay-layer">
-							<a href="../../demo3/dist" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">HTML</a>
-							<a href="https://preview.keenthemes.com/keen/demo3/rtl/index.html" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">RTL</a>
-						</div>
-					</div>
-					<h5 class="font-weight-bold mb-4 text-center">Demo 4</h5>
-					<div class="overlay rounded-lg mb-8 offcanvas-demo">
-						<div class="overlay-wrapper rounded-lg">
-							<img src="assets/media/demos/demo4.png" alt="" class="w-100" />
-						</div>
-						<div class="overlay-layer">
-							<a href="../../demo4/dist" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">HTML</a>
-							<a href="https://preview.keenthemes.com/keen/demo4/rtl/index.html" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">RTL</a>
-						</div>
-					</div>
-					<h5 class="font-weight-bold mb-4 text-center">Demo 5</h5>
-					<div class="overlay rounded-lg mb-8 offcanvas-demo">
-						<div class="overlay-wrapper rounded-lg">
-							<img src="assets/media/demos/demo5.png" alt="" class="w-100" />
-						</div>
-						<div class="overlay-layer">
-							<a href="../../demo5/dist" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">HTML</a>
-							<a href="https://preview.keenthemes.com/keen/demo5/rtl/index.html" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">RTL</a>
-						</div>
-					</div>
-					<h5 class="font-weight-bold mb-4 text-center">Demo 6</h5>
-					<div class="overlay rounded-lg mb-8 offcanvas-demo">
-						<div class="overlay-wrapper rounded-lg">
-							<img src="assets/media/demos/demo6.png" alt="" class="w-100" />
-						</div>
-						<div class="overlay-layer">
-							<a href="../../demo6/dist" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">HTML</a>
-							<a href="https://preview.keenthemes.com/keen/demo6/rtl/index.html" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">RTL</a>
-						</div>
-					</div>
-					<h5 class="font-weight-bold mb-4 text-center">Demo 7</h5>
-					<div class="overlay rounded-lg mb-8 offcanvas-demo">
-						<div class="overlay-wrapper rounded-lg">
-							<img src="assets/media/demos/demo7.png" alt="" class="w-100" />
-						</div>
-						<div class="overlay-layer">
-							<a href="../../demo7/dist" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">HTML</a>
-							<a href="https://preview.keenthemes.com/keen/demo7/rtl/index.html" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">RTL</a>
-						</div>
-					</div>
-					<h5 class="font-weight-bold mb-4 text-center">Demo 8</h5>
-					<div class="overlay rounded-lg mb-8 offcanvas-demo">
-						<div class="overlay-wrapper rounded-lg">
-							<img src="assets/media/demos/demo8.png" alt="" class="w-100" />
-						</div>
-						<div class="overlay-layer">
-							<a href="#" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow disabled opacity-90">Coming soon</a>
-						</div>
-					</div>
-					<h5 class="font-weight-bold mb-4 text-center">Demo 9</h5>
-					<div class="overlay rounded-lg mb-8 offcanvas-demo">
-						<div class="overlay-wrapper rounded-lg">
-							<img src="assets/media/demos/demo9.png" alt="" class="w-100" />
-						</div>
-						<div class="overlay-layer">
-							<a href="#" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow disabled opacity-90">Coming soon</a>
-						</div>
-					</div>
-				</div>
-				<!--end::Wrapper-->
-				<!--begin::Purchase-->
-				<div class="offcanvas-footer">
-					<a href="https://themes.getbootstrap.com/product/keen-the-ultimate-bootstrap-admin-theme/" target="_blank" class="btn btn-block btn-danger btn-shadow font-weight-bolder text-uppercase">Buy Keen Now!</a>
-				</div>
-				<!--end::Purchase-->
-			</div>
-			<!--end::Content-->
-		</div>
-		<!--end::Demo Panel-->
+
 		<script>var HOST_URL = "https://preview.keenthemes.com/keen/theme/tools/preview";</script>
 		<!--begin::Global Config(global config for global JS scripts)-->
 		<script>var KTAppSettings = { "breakpoints": { "sm": 576, "md": 768, "lg": 992, "xl": 1200, "xxl": 1400 }, "colors": { "theme": { "base": { "white": "#ffffff", "primary": "#3E97FF", "secondary": "#E5EAEE", "success": "#08D1AD", "info": "#844AFF", "warning": "#F5CE01", "danger": "#FF3D60", "light": "#E4E6EF", "dark": "#181C32" }, "light": { "white": "#ffffff", "primary": "#DEEDFF", "secondary": "#EBEDF3", "success": "#D6FBF4", "info": "#6125E1", "warning": "#FFF4DE", "danger": "#FFE2E5", "light": "#F3F6F9", "dark": "#D6D6E0" }, "inverse": { "white": "#ffffff", "primary": "#ffffff", "secondary": "#3F4254", "success": "#ffffff", "info": "#ffffff", "warning": "#ffffff", "danger": "#ffffff", "light": "#464E5F", "dark": "#ffffff" } }, "gray": { "gray-100": "#F3F6F9", "gray-200": "#EBEDF3", "gray-300": "#E4E6EF", "gray-400": "#D1D3E0", "gray-500": "#B5B5C3", "gray-600": "#7E8299", "gray-700": "#5E6278", "gray-800": "#3F4254", "gray-900": "#181C32" } }, "font-family": "Poppins" };</script>

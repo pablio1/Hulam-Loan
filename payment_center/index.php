@@ -176,17 +176,42 @@ $user = $query->fetch();
 									<div class="menu-submenu">
 										<ul class="menu-subnav">
 											<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-												<a href="payment_center/upload_payment.php" class="menu-link menu-toggle">
-													<i class="menu-bullet">
-														<span></span>
-													</i>
-													<span class="menu-text">Upload Payment</span>
-													<span class="menu-label">
-													</span>
-													<i class="menu-arrow"></i>
-												</a>
+											<?php
+												if($user['eligible']=='no'): ?>
+													<a href="" class="menu-link menu-toggle" data-target="#notice" data-toggle="modal">
+														<i class="menu-bullet">
+															<span></span>
+														</i>
+														<span class="menu-text">Upload Payment</span>
+														<span class="menu-label">
+														</span>
+														<i class="menu-arrow"></i>
+													</a>
+												<?php else: ?>
+														<a href="payment_center/upload_payment.php" class="menu-link menu-toggle">
+														<i class="menu-bullet">
+															<span></span>
+														</i>
+														<span class="menu-text">Upload Payment</span>
+														<span class="menu-label">
+														</span>
+														<i class="menu-arrow"></i>
+													</a>
+												<?php endif;?>
 											</li>
 											<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+											<?php
+												if($user['eligible']=='no'): ?>
+													<a href="" class="menu-link menu-toggle" data-target="#notice" data-toggle="modal">
+														<i class="menu-bullet">
+															<span></span>
+														</i>
+														<span class="menu-text">View Uploaded Payment</span>
+														<span class="menu-label">
+														</span>
+														<i class="menu-arrow"></i>
+													</a>
+												<?php else: ?>
 												<a href="payment_center/uploaded_payment.php" class="menu-link menu-toggle">
 													<i class="menu-bullet">
 														<span></span>
@@ -196,6 +221,7 @@ $user = $query->fetch();
 													</span>
 													<i class="menu-arrow"></i>
 												</a>
+												<?php endif;?>
 											</li>
 										</ul>
 									</div>

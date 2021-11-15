@@ -24,11 +24,11 @@ if (isset($_POST['send_message'])) {
     $query->bindParam(':message', $message, PDO::PARAM_STR);
     $query->bindParam(':date_message', $date_message, PDO::PARAM_STR);
     if ($query->execute()) {
-        $_SESSION['status'] = "Message Sent";
+        $_SESSION['status_message'] = "Message Sent";
         header("Location: messages.php?sender_id=$to");
         exit();
     } else {
-        $_SESSION['status'] = "Message Not Sent";
+        $_SESSION['status_message'] = "Message Not Sent";
         header('Location: messages.php?sender_id=$to');
         exit();
     }
@@ -198,15 +198,15 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
                             </h3>
                             <div class="col-xl-4">
                                 <?php
-                                if (isset($_SESSION['status'])) {
+                                if (isset($_SESSION['status_message'])) {
                                 ?>
                                     <div class="alert alert-custom alert-notice alert-light-success fade show" role="alert">
                                         <div class="alert-text">
-                                            <h4><?php echo $_SESSION['status']; ?></h4>
+                                            <h4><?php echo $_SESSION['status_message']; ?></h4>
                                         </div>
                                         <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
                                     </div>
-                                <?php unset($_SESSION['status']);
+                                <?php unset($_SESSION['status_message']);
                                 } ?>
                             </div>
                         </div>

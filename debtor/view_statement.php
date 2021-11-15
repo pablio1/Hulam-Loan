@@ -551,8 +551,6 @@ if (isset($_POST['save'])) {
 	</div>
 	<!-- end::User Panel-->
 
-	
-
     <!--begin::Quick Panel-->
     <div id="kt_quick_panel" class="offcanvas offcanvas-right pt-5 pb-10">
         <!--begin::Header-->
@@ -576,7 +574,7 @@ if (isset($_POST['save'])) {
                     <?php
                     $user_id = $_SESSION['user_id'];
 
-                    $sql = "SELECT * FROM message INNER JOIN user ON message.sender_id = user.user_id WHERE message.receiver_id = $user_id";
+                    $sql = "SELECT * FROM message INNER JOIN user ON message.sender_id = user.user_id WHERE message.receiver_id = $user_id ORDER BY date_message desc";
                     $query = $dbh->prepare($sql);
                     $query->execute();
                     $results = $query->fetchAll(PDO::FETCH_OBJ);

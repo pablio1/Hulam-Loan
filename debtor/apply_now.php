@@ -8,6 +8,15 @@ if ($_SESSION['user_type'] != 2) {
 }
 
 ?>
+<?php
+$user_id = $_SESSION['user_id'];
+
+$sql = "SELECT * FROM user WHERE user_id =$user_id";
+$query = $dbh->prepare($sql);
+$query->execute();
+$user = $query->fetch();
+
+?>
 
 
 <!DOCTYPE html>
@@ -260,8 +269,8 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 													</div>
 													<div class="my-lg-0 my-1">
 														<a href="debtor/view_company.php?lender_id=<?= $lender['lender_id']?>" class="btn btn-sm btn-light-primary font-weight-bolder mr-2">View Details</a>
-														<?php if ($_SESSION['eligible']=='no') : ?>
-															<a href="debtor/update_information.php?id=<?= $lender['user_id']?>" class="btn btn-sm btn-primary font-weight-bolder">Apply Now</a>
+														<?php if ($user['eligible']=='no') : ?>
+															<a href="" class="btn btn-sm btn-primary font-weight-bolder" data-target="#notice" data-toggle="modal">Apply Now</a>
 														<?php else : ?>
 															<a href="debtor/apply_loan.php?lender_id=<?= $lender['lender_id']. '&amount=' . $_GET['amount'] . '&month=' . $_GET['month']  ?>" class="btn btn-sm btn-primary font-weight-bolder">Apply Now</a>
 														<?php endif; ?>
@@ -274,6 +283,23 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 												</div>
 											</div>
 										</div>
+										<!-- Start Modal -->
+										<div class="modal fade" id="notice" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
+											<div class="modal-dialog modal-dialog-centered modal-m" role="document">
+												<div class="modal-content">
+													<div class="modal-header">
+														<h5 class="modal-title" id="exampleModalLabel" >Account Not Activated.</h5>
+														<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+															<i aria-hidden="true" class="ki ki-close"></i>
+														</button>
+													</div>
+													<div class="modal-body">
+														<label class="font-weight-bolder font-size-lg" for="input-username">To activate your account you need to complete updating your profile information and wait for the activation to start applying loan.</label>
+													</div>
+												</div>
+											</div>
+										</div>
+										<!-- End Modal -->
 										<div class="separator separator-solid my-7"></div>
 										<div class="d-flex align-items-center flex-wrap">
 											<div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
@@ -515,7 +541,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
                     <?php
                     $user_id = $_SESSION['user_id'];
 
-                    $sql = "SELECT * FROM message INNER JOIN user ON message.sender_id = user.user_id WHERE message.receiver_id = $user_id";
+                    $sql = "SELECT * FROM message INNER JOIN user ON message.sender_id = user.user_id WHERE message.receiver_id = $user_id ORDER BY date_message desc";
                     $query = $dbh->prepare($sql);
                     $query->execute();
                     $results = $query->fetchAll(PDO::FETCH_OBJ);

@@ -2,161 +2,28 @@
 session_start();
 error_reporting(-1);
 include('../db_connection/config.php');
-?>
 
-<?php
-$id = intval($_GET['user_id']);
-
-// $sql = "SELECT loan_application.*, user.* FROM loan_application INNER JOIN user on loan_application.debtor_id = user.user_id WHERE loan_application.loan_app_id = $id";
-$sql = "SELECT * FROM user WHERE user_id = $id";
-$query = $dbh->prepare($sql);
-$query->execute();
-$user = $query->fetch();
-
-?>
-
-
-
-<?php if(isset($_POST['valid_id'])){
-	$user_id = intval($_GET['user_id']);
-	$sql = "UPDATE debtors_info SET status_valid_id = 'valid' WHERE user_id = $user_id";
-	$query = $dbh->prepare($sql);
-	$query->execute(); }?>
-<?php if(isset($_POST['invalid_id'])){
-	$user_id = intval($_GET['user_id']);
-	$sql = "UPDATE debtors_info SET status_valid_id = 'invalid' WHERE user_id = $user_id";
-	$query = $dbh->prepare($sql);
-	$query->execute(); }?>
-<?php if(isset($_POST['valid_selfie'])){
-	$user_id = intval($_GET['user_id']);
-	$sql = "UPDATE debtors_info SET status_selfie_id = 'valid' WHERE user_id = $user_id";
-	$query = $dbh->prepare($sql);
-	$query->execute(); }?>
-<?php if(isset($_POST['invalid_selfie'])){
-	$user_id = intval($_GET['user_id']);
-	$sql = "UPDATE debtors_info SET status_selfie_id = 'invalid' WHERE user_id = $user_id";
-	$query = $dbh->prepare($sql);
-	$query->execute(); }?>
-
-
-
-<?php
-if (isset($_POST['send_message'])) {
-	$user_id = intval($_GET['user_id']);
-	$sender_id = $_POST['sender_id'];
-	$date_message = $_POST['date_message'];
-	$message = $_POST['message'];
-
-	$insert = "INSERT INTO message(sender_id,receiver_id,message,date_message)VALUES(:sender_id,:receiver_id,:message,:date_message)";
-	$query = $dbh->prepare($insert);
-	$query->bindParam(':sender_id', $sender_id, PDO::PARAM_STR);
-	$query->bindParam(':receiver_id', $user_id, PDO::PARAM_STR);
-	$query->bindParam(':message', $message, PDO::PARAM_STR);
-	$query->bindParam(':date_message', $date_message, PDO::PARAM_STR);
-	if ($query->execute()) {
-		$_SESSION['status_message'] = "Message Sent";
-		header("Location: view_information.php?user_id=$user_id");
-		exit();
-	} else {
-		$_SESSION['status_message'] = "Message Not Sent";
-		header('Location: view_information.php?user_id=$user_id');
-		exit();
-	}
+if ($_SESSION['user_type'] != 1) {
+	header('location: ../index.php');
 }
-?>
 
-<?php
-if (isset($_POST['activate'])) {
-	$user_id = intval($_GET['user_id']);
-	$sender_id = $_POST['sender_id'];
-	$activation_date = $_POST['date_message'];
-	$message = $_POST['message'];
 
-	$update = "UPDATE user SET eligible = 'yes', activation_date = :activation_date WHERE user_id = $user_id";
-	$query2 = $dbh->prepare($update);
-	$query2->bindParam(':activation_date', $activation_date, PDO::PARAM_STR);
-	$query2->execute();
-
-	$insert = "INSERT INTO message(sender_id,receiver_id,message,date_message)VALUES(:sender_id,:receiver_id,:message,:date_message)";
-	$query = $dbh->prepare($insert);
-	$query->bindParam(':sender_id', $sender_id, PDO::PARAM_STR);
-	$query->bindParam(':receiver_id', $user_id, PDO::PARAM_STR);
-	$query->bindParam(':message', $message, PDO::PARAM_STR);
-	$query->bindParam(':date_message', $activation_date, PDO::PARAM_STR);
-	if ($query->execute()) {
-		$_SESSION['status_message'] = "Account Activated Successfully!";
-		header("Location: activated_debtors.php");
-		exit();
-	} else {
-		$_SESSION['status_message'] = "Error! Failed to Activate Account!";
-		header("Location: activated_debtors.php");
-		exit();
-	}
-}?>
-
-<?php
-if (isset($_POST['deactivate'])) {
-	$user_id = intval($_GET['user_id']);
-	$sender_id = $_POST['sender_id'];
-	$activation_date = $_POST['date_message'];
-	$message = $_POST['message'];
-
-	$update = "UPDATE user SET eligible = 'no', activation_date = :activation_date WHERE user_id = $user_id";
-	$query2 = $dbh->prepare($update);
-	$query2->bindParam(':activation_date', $activation_date, PDO::PARAM_STR);
-	$query2->execute();
-
-	$insert = "INSERT INTO message(sender_id,receiver_id,message,date_message)VALUES(:sender_id,:receiver_id,:message,:date_message)";
-	$query = $dbh->prepare($insert);
-	$query->bindParam(':sender_id', $sender_id, PDO::PARAM_STR);
-	$query->bindParam(':receiver_id', $user_id, PDO::PARAM_STR);
-	$query->bindParam(':message', $message, PDO::PARAM_STR);
-	$query->bindParam(':date_message', $activation_date, PDO::PARAM_STR);
-	if ($query->execute()) {
-		$_SESSION['status_message'] = "Account Deactivated!";
-		header("Location: deactivated_users.php");
-		exit();
-	} else {
-		$_SESSION['status_message'] = "Error!";
-		header("Location: deactivated_users.php");
-		exit();
-	}
-}?>
-
-<?php
-if (isset($_POST['declined_loan'])) {
-	$id = intval($_GET['loan_app_id']);
-	$sender_id = $_POST['sender_id'];
-	$receiver_id = $_POST['receiver_id'];
-	$declined_date = $_POST['declined_date'];
-	$message = "We regret to inform you that your loan application has been declined!";
-
-	$update = "UPDATE loan_application SET loan_status = 'Declined' WHERE loan_app_id = $id";
-	$query2 = $dbh->prepare($update);
-	$query2->execute();
-
-	$insert = "INSERT INTO message(sender_id,receiver_id,message,date_message)VALUES(:sender_id,:receiver_id,:message,:declined_date)";
-	$query = $dbh->prepare($insert);
-	$query->bindParam(':sender_id', $sender_id, PDO::PARAM_STR);
-	$query->bindParam(':receiver_id', $receiver_id, PDO::PARAM_STR);
-	$query->bindParam(':message', $message, PDO::PARAM_STR);
-	$query->bindParam(':declined_date', $declined_date, PDO::PARAM_STR);
-
-	if ($query->execute()) {
-		$_SESSION['status_message'] = "Loan Declined!";
-		header("Location: view_declined.php?loan_app_id=$id");
-		exit();
-	} else {
-		$_SESSION['status_message'] = "Error!";
-		header('Location: view_declined.php?loan_app_id=$id');
-		exit();
-	}
-}
 ?>
 
 
 <!DOCTYPE html>
-
+<!--
+Template Name: Keen - The Ultimate Bootstrap 4 HTML Admin Dashboard Theme
+Author: KeenThemes
+Website: http://www.keenthemes.com/
+Contact: support@keenthemes.com
+Follow: www.twitter.com/keenthemes
+Dribbble: www.dribbble.com/keenthemes
+Like: www.facebook.com/keenthemes
+Purchase: https://themes.getbootstrap.com/product/keen-the-ultimate-bootstrap-admin-theme/
+Support: https://keenthemes.com/theme-support
+License: You must have a valid license purchased only from themes.getbootstrap.com(the above link) in order to legally use the theme for your project.
+-->
 <html lang="en">
 	<!--begin::Head-->
 	<head><base href="../index.php">
@@ -262,7 +129,7 @@ if (isset($_POST['declined_loan'])) {
 							<!--begin::Menu Nav-->
 							<ul class="menu-nav">
 								<li class="menu-item menu-item-active" aria-haspopup="true">
-									<a href="admin/index.php" class="menu-link">
+									<a href="admin/index.html" class="menu-link">
 										<span class="svg-icon menu-icon">
 											<!--begin::Svg Icon | path:assets/media/svg/icons/Design/Layers.svg-->
 											<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
@@ -277,7 +144,7 @@ if (isset($_POST['declined_loan'])) {
 										<span class="menu-text">Dashboard</span>
 									</a>
 								</li>
-							<li class="menu-section">
+								<li class="menu-section">
 									<h4 class="menu-text">Manage Account</h4>
 									<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
 								</li>
@@ -381,8 +248,7 @@ if (isset($_POST['declined_loan'])) {
 							</div>
 						</div>
 					</div>
-					<!--end::Aside-->
-
+					<!--end::Aside-->	
 			<!--begin::Wrapper-->
 			<div class="d-flex flex-column flex-row-fluid wrapper" id="kt_wrapper">
 				<!--begin::Header-->
@@ -396,7 +262,7 @@ if (isset($_POST['declined_loan'])) {
 								<!--begin::Header Nav-->
 								<ul class="menu-nav">
 									<li class="menu-item menu-item-open menu-item-here menu-item-submenu menu-item-rel menu-item-open menu-item-here menu-item-active" data-menu-toggle="click" aria-haspopup="true">
-										<h4 class="menu-text" style="color:blue">Welcome to Hulam! <h4>&nbsp;&nbsp;<h6></h6>
+										<h4 class="menu-text" style="color:blue">Welcome to Hulam! <h4>&nbsp;&nbsp;<h6><?php echo $_SESSION['firstname']; ?></h6>
 												<i class="menu-arrow"></i>
 									</li>
 								</ul>
@@ -407,63 +273,6 @@ if (isset($_POST['declined_loan'])) {
 						<!--end::Header Menu Wrapper-->
 						<!--begin::Topbar-->
 						<div class="topbar">
-							<!--begin::Search-->
-							<div class="dropdown mr-1" id="kt_quick_search_toggle">
-								<!--begin::Toggle-->
-								<div class="topbar-item" data-toggle="dropdown" data-offset="10px,0px">
-									<div class="btn btn-icon btn-clean btn-lg btn-dropdown">
-										<span class="svg-icon svg-icon-xl svg-icon-primary">
-											<!--begin::Svg Icon | path:assets/media/svg/icons/General/Search.svg-->
-											<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-												<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-													<rect x="0" y="0" width="24" height="24" />
-													<path d="M14.2928932,16.7071068 C13.9023689,16.3165825 13.9023689,15.6834175 14.2928932,15.2928932 C14.6834175,14.9023689 15.3165825,14.9023689 15.7071068,15.2928932 L19.7071068,19.2928932 C20.0976311,19.6834175 20.0976311,20.3165825 19.7071068,20.7071068 C19.3165825,21.0976311 18.6834175,21.0976311 18.2928932,20.7071068 L14.2928932,16.7071068 Z" fill="#000000" fill-rule="nonzero" opacity="0.3" />
-													<path d="M11,16 C13.7614237,16 16,13.7614237 16,11 C16,8.23857625 13.7614237,6 11,6 C8.23857625,6 6,8.23857625 6,11 C6,13.7614237 8.23857625,16 11,16 Z M11,18 C7.13400675,18 4,14.8659932 4,11 C4,7.13400675 7.13400675,4 11,4 C14.8659932,4 18,7.13400675 18,11 C18,14.8659932 14.8659932,18 11,18 Z" fill="#000000" fill-rule="nonzero" />
-												</g>
-											</svg>
-											<!--end::Svg Icon-->
-										</span>
-									</div>
-								</div>
-								<!--end::Toggle-->
-								<!--begin::Dropdown-->
-								<div class="dropdown-menu p-0 m-0 dropdown-menu-right dropdown-menu-anim-up dropdown-menu-lg">
-									<div class="quick-search quick-search-dropdown" id="kt_quick_search_dropdown">
-										<!--begin:Form-->
-										<form method="get" class="quick-search-form">
-											<div class="input-group">
-												<div class="input-group-prepend">
-													<span class="input-group-text">
-														<span class="svg-icon svg-icon-lg">
-															<!--begin::Svg Icon | path:assets/media/svg/icons/General/Search.svg-->
-															<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-																<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-																	<rect x="0" y="0" width="24" height="24" />
-																	<path d="M14.2928932,16.7071068 C13.9023689,16.3165825 13.9023689,15.6834175 14.2928932,15.2928932 C14.6834175,14.9023689 15.3165825,14.9023689 15.7071068,15.2928932 L19.7071068,19.2928932 C20.0976311,19.6834175 20.0976311,20.3165825 19.7071068,20.7071068 C19.3165825,21.0976311 18.6834175,21.0976311 18.2928932,20.7071068 L14.2928932,16.7071068 Z" fill="#000000" fill-rule="nonzero" opacity="0.3" />
-																	<path d="M11,16 C13.7614237,16 16,13.7614237 16,11 C16,8.23857625 13.7614237,6 11,6 C8.23857625,6 6,8.23857625 6,11 C6,13.7614237 8.23857625,16 11,16 Z M11,18 C7.13400675,18 4,14.8659932 4,11 C4,7.13400675 7.13400675,4 11,4 C14.8659932,4 18,7.13400675 18,11 C18,14.8659932 14.8659932,18 11,18 Z" fill="#000000" fill-rule="nonzero" />
-																</g>
-															</svg>
-															<!--end::Svg Icon-->
-														</span>
-													</span>
-												</div>
-												<input type="text" class="form-control" placeholder="Search..." />
-												<div class="input-group-append">
-													<span class="input-group-text">
-														<i class="quick-search-close ki ki-close icon-sm text-muted"></i>
-													</span>
-												</div>
-											</div>
-										</form>
-										<!--end::Form-->
-										<!--begin::Scroll-->
-										<div class="quick-search-wrapper scroll" data-scroll="true" data-height="325" data-mobile-height="200"></div>
-										<!--end::Scroll-->
-									</div>
-								</div>
-								<!--end::Dropdown-->
-							</div>
-							<!--end::Search-->
 							<!--begin::Notifications-->
 							<div class="dropdown mr-1">
 								<!--begin::Dropdown-->
@@ -1040,395 +849,123 @@ if (isset($_POST['declined_loan'])) {
 				<!--end::Header-->
 				<!--begin::Content-->
 				<div class="content d-flex flex-column flex-column-fluid" id="kt_content" style="background-image:url('assets/keen/media/logos/banner.png')">
+					<!--begin::Subheader-->
 					<div class="subheader py-6 py-lg-8 subheader-transparent" id="kt_subheader">
 						<div class="container d-flex align-items-center justify-content-between flex-wrap flex-sm-nowrap">
 							<div class="d-flex align-items-center flex-wrap mr-1">
-								<div class="d-flex align-items-baseline flex-wrap mr-5">
-									<h4 class="text-white font-weight-bold my-1 mr-5">Dashboard |</h4>
-									<h5 class="text-white font-weight-bold my-1 mr-5">Admin</h5>
-									<div class="col-xl-12 col-xl-12">
-										<?php
-										if (isset($_SESSION['status_message'])) {
-										?>
-											<div class="alert alert-custom alert-notice alert-light-success fade show" role="alert">
-												<div class="alert-text">
-													<h4><?php echo $_SESSION['status_message']; ?></h4>
+									<div class="d-flex align-items-baseline flex-wrap mr-5">
+										<h4 class="text-white font-weight-bold my-1 mr-5">Dashboard |</h4>
+										<h5 class="text-white font-weight-bold my-1 mr-5">Admin</h5>
+										<div class="col-xl-12 col-xl-12">
+											<?php
+											if (isset($_SESSION['status_message'])) {
+											?>
+												<div class="alert alert-custom alert-notice alert-light-success fade show" role="alert">
+													<div class="alert-text">
+														<h4><?php echo $_SESSION['status_message']; ?></h4>
+													</div>
+													<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
 												</div>
-												<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
-											</div>
-										<?php unset($_SESSION['status_message']);
-										} ?>
+											<?php unset($_SESSION['status_message']);
+											} ?>
+										</div>
 									</div>
 								</div>
-							</div>
 							<div class="d-flex align-items-center flex-wrap">
+								<!--begin::Daterange-->
 								<a href="#" class="btn btn-fixed-height btn-bg-white btn-text-dark-50 btn-hover-text-primary btn-icon-primary font-weight-bolder font-size-sm px-5 my-1 mr-3" id="kt_dashboard_daterangepicker" data-toggle="tooltip" title="Select dashboard daterange" data-placement="top">
 									<span class="opacity-60 font-weight-bolder mr-2" id="kt_dashboard_daterangepicker_title">Today</span>
 									<span class="font-weight-bolder" id="kt_dashboard_daterangepicker_date">Aug 16</span>
 								</a>
+								<!--end::Daterange-->
 							</div>
+							<!--end::Toolbar-->
 						</div>
 					</div>
-					
 					<!--end::Subheader-->
 					<!--begin::Entry-->
 					<div class="d-flex flex-column-fluid">
 						<!--begin::Container-->
 						<div class="container">
-							<div class="card card-custom gutter-b">
+							<div class="card card-custom">
 								<div class="card-body">
-									<!--begin::Top-->
-									<div class="d-flex">
-										<!--begin::Pic-->
-										<div class="flex-shrink-0 mr-7">
-											<div class="symbol symbol-50 symbol-lg-120">
-												<img alt="Pic" src="/hulam/assets/keen/debtors/<?= $user['profile_pic'] ?>">
-											</div>
+									<h5>List of Payment Reports</h5>
+									<form method="post" class="quick-search-form">
+										<div class="col-lg-4">
+											<input type="text" name="search_input" class="form-control" placeholder="Search..." />
 										</div>
-										
-										<!--end::Pic-->
-										<!--begin: Info-->
-										<div class="flex-grow-1">
-											<!--begin::Title-->
-											<div class="d-flex align-items-center justify-content-between flex-wrap mt-2">
-												<!--begin::User-->
-												<div class="mr-3">
-													<!--begin::Name-->
-													<h4 class="d-flex align-items-center text-dark text-hover-primary font-size-h5 font-weight-bold mr-3"><?= $user['firstname'] . ' ' . $user['middlename'] . ' ' . $user['lastname'] ?></h4>
-
-													<!--end::Name-->
-													<!--begin::Contacts-->
-													<div class="d-flex flex-wrap my-2">
-														<span class="svg-icon svg-icon-md svg-icon-gray-500 mr-1">
-															<!--begin::Svg Icon | path:assets/media/svg/icons/Communication/Mail-notification.svg-->
-															<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-																<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-																	<rect x="0" y="0" width="24" height="24"></rect>
-																	<path d="M21,12.0829584 C20.6747915,12.0283988 20.3407122,12 20,12 C16.6862915,12 14,14.6862915 14,18 C14,18.3407122 14.0283988,18.6747915 14.0829584,19 L5,19 C3.8954305,19 3,18.1045695 3,17 L3,8 C3,6.8954305 3.8954305,6 5,6 L19,6 C20.1045695,6 21,6.8954305 21,8 L21,12.0829584 Z M18.1444251,7.83964668 L12,11.1481833 L5.85557487,7.83964668 C5.4908718,7.6432681 5.03602525,7.77972206 4.83964668,8.14442513 C4.6432681,8.5091282 4.77972206,8.96397475 5.14442513,9.16035332 L11.6444251,12.6603533 C11.8664074,12.7798822 12.1335926,12.7798822 12.3555749,12.6603533 L18.8555749,9.16035332 C19.2202779,8.96397475 19.3567319,8.5091282 19.1603533,8.14442513 C18.9639747,7.77972206 18.5091282,7.6432681 18.1444251,7.83964668 Z" fill="#000000"></path>
-																	<circle fill="#000000" opacity="0.3" cx="19.5" cy="17.5" r="2.5"></circle>
-																</g>
-															</svg>
-															<!--end::Svg Icon-->
-														</span>
-														<span class="mr-2"><?= $user['email'] ?></span>
-													</div>
-													<div class="d-flex flex-wrap my-2">
-														<span class="svg-icon svg-icon-md svg-icon-gray-500 mr-1">
-															<!--begin::Svg Icon | path:assets/media/svg/icons/Map/Marker2.svg-->
-															<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-																<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-																	<rect x="0" y="0" width="24" height="24"></rect>
-																	<path d="M9.82829464,16.6565893 C7.02541569,15.7427556 5,13.1079084 5,10 C5,6.13400675 8.13400675,3 12,3 C15.8659932,3 19,6.13400675 19,10 C19,13.1079084 16.9745843,15.7427556 14.1717054,16.6565893 L12,21 L9.82829464,16.6565893 Z M12,12 C13.1045695,12 14,11.1045695 14,10 C14,8.8954305 13.1045695,8 12,8 C10.8954305,8 10,8.8954305 10,10 C10,11.1045695 10.8954305,12 12,12 Z" fill="#000000"></path>
-																</g>
-															</svg>
-															<!--end::Svg Icon-->
-														</span><?= $user['p_street'] . ' ' . $user['p_barangay'] . ' ' . $user['p_city'] . ' ' . $user['p_province'] . ' ' . $user['p_zipcode'] ?>
-													</div>
-													<div class="d-flex flex-wrap my-2">
-														<span class="font-weight-bolder font-size-sm">Contact No:
-														</span><?= $user['mobile'] ?>
-													</div>
-													<!--end::Contacts-->
-												</div>
-												<!--begin::User-->
-												<!--begin::Actions-->
-												<div class="my-lg-0 my-1">
-													<!-- <a href="#" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#activate_debtor">Activate</a> -->
-													<a href="#" class="btn btn-sm btn-light-success font-weight-bolder mr-2" data-toggle="modal" data-target="#message">Send Message</a>
-													<a href="#" class="btn btn-sm btn-light-danger font-weight-bolder mr-2" data-toggle="modal" data-target="#deactivate_debtor">Deactivate</a>
-													<a href="admin/pending_debtors.php" class="btn btn-sm btn-light-primary font-weight-bolder mr-2"><< Back</a>
-												</div>
-												<!--end::Actions-->
-											</div>
-											<!--end::Title-->
-										</div>
-										<!--end::Info-->
-									</div>
-									<!--end::Top-->
-									<!--begin::Separator-->
-									<div class="separator separator-solid my-7"></div>
-									<!--end::Separator-->
-									<!--begin::Bottom-->
-									<div class="d-flex align-items-center flex-wrap">
-										<?php
-										$id = intval($_GET['user_id']);
-
-										$sql = "SELECT * FROM user WHERE user_id = $id";
-										$query = $dbh->prepare($sql);
-										$query->execute();
-										$user = $query->fetch();
-
-										// $id = $user['debtor_id'];
-
-										$sql = "SELECT * FROM debtors_info WHERE user_id = $id";
-										$que = $dbh->prepare($sql);
-										$que->execute();
-										$res = $que->fetch();
-										?>
-										<!--begin: Item-->
-										<div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
-											<div class="d-flex flex-column text-dark-75">
-												<span class="font-weight-bolder font-size-m">Source of Income</span>
-												<span class="font-size-sm">Company Name: &nbsp;<?= $res['company_name'] ?></span>
-												<span class="font-size-sm">Monthly Salary: &nbsp;<?= $res['monthly_salary'] ?></span>
-												<span class="font-size-sm">Monthly Salary: &nbsp;<?= $res['company_street'] . ' ' . $res['company_barangay'] . ' ' . $res['company_city']
-																										. ' ' . $res['company_province'] . ' ' . $res['company_zipcode'] ?></span>
-											</div>
-										</div>
-										<!--end: Item-->
-										<!--begin: Item-->
-										<div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
-											<div class="d-flex flex-column text-dark-75">
-												<span class="font-weight-bolder font-size-m">Relative Contact:</span>
-												<span class="font-size-sm">Relative Name: &nbsp;<?= $res['rel_name'] ?></span>
-												<span class="font-size-sm">Relative Mobile No: &nbsp;<?= $res['rel_mobile'] ?></span>
-												<span class="font-size-sm">Relation: &nbsp;<?= $res['rel_type'] ?></span>
-											</div>
-										</div>
-										<!--end: Item-->
-									</div>
-									<!--end::Bottom-->
-									<div class="card-body pt-0">
-										<table class="table table-bordered">
-											<thead>
-												<tr>
-													<th>Type of Documents</th>
-													<th>Uploaded Documents</th>
-													<th>Status</th>
-													<th>Action</th>
-												</tr>
-											</thead>
-											<tbody>
-												<tr>
-													<td>Valid ID</td>
-													<td><a href="/hulam/assets/keen/debtors/<?= $res['valid_id'] ?>" target="_blank"><?= $res['valid_id'] ?></a></td>
-													<td><?= $res['status_valid_id']?></td>
-													<td>
-													<div class="dropdown dropdown-inline">
-														<a href="javascript:;" class="btn btn-sm btn-clean btn-icon mr-2" data-toggle="dropdown">
-															<span class="svg-icon svg-icon-md">
-															<i class="flaticon2-gear text-primary"></i></span></a>
-														<div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-															<ul class="navi flex-column navi-hover py-2">
-																<li class="navi-header font-weight-bolder text-uppercase font-size-xs text-primary pb-2">
-																	Choose an action:
-																</li>
-																<li class="navi-item"> 
-																	<a href="" data-toggle="modal" data-target="#confirm_valid_id" class="navi-link"> <span class="navi-icon"><i class="la la-copy"></i></span> <span class="navi-text">Validate ID</a></li>
-															</ul>
-														</div>
-													</div>
-													</td>
-												</tr>
-												<tr>
-													<td>SELFIE ID</td>
-													<td><a href="/hulam/assets/keen/debtors/<?= $res['selfie_id']?>" target="_blank"><?= $res['selfie_id']?></a></td>
-													<td><?= $res['status_selfie_id']?></td>
-													<td>
-													<div class="dropdown dropdown-inline">
-														<a href="javascript:;" class="btn btn-sm btn-clean btn-icon mr-2" data-toggle="dropdown">
-															<span class="svg-icon svg-icon-md">
-															<i class="flaticon2-gear text-primary"></i></span></a>
-														<div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-															<ul class="navi flex-column navi-hover py-2">
-																<li class="navi-header font-weight-bolder text-uppercase font-size-xs text-primary pb-2">
-																	Choose an action:
-																</li>
-																<li class="navi-item">
-																<a href="" data-toggle="modal" data-target="#confirm_selfie" class="navi-link"> <span class="navi-icon"><i class="la la-copy"></i></span> <span class="navi-text">Validate ID</a></li>
-															</ul>
-														</div>
-													</div>
-													</td>
-												</tr>
-											</tbody>
-										</table>
-									</div>
+									</form></br>
+									<table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Email</th>
+                                                <th>Contact No.</th>
+                                                <th>Current Address</th>
+                                                <th>Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        <?php
+                                            $sql = "SELECT  * FROM user WHERE user_type = '2' AND eligible = 'yes'";
+                                            $query = $dbh->prepare($sql);
+                                            $query->execute();
+                                            $res = $query->fetchAll(PDO::FETCH_OBJ);
+                                            if ($query->rowCount() > 0) {
+                                                foreach ($res as $rem) { ?>
+                                            <tr>
+                                                <td><?= htmlentities($rem->firstname); ?>&nbsp;<?= htmlentities($rem->middlename); ?>&nbsp;<?= htmlentities($rem->lastname); ?></td>
+                                                <td><?= htmlentities($rem->email); ?></td>
+                                                <td><?= htmlentities($rem->mobile); ?><br><?= htmlentities($rem->landline); ?> </td>
+                                                <td><?= htmlentities($rem->c_street); ?>&nbsp;<?= htmlentities($rem->c_barangay); ?>&nbsp;<?= htmlentities($rem->c_city); ?>&nbsp;<?= htmlentities($rem->c_province); ?>&nbsp;<?= htmlentities($rem->c_zipcode); ?></td>
+                                                <td>
+                                                    <a href="admin/view_information.php?user_id=<?= htmlentities($rem->user_id) ?>" class="kt-nav__link">
+                                                        <span class="kt-nav__link-text">Show</span>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            <?php }} ?>
+                                        </tbody>
+                                            
+                                        </tbody>
+                                    </table>     
+							        
 								</div>
 							</div>
-							<!-- Start Modal Approved Loan -->
-							<form action="" method="post">
-								<div class="modal fade" id="confirm_valid_id" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
-									<div class="modal-dialog modal-dialog-centered modal-sm" role="document">
-										<div class="modal-content">
-											<div class="modal-header">
-												<h5 class="modal-title" id="exampleModalLabel">Confirm ID?</h5>
-												<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-													<i aria-hidden="true" class="ki ki-close"></i>
-												</button>
-											</div>
-											<div class="modal-body">
-												<button type="submit" name="invalid_id" class="btn btn-light-danger font-weight-bold">Invalid ID</button>
-												<button type="submit" name="valid_id" class="btn btn-primary font-weight-bold">Valid ID</button>
-											</div>
-										</div>
-									</div>
-								</div>
-							</form>
-							<!-- End Modal -->
-							<!-- Start Modal Approved Loan -->
-							<form action="" method="post" enctype="multipart/form-data">
-								<div class="modal fade" id="confirm_selfie" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
-									<div class="modal-dialog modal-dialog-centered modal-sm" role="document">
-										<div class="modal-content">
-											<div class="modal-header">
-												<h5 class="modal-title" id="exampleModalLabel">Confirm ID?</h5>
-												<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-													<i aria-hidden="true" class="ki ki-close"></i>
-												</button>
-											</div>
-											<div class="modal-body">
-												<button type="submit" name="invalid_selfie" class="btn btn-light-danger font-weight-bold">Invalid ID</button>
-												<button type="submit" name="valid_selfie" class="btn btn-primary font-weight-bold">Valid ID</button>
-											</div>
-										</div>
-									</div>
-								</div>
-							</form>
-							<!-- End Modal -->
-							<!-- Start Modal Approved Loan -->
-							<form action="" method="post">
-								<div class="modal fade" id="activate_debtor" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
-									<div class="modal-dialog modal-dialog-centered modal-sm" role="document">
-									<div class="modal-content">
-											<div class="modal-header">
-												<h5 class="modal-title" id="exampleModalLabel">Activate Account?</h5>
-												<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-													<i aria-hidden="true" class="ki ki-close"></i>
-												</button>
-												<input type="hidden" name="receiver_id" value="<?= $res['user_id']?>">
-												<input type="hidden" name="sender_id" value="<?= $_SESSION['user_id'] ?>">
-												<?php
-												date_default_timezone_set('Asia/Manila');
-												$todays_date = date("y-m-d h:i:sa");
-												$today = strtotime($todays_date);
-												$det = date("Y-m-d h:i:sa", $today);
-												?>
-												<input type="hidden" name="date_message" value="<?= $det; ?>">
-												<input type="hidden" name="message" value="Congratulations! Your account is now activated.">
-											</div>
-											<div class="modal-footer">
-												<button type="submit" name="activate" class="btn btn-light-primary font-weight-bold">Yes</button>
-											</div>
-										</div>
-									</div>
-								</div>
-							</form>
-							<!-- End Modal -->
-							<!-- Start Modal Approved Loan -->
-							<form action="" method="post">
-								<div class="modal fade" id="deactivate_debtor" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
-									<div class="modal-dialog modal-dialog-centered modal-sm" role="document">
-									<div class="modal-content">
-											<div class="modal-header">
-												<h5 class="modal-title" id="exampleModalLabel">Deactivate Account?</h5>
-												<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-													<i aria-hidden="true" class="ki ki-close"></i>
-												</button>
-												<input type="hidden" name="receiver_id" value="<?= $res['user_id']?>">
-												<input type="hidden" name="sender_id" value="<?= $_SESSION['user_id'] ?>">
-												<?php
-												date_default_timezone_set('Asia/Manila');
-												$todays_date = date("y-m-d h:i:sa");
-												$today = strtotime($todays_date);
-												$det = date("Y-m-d h:i:sa", $today);
-												?>
-												<input type="hidden" name="date_message" value="<?= $det; ?>">
-												<input type="hidden" name="message" value="We regret to inform you that your account is now deactivated!">
-											</div>
-											<div class="modal-footer">
-												<button type="submit" name="deactivate" class="btn btn-light-primary font-weight-bold">Yes</button>
-											</div>
-										</div>
-									</div>
-								</div>
-							</form>
-							<!-- End Modal -->
-							<!-- Start Modal Approved Loan -->
-							<form action="" method="post">
-								<div class="modal fade" id="message" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
-									<div class="modal-dialog modal-dialog-centered modal-m" role="document">
-										<div class="modal-content">
-											<div class="modal-header">
-												<h5 class="modal-title" id="exampleModalLabel">Send Message</h5>
-												<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-													<i aria-hidden="true" class="ki ki-close"></i>
-												</button>
-											</div>
-											<div class="modal-body">
-												<input type="hidden" name="receiver_id" value="<?= $res['user_id']?>">
-												<input type="hidden" name="sender_id" value="<?= $_SESSION['user_id'] ?>">
-												<?php
-												date_default_timezone_set('Asia/Manila');
-												$todays_date = date("y-m-d h:i:sa");
-												$today = strtotime($todays_date);
-												$det = date("Y-m-d h:i:sa", $today);
-
-												?>
-												<input type="hidden" name="date_message" value="<?= $det; ?>">
-												<div class="col-lg-12">
-													<textarea rows="4" cols="50" name="message" class="form-control" placeholder="Type here....."></textarea>
-												</div>
-											</div>
-											<div class="modal-footer">
-												<!-- <button type="button" class="btn btn-light-danger" data-dismiss="modal">Cancel</button> -->
-												<button type="submit" name="send_message" class="btn btn-light-primary font-weight-bold">Send</button>
-											</div>
-										</div>
-									</div>
-								</div>
-							</form>
-							<!-- End Modal -->
 						</div>
-						<!--end::Body-->
 					</div>
-					<!--end::List Widget 11-->
 				</div>
 			</div>
 		</div>
 	</div>
-	</div>
-	</div>
-	<!--end::Container-->
-	</div>
-	<!--end::Entry-->
-	</div>
+
 	<!--end::Content-->
 	<!--begin::Footer-->
-	<div class="footer bg-white py-4 d-flex flex-lg-column" id="kt_footer">
-		<!--begin::Container-->
-		<div class="container d-flex flex-column flex-md-row align-items-center justify-content-between">
-			<!--begin::Copyright-->
-			<div class="text-dark order-2 order-md-1">
-				<span class="text-muted font-weight-bold mr-2">2021©</span>
-				<a href="https://keenthemes.com/keen" target="_blank" class="text-dark-75 text-hover-primary">The Hulam Team</a>
-			</div>
-			<!--end::Copyright-->
-			<!--begin::Nav-->
-			<div class="nav nav-dark">
-				<a href="https://keenthemes.com/keen" target="_blank" class="nav-link pl-0 pr-2">About</a>
-				<a href="https://keenthemes.com/keen" target="_blank" class="nav-link pr-2">Team</a>
-				<a href="https://keenthemes.com/keen" target="_blank" class="nav-link pr-0">Contact</a>
-			</div>
-			<!--end::Nav-->
-		</div>
-		<!--end::Container-->
+	<!-- <div class="footer bg-white py-4 d-flex flex-lg-column" id="kt_footer"> -->
+	<!--begin::Container-->
+	<div class="container d-flex flex-column flex-md-row align-items-center justify-content-between">
+		<!--begin::Copyright-->
+		<!-- <div class="text-dark order-2 order-md-1">
+							<span class="text-muted font-weight-bold mr-2">2021©</span>
+							<a href="https://keenthemes.com/keen" target="_blank" class="text-dark-75 text-hover-primary">The Hulam Team</a>
+						</div> -->
+		<!--end::Copyright-->
+		<!--begin::Nav-->
+		<!-- <div class="nav nav-dark">
+							<a href="https://keenthemes.com/keen" target="_blank" class="nav-link pl-0 pr-2">About</a>
+							<a href="https://keenthemes.com/keen" target="_blank" class="nav-link pr-2">Team</a>
+							<a href="https://keenthemes.com/keen" target="_blank" class="nav-link pr-0">Contact</a>
+						</div> -->
+		<!--end::Nav-->
 	</div>
-	<!--end::Footer-->
 	</div>
-	<!--end::Wrapper-->
-	</div>
-	<!--end::Page-->
-	</div>
-	<!--end::Main-->
+
 
 	<!-- begin::User Panel-->
 	<div id="kt_quick_user" class="offcanvas offcanvas-right p-10">
 		<!--begin::Header-->
 		<div class="offcanvas-header d-flex align-items-center justify-content-between pb-5">
-			<h3 class="font-weight-bold m-0">Profile
-				<small class="text-muted font-size-sm ml-2">15 messages</small>
-			</h3>
+			<h3 class="font-weight-bold m-0">Profile</h3>
 			<a href="#" class="btn btn-xs btn-icon btn-light btn-hover-primary" id="kt_quick_user_close">
 				<i class="ki ki-close icon-xs text-muted"></i>
 			</a>
@@ -1474,7 +1011,7 @@ if (isset($_POST['declined_loan'])) {
 			<!--begin::Nav-->
 			<div class="navi navi-spacer-x-0 p-0">
 				<!--begin::Item-->
-				<a href="custom/apps/user/profile-1/personal-information.html" class="navi-item">
+				<a href="lending_company/update_profile.php" class="navi-item">
 					<div class="navi-link">
 						<div class="symbol symbol-40 bg-light mr-3">
 							<div class="symbol-label">
@@ -1499,82 +1036,6 @@ if (isset($_POST['declined_loan'])) {
 						</div>
 					</div>
 				</a>
-				<!--end:Item-->
-				<!--begin::Item-->
-				<a href="custom/apps/user/profile-3.html" class="navi-item">
-					<div class="navi-link">
-						<div class="symbol symbol-40 bg-light mr-3">
-							<div class="symbol-label">
-								<span class="svg-icon svg-icon-md svg-icon-success">
-									<!--begin::Svg Icon | path:assets/media/svg/icons/General/Settings-1.svg-->
-									<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-										<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-											<rect x="0" y="0" width="24" height="24" />
-											<path d="M7,3 L17,3 C19.209139,3 21,4.790861 21,7 C21,9.209139 19.209139,11 17,11 L7,11 C4.790861,11 3,9.209139 3,7 C3,4.790861 4.790861,3 7,3 Z M7,9 C8.1045695,9 9,8.1045695 9,7 C9,5.8954305 8.1045695,5 7,5 C5.8954305,5 5,5.8954305 5,7 C5,8.1045695 5.8954305,9 7,9 Z" fill="#000000" />
-											<path d="M7,13 L17,13 C19.209139,13 21,14.790861 21,17 C21,19.209139 19.209139,21 17,21 L7,21 C4.790861,21 3,19.209139 3,17 C3,14.790861 4.790861,13 7,13 Z M17,19 C18.1045695,19 19,18.1045695 19,17 C19,15.8954305 18.1045695,15 17,15 C15.8954305,15 15,15.8954305 15,17 C15,18.1045695 15.8954305,19 17,19 Z" fill="#000000" opacity="0.3" />
-										</g>
-									</svg>
-									<!--end::Svg Icon-->
-								</span>
-							</div>
-						</div>
-						<div class="navi-text">
-							<div class="font-weight-bold">My Tasks</div>
-							<div class="text-muted">Todo and tasks</div>
-						</div>
-					</div>
-				</a>
-				<!--end:Item-->
-				<!--begin::Item-->
-				<a href="custom/apps/user/profile-2.html" class="navi-item">
-					<div class="navi-link">
-						<div class="symbol symbol-40 bg-light mr-3">
-							<div class="symbol-label">
-								<span class="svg-icon svg-icon-md svg-icon-primary">
-									<!--begin::Svg Icon | path:assets/media/svg/icons/General/Half-star.svg-->
-									<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-										<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-											<polygon points="0 0 24 0 24 24 0 24" />
-											<path d="M12,4.25932872 C12.1488635,4.25921584 12.3000368,4.29247316 12.4425657,4.36281539 C12.6397783,4.46014562 12.7994058,4.61977315 12.8967361,4.81698575 L14.9389263,8.95491503 L19.5054023,9.61846284 C20.0519472,9.69788046 20.4306287,10.2053233 20.351211,10.7518682 C20.3195865,10.9695052 20.2170993,11.1706476 20.0596157,11.3241562 L16.7552826,14.545085 L17.5353298,19.0931094 C17.6286908,19.6374458 17.263103,20.1544017 16.7187666,20.2477627 C16.5020089,20.2849396 16.2790408,20.2496249 16.0843804,20.1472858 L12,18 L12,4.25932872 Z" fill="#000000" opacity="0.3" />
-											<path d="M12,4.25932872 L12,18 L7.91561963,20.1472858 C7.42677504,20.4042866 6.82214789,20.2163401 6.56514708,19.7274955 C6.46280801,19.5328351 6.42749334,19.309867 6.46467018,19.0931094 L7.24471742,14.545085 L3.94038429,11.3241562 C3.54490071,10.938655 3.5368084,10.3055417 3.92230962,9.91005817 C4.07581822,9.75257453 4.27696063,9.65008735 4.49459766,9.61846284 L9.06107374,8.95491503 L11.1032639,4.81698575 C11.277344,4.464261 11.6315987,4.25960807 12,4.25932872 Z" fill="#000000" />
-										</g>
-									</svg>
-									<!--end::Svg Icon-->
-								</span>
-							</div>
-						</div>
-						<div class="navi-text">
-							<div class="font-weight-bold">My Events</div>
-							<div class="text-muted">Logs and notifications</div>
-						</div>
-					</div>
-				</a>
-				<!--end:Item-->
-				<!--begin::Item-->
-				<a href="custom/apps/userprofile-1/overview.html" class="navi-item">
-					<div class="navi-link">
-						<div class="symbol symbol-40 bg-light mr-3">
-							<div class="symbol-label">
-								<span class="svg-icon svg-icon-md svg-icon-info">
-									<!--begin::Svg Icon | path:assets/media/svg/icons/Communication/Mail-opened.svg-->
-									<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-										<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-											<rect x="0" y="0" width="24" height="24" />
-											<path d="M6,2 L18,2 C18.5522847,2 19,2.44771525 19,3 L19,12 C19,12.5522847 18.5522847,13 18,13 L6,13 C5.44771525,13 5,12.5522847 5,12 L5,3 C5,2.44771525 5.44771525,2 6,2 Z M7.5,5 C7.22385763,5 7,5.22385763 7,5.5 C7,5.77614237 7.22385763,6 7.5,6 L13.5,6 C13.7761424,6 14,5.77614237 14,5.5 C14,5.22385763 13.7761424,5 13.5,5 L7.5,5 Z M7.5,7 C7.22385763,7 7,7.22385763 7,7.5 C7,7.77614237 7.22385763,8 7.5,8 L10.5,8 C10.7761424,8 11,7.77614237 11,7.5 C11,7.22385763 10.7761424,7 10.5,7 L7.5,7 Z" fill="#000000" opacity="0.3" />
-											<path d="M3.79274528,6.57253826 L12,12.5 L20.2072547,6.57253826 C20.4311176,6.4108595 20.7436609,6.46126971 20.9053396,6.68513259 C20.9668779,6.77033951 21,6.87277228 21,6.97787787 L21,17 C21,18.1045695 20.1045695,19 19,19 L5,19 C3.8954305,19 3,18.1045695 3,17 L3,6.97787787 C3,6.70173549 3.22385763,6.47787787 3.5,6.47787787 C3.60510559,6.47787787 3.70753836,6.51099993 3.79274528,6.57253826 Z" fill="#000000" />
-										</g>
-									</svg>
-									<!--end::Svg Icon-->
-								</span>
-							</div>
-						</div>
-						<div class="navi-text">
-							<div class="font-weight-bold">My Statements</div>
-							<div class="text-muted">latest tasks and projects</div>
-						</div>
-					</div>
-				</a>
-				<!--end:Item-->
 				<!--begin::Item-->
 				<span class="navi-item mt-2">
 					<span class="navi-link">
@@ -1600,13 +1061,7 @@ if (isset($_POST['declined_loan'])) {
 		<div class="offcanvas-header offcanvas-header-navs d-flex align-items-center justify-content-between mb-5">
 			<ul class="nav nav-bold nav-tabs nav-tabs-line nav-tabs-line-3x nav-tabs-primary flex-grow-1 px-10" role="tablist">
 				<li class="nav-item">
-					<a class="nav-link active" data-toggle="tab" href="#kt_quick_panel_logs">Logs</a>
-				</li>
-				<li class="nav-item">
 					<a class="nav-link" data-toggle="tab" href="#kt_quick_panel_notifications">Notifications</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link" data-toggle="tab" href="#kt_quick_panel_settings">Settings</a>
 				</li>
 			</ul>
 			<div class="offcanvas-close mt-n1 pr-5">
@@ -1619,644 +1074,44 @@ if (isset($_POST['declined_loan'])) {
 		<!--begin::Content-->
 		<div class="offcanvas-content px-10">
 			<div class="tab-content">
-				<!--begin::Tabpane-->
-				<div class="tab-pane fade show pt-3 pr-5 mr-n5 active" id="kt_quick_panel_logs" role="tabpanel">
-					<!--begin::Section-->
-					<div class="mb-15">
-						<h5 class="font-weight-bold mb-5">System Messages</h5>
-						<!--begin::Timeline-->
-						<div class="timeline timeline-5">
-							<div class="timeline-items">
-								<!--begin::Item-->
-								<div class="timeline-item">
-									<!--begin::Icon-->
-									<div class="timeline-media bg-light-primary">
-										<span class="svg-icon svg-icon-primary svg-icon-md">
-											<!--begin::Svg Icon | path:assets/media/svg/icons/Communication/Group-chat.svg-->
-											<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-												<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-													<rect x="0" y="0" width="24" height="24" />
-													<path d="M16,15.6315789 L16,12 C16,10.3431458 14.6568542,9 13,9 L6.16183229,9 L6.16183229,5.52631579 C6.16183229,4.13107011 7.29290239,3 8.68814808,3 L20.4776218,3 C21.8728674,3 23.0039375,4.13107011 23.0039375,5.52631579 L23.0039375,13.1052632 L23.0206157,17.786793 C23.0215995,18.0629336 22.7985408,18.2875874 22.5224001,18.2885711 C22.3891754,18.2890457 22.2612702,18.2363324 22.1670655,18.1421277 L19.6565168,15.6315789 L16,15.6315789 Z" fill="#000000" />
-													<path d="M1.98505595,18 L1.98505595,13 C1.98505595,11.8954305 2.88048645,11 3.98505595,11 L11.9850559,11 C13.0896254,11 13.9850559,11.8954305 13.9850559,13 L13.9850559,18 C13.9850559,19.1045695 13.0896254,20 11.9850559,20 L4.10078614,20 L2.85693427,21.1905292 C2.65744295,21.3814685 2.34093638,21.3745358 2.14999706,21.1750444 C2.06092565,21.0819836 2.01120804,20.958136 2.01120804,20.8293182 L2.01120804,18.32426 C1.99400175,18.2187196 1.98505595,18.1104045 1.98505595,18 Z M6.5,14 C6.22385763,14 6,14.2238576 6,14.5 C6,14.7761424 6.22385763,15 6.5,15 L11.5,15 C11.7761424,15 12,14.7761424 12,14.5 C12,14.2238576 11.7761424,14 11.5,14 L6.5,14 Z M9.5,16 C9.22385763,16 9,16.2238576 9,16.5 C9,16.7761424 9.22385763,17 9.5,17 L11.5,17 C11.7761424,17 12,16.7761424 12,16.5 C12,16.2238576 11.7761424,16 11.5,16 L9.5,16 Z" fill="#000000" opacity="0.3" />
-												</g>
-											</svg>
-											<!--end::Svg Icon-->
-										</span>
-									</div>
-									<!--end::Icon-->
-									<!--begin::Info-->
-									<div class="timeline-desc timeline-desc-light-primary">
-										<span class="font-weight-bolder text-primary">09:30 AM</span>
-										<p class="font-weight-normal text-dark-50 pb-2">To start a blog, think of a topic about and first brainstorm ways to write details</p>
-									</div>
-									<!--end::Info-->
+				<div class="navi navi-icon-circle navi-spacer-x-0">
+					<!--begin::Item-->
+					<a href="#" class="navi-item">
+						<div class="navi-link rounded">
+							<div class="symbol symbol-50 mr-3">
+								<div class="symbol-label">
+									<i class="flaticon-bell text-success icon-lg"></i>
 								</div>
-								<!--end::Item-->
-								<!--begin::Item-->
-								<div class="timeline-item">
-									<!--begin::Icon-->
-									<div class="timeline-media bg-light-warning">
-										<span class="svg-icon svg-icon-warning svg-icon-md">
-											<!--begin::Svg Icon | path:assets/media/svg/icons/General/Attachment2.svg-->
-											<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-												<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-													<rect x="0" y="0" width="24" height="24" />
-													<path d="M11.7573593,15.2426407 L8.75735931,15.2426407 C8.20507456,15.2426407 7.75735931,15.6903559 7.75735931,16.2426407 C7.75735931,16.7949254 8.20507456,17.2426407 8.75735931,17.2426407 L11.7573593,17.2426407 L11.7573593,18.2426407 C11.7573593,19.3472102 10.8619288,20.2426407 9.75735931,20.2426407 L5.75735931,20.2426407 C4.65278981,20.2426407 3.75735931,19.3472102 3.75735931,18.2426407 L3.75735931,14.2426407 C3.75735931,13.1380712 4.65278981,12.2426407 5.75735931,12.2426407 L9.75735931,12.2426407 C10.8619288,12.2426407 11.7573593,13.1380712 11.7573593,14.2426407 L11.7573593,15.2426407 Z" fill="#000000" opacity="0.3" transform="translate(7.757359, 16.242641) rotate(-45.000000) translate(-7.757359, -16.242641)" />
-													<path d="M12.2426407,8.75735931 L15.2426407,8.75735931 C15.7949254,8.75735931 16.2426407,8.30964406 16.2426407,7.75735931 C16.2426407,7.20507456 15.7949254,6.75735931 15.2426407,6.75735931 L12.2426407,6.75735931 L12.2426407,5.75735931 C12.2426407,4.65278981 13.1380712,3.75735931 14.2426407,3.75735931 L18.2426407,3.75735931 C19.3472102,3.75735931 20.2426407,4.65278981 20.2426407,5.75735931 L20.2426407,9.75735931 C20.2426407,10.8619288 19.3472102,11.7573593 18.2426407,11.7573593 L14.2426407,11.7573593 C13.1380712,11.7573593 12.2426407,10.8619288 12.2426407,9.75735931 L12.2426407,8.75735931 Z" fill="#000000" transform="translate(16.242641, 7.757359) rotate(-45.000000) translate(-16.242641, -7.757359)" />
-													<path d="M5.89339828,3.42893219 C6.44568303,3.42893219 6.89339828,3.87664744 6.89339828,4.42893219 L6.89339828,6.42893219 C6.89339828,6.98121694 6.44568303,7.42893219 5.89339828,7.42893219 C5.34111353,7.42893219 4.89339828,6.98121694 4.89339828,6.42893219 L4.89339828,4.42893219 C4.89339828,3.87664744 5.34111353,3.42893219 5.89339828,3.42893219 Z M11.4289322,5.13603897 C11.8194565,5.52656326 11.8194565,6.15972824 11.4289322,6.55025253 L10.0147186,7.96446609 C9.62419433,8.35499039 8.99102936,8.35499039 8.60050506,7.96446609 C8.20998077,7.5739418 8.20998077,6.94077682 8.60050506,6.55025253 L10.0147186,5.13603897 C10.4052429,4.74551468 11.0384079,4.74551468 11.4289322,5.13603897 Z M0.600505063,5.13603897 C0.991029355,4.74551468 1.62419433,4.74551468 2.01471863,5.13603897 L3.42893219,6.55025253 C3.81945648,6.94077682 3.81945648,7.5739418 3.42893219,7.96446609 C3.0384079,8.35499039 2.40524292,8.35499039 2.01471863,7.96446609 L0.600505063,6.55025253 C0.209980772,6.15972824 0.209980772,5.52656326 0.600505063,5.13603897 Z" fill="#000000" opacity="0.3" transform="translate(6.014719, 5.843146) rotate(-45.000000) translate(-6.014719, -5.843146)" />
-													<path d="M17.9142136,15.4497475 C18.4664983,15.4497475 18.9142136,15.8974627 18.9142136,16.4497475 L18.9142136,18.4497475 C18.9142136,19.0020322 18.4664983,19.4497475 17.9142136,19.4497475 C17.3619288,19.4497475 16.9142136,19.0020322 16.9142136,18.4497475 L16.9142136,16.4497475 C16.9142136,15.8974627 17.3619288,15.4497475 17.9142136,15.4497475 Z M23.4497475,17.1568542 C23.8402718,17.5473785 23.8402718,18.1805435 23.4497475,18.5710678 L22.0355339,19.9852814 C21.6450096,20.3758057 21.0118446,20.3758057 20.6213203,19.9852814 C20.2307961,19.5947571 20.2307961,18.9615921 20.6213203,18.5710678 L22.0355339,17.1568542 C22.4260582,16.76633 23.0592232,16.76633 23.4497475,17.1568542 Z M12.6213203,17.1568542 C13.0118446,16.76633 13.6450096,16.76633 14.0355339,17.1568542 L15.4497475,18.5710678 C15.8402718,18.9615921 15.8402718,19.5947571 15.4497475,19.9852814 C15.0592232,20.3758057 14.4260582,20.3758057 14.0355339,19.9852814 L12.6213203,18.5710678 C12.2307961,18.1805435 12.2307961,17.5473785 12.6213203,17.1568542 Z" fill="#000000" opacity="0.3" transform="translate(18.035534, 17.863961) scale(1, -1) rotate(45.000000) translate(-18.035534, -17.863961)" />
-												</g>
-											</svg>
-											<!--end::Svg Icon-->
-										</span>
-									</div>
-									<!--end::Icon-->
-									<!--begin::Info-->
-									<div class="timeline-desc timeline-desc-light-warning">
-										<span class="font-weight-bolder text-warning">2:45 PM</span>
-										<p class="font-weight-normal text-dark-50 pt-1 pb-2">To start a blog, think of a topic about and first brainstorm ways to write details</p>
-									</div>
-									<!--end::Info-->
-								</div>
-								<!--end::Item-->
-								<!--begin::Item-->
-								<div class="timeline-item">
-									<!--begin::Icon-->
-									<div class="timeline-media bg-light-success">
-										<span class="svg-icon svg-icon-success svg-icon-md">
-											<!--begin::Svg Icon | path:assets/media/svg/icons/Home/Library.svg-->
-											<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-												<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-													<rect x="0" y="0" width="24" height="24" />
-													<path d="M5,3 L6,3 C6.55228475,3 7,3.44771525 7,4 L7,20 C7,20.5522847 6.55228475,21 6,21 L5,21 C4.44771525,21 4,20.5522847 4,20 L4,4 C4,3.44771525 4.44771525,3 5,3 Z M10,3 L11,3 C11.5522847,3 12,3.44771525 12,4 L12,20 C12,20.5522847 11.5522847,21 11,21 L10,21 C9.44771525,21 9,20.5522847 9,20 L9,4 C9,3.44771525 9.44771525,3 10,3 Z" fill="#000000" />
-													<rect fill="#000000" opacity="0.3" transform="translate(17.825568, 11.945519) rotate(-19.000000) translate(-17.825568, -11.945519)" x="16.3255682" y="2.94551858" width="3" height="18" rx="1" />
-												</g>
-											</svg>
-											<!--end::Svg Icon-->
-										</span>
-									</div>
-									<!--end::Icon-->
-									<!--begin::Info-->
-									<div class="timeline-desc timeline-desc-light-success">
-										<span class="font-weight-bolder text-success">3:12 PM</span>
-										<p class="font-weight-normal text-dark-50 pt-1 pb-2">To start a blog, think of a topic about and first brainstorm ways to write details</p>
-									</div>
-									<!--end::Info-->
-								</div>
-								<!--end::Item-->
-								<!--begin::Item-->
-								<div class="timeline-item">
-									<!--begin::Icon-->
-									<div class="timeline-media bg-light-danger">
-										<span class="svg-icon svg-icon-danger svg-icon-md">
-											<!--begin::Svg Icon | path:assets/media/svg/icons/Communication/Add-user.svg-->
-											<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-												<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-													<polygon points="0 0 24 0 24 24 0 24" />
-													<path d="M18,8 L16,8 C15.4477153,8 15,7.55228475 15,7 C15,6.44771525 15.4477153,6 16,6 L18,6 L18,4 C18,3.44771525 18.4477153,3 19,3 C19.5522847,3 20,3.44771525 20,4 L20,6 L22,6 C22.5522847,6 23,6.44771525 23,7 C23,7.55228475 22.5522847,8 22,8 L20,8 L20,10 C20,10.5522847 19.5522847,11 19,11 C18.4477153,11 18,10.5522847 18,10 L18,8 Z M9,11 C6.790861,11 5,9.209139 5,7 C5,4.790861 6.790861,3 9,3 C11.209139,3 13,4.790861 13,7 C13,9.209139 11.209139,11 9,11 Z" fill="#000000" fill-rule="nonzero" opacity="0.3" />
-													<path d="M0.00065168429,20.1992055 C0.388258525,15.4265159 4.26191235,13 8.98334134,13 C13.7712164,13 17.7048837,15.2931929 17.9979143,20.2 C18.0095879,20.3954741 17.9979143,21 17.2466999,21 C13.541124,21 8.03472472,21 0.727502227,21 C0.476712155,21 -0.0204617505,20.45918 0.00065168429,20.1992055 Z" fill="#000000" fill-rule="nonzero" />
-												</g>
-											</svg>
-											<!--end::Svg Icon-->
-										</span>
-									</div>
-									<!--end::Icon-->
-									<!--begin::Info-->
-									<div class="timeline-desc timeline-desc-light-danger">
-										<span class="font-weight-bolder text-danger">7:05 PM</span>
-										<p class="font-weight-normal text-dark-50 pt-1">To start a blog, think of a topic about and first brainstorm ways to write details</p>
-									</div>
-									<!--end::Info-->
-								</div>
-								<!--end::Item-->
+							</div>
+							<div class="navi-text">
+								<div class="font-weight-bold font-size-lg">5 new user generated report</div>
+								<div class="text-muted">Reports based on sales</div>
 							</div>
 						</div>
-						<!--end::Timeline-->
-					</div>
-					<!--end::Section-->
-					<!--begin::Section-->
-					<div class="mb-5">
-						<h5 class="font-weight-bold mb-5">Notifications</h5>
-						<!--begin::Item-->
-						<div class="d-flex align-items-center mb-6">
-							<!--begin::Symbol-->
-							<div class="symbol symbol-35 flex-shrink-0 mr-3">
-								<img alt="Pic" src="assets/media/users/150-5.jpg" />
-							</div>
-							<!--end::Symbol-->
-							<!--begin::Content-->
-							<div class="d-flex flex-wrap flex-row-fluid">
-								<!--begin::Text-->
-								<div class="d-flex flex-column pr-5 flex-grow-1">
-									<a href="#" class="text-dark text-hover-primary mb-1 font-weight-bold font-size-lg">Marcus Smart</a>
-									<span class="text-muted font-weight-bold">UI/UX, Art Director</span>
+					</a>
+					<!--end::Item-->
+					<!--begin::Item-->
+					<a href="#" class="navi-item">
+						<div class="navi-link rounded">
+							<div class="symbol symbol-50 mr-3">
+								<div class="symbol-label">
+									<i class="flaticon2-box text-danger icon-lg"></i>
 								</div>
-								<!--end::Text-->
-								<!--begin::Section-->
-								<div class="d-flex align-items-center py-2">
-									<!--begin::Label-->
-									<span class="text-success font-weight-bolder font-size-sm pr-6">+65%</span>
-									<!--end::Label-->
-									<!--begin::Btn-->
-									<a href="#" class="btn btn-icon btn-light btn-sm">
-										<span class="svg-icon svg-icon-success">
-											<span class="svg-icon svg-icon-md">
-												<!--begin::Svg Icon | path:assets/media/svg/icons/Navigation/Angle-right.svg-->
-												<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-													<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-														<polygon points="0 0 24 0 24 24 0 24" />
-														<path d="M6.70710678,15.7071068 C6.31658249,16.0976311 5.68341751,16.0976311 5.29289322,15.7071068 C4.90236893,15.3165825 4.90236893,14.6834175 5.29289322,14.2928932 L11.2928932,8.29289322 C11.6714722,7.91431428 12.2810586,7.90106866 12.6757246,8.26284586 L18.6757246,13.7628459 C19.0828436,14.1360383 19.1103465,14.7686056 18.7371541,15.1757246 C18.3639617,15.5828436 17.7313944,15.6103465 17.3242754,15.2371541 L12.0300757,10.3841378 L6.70710678,15.7071068 Z" fill="#000000" fill-rule="nonzero" transform="translate(12.000003, 11.999999) rotate(-270.000000) translate(-12.000003, -11.999999)" />
-													</g>
-												</svg>
-												<!--end::Svg Icon-->
-											</span>
-										</span>
-									</a>
-									<!--end::Btn-->
-								</div>
-								<!--end::Section-->
 							</div>
-							<!--end::Content-->
+							<div class="navi-text">
+								<div class="font-weight-bold font-size-lg">2 new items submited</div>
+								<div class="text-muted">by Grog John</div>
+							</div>
 						</div>
-						<!--end::Item-->
-						<!--begin::Item-->
-						<div class="d-flex align-items-center mb-6">
-							<!--begin::Symbol-->
-							<div class="symbol symbol-35 symbol-light-info flex-shrink-0 mr-3">
-								<span class="symbol-label font-weight-bolder font-size-lg">AH</span>
-							</div>
-							<!--end::Symbol-->
-							<!--begin::Content-->
-							<div class="d-flex flex-wrap flex-row-fluid">
-								<!--begin::Text-->
-								<div class="d-flex flex-column pr-5 flex-grow-1">
-									<a href="#" class="text-dark text-hover-primary mb-1 font-weight-bold font-size-lg">Andreas Hawks</a>
-									<span class="text-muted font-weight-bold">Python Developer</span>
-								</div>
-								<!--end::Text-->
-								<!--begin::Section-->
-								<div class="d-flex align-items-center py-2">
-									<!--begin::Label-->
-									<span class="text-success font-weight-bolder font-size-sm pr-6">+23%</span>
-									<!--end::Label-->
-									<!--begin::Btn-->
-									<a href="#" class="btn btn-icon btn-light btn-sm">
-										<span class="svg-icon svg-icon-success">
-											<span class="svg-icon svg-icon-md">
-												<!--begin::Svg Icon | path:assets/media/svg/icons/Navigation/Angle-right.svg-->
-												<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-													<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-														<polygon points="0 0 24 0 24 24 0 24" />
-														<path d="M6.70710678,15.7071068 C6.31658249,16.0976311 5.68341751,16.0976311 5.29289322,15.7071068 C4.90236893,15.3165825 4.90236893,14.6834175 5.29289322,14.2928932 L11.2928932,8.29289322 C11.6714722,7.91431428 12.2810586,7.90106866 12.6757246,8.26284586 L18.6757246,13.7628459 C19.0828436,14.1360383 19.1103465,14.7686056 18.7371541,15.1757246 C18.3639617,15.5828436 17.7313944,15.6103465 17.3242754,15.2371541 L12.0300757,10.3841378 L6.70710678,15.7071068 Z" fill="#000000" fill-rule="nonzero" transform="translate(12.000003, 11.999999) rotate(-270.000000) translate(-12.000003, -11.999999)" />
-													</g>
-												</svg>
-												<!--end::Svg Icon-->
-											</span>
-										</span>
-									</a>
-									<!--end::Btn-->
-								</div>
-								<!--end::Section-->
-							</div>
-							<!--end::Content-->
-						</div>
-						<!--end::Item-->
-						<!--begin::Item-->
-						<div class="d-flex align-items-center mb-6">
-							<!--begin::Symbol-->
-							<div class="symbol symbol-35 symbol-light-success flex-shrink-0 mr-3">
-								<span class="symbol-label font-weight-bolder font-size-lg">SC</span>
-							</div>
-							<!--end::Symbol-->
-							<!--begin::Content-->
-							<div class="d-flex flex-wrap flex-row-fluid">
-								<!--begin::Text-->
-								<div class="d-flex flex-column pr-5 flex-grow-1">
-									<a href="#" class="text-dark text-hover-primary mb-1 font-weight-bold font-size-lg">Sarah Connor</a>
-									<span class="text-muted font-weight-bold">HTML, CSS. jQuery</span>
-								</div>
-								<!--end::Text-->
-								<!--begin::Section-->
-								<div class="d-flex align-items-center py-2">
-									<!--begin::Label-->
-									<span class="text-danger font-weight-bolder font-size-sm pr-6">-34%</span>
-									<!--end::Label-->
-									<!--begin::Btn-->
-									<a href="#" class="btn btn-icon btn-light btn-sm">
-										<span class="svg-icon svg-icon-success">
-											<span class="svg-icon svg-icon-md">
-												<!--begin::Svg Icon | path:assets/media/svg/icons/Navigation/Angle-right.svg-->
-												<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-													<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-														<polygon points="0 0 24 0 24 24 0 24" />
-														<path d="M6.70710678,15.7071068 C6.31658249,16.0976311 5.68341751,16.0976311 5.29289322,15.7071068 C4.90236893,15.3165825 4.90236893,14.6834175 5.29289322,14.2928932 L11.2928932,8.29289322 C11.6714722,7.91431428 12.2810586,7.90106866 12.6757246,8.26284586 L18.6757246,13.7628459 C19.0828436,14.1360383 19.1103465,14.7686056 18.7371541,15.1757246 C18.3639617,15.5828436 17.7313944,15.6103465 17.3242754,15.2371541 L12.0300757,10.3841378 L6.70710678,15.7071068 Z" fill="#000000" fill-rule="nonzero" transform="translate(12.000003, 11.999999) rotate(-270.000000) translate(-12.000003, -11.999999)" />
-													</g>
-												</svg>
-												<!--end::Svg Icon-->
-											</span>
-										</span>
-									</a>
-									<!--end::Btn-->
-								</div>
-								<!--end::Section-->
-							</div>
-							<!--end::Content-->
-						</div>
-						<!--end::Item-->
-						<!--begin::Item-->
-						<div class="d-flex align-items-center mb-6">
-							<!--begin::Symbol-->
-							<div class="symbol symbol-35 flex-shrink-0 mr-3">
-								<img alt="Pic" src="assets/media/users/150-7.jpg" />
-							</div>
-							<!--end::Symbol-->
-							<!--begin::Content-->
-							<div class="d-flex flex-wrap flex-row-fluid">
-								<!--begin::Text-->
-								<div class="d-flex flex-column pr-5 flex-grow-1">
-									<a href="#" class="text-dark text-hover-primary mb-1 font-weight-bold font-size-lg">Amanda Harden</a>
-									<span class="text-muted font-weight-bold">UI/UX, Art Director</span>
-								</div>
-								<!--end::Text-->
-								<!--begin::Section-->
-								<div class="d-flex align-items-center py-2">
-									<!--begin::Label-->
-									<span class="text-success font-weight-bolder font-size-sm pr-6">+72%</span>
-									<!--end::Label-->
-									<!--begin::Btn-->
-									<a href="#" class="btn btn-icon btn-light btn-sm">
-										<span class="svg-icon svg-icon-success">
-											<span class="svg-icon svg-icon-md">
-												<!--begin::Svg Icon | path:assets/media/svg/icons/Navigation/Angle-right.svg-->
-												<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-													<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-														<polygon points="0 0 24 0 24 24 0 24" />
-														<path d="M6.70710678,15.7071068 C6.31658249,16.0976311 5.68341751,16.0976311 5.29289322,15.7071068 C4.90236893,15.3165825 4.90236893,14.6834175 5.29289322,14.2928932 L11.2928932,8.29289322 C11.6714722,7.91431428 12.2810586,7.90106866 12.6757246,8.26284586 L18.6757246,13.7628459 C19.0828436,14.1360383 19.1103465,14.7686056 18.7371541,15.1757246 C18.3639617,15.5828436 17.7313944,15.6103465 17.3242754,15.2371541 L12.0300757,10.3841378 L6.70710678,15.7071068 Z" fill="#000000" fill-rule="nonzero" transform="translate(12.000003, 11.999999) rotate(-270.000000) translate(-12.000003, -11.999999)" />
-													</g>
-												</svg>
-												<!--end::Svg Icon-->
-											</span>
-										</span>
-									</a>
-									<!--end::Btn-->
-								</div>
-								<!--end::Section-->
-							</div>
-							<!--end::Content-->
-						</div>
-						<!--end::Item-->
-						<!--begin::Item-->
-						<div class="d-flex align-items-center mb-6">
-							<!--begin::Symbol-->
-							<div class="symbol symbol-35 symbol-light-danger flex-shrink-0 mr-3">
-								<span class="symbol-label font-weight-bolder font-size-lg">SR</span>
-							</div>
-							<!--end::Symbol-->
-							<!--begin::Content-->
-							<div class="d-flex flex-wrap flex-row-fluid">
-								<!--begin::Text-->
-								<div class="d-flex flex-column pr-5 flex-grow-1">
-									<a href="#" class="text-dark text-hover-primary mb-1 font-weight-bold font-size-lg">Sean Robbins</a>
-									<span class="text-muted font-weight-bold">UI/UX, Art Director</span>
-								</div>
-								<!--end::Text-->
-								<!--begin::Section-->
-								<div class="d-flex align-items-center py-2">
-									<!--begin::Label-->
-									<span class="text-success font-weight-bolder font-size-sm pr-6">+65%</span>
-									<!--end::Label-->
-									<!--begin::Btn-->
-									<a href="#" class="btn btn-icon btn-light btn-sm">
-										<span class="svg-icon svg-icon-success">
-											<span class="svg-icon svg-icon-md">
-												<!--begin::Svg Icon | path:assets/media/svg/icons/Navigation/Angle-right.svg-->
-												<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-													<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-														<polygon points="0 0 24 0 24 24 0 24" />
-														<path d="M6.70710678,15.7071068 C6.31658249,16.0976311 5.68341751,16.0976311 5.29289322,15.7071068 C4.90236893,15.3165825 4.90236893,14.6834175 5.29289322,14.2928932 L11.2928932,8.29289322 C11.6714722,7.91431428 12.2810586,7.90106866 12.6757246,8.26284586 L18.6757246,13.7628459 C19.0828436,14.1360383 19.1103465,14.7686056 18.7371541,15.1757246 C18.3639617,15.5828436 17.7313944,15.6103465 17.3242754,15.2371541 L12.0300757,10.3841378 L6.70710678,15.7071068 Z" fill="#000000" fill-rule="nonzero" transform="translate(12.000003, 11.999999) rotate(-270.000000) translate(-12.000003, -11.999999)" />
-													</g>
-												</svg>
-												<!--end::Svg Icon-->
-											</span>
-										</span>
-									</a>
-									<!--end::Btn-->
-								</div>
-								<!--end::Section-->
-							</div>
-							<!--end::Content-->
-						</div>
-						<!--end::Item-->
-						<!--begin::Item-->
-						<div class="d-flex align-items-center">
-							<!--begin::Symbol-->
-							<div class="symbol symbol-35 symbol-light-primary flex-shrink-0 mr-3">
-								<span class="symbol-label font-weight-bolder font-size-lg">JT</span>
-							</div>
-							<!--end::Symbol-->
-							<!--begin::Content-->
-							<div class="d-flex flex-wrap flex-row-fluid">
-								<!--begin::Text-->
-								<div class="d-flex flex-column pr-5 flex-grow-1">
-									<a href="#" class="text-dark text-hover-primary mb-1 font-weight-bold font-size-lg">Jason Tatum</a>
-									<span class="text-muted font-weight-bold">ASP.NET Developer</span>
-								</div>
-								<!--end::Text-->
-								<!--begin::Section-->
-								<div class="d-flex align-items-center py-2">
-									<!--begin::Label-->
-									<span class="text-success font-weight-bolder font-size-sm pr-6">+139%</span>
-									<!--end::Label-->
-									<!--begin::Btn-->
-									<a href="#" class="btn btn-icon btn-light btn-sm">
-										<span class="svg-icon svg-icon-success">
-											<span class="svg-icon svg-icon-md">
-												<!--begin::Svg Icon | path:assets/media/svg/icons/Navigation/Angle-right.svg-->
-												<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-													<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-														<polygon points="0 0 24 0 24 24 0 24" />
-														<path d="M6.70710678,15.7071068 C6.31658249,16.0976311 5.68341751,16.0976311 5.29289322,15.7071068 C4.90236893,15.3165825 4.90236893,14.6834175 5.29289322,14.2928932 L11.2928932,8.29289322 C11.6714722,7.91431428 12.2810586,7.90106866 12.6757246,8.26284586 L18.6757246,13.7628459 C19.0828436,14.1360383 19.1103465,14.7686056 18.7371541,15.1757246 C18.3639617,15.5828436 17.7313944,15.6103465 17.3242754,15.2371541 L12.0300757,10.3841378 L6.70710678,15.7071068 Z" fill="#000000" fill-rule="nonzero" transform="translate(12.000003, 11.999999) rotate(-270.000000) translate(-12.000003, -11.999999)" />
-													</g>
-												</svg>
-												<!--end::Svg Icon-->
-											</span>
-										</span>
-									</a>
-									<!--end::Btn-->
-								</div>
-								<!--end::Section-->
-							</div>
-							<!--end::Content-->
-						</div>
-						<!--end::Item-->
-					</div>
-					<!--end::Section-->
+					</a>
+					<!--end::Item-->
 				</div>
-				<!--end::Tabpane-->
-				<!--begin::Tabpane-->
-				<div class="tab-pane fade pt-2 pr-5 mr-n5" id="kt_quick_panel_notifications" role="tabpanel">
-					<!--begin::Nav-->
-					<div class="navi navi-icon-circle navi-spacer-x-0">
-						<!--begin::Item-->
-						<a href="#" class="navi-item">
-							<div class="navi-link rounded">
-								<div class="symbol symbol-50 mr-3">
-									<div class="symbol-label">
-										<i class="flaticon-bell text-success icon-lg"></i>
-									</div>
-								</div>
-								<div class="navi-text">
-									<div class="font-weight-bold font-size-lg">5 new user generated report</div>
-									<div class="text-muted">Reports based on sales</div>
-								</div>
-							</div>
-						</a>
-						<!--end::Item-->
-						<!--begin::Item-->
-						<a href="#" class="navi-item">
-							<div class="navi-link rounded">
-								<div class="symbol symbol-50 mr-3">
-									<div class="symbol-label">
-										<i class="flaticon2-box text-danger icon-lg"></i>
-									</div>
-								</div>
-								<div class="navi-text">
-									<div class="font-weight-bold font-size-lg">2 new items submited</div>
-									<div class="text-muted">by Grog John</div>
-								</div>
-							</div>
-						</a>
-						<!--end::Item-->
-						<!--begin::Item-->
-						<a href="#" class="navi-item">
-							<div class="navi-link rounded">
-								<div class="symbol symbol-50 mr-3">
-									<div class="symbol-label">
-										<i class="flaticon-psd text-primary icon-lg"></i>
-									</div>
-								</div>
-								<div class="navi-text">
-									<div class="font-weight-bold font-size-lg">79 PSD files generated</div>
-									<div class="text-muted">Reports based on sales</div>
-								</div>
-							</div>
-						</a>
-						<!--end::Item-->
-						<!--begin::Item-->
-						<a href="#" class="navi-item">
-							<div class="navi-link rounded">
-								<div class="symbol symbol-50 mr-3">
-									<div class="symbol-label">
-										<i class="flaticon2-supermarket text-warning icon-lg"></i>
-									</div>
-								</div>
-								<div class="navi-text">
-									<div class="font-weight-bold font-size-lg">$2900 worth producucts sold</div>
-									<div class="text-muted">Total 234 items</div>
-								</div>
-							</div>
-						</a>
-						<!--end::Item-->
-						<!--begin::Item-->
-						<a href="#" class="navi-item">
-							<div class="navi-link rounded">
-								<div class="symbol symbol-50 mr-3">
-									<div class="symbol-label">
-										<i class="flaticon-paper-plane-1 text-success icon-lg"></i>
-									</div>
-								</div>
-								<div class="navi-text">
-									<div class="font-weight-bold font-size-lg">4.5h-avarage response time</div>
-									<div class="text-muted">Fostest is Barry</div>
-								</div>
-							</div>
-						</a>
-						<!--end::Item-->
-						<!--begin::Item-->
-						<a href="#" class="navi-item">
-							<div class="navi-link rounded">
-								<div class="symbol symbol-50 mr-3">
-									<div class="symbol-label">
-										<i class="flaticon-safe-shield-protection text-danger icon-lg"></i>
-									</div>
-								</div>
-								<div class="navi-text">
-									<div class="font-weight-bold font-size-lg">3 Defence alerts</div>
-									<div class="text-muted">40% less alerts thar last week</div>
-								</div>
-							</div>
-						</a>
-						<!--end::Item-->
-						<!--begin::Item-->
-						<a href="#" class="navi-item">
-							<div class="navi-link rounded">
-								<div class="symbol symbol-50 mr-3">
-									<div class="symbol-label">
-										<i class="flaticon-notepad text-primary icon-lg"></i>
-									</div>
-								</div>
-								<div class="navi-text">
-									<div class="font-weight-bold font-size-lg">Avarage 4 blog posts per author</div>
-									<div class="text-muted">Most posted 12 time</div>
-								</div>
-							</div>
-						</a>
-						<!--end::Item-->
-						<!--begin::Item-->
-						<a href="#" class="navi-item">
-							<div class="navi-link rounded">
-								<div class="symbol symbol-50 mr-3">
-									<div class="symbol-label">
-										<i class="flaticon-users-1 text-warning icon-lg"></i>
-									</div>
-								</div>
-								<div class="navi-text">
-									<div class="font-weight-bold font-size-lg">16 authors joined last week</div>
-									<div class="text-muted">9 photodrapehrs, 7 designer</div>
-								</div>
-							</div>
-						</a>
-						<!--end::Item-->
-						<!--begin::Item-->
-						<a href="#" class="navi-item">
-							<div class="navi-link rounded">
-								<div class="symbol symbol-50 mr-3">
-									<div class="symbol-label">
-										<i class="flaticon2-box text-info icon-lg"></i>
-									</div>
-								</div>
-								<div class="navi-text">
-									<div class="font-weight-bold font-size-lg">2 new items have been submited</div>
-									<div class="text-muted">by Grog John</div>
-								</div>
-							</div>
-						</a>
-						<!--end::Item-->
-						<!--begin::Item-->
-						<a href="#" class="navi-item">
-							<div class="navi-link rounded">
-								<div class="symbol symbol-50 mr-3">
-									<div class="symbol-label">
-										<i class="flaticon2-download text-success icon-lg"></i>
-									</div>
-								</div>
-								<div class="navi-text">
-									<div class="font-weight-bold font-size-lg">2.8 GB-total downloads size</div>
-									<div class="text-muted">Mostly PSD end AL concepts</div>
-								</div>
-							</div>
-						</a>
-						<!--end::Item-->
-						<!--begin::Item-->
-						<a href="#" class="navi-item">
-							<div class="navi-link rounded">
-								<div class="symbol symbol-50 mr-3">
-									<div class="symbol-label">
-										<i class="flaticon2-supermarket text-danger icon-lg"></i>
-									</div>
-								</div>
-								<div class="navi-text">
-									<div class="font-weight-bold font-size-lg">$2900 worth producucts sold</div>
-									<div class="text-muted">Total 234 items</div>
-								</div>
-							</div>
-						</a>
-						<!--end::Item-->
-						<!--begin::Item-->
-						<a href="#" class="navi-item">
-							<div class="navi-link rounded">
-								<div class="symbol symbol-50 mr-3">
-									<div class="symbol-label">
-										<i class="flaticon-bell text-primary icon-lg"></i>
-									</div>
-								</div>
-								<div class="navi-text">
-									<div class="font-weight-bold font-size-lg">7 new user generated report</div>
-									<div class="text-muted">Reports based on sales</div>
-								</div>
-							</div>
-						</a>
-						<!--end::Item-->
-						<!--begin::Item-->
-						<a href="#" class="navi-item">
-							<div class="navi-link rounded">
-								<div class="symbol symbol-50 mr-3">
-									<div class="symbol-label">
-										<i class="flaticon-paper-plane-1 text-success icon-lg"></i>
-									</div>
-								</div>
-								<div class="navi-text">
-									<div class="font-weight-bold font-size-lg">4.5h-avarage response time</div>
-									<div class="text-muted">Fostest is Barry</div>
-								</div>
-							</div>
-						</a>
-						<!--end::Item-->
-					</div>
-					<!--end::Nav-->
-				</div>
-				<!--end::Tabpane-->
-				<!--begin::Tabpane-->
-				<div class="tab-pane fade pt-3 pr-5 mr-n5" id="kt_quick_panel_settings" role="tabpanel">
-					<form class="form">
-						<!--begin::Section-->
-						<div class="pt-1">
-							<h4 class="mb-7">Privacy Settings:</h4>
-							<div class="pb-5">
-								<div class="checkbox-inline mb-2">
-									<label class="checkbox">
-										<input type="checkbox" />
-										<span></span>You have new notifications.</label>
-								</div>
-								<div class="checkbox-inline mb-2">
-									<label class="checkbox">
-										<input type="checkbox" />
-										<span></span>You're sent a direct message</label>
-								</div>
-								<div class="checkbox-inline mb-2">
-									<label class="checkbox">
-										<input type="checkbox" checked="checked" />
-										<span></span>Someone adds you as a connection</label>
-								</div>
-								<div class="checkbox-inline mb-2">
-									<label class="checkbox checkbox-success">
-										<input type="checkbox" />
-										<span></span>Upon new order</label>
-								</div>
-								<div class="checkbox-inline mb-2">
-									<label class="checkbox checkbox-success">
-										<input type="checkbox" />
-										<span></span>New membership approval</label>
-								</div>
-							</div>
-							<!--begin::Group-->
-							<div class="text-muted">After you log in, you will be asked for additional information to confirm your identity.</div>
-							<!--end::Group-->
-						</div>
-						<!--end::Section-->
-						<div class="separator separator-dashed my-8"></div>
-						<!--begin::Section-->
-						<div class="pt-1">
-							<h4 class="mb-7">Security Settings:</h4>
-							<div class="pb-5">
-								<div class="checkbox-inline">
-									<label class="checkbox mb-2">
-										<input type="checkbox" />
-										<span></span>Personal information safety</label>
-								</div>
-								<p class="form-text text-muted pb-5 mb-0">After you log in, you will be asked for additional information to confirm your identity. For extra security, this requires you to confirm your email.
-									<a href="#" class="font-weight-bold">Learn more</a>.
-								</p>
-								<button type="button" class="btn btn-light-danger font-weight-bolder btn-sm">Setup login verification</button>
-							</div>
-						</div>
-						<!--end::Section-->
-					</form>
-				</div>
-				<!--end::Tabpane-->
+				<!--end::Nav-->
 			</div>
+			<!--end::Tabpane-->
 		</div>
-		<!--end::Content-->
+	</div>
+	<!--end::Content-->
 	</div>
 	<!--end::Quick Panel-->
 	<!--begin::Chat Panel-->

@@ -12,6 +12,17 @@ $sql->execute(['user_id' => $_SESSION['user_id']]);
 $loan = $sql->fetch();
 ?>
 
+
+<?php
+$user_id = $_SESSION['user_id'];
+
+$sql = "SELECT * FROM user WHERE user_id =$user_id";
+$query = $dbh->prepare($sql);
+$query->execute();
+$user = $query->fetch();
+
+?>
+
 <?php
 if (isset($_POST['upload_payment'])) {
 	$loan_app_id = $_POST['loan_app_id'];
@@ -447,7 +458,7 @@ if (isset($_POST['upload_payment'])) {
 				<div class="navi navi-icon-circle navi-spacer-x-0">
 					<?php
 					$user_id = $_SESSION['user_id'];
-					$sql = "SELECT * FROM message INNER JOIN user ON message.sender_id = user.user_id WHERE message.receiver_id = $user_id";
+					$sql = "SELECT * FROM message INNER JOIN user ON message.sender_id = user.user_id WHERE message.receiver_id = $user_id ORDER BY date_message desc";
 					$query = $dbh->prepare($sql);
 					$query->execute();
 					$results = $query->fetchAll(PDO::FETCH_OBJ);

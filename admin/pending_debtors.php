@@ -1,6 +1,6 @@
 <?php
 session_start();
-error_reporting(-1);
+error_reporting(0);
 include('../db_connection/config.php');
 
 if ($_SESSION['user_type'] != 1) {
@@ -57,7 +57,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 		<!--begin::Header Mobile-->
 		<div id="kt_header_mobile" class="header-mobile align-items-center header-mobile-fixed">
 			<!--begin::Logo-->
-			<a href="index.html">
+			<a href="index.php">
 			<img alt="Logo" src="assets/admin/media/logos/Hulam_Logo.png" class="h-60px w-60px" style="padding-top: 10%; padding: right 50%;"/>
 			</a>
 			<!--end::Logo-->
@@ -129,7 +129,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 							<!--begin::Menu Nav-->
 							<ul class="menu-nav">
 								<li class="menu-item menu-item-active" aria-haspopup="true">
-									<a href="admin/index.html" class="menu-link">
+									<a href="admin/index.php" class="menu-link">
 										<span class="svg-icon menu-icon">
 											<!--begin::Svg Icon | path:assets/media/svg/icons/Design/Layers.svg-->
 											<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
@@ -144,7 +144,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 										<span class="menu-text">Dashboard</span>
 									</a>
 								</li>
-							<li class="menu-section">
+								<li class="menu-section">
 									<h4 class="menu-text">Manage Account</h4>
 									<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
 								</li>
@@ -164,28 +164,49 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 												</span>
 											</li>
 											<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-												<a href="admin/list_debtors.php" class="menu-link menu-toggle">
+												<a href="admin/activated_debtors.php" class="menu-link menu-toggle">
+													<i class="menu-bullet menu-bullet-dot">
+														<span></span>
+													</i>
 													<span class="menu-text">Debtors</span>
 												</a>
 											</li>
 											<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-												<a href="admin/list_lending_companies.php" class="menu-link menu-toggle">
+												<a href="admin/activated_lendingcompany.php" class="menu-link menu-toggle">
+													<i class="menu-bullet menu-bullet-dot">
+														<span></span>
+													</i>
 													<span class="menu-text">Lending Companies</span>
 												</a>
 											</li>
 											<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-												<a href="admin/list_idivInvestor.php" class="menu-link menu-toggle">
+												<a href="admin/activated_individual_investor.php" class="menu-link menu-toggle">
+													<i class="menu-bullet menu-bullet-dot">
+														<span></span>
+													</i>
 													<span class="menu-text">Individual Investors</span>
 												</a>
 											</li>
 											<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-												<a href="admin/list_payment_center.php" class="menu-link menu-toggle">
+												<a href="admin/activated_payment_center.php" class="menu-link menu-toggle">
+													<i class="menu-bullet menu-bullet-dot">
+														<span></span>
+													</i>
 													<span class="menu-text">Payment Centre</span>
+												</a>
+											</li>
+											<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+												<a href="admin/deactivated_users.php" class="menu-link menu-toggle">
+													<i class="menu-bullet menu-bullet-dot">
+														<span></span>
+													</i>
+													<span class="menu-text">Deactivated User</span>
 												</a>
 											</li>
 										</ul>
 									</div>
 								</li>
+								
 								<li class="menu-section">
 									<h4 class="menu-text">Manage Report</h4>
 									<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
@@ -206,31 +227,29 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 												</span>
 											</li>
 											<li class="menu-item" aria-haspopup="true">
-												<a href="layout/themes/aside-light.html" class="menu-link">
+												<a href="admin/account_user_report.php" class="menu-link">
 													<i class="menu-bullet menu-bullet-dot">
 														<span></span>
 													</i>
-													<span class="menu-text">Light Aside</span>
+													<span class="menu-text">Account User Report</span>
 												</a>
 											</li>
 											<li class="menu-item" aria-haspopup="true">
-												<a href="layout/themes/header-dark.html" class="menu-link">
+												<a href="admin/payment_report.php" class="menu-link">
 													<i class="menu-bullet menu-bullet-dot">
 														<span></span>
 													</i>
-													<span class="menu-text">Dark Header</span>
+													<span class="menu-text">Payment Report</span>
 												</a>
 											</li>
 										</ul>
 									</div>
 								</li>
-															<!--end::Menu Nav-->
+							</div>
 						</div>
-						<!--end::Menu Container-->
 					</div>
-					<!--end::Aside Menu-->
-				</div>
-				<!--end::Aside-->	<!--begin::Wrapper-->
+					<!--end::Aside-->	
+				<!--begin::Wrapper-->
 			<div class="d-flex flex-column flex-row-fluid wrapper" id="kt_wrapper">
 				<!--begin::Header-->
 				<div id="kt_header" class="header header-fixed">
@@ -833,18 +852,25 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 					<!--begin::Subheader-->
 					<div class="subheader py-6 py-lg-8 subheader-transparent" id="kt_subheader">
 						<div class="container d-flex align-items-center justify-content-between flex-wrap flex-sm-nowrap">
-							<!--begin::Info-->
 							<div class="d-flex align-items-center flex-wrap mr-1">
-								<!--begin::Page Heading-->
-								<div class="d-flex align-items-baseline flex-wrap mr-5">
-									<!--begin::Page Title-->
-									<h4 class="text-white font-weight-bold my-1 mr-5">Dashboard |</h4>
-									<h5 class="text-white font-weight-bold my-1 mr-5">Lending Investor</h5>
-									<!--end::Page Title-->
+									<div class="d-flex align-items-baseline flex-wrap mr-5">
+										<h4 class="text-white font-weight-bold my-1 mr-5">Dashboard |</h4>
+										<h5 class="text-white font-weight-bold my-1 mr-5">Admin</h5>
+										<div class="col-xl-12 col-xl-12">
+											<?php
+											if (isset($_SESSION['status_message'])) {
+											?>
+												<div class="alert alert-custom alert-notice alert-light-success fade show" role="alert">
+													<div class="alert-text">
+														<h4><?php echo $_SESSION['status_message']; ?></h4>
+													</div>
+													<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+												</div>
+											<?php unset($_SESSION['status_message']);
+											} ?>
+										</div>
+									</div>
 								</div>
-								<!--end::Page Heading-->
-							</div>
-							<!--end::Info-->
 							<!--begin::Toolbar-->
 							<div class="d-flex align-items-center flex-wrap">
 								<!--begin::Daterange-->
@@ -864,7 +890,12 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 						<div class="container">
 							<div class="card card-custom">
 								<div class="card-body">
-									<h5> Pending Loan Application</h5>
+									<h5> Pending Debtors Activation</h5>
+									<form method="post" class="quick-search-form">
+										<div class="col-lg-4">
+											<input type="text" name="search_input" class="form-control" placeholder="Search..." />
+										</div>
+									</form></br>
 									<table class="table table-bordered">
                                         <thead>
                                             <tr>
@@ -872,27 +903,38 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
                                                 <th>Email</th>
                                                 <th>Contact No.</th>
                                                 <th>Current Address</th>
-                                                <th>Status</th>
+                                                <th>Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                         <?php
-                                            $sql = "SELECT  * FROM user WHERE user_type = '2' AND eligible ='no'";
+                                            $sql = "SELECT  * FROM user WHERE user_type = '2' AND eligible ='no' ORDER BY user_id desc";
                                             $query = $dbh->prepare($sql);
                                             $query->execute();
                                             $res = $query->fetchAll(PDO::FETCH_OBJ);
                                             if ($query->rowCount() > 0) {
                                                 foreach ($res as $rem) { ?>
                                             <tr>
-                                                <td><?= htmlentities($rem->firstname); ?>&nbsp;<?= htmlentities($rem->middlename); ?>&nbsp;<?= htmlentities($rem->lastname); ?></td>
+												<th scope="row"><?= htmlentities($rem->firstname); ?>&nbsp;<?= htmlentities($rem->middlename); ?>&nbsp;<?= htmlentities($rem->lastname); ?></th>
                                                 <td><?= htmlentities($rem->email); ?></td>
                                                 <td><?= htmlentities($rem->mobile); ?><br><?= htmlentities($rem->landline); ?> </td>
                                                 <td><?= htmlentities($rem->c_street); ?>&nbsp;<?= htmlentities($rem->c_barangay); ?>&nbsp;<?= htmlentities($rem->c_city); ?>&nbsp;<?= htmlentities($rem->c_province); ?>&nbsp;<?= htmlentities($rem->c_zipcode); ?></td>
                                                 <td>
-                                                    <a href="admin/view_request.php?user_id=<?= htmlentities($rem->user_id) ?>" class="kt-nav__link">
-                                                        <span class="kt-nav__link-text">Show</span>
-                                                    </a>
-                                                </td>
+													<div class="dropdown dropdown-inline">
+														<a href="javascript:;" class="btn btn-sm btn-clean btn-icon mr-2" data-toggle="dropdown">
+															<span class="svg-icon svg-icon-md">
+															<i class="flaticon2-gear text-primary"></i></span></a>
+														<div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+															<ul class="navi flex-column navi-hover py-2">
+																<li class="navi-header font-weight-bolder text-uppercase font-size-xs text-primary pb-2">
+																	Choose an action:
+																</li>
+																<li class="navi-item"> 
+																	<a href="admin/view_request.php?user_id=<?= htmlentities($rem->user_id) ?>" class="navi-link"> <span class="navi-icon"><i class="la la-copy"></i></span> <span class="navi-text">Show Details</span> </a> </li>
+															</ul>
+														</div>
+													</div>
+												</td>
                                             </tr>
                                             <?php }} ?>
                                         </tbody>
@@ -1441,120 +1483,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 	<!--begin::Sticky Toolbar-->
 
 	<!--end::Sticky Toolbar-->
-	<!--begin::Demo Panel-->
-	<div id="kt_demo_panel" class="offcanvas offcanvas-right p-10">
-		<!--begin::Header-->
-		<div class="offcanvas-header d-flex align-items-center justify-content-between pb-7">
-			<h4 class="font-weight-bold m-0">Select A Demo</h4>
-			<a href="#" class="btn btn-xs btn-icon btn-light btn-hover-primary" id="kt_demo_panel_close">
-				<i class="ki ki-close icon-xs text-muted"></i>
-			</a>
-		</div>
-		<!--end::Header-->
-		<!--begin::Content-->
-		<div class="offcanvas-content">
-			<!--begin::Wrapper-->
-			<div class="offcanvas-wrapper mb-5 scroll-pull">
-				<h5 class="font-weight-bold mb-4 text-center">Demo 1</h5>
-				<div class="overlay rounded-lg mb-8 offcanvas-demo offcanvas-demo-active">
-					<div class="overlay-wrapper rounded-lg">
-						<img src="assets/media/demos/demo1.png" alt="" class="w-100" />
-					</div>
-					<div class="overlay-layer">
-						<a href="../../demo1/dist" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">HTML</a>
-						<a href="https://preview.keenthemes.com/keen/demo1/rtl/index.html" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">RTL</a>
-					</div>
-				</div>
-				<h5 class="font-weight-bold mb-4 text-center">Demo 2</h5>
-				<div class="overlay rounded-lg mb-8 offcanvas-demo">
-					<div class="overlay-wrapper rounded-lg">
-						<img src="assets/media/demos/demo2.png" alt="" class="w-100" />
-					</div>
-					<div class="overlay-layer">
-						<a href="../../demo2/dist" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">HTML</a>
-						<a href="https://preview.keenthemes.com/keen/demo2/rtl/index.html" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">RTL</a>
-					</div>
-				</div>
-				<h5 class="font-weight-bold mb-4 text-center">Demo 3</h5>
-				<div class="overlay rounded-lg mb-8 offcanvas-demo">
-					<div class="overlay-wrapper rounded-lg">
-						<img src="assets/media/demos/demo3.png" alt="" class="w-100" />
-					</div>
-					<div class="overlay-layer">
-						<a href="../../demo3/dist" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">HTML</a>
-						<a href="https://preview.keenthemes.com/keen/demo3/rtl/index.html" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">RTL</a>
-					</div>
-				</div>
-				<h5 class="font-weight-bold mb-4 text-center">Demo 4</h5>
-				<div class="overlay rounded-lg mb-8 offcanvas-demo">
-					<div class="overlay-wrapper rounded-lg">
-						<img src="assets/media/demos/demo4.png" alt="" class="w-100" />
-					</div>
-					<div class="overlay-layer">
-						<a href="../../demo4/dist" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">HTML</a>
-						<a href="https://preview.keenthemes.com/keen/demo4/rtl/index.html" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">RTL</a>
-					</div>
-				</div>
-				<h5 class="font-weight-bold mb-4 text-center">Demo 5</h5>
-				<div class="overlay rounded-lg mb-8 offcanvas-demo">
-					<div class="overlay-wrapper rounded-lg">
-						<img src="assets/media/demos/demo5.png" alt="" class="w-100" />
-					</div>
-					<div class="overlay-layer">
-						<a href="../../demo5/dist" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">HTML</a>
-						<a href="https://preview.keenthemes.com/keen/demo5/rtl/index.html" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">RTL</a>
-					</div>
-				</div>
-				<h5 class="font-weight-bold mb-4 text-center">Demo 6</h5>
-				<div class="overlay rounded-lg mb-8 offcanvas-demo">
-					<div class="overlay-wrapper rounded-lg">
-						<img src="assets/media/demos/demo6.png" alt="" class="w-100" />
-					</div>
-					<div class="overlay-layer">
-						<a href="../../demo6/dist" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">HTML</a>
-						<a href="https://preview.keenthemes.com/keen/demo6/rtl/index.html" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">RTL</a>
-					</div>
-				</div>
-				<h5 class="font-weight-bold mb-4 text-center">Demo 7</h5>
-				<div class="overlay rounded-lg mb-8 offcanvas-demo">
-					<div class="overlay-wrapper rounded-lg">
-						<img src="assets/media/demos/demo7.png" alt="" class="w-100" />
-					</div>
-					<div class="overlay-layer">
-						<a href="../../demo7/dist" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">HTML</a>
-						<a href="https://preview.keenthemes.com/keen/demo7/rtl/index.html" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">RTL</a>
-					</div>
-				</div>
-				<h5 class="font-weight-bold mb-4 text-center">Demo 8</h5>
-				<div class="overlay rounded-lg mb-8 offcanvas-demo">
-					<div class="overlay-wrapper rounded-lg">
-						<img src="assets/media/demos/demo8.png" alt="" class="w-100" />
-					</div>
-					<div class="overlay-layer">
-						<a href="#" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow disabled opacity-90">Coming soon</a>
-					</div>
-				</div>
-				<h5 class="font-weight-bold mb-4 text-center">Demo 9</h5>
-				<div class="overlay rounded-lg mb-8 offcanvas-demo">
-					<div class="overlay-wrapper rounded-lg">
-						<img src="assets/media/demos/demo9.png" alt="" class="w-100" />
-					</div>
-					<div class="overlay-layer">
-						<a href="#" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow disabled opacity-90">Coming soon</a>
-					</div>
-				</div>
-			</div>
-			<!--end::Wrapper-->
-			<!--begin::Purchase-->
-			<div class="offcanvas-footer">
-				<a href="https://themes.getbootstrap.com/product/keen-the-ultimate-bootstrap-admin-theme/" target="_blank" class="btn btn-block btn-danger btn-shadow font-weight-bolder text-uppercase">Buy Keen Now!</a>
-			</div>
-			<!--end::Purchase-->
-		</div>
-		<!--end::Content-->
-	</div>
-	<!--end::Demo Panel-->
-	<script>
+		<script>
 		var HOST_URL = "https://preview.keenthemes.com/keen/theme/tools/preview";
 	</script>
 	<!--begin::Global Config(global config for global JS scripts)-->
