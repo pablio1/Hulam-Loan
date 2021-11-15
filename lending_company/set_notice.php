@@ -2,9 +2,11 @@
 session_start();
 error_reporting(0);
 include('../db_connection/config.php');
-?>
 
-<!--codes to insert the image -->
+if ($_SESSION['user_type'] != 3) {
+	header('location: ../index.php');
+}?>
+
 <?php
 
 if(isset($_POST['add_notice'])){
@@ -22,15 +24,14 @@ if(isset($_POST['add_notice'])){
         $query->execute();
 	}
     if($query){
-        $_SESSION['status'] = "Added successfully" ;
+        $_SESSION['status_message'] = "Added successfully" ;
         header("Location: set_notice.php");
         exit();
     }else{
-        $_SESSION['status'] = "Error! Not Added" ;
+        $_SESSION['status_message'] = "Error! Not Added" ;
         header("Location: set_notice.php");
         exit();
     }
-
 }
 
 ?>
@@ -980,12 +981,15 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 										<!--end::Page Title-->
 									</div>
                                     <?php
-                                    if(isset($_SESSION['status'])){
-                                        ?>
-                                        <h4 class="alert alert-success"><?php echo $_SESSION['status'];?></h4>
-                                        <?php
-                                        unset($_SESSION['status']);
-                                    }?>
+									if (isset($_SESSION['status_message'])) {
+									?>
+										<div class="alert alert-success alert-dismissable" id="flash-msg">
+											<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+											<h4><?= $_SESSION['status_message'] ?></h4>
+										</div>
+									<?php
+										unset($_SESSION['status_message']);
+									} ?>
 									<!--end::Page Heading-->
 								</div>
 								<!--end::Info-->

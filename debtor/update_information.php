@@ -1,6 +1,6 @@
 <?php
 session_start();
-error_reporting(-1);
+error_reporting(0);
 include('../db_connection/config.php');
 
 if ($_SESSION['user_type'] != 2) {
@@ -41,11 +41,11 @@ if (isset($_POST['valid_id'])) {
 		$update_query->execute();
 	}
 	if ($update_query) {
-		$_SESSION['status'] = "Updated Valid ID!";
+		$_SESSION['status_message'] = "Updated Valid ID!";
 		header("location: update_information.php");
 		exit();
 	} else {
-		$_SESSION['status'] = "Error!";
+		$_SESSION['status_message'] = "Error!";
 		header("location: update_information.php");
 		exit();
 	}
@@ -80,11 +80,11 @@ if (isset($_POST['selfie_id'])) {
 		$update_query->execute();
 	}
 	if ($update_query) {
-		$_SESSION['status'] = "Updated Selfie with ID!";
+		$_SESSION['status_message'] = "Updated Selfie with ID!";
 		header("location: update_information.php");
 		exit();
 	} else {
-		$_SESSION['status'] = "Error!";
+		$_SESSION['status_message'] = "Error!";
 		header("location: update_information.php");
 		exit();
 	}
@@ -110,11 +110,11 @@ if (isset($_POST['upload_photo'])) {
 	$update_query->execute();
 
 	if ($update_query) {
-		$_SESSION['status'] = "Updated Profile Photo!";
+		$_SESSION['status_message'] = "Updated Profile Photo!";
 		header("location: update_information.php");
 		exit();
 	} else {
-		$_SESSION['status'] = "Error!";
+		$_SESSION['status_message'] = "Error!";
 		header("location: update_information.php");
 		exit();
 	}
@@ -236,14 +236,14 @@ if (isset($_POST['upload_photo'])) {
 											</div>
 										<?php endif; ?>
 										<?php
-										if (isset($_SESSION['status'])) {
+										if (isset($_SESSION['status_message'])) {
 										?>
 											<div class="alert alert-success alert-dismissable" id="flash-msg">
 												<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
-												<h4><?= $_SESSION['status'] ?></h4>
+												<h4><?= $_SESSION['status_message'] ?></h4>
 											</div>
 										<?php
-											unset($_SESSION['status']);
+											unset($_SESSION['status_message']);
 										} ?>
 										<h4 class="mb-10 font-weight-bold text-dark">Update Your Information</h4>
 										<form action="" method="post" id="kt_form" enctype="multipart/form-data">

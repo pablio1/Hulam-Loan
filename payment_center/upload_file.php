@@ -46,11 +46,11 @@ if (isset($_POST['upload_file'])) {
 	$query2->bindParam(':date_message', $filedate_upload, PDO::PARAM_STR);
 
 	if($query2->execute()){
-		$_SESSION['status'] = "Uploaded Successfully!";
+		$_SESSION['status_message'] = "Uploaded Successfully!";
 		header("Location: upload_file.php?user_id=$lender_id");
 		exit();
 	} else {
-		$_SESSION['status'] = "Error!";
+		$_SESSION['status_message'] = "Error!";
 		header('Location: upload_file.php?user_id=$lender_id');
 		exit();
 	}
@@ -925,14 +925,14 @@ if (isset($_POST['upload_file'])) {
                                 <div class="card-body">
                                     <h5>Upload Files</h5>
                                     <?php
-                                    if (isset($_SESSION['status'])) {
+                                    if (isset($_SESSION['status_message'])) {
                                     ?>
                                         <div class="alert alert-success alert-dismissable" id="flash-msg">
                                             <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
-                                            <h4><?= $_SESSION['status'] ?></h4>
+                                            <h4><?= $_SESSION['status_message'] ?></h4>
                                         </div>
                                     <?php
-                                        unset($_SESSION['status']);
+                                        unset($_SESSION['status_message']);
                                     } ?>
                                     <form action="" method="post" enctype="multipart/form-data">
                                         <div class="col-xl-4">

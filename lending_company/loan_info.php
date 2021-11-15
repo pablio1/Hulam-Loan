@@ -1,10 +1,13 @@
 <?php
 session_start();
-// error_reporting(0);
-ini_set('display_errors', 1);
-error_reporting(E_ALL|E_STRICT);
-include('../db_connection/config.php');
+error_reporting(0);
 
+include('../db_connection/config.php');
+if ($_SESSION['user_type'] != 3) {
+	header('location: ../index.php');
+}?>
+
+<?php
 if(isset($_POST['submit'])){
 
 	$min = $_POST['min'];

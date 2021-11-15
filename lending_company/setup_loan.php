@@ -2,9 +2,10 @@
 	session_start();
 	error_reporting(0);
 	include('../db_connection/config.php');
-	?>
-
-	<!--codes to insert the image -->
+	if ($_SESSION['user_type'] != 3) {
+		header('location: ../index.php');
+	}?>
+	
 	<?php
 
 	if(isset($_POST['update'])){

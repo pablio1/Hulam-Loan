@@ -2,38 +2,34 @@
 session_start();
 error_reporting(0);
 include('../db_connection/config.php');
-?>
+if ($_SESSION['user_type'] != 3) {
+	header('location: ../index.php');
+}?>
 
-<!--codes to insert the image -->
 <?php
 
-if(isset($_POST['add_notice'])){
+if(isset($_POST['edit_notice'])){
 
     $notice_title = $_POST['notice_title'];
     $remarks = $_POST['remarks'];
 	$lender_id = $_SESSION['user_id'];
+    $notice_id = intval($_GET['notice_id']);
 
-	foreach($notice_title as $index => $names){
-		    $s_notice= $names;
-		    $s_remarks = $remarks[$index];
-
-        $sql ="INSERT INTO notice(lender_id,notice_title,remarks)VALUES('$lender_id','$s_notice','$s_remarks')";
+	$sql ="UPDATE notice SET remarks = '$remarks' WHERE notice_id = $notice_id";
         $query = $dbh->prepare($sql);
         $query->execute();
-	}
+	
     if($query){
-        $_SESSION['status'] = "Added successfully" ;
+        $_SESSION['status_message'] = "Updated successfully" ;
         header("Location: set_notice.php");
         exit();
     }else{
-        $_SESSION['status'] = "Error! Not Added" ;
+        $_SESSION['status_message'] = "Error! Not Added" ;
         header("Location: set_notice.php");
         exit();
     }
 
-}
-
-?>
+}?>
 
 <!DOCTYPE html>
 <!--
@@ -977,13 +973,16 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 										<h4 class="text-white font-weight-bold my-1 mr-5">Dashboard |</h4><h5 class="text-white font-weight-bold my-1 mr-5">Lending Investor</h5>
 										<!--end::Page Title-->
 									</div>
-                                    <?php
-                                    if(isset($_SESSION['status'])){
-                                        ?>
-                                        <h4 class="alert alert-success"><?php echo $_SESSION['status'];?></h4>
-                                        <?php
-                                        unset($_SESSION['status']);
-                                    }?>
+									<?php
+									if (isset($_SESSION['status_message'])) {
+									?>
+										<div class="alert alert-success alert-dismissable" id="flash-msg">
+											<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+											<h4><?= $_SESSION['status_message'] ?></h4>
+										</div>
+									<?php
+										unset($_SESSION['status_message']);
+									} ?>
 									<!--end::Page Heading-->
 								</div>
 								<!--end::Info-->
@@ -1023,7 +1022,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
                                                         </div>
 														<div class="col-lg-2">
 															<div class="form-group">
-																<button type="submit" name="add_notice"  class="btn btn-primary font-weight-bolder px-10 py-2" data-wizard-type="action-next">Update</button>
+																<button type="submit" name="edit_notice"  class="btn btn-primary font-weight-bolder px-10 py-2" data-wizard-type="action-next">Update</button>
 																<!-- <a href="lending_company/view_requirements.php" type="button" class="btn btn-success font-weight-bolder px-10 py-3" data-wizard-type="action-next">Edit Requirements</a> -->
 															</div>
 														</div>

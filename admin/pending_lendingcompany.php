@@ -5,10 +5,7 @@ include('../db_connection/config.php');
 
 if ($_SESSION['user_type'] != 1) {
 	header('location: ../index.php');
-}
-
-
-?>
+}?>
 
 
 <!DOCTYPE html>

@@ -1,14 +1,41 @@
 <?php
 session_start();
-error_reporting(-1);
+error_reporting(0);
 include('../db_connection/config.php');
 
-if($_SESSION['user_type'] != 3) {
+if ($_SESSION['user_type'] != 4) {
 	header('location: ../index.php');
 }
+?>
+<?php
 
+if(isset($_POST['add_notice'])){
+
+    $notice_title = $_POST['notice_title'];
+    $remarks = $_POST['remarks'];
+	$lender_id = $_SESSION['user_id'];
+
+	foreach($notice_title as $index => $names){
+		    $s_notice= $names;
+		    $s_remarks = $remarks[$index];
+
+        $sql ="INSERT INTO notice(lender_id,notice_title,remarks)VALUES('$lender_id','$s_notice','$s_remarks')";
+        $query = $dbh->prepare($sql);
+        $query->execute();
+	}
+    if($query){
+        $_SESSION['status_message'] = "Added successfully" ;
+        header("Location: set_notice.php");
+        exit();
+    }else{
+        $_SESSION['status_message'] = "Error! Not Added" ;
+        header("Location: set_notice.php");
+        exit();
+    }
+}
 
 ?>
+
 
 <!DOCTYPE html>
 <!--
@@ -27,7 +54,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 	<!--begin::Head-->
 	<head><base href="../">
 		<meta charset="utf-8" />
-		<title>Hulam | Admin | Individual Investor</title>
+		<title>Hulam | Admin | Lending Company</title>
 		<meta name="description" content="Updates and statistics" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 		<!--begin::Fonts-->
@@ -56,7 +83,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 		<!--begin::Header Mobile-->
 		<div id="kt_header_mobile" class="header-mobile align-items-center header-mobile-fixed">
 			<!--begin::Logo-->
-			<a href="individual_investor/index.php" >
+			<a href="lending_company/index.php" >
 			<img alt="Logo" src="assets/admin/media/logos/Hulam_Logo.png" class="h-60px w-60px" style="padding-top: 10%; padding: right 50%;"/>
 			</a>
 			<!--end::Logo-->
@@ -99,7 +126,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 					<!--begin::Brand-->
 					<div class="brand flex-column-auto" id="kt_brand">
 						<!--begin::Logo-->
-						<a href="individual_investor/index.php" class="brand-logo">
+						<a href="lending_company/index.php" class="brand-logo">
 						<img alt="Logo" src="assets/admin/media/logos/Hulam_Logo.png" class="h-100px w-90px" style="padding-top: 20%; padding: right 50%;"/>
 						</a>
 						<!--end::Logo-->
@@ -127,7 +154,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 							<!--begin::Menu Nav-->
 							<ul class="menu-nav">
 								<li class="menu-item menu-item-active" aria-haspopup="true">
-									<a href="individual_investor/index.php"  class="menu-link">
+									<a href="lending_company/index.php"  class="menu-link">
 										<span class="svg-icon menu-icon">
 											<!--begin::Svg Icon | path:assets/media/svg/icons/Design/Layers.svg-->
 											<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
@@ -142,151 +169,181 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 										<span class="menu-text">Dashboard</span>
 									</a>
 								</li>
-								<li class="menu-section">
-									<h4 class="menu-text">Manage Loan</h4>
-									<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
-								</li>
-								<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-									<a href="javascript:;" class="menu-link menu-toggle">
-										<span class="svg-icon menu-icon">
-										</span>
-										<span class="menu-text">Loan Application</span>
-										<i class="menu-arrow"></i>
-									</a>
-									<div class="menu-submenu">
-										<i class="menu-arrow"></i>
-										<ul class="menu-subnav">
-											<!-- <li class="menu-item menu-item-parent" aria-haspopup="true">
-												<span class="menu-link">
-													<span class="menu-text">Applications</span>
-												</span>
-											</li> -->
-											<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-												<a href="individual_investor/pending_loan.php" class="menu-link menu-toggle">
-													<i class="menu-bullet">
-														<span></span>
-													</i>
-													<span class="menu-text">Pending Loan</span>
-													<!-- <span class="menu-label">
-														<span class="label label-rounded label-primary">6</span>
-													</span>
-													<i class="menu-arrow"></i> -->
-												</a>
-											</li>
-											<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-												<a href="individual_investor/pending_loan.php" class="menu-link menu-toggle">
-													<i class="menu-bullet">
-														<span></span>
-													</i>
-													<span class="menu-text">Approved Loan</span>
-													<!-- <span class="menu-label">
-														<span class="label label-rounded label-primary">6</span>
-													</span>
-													<i class="menu-arrow"></i> -->
-												</a>
-											</li>
-											<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-												<a href="individual_investor/pending_loan.php" class="menu-link menu-toggle">
-													<i class="menu-bullet">
-														<span></span>
-													</i>
-													<span class="menu-text">Declined Loan</span>
-													<!-- <span class="menu-label">
-														<span class="label label-rounded label-primary">6</span>
-													</span>
-													<i class="menu-arrow"></i> -->
-												</a>
-											</li>
-											
-										</ul>
-									</div>
-								</li>
-								<li class="menu-section">
-									<h4 class="menu-text">Manage Payment</h4>
-									<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
-								</li>
-								<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-									<a href="javascript:;" class="menu-link menu-toggle">
-										<span class="svg-icon menu-icon">
-										</span>
-										<span class="menu-text">Payment Information</span>
-										<i class="menu-arrow"></i>
-									</a>
-									<div class="menu-submenu">
-										<i class="menu-arrow"></i>
-										<ul class="menu-subnav">
-											<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-												<a href="lending_company/pending_loan.php" class="menu-link menu-toggle">
-													<i class="menu-bullet">
-														<span></span>
-													</i>
-													<span class="menu-text">Payment Received</span>
-													<span class="menu-label">
-													</span>
-													<i class="menu-arrow"></i>
-												</a>
-											</li>
-											<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-												<a href="lending_company/payment_records.php" class="menu-link menu-toggle">
-													<i class="menu-bullet">
-														<span></span>
-													</i>
-													<span class="menu-text">Payment Records</span>
-													<span class="menu-label">
-													</span>
-													<i class="menu-arrow"></i>
-												</a>
-											</li>
-										</ul>
-									</div>
-								</li>
-								
-								<li class="menu-section">
-									<h4 class="menu-text">Manage Report</h4>
-									<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
-								</li>
-								<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-									<a href="javascript:;" class="menu-link menu-toggle">
-										<span class="svg-icon menu-icon">
-										</span>
-										<span class="menu-text">Generate Report</span>
-										<i class="menu-arrow"></i>
-									</a>
-									<div class="menu-submenu">
-										<i class="menu-arrow"></i>
-										<ul class="menu-subnav">
-											<li class="menu-item menu-item-parent" aria-haspopup="true">
-												<span class="menu-link">
-													<span class="menu-text">Themes</span>
-												</span>
-											</li>
-											<li class="menu-item" aria-haspopup="true">
-												<a href="layout/themes/aside-light.html" class="menu-link">
-													<i class="menu-bullet menu-bullet-dot">
-														<span></span>
-													</i>
-													<span class="menu-text">Light Aside</span>
-												</a>
-											</li>
-											<li class="menu-item" aria-haspopup="true">
-												<a href="layout/themes/header-dark.html" class="menu-link">
-													<i class="menu-bullet menu-bullet-dot">
-														<span></span>
-													</i>
-													<span class="menu-text">Dark Header</span>
-												</a>
-											</li>
-										</ul>
-									</div>
-								</li>
-							<!--end::Menu Nav-->
-						</div>
-						<!--end::Menu Container-->
-					</div>
-					<!--end::Aside Menu-->
-				</div>
-				<!--end::Aside-->
-				<!--begin::Wrapper-->
+                                <li class="menu-section">
+                                <h4 class="menu-text">Manage Loan</h4>
+                                <i class="menu-icon ki ki-bold-more-hor icon-md"></i>
+                            </li>
+                            <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+                                <a href="javascript:;" class="menu-link menu-toggle">
+                                    <span class="svg-icon menu-icon">
+                                    </span>
+                                    <span class="menu-text">Setup Loan</span>
+                                    <i class="menu-arrow"></i>
+                                </a>
+                                <div class="menu-submenu">
+                                    <ul class="menu-subnav">
+                                        <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+                                            <a href="individual_investor/setup_loan.php" class="menu-link menu-toggle">
+                                                <span class="svg-icon menu-icon">
+                                                </span>
+                                                <span class="menu-text">Setup Loan Features</span>
+                                            </a>
+                                        </li>
+                                        <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+                                            <a href="individual_investor/set_requirements.php" class="menu-link menu-toggle">
+                                                <span class="svg-icon menu-icon">
+                                                </span>
+                                                <span class="menu-text">Set Requirements</span>
+                                            </a>
+                                        </li>
+                                        <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+                                            <a href="individual_investor/setup_payment.php" class="menu-link menu-toggle">
+                                                <span class="svg-icon menu-icon">
+                                                </span>
+                                                <span class="menu-text">Set Mode of Payment</span>
+                                            </a>
+                                        </li>
+                                        <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+                                            <a href="individual_investor/set_notice.php" class="menu-link menu-toggle">
+                                                <span class="svg-icon menu-icon">
+                                                </span>
+                                                <span class="menu-text">Set Loan Notice</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+                                <a href="javascript:;" class="menu-link menu-toggle">
+                                    <span class="svg-icon menu-icon">
+                                    </span>
+                                    <span class="menu-text">Loan Application</span>
+                                    <i class="menu-arrow"></i>
+                                </a>
+                                <div class="menu-submenu">
+                                    <i class="menu-arrow"></i>
+                                    <ul class="menu-subnav">
+                                        <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+                                            <a href="individual_investor/pending_loan.php" class="menu-link menu-toggle">
+                                                <i class="menu-bullet">
+                                                    <span></span>
+                                                </i>
+                                                <span class="menu-text">Pending Loan</span>
+                                            </a>
+                                        </li>
+                                        <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+                                            <a href="individual_investor/approved_loan.php" class="menu-link menu-toggle">
+                                                <i class="menu-bullet">
+                                                    <span></span>
+                                                </i>
+                                                <span class="menu-text">Approved Loan</span>
+                                            </a>
+                                        </li>
+                                        <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+                                            <a href="individual_investor/released_loan.php" class="menu-link menu-toggle">
+                                                <i class="menu-bullet">
+                                                    <span></span>
+                                                </i>
+                                                <span class="menu-text">Release Loan</span>
+                                            </a>
+                                        </li>
+                                        <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+                                            <a href="individual_investor/declined_loan.php" class="menu-link menu-toggle">
+                                                <i class="menu-bullet">
+                                                    <span></span>
+                                                </i>
+                                                <span class="menu-text">Declined Loan</span>
+                                            </a>
+                                        </li>
+
+                                    </ul>
+                                </div>
+                            </li>
+                            <li class="menu-section">
+                                <h4 class="menu-text">Manage Payment</h4>
+                                <i class="menu-icon ki ki-bold-more-hor icon-md"></i>
+                            </li>
+                            <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+                                <a href="javascript:;" class="menu-link menu-toggle">
+                                    <span class="svg-icon menu-icon">
+                                    </span>
+                                    <span class="menu-text">Payment Information</span>
+                                    <i class="menu-arrow"></i>
+                                </a>
+                                <div class="menu-submenu">
+                                    <i class="menu-arrow"></i>
+                                    <ul class="menu-subnav">
+                                        <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+                                            <a href="individual_investor/payment_received.php" class="menu-link menu-toggle">
+                                                <i class="menu-bullet">
+                                                    <span></span>
+                                                </i>
+                                                <span class="menu-text">Payment Received</span>
+                                                <span class="menu-label">
+                                                </span>
+                                                <i class="menu-arrow"></i>
+                                            </a>
+                                        </li>
+                                        <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+                                            <a href="individual_investor/payment_records.php" class="menu-link menu-toggle">
+                                                <i class="menu-bullet">
+                                                    <span></span>
+                                                </i>
+                                                <span class="menu-text">Payment Records</span>
+                                                <span class="menu-label">
+                                                </span>
+                                                <i class="menu-arrow"></i>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+
+                            <li class="menu-section">
+                                <h4 class="menu-text">Manage Report</h4>
+                                <i class="menu-icon ki ki-bold-more-hor icon-md"></i>
+                            </li>
+                            <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+                                <a href="javascript:;" class="menu-link menu-toggle">
+                                    <span class="svg-icon menu-icon">
+                                    </span>
+                                    <span class="menu-text">Generate Report</span>
+                                    <i class="menu-arrow"></i>
+                                </a>
+                                <div class="menu-submenu">
+                                    <i class="menu-arrow"></i>
+                                    <ul class="menu-subnav">
+                                        <li class="menu-item menu-item-parent" aria-haspopup="true">
+                                            <span class="menu-link">
+                                                <span class="menu-text">Themes</span>
+                                            </span>
+                                        </li>
+                                        <li class="menu-item" aria-haspopup="true">
+                                            <a href="layout/themes/aside-light.html" class="menu-link">
+                                                <i class="menu-bullet menu-bullet-dot">
+                                                    <span></span>
+                                                </i>
+                                                <span class="menu-text">Loan Records</span>
+                                            </a>
+                                        </li>
+                                        <li class="menu-item" aria-haspopup="true">
+                                            <a href="layout/themes/header-dark.html" class="menu-link">
+                                                <i class="menu-bullet menu-bullet-dot">
+                                                    <span></span>
+                                                </i>
+                                                <span class="menu-text">Payment Records</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <!--end::Menu Nav-->
+                    </div>
+                    <!--end::Menu Container-->
+                </div>
+                <!--end::Aside Menu-->
+            </div>
+            <!--end::Aside-->				<!--begin::Wrapper-->
 				<div class="d-flex flex-column flex-row-fluid wrapper" id="kt_wrapper">
 					<!--begin::Header-->
 					<div id="kt_header" class="header header-fixed">
@@ -826,21 +883,21 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 								</div>
 								<!--end::Notifications-->
 								<!--begin::Quick panel-->
-								<div class="topbar-item mr-1">
-									<div class="btn btn-icon btn-clean btn-lg" id="kt_quick_panel_toggle">
-										<span class="svg-icon svg-icon-xl svg-icon-primary">
-											<!--begin::Svg Icon | path:assets/media/svg/icons/Layout/Layout-4-blocks.svg-->
-											<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-												<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-													<rect x="0" y="0" width="24" height="24" />
-													<rect fill="#000000" x="4" y="4" width="7" height="7" rx="1.5" />
-													<path d="M5.5,13 L9.5,13 C10.3284271,13 11,13.6715729 11,14.5 L11,18.5 C11,19.3284271 10.3284271,20 9.5,20 L5.5,20 C4.67157288,20 4,19.3284271 4,18.5 L4,14.5 C4,13.6715729 4.67157288,13 5.5,13 Z M14.5,4 L18.5,4 C19.3284271,4 20,4.67157288 20,5.5 L20,9.5 C20,10.3284271 19.3284271,11 18.5,11 L14.5,11 C13.6715729,11 13,10.3284271 13,9.5 L13,5.5 C13,4.67157288 13.6715729,4 14.5,4 Z M14.5,13 L18.5,13 C19.3284271,13 20,13.6715729 20,14.5 L20,18.5 C20,19.3284271 19.3284271,20 18.5,20 L14.5,20 C13.6715729,20 13,19.3284271 13,18.5 L13,14.5 C13,13.6715729 13.6715729,13 14.5,13 Z" fill="#000000" opacity="0.3" />
-												</g>
-											</svg>
-											<!--end::Svg Icon-->
-										</span>
-									</div>
-								</div>
+								<!--<div class="topbar-item mr-1">
+                                <div class="btn btn-icon btn-clean btn-lg" id="kt_quick_panel_toggle">
+                                    <span class="svg-icon svg-icon-xl svg-icon-primary">
+                                        <!--begin::Svg Icon | path:assets/media/svg/icons/Layout/Layout-4-blocks.svg
+                                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                                            <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                                <rect x="0" y="0" width="24" height="24" />
+                                                <rect fill="#000000" x="4" y="4" width="7" height="7" rx="1.5" />
+                                                <path d="M5.5,13 L9.5,13 C10.3284271,13 11,13.6715729 11,14.5 L11,18.5 C11,19.3284271 10.3284271,20 9.5,20 L5.5,20 C4.67157288,20 4,19.3284271 4,18.5 L4,14.5 C4,13.6715729 4.67157288,13 5.5,13 Z M14.5,4 L18.5,4 C19.3284271,4 20,4.67157288 20,5.5 L20,9.5 C20,10.3284271 19.3284271,11 18.5,11 L14.5,11 C13.6715729,11 13,10.3284271 13,9.5 L13,5.5 C13,4.67157288 13.6715729,4 14.5,4 Z M14.5,13 L18.5,13 C19.3284271,13 20,13.6715729 20,14.5 L20,18.5 C20,19.3284271 19.3284271,20 18.5,20 L14.5,20 C13.6715729,20 13,19.3284271 13,18.5 L13,14.5 C13,13.6715729 13.6715729,13 14.5,13 Z" fill="#000000" opacity="0.3" />
+                                            </g>
+                                        </svg>
+                                        <!--end::Svg Icon
+                                    </span>
+                                </div>
+                            </div>-->
 								<!--end::Quick panel-->
 								<!--begin::Chat-->
 								<div class="topbar-item">
@@ -896,132 +953,111 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 										<h4 class="text-white font-weight-bold my-1 mr-5">Dashboard |</h4><h5 class="text-white font-weight-bold my-1 mr-5">Lending Investor</h5>
 										<!--end::Page Title-->
 									</div>
+                                    <?php
+										if (isset($_SESSION['status_message'])) {
+										?>
+											<div class="alert alert-success alert-dismissable" id="flash-msg">
+												<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+												<h4><?= $_SESSION['status_message'] ?></h4>
+											</div>
+										<?php
+											unset($_SESSION['status_message']);
+									} ?>
 									<!--end::Page Heading-->
 								</div>
 								<!--end::Info-->
-								<!--begin::Toolbar-->
-								<div class="d-flex align-items-center flex-wrap">
-									<!--begin::Daterange-->
-									<a href="#" class="btn btn-fixed-height btn-bg-white btn-text-dark-50 btn-hover-text-primary btn-icon-primary font-weight-bolder font-size-sm px-5 my-1 mr-3" id="kt_dashboard_daterangepicker" data-toggle="tooltip" title="Select dashboard daterange" data-placement="top">
-										<span class="opacity-60 font-weight-bolder mr-2" id="kt_dashboard_daterangepicker_title">Today</span>
-										<span class="font-weight-bolder" id="kt_dashboard_daterangepicker_date">Aug 16</span>
-									</a>
-									<!--end::Daterange-->
-									
-								</div>
-								<!--end::Toolbar-->
 							</div>
 						</div>
 						<!--end::Subheader-->
-						<!--begin::Entry-->
-						<div class="d-flex flex-column-fluid">
-							<div class="container">
-								<div class="row">
-								<div class="col-lg-4">
-										<div class="card card-custom card-stretch gutter-b">
-											<<div class="card-body">
-												<div class="d-flex align-items-center justify-content-between flex-wrap">
-													<span class="font-size-h6 text-muted font-weight-bolder text-uppercase pr-2">Pending Loan Application</span>
-												</div>
-												<div class="card-body d-flex align-items-center justify-content-between pt-7 flex-wrap">
-													<span class="font-weight-bolder display5 text-dark-75 py-4 pl-5 pr-5">
-													<p class="text-primary font-size-h2 font-weight-bolder pt-3 mb-0">
-													<?php
-														$id = $_SESSION['user_id'];
-														$sql = "SELECT count(*) AS id FROM loan_application WHERE loan_application.status = 'pending' AND lender_id = $id ";
-														$query = $dbh->prepare($sql);
-														$query->execute();
-														$results=$query->fetchAll(PDO::FETCH_OBJ);
+							<!--begin::Entry-->
+                            <div class="d-flex flex-column-fluid" >
+							<!--begin::Container-->
+							<div class="container" >
+								<div class="card card-custom">
+									<div class="card-body p-0">
+										<!--begin: Wizard Body-->
+										<div class="wizard-body py-8 px-8 py-lg-20 px-lg-10">
+											<!--begin: Wizard Form-->
+											<div class="row">
+												<div class="offset-xxl-2 col-xxl-8">
+													<form action="" method="post" id="kt_form" >
+                                                        <h4 class="mb-10 font-weight-bold text-dark">Set Notice Upon Submission of Loan Requirements: </h4>
+                                                        <div class="pb-5" data-wizard-type="step-content" data-wizard-state="current">
+                                                            <div class="row">
+                                                                <div class="col-lg-9">
+                                                                    <div class="form-group">
+																	<input type="hidden" name="notice_title[]" value="Notice Upon Submission of Loan Requirements">
+																	<textarea name="remarks[]" class="form-control"  rows="4" cols="50"  autocomplete="off" placeholder="Remarks"><?= $res['remarks'];?></textarea>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+														<h4 class="mb-10 font-weight-bold text-dark">Set Notice Upon Releasing of Loan: </h4>
+                                                        <div class="pb-5" data-wizard-type="step-content" data-wizard-state="current">
+                                                            <div class="row">
+                                                                <div class="col-lg-9">
+                                                                    <div class="form-group">
+																	<input type="hidden" name="notice_title[]" value="Notice Upon Releasing of Loan">
+																	<textarea name="remarks[]" class="form-control"  rows="4" cols="50" required autocomplete="off" placeholder="Remarks"><?= $res['remarks'];?></textarea>
+                                                                    </div>
+                                                                </div>
+                                                                
+                                                            </div>
+                                                        </div>
+														<div class="col-lg-2">
+															<div class="form-group">
+																<button type="submit" name="add_notice"  class="btn btn-primary font-weight-bolder px-10 py-2" data-wizard-type="action-next">Save</button>
+																<!-- <a href="lending_company/view_requirements.php" type="button" class="btn btn-success font-weight-bolder px-10 py-3" data-wizard-type="action-next">Edit Requirements</a> -->
+															</div>
+														</div>
+                                    				</form>
+                                   					 <!--end::Form-->
+                               					</div>
+                            				</div>
+                            				<!--end::Content-->
+                                        </div>
+                                    </div>
+                                        <div class="card card-custom">
+                                            <div class="card-body">
+                                                <h5>Manage Loan Notice</h5>
+                                                <table class="table table-bordered">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Notice</th>
+                                                            <th>Remarks</th>
+                                                            <th>Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <?php
+                                                        $lender_id = $_SESSION['user_id'];
 
-														if($query->rowCount() > 0)
-														{  
-															foreach($results as $result)
-															{ ?>
-															<?php echo htmlentities($result->id);?>
-														<?php }}?>
-													</p>
-												</div>
-											</div>
-											<div class="card-footer border-0 d-flex align-items-center justify-content-between pt-0">
-												<span></span>
-												<a href="lending_company/pending_loan.php" class="btn btn-sm btn-primary font-weight-bolder px-6">View</a>
-											</div>
-										</div>
-									</div>
-									<div class="col-lg-4">
-										<div class="card card-custom card-stretch gutter-b">
-											<<div class="card-body">
-												<div class="d-flex align-items-center justify-content-between flex-wrap">
-													<span class="font-size-h6 text-muted font-weight-bolder text-uppercase pr-2">Approved Loan Application</span>
-												</div>
-												<div class="card-body d-flex align-items-center justify-content-between pt-7 flex-wrap">
-													<span class="font-weight-bolder display5 text-dark-75 py-4 pl-5 pr-5">
-													<p class="text-primary font-size-h2 font-weight-bolder pt-3 mb-0">
-													<?php
-														$id = $_SESSION['user_id'];
-														$sql = "SELECT count(*) AS id FROM loan_application WHERE loan_application.status = 'approved' AND lender_id = $id ";
-														$query = $dbh->prepare($sql);
-														$query->execute();
-														$results=$query->fetchAll(PDO::FETCH_OBJ);
-
-														if($query->rowCount() > 0)
-														{  
-															foreach($results as $result)
-															{ ?>
-															<?php echo htmlentities($result->id);?>
-														<?php }}?>
-													</p>
-												</div>
-											</div>
-											<div class="card-footer border-0 d-flex align-items-center justify-content-between pt-0">
-												<span></span>
-												<a href="lending_company/approved_loan.php" class="btn btn-sm btn-primary font-weight-bolder px-6">View</a>
-											</div>
-										</div>
-									</div>
-									<div class="col-lg-4">
-										<div class="card card-custom card-stretch gutter-b">
-											<<div class="card-body">
-												<div class="d-flex align-items-center justify-content-between flex-wrap">
-													<span class="font-size-h6 text-muted font-weight-bolder text-uppercase pr-2">Payment Received</span>
-												</div>
-												<div class="card-body d-flex align-items-center justify-content-between pt-7 flex-wrap">
-													<span class="font-weight-bolder display5 text-dark-75 py-4 pl-5 pr-5">
-													<p class="text-primary font-size-h2 font-weight-bolder pt-3 mb-0">
-													<?php
-														$lender_id =$_SESSION['user_id'];
-
-														$select = "SELECT * FROM loan_application WHERE lender_id = $lender_id";
-														$query = $dbh->prepare($select);
-														$query->execute();
-														$res2 = $query->fetch();
-
-														$loan_id = $res2['id'];
-
-														$sql = "SELECT count(*) AS loan_payment_id FROM payment_details WHERE payment_details.confirm = 'no' AND payment_details.loan_id= $loan_id";
-														$query = $dbh->prepare($sql);
-														$query->execute();
-														$results=$query->fetchAll(PDO::FETCH_OBJ);
-
-														if($query->rowCount() > 0)
-														{  
-															foreach($results as $result)
-															{ ?>
-															<?php echo htmlentities($result->loan_payment_id);?>
-														<?php }}?>
-													</p>
-												</div>
-											</div>
-											<div class="card-footer border-0 d-flex align-items-center justify-content-between pt-0">
-												<span></span>
-												<a href="lending_company/payment_received.php" class="btn btn-sm btn-primary font-weight-bolder px-6">View</a>
-											</div>
-										</div>
-									</div>
-								</div>	
-							</div>
-						</div>
-						<!--end::Entry-->
+                                                        $sql = "SELECT  * FROM notice WHERE lender_id = $lender_id";
+                                                        $query = $dbh->prepare($sql);
+                                                        $query->execute();
+                                                        $res = $query->fetchAll(PDO::FETCH_OBJ);
+														$cnt = 1;
+                                                        if ($query->rowCount() > 0) {
+                                                            foreach ($res as $rem) { ?>
+                                                        <tr>
+                                                            <td><?= htmlentities($rem->notice_title); ?></td>
+                                                            <td><?= htmlentities($rem->remarks); ?></td>
+                                                            <td>
+                                                                <a href="individual_investor/edit_notice.php?notice_id=<?= htmlentities($rem->notice_id)?>" class="kt-nav__link">
+                                                                    <span class="kt-nav__link-text">Edit</span>
+                                                                </a>
+                                                            </td>
+                                                        </tr>
+                                                        <?php $cnt = $cnt+1;}} ?>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 					</div>
 					<!--end::Content-->
 					<!--begin::Footer-->
@@ -1089,60 +1125,45 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 											<!--end::Svg Icon-->
 										</span>
 									</span>
-									<span class="navi-text text-muted text-hover-primary"><?= $_SESSION['email']?></span>
+									<span class="navi-text text-muted text-hover-primary"><?= $_SESSION['email'];?></span>
 								</span>
 							</a>
 						</div>
 					</div>
 				</div>
-				<!--end::Header-->
-				<!--begin::Separator-->
 				<div class="separator separator-dashed mt-8 mb-5"></div>
-				<!--end::Separator-->
-				<!--begin::Nav-->
 				<div class="navi navi-spacer-x-0 p-0">
-					<!--begin::Item-->
 					<a href="lending_company/update_profile.php" class="navi-item">
 						<div class="navi-link">
 							<div class="symbol symbol-40 bg-light mr-3">
 								<div class="symbol-label">
-									<span class="svg-icon svg-icon-md svg-icon-danger">
-										<!--begin::Svg Icon | path:assets/media/svg/icons/Communication/Adress-book2.svg-->
+									<span class="svg-icon svg-icon-md svg-icon-info">
+										<!--begin::Svg Icon | path:assets/media/svg/icons/Communication/Mail-opened.svg-->
 										<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
 											<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
 												<rect x="0" y="0" width="24" height="24" />
 												<path d="M18,2 L20,2 C21.6568542,2 23,3.34314575 23,5 L23,19 C23,20.6568542 21.6568542,22 20,22 L18,22 L18,2 Z" fill="#000000" opacity="0.3" />
 												<path d="M5,2 L17,2 C18.6568542,2 20,3.34314575 20,5 L20,19 C20,20.6568542 18.6568542,22 17,22 L5,22 C4.44771525,22 4,21.5522847 4,21 L4,3 C4,2.44771525 4.44771525,2 5,2 Z M12,11 C13.1045695,11 14,10.1045695 14,9 C14,7.8954305 13.1045695,7 12,7 C10.8954305,7 10,7.8954305 10,9 C10,10.1045695 10.8954305,11 12,11 Z M7.00036205,16.4995035 C6.98863236,16.6619875 7.26484009,17 7.4041679,17 C11.463736,17 14.5228466,17 16.5815,17 C16.9988413,17 17.0053266,16.6221713 16.9988413,16.5 C16.8360465,13.4332455 14.6506758,12 11.9907452,12 C9.36772908,12 7.21569918,13.5165724 7.00036205,16.4995035 Z" fill="#000000" />
 											</g>
-										</svg>
+										</svg> 
 										<!--end::Svg Icon-->
 									</span>
 								</div>
 							</div>
 							<div class="navi-text">
 								<div class="font-weight-bold">My Account</div>
-								<div class="text-muted">Profile info
-								<span class="label label-light-danger label-inline font-weight-bold">update</span></div>
+								<div class="text-muted">Update Information</div>
 							</div>
 						</div>
 					</a>
-					<!--end:Item-->
-					<!--begin::Item-->
 					<span class="navi-item mt-2">
 						<span class="navi-link">
 							<a href="logout.php" class="btn btn-sm btn-light-primary font-weight-bolder py-3 px-6">Sign Out</a>
 						</span>
 					</span>
-					<!--end:Item-->
 				</div>
-				<!--end::Nav-->
-				<!--begin::Separator-->
 				<div class="separator separator-dashed my-7"></div>
-				<!--end::Separator-->
-
-
 			</div>
-			<!--end::Content-->
 		</div>
 		<!-- end::User Panel-->
 
@@ -1152,7 +1173,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 			<div class="offcanvas-header offcanvas-header-navs d-flex align-items-center justify-content-between mb-5">
 				<ul class="nav nav-bold nav-tabs nav-tabs-line nav-tabs-line-3x nav-tabs-primary flex-grow-1 px-10" role="tablist">
 					<li class="nav-item">
-						<a class="nav-link" data-toggle="tab" href="#kt_quick_panel_notifications">Notifications</a>
+						<a class="nav-link active" data-toggle="tab" href="#kt_quick_panel_notifications">Notifications</a>
 					</li>
 				</ul>
 				<div class="offcanvas-close mt-n1 pr-5">
@@ -1172,12 +1193,12 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 								<div class="navi-link rounded">
 									<div class="symbol symbol-50 mr-3">
 										<div class="symbol-label">
-											<i class="flaticon-bell text-success icon-lg"></i>
+											<i class="flaticon-safe-shield-protection text-danger icon-lg"></i>
 										</div>
 									</div>
 									<div class="navi-text">
-										<div class="font-weight-bold font-size-lg">5 new user generated report</div>
-										<div class="text-muted">Reports based on sales</div>
+										<div class="font-weight-bold font-size-lg">3 Defence alerts</div>
+										<div class="text-muted">40% less alerts thar last week</div>
 									</div>
 								</div>
 							</a>
@@ -1187,18 +1208,90 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 								<div class="navi-link rounded">
 									<div class="symbol symbol-50 mr-3">
 										<div class="symbol-label">
-											<i class="flaticon2-box text-danger icon-lg"></i>
+											<i class="flaticon-notepad text-primary icon-lg"></i>
 										</div>
 									</div>
 									<div class="navi-text">
-										<div class="font-weight-bold font-size-lg">2 new items submited</div>
-										<div class="text-muted">by Grog John</div>
+										<div class="font-weight-bold font-size-lg">Avarage 4 blog posts per author</div>
+										<div class="text-muted">Most posted 12 time</div>
 									</div>
 								</div>
 							</a>
 							<!--end::Item-->
+							<!--begin::Item-->
+							<a href="#" class="navi-item">
+								<div class="navi-link rounded">
+									<div class="symbol symbol-50 mr-3">
+										<div class="symbol-label">
+											<i class="flaticon-users-1 text-warning icon-lg"></i>
+										</div>
+									</div>
+									<div class="navi-text">
+										<div class="font-weight-bold font-size-lg">16 authors joined last week</div>
+										<div class="text-muted">9 photodrapehrs, 7 designer</div>
+									</div>
+								</div>
+							</a>
+							<!--end::Item-->	
 						</div>
 						<!--end::Nav-->
+					</div>
+					<!--end::Tabpane-->
+					<!--begin::Tabpane-->
+					<div class="tab-pane fade pt-3 pr-5 mr-n5" id="kt_quick_panel_settings" role="tabpanel">
+						<form class="form">
+							<!--begin::Section-->
+							<div class="pt-1">
+								<h4 class="mb-7">Privacy Settings:</h4>
+								<div class="pb-5">
+									<div class="checkbox-inline mb-2">
+										<label class="checkbox">
+										<input type="checkbox" />
+										<span></span>You have new notifications.</label>
+									</div>
+									<div class="checkbox-inline mb-2">
+										<label class="checkbox">
+										<input type="checkbox" />
+										<span></span>You're sent a direct message</label>
+									</div>
+									<div class="checkbox-inline mb-2">
+										<label class="checkbox">
+										<input type="checkbox" checked="checked" />
+										<span></span>Someone adds you as a connection</label>
+									</div>
+									<div class="checkbox-inline mb-2">
+										<label class="checkbox checkbox-success">
+										<input type="checkbox" />
+										<span></span>Upon new order</label>
+									</div>
+									<div class="checkbox-inline mb-2">
+										<label class="checkbox checkbox-success">
+										<input type="checkbox" />
+										<span></span>New membership approval</label>
+									</div>
+								</div>
+								<!--begin::Group-->
+								<div class="text-muted">After you log in, you will be asked for additional information to confirm your identity.</div>
+								<!--end::Group-->
+							</div>
+							<!--end::Section-->
+							<div class="separator separator-dashed my-8"></div>
+							<!--begin::Section-->
+							<div class="pt-1">
+								<h4 class="mb-7">Security Settings:</h4>
+								<div class="pb-5">
+									<div class="checkbox-inline">
+										<label class="checkbox mb-2">
+										<input type="checkbox" />
+										<span></span>Personal information safety</label>
+									</div>
+									<p class="form-text text-muted pb-5 mb-0">After you log in, you will be asked for additional information to confirm your identity. For extra security, this requires you to confirm your email.
+									<a href="#" class="font-weight-bold">Learn more</a>.</p>
+									<button type="button" class="btn btn-light-danger font-weight-bolder btn-sm">Setup login verification</button>
+								</div>
+							</div>
+							<!--end::Section-->
+						</form>
 					</div>
 					<!--end::Tabpane-->
 				</div>
@@ -1572,107 +1665,6 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 				</a>
 			</div>
 			<!--end::Header-->
-			<!--begin::Content-->
-			<div class="offcanvas-content">
-				<!--begin::Wrapper-->
-				<div class="offcanvas-wrapper mb-5 scroll-pull">
-					<h5 class="font-weight-bold mb-4 text-center">Demo 1</h5>
-					<div class="overlay rounded-lg mb-8 offcanvas-demo offcanvas-demo-active">
-						<div class="overlay-wrapper rounded-lg">
-							<img src="assets/media/demos/demo1.png" alt="" class="w-100" />
-						</div>
-						<div class="overlay-layer">
-							<a href="../../demo1/dist" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">HTML</a>
-							<a href="https://preview.keenthemes.com/keen/demo1/rtl/index.html" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">RTL</a>
-						</div>
-					</div>
-					<h5 class="font-weight-bold mb-4 text-center">Demo 2</h5>
-					<div class="overlay rounded-lg mb-8 offcanvas-demo">
-						<div class="overlay-wrapper rounded-lg">
-							<img src="assets/media/demos/demo2.png" alt="" class="w-100" />
-						</div>
-						<div class="overlay-layer">
-							<a href="../../demo2/dist" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">HTML</a>
-							<a href="https://preview.keenthemes.com/keen/demo2/rtl/index.html" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">RTL</a>
-						</div>
-					</div>
-					<h5 class="font-weight-bold mb-4 text-center">Demo 3</h5>
-					<div class="overlay rounded-lg mb-8 offcanvas-demo">
-						<div class="overlay-wrapper rounded-lg">
-							<img src="assets/media/demos/demo3.png" alt="" class="w-100" />
-						</div>
-						<div class="overlay-layer">
-							<a href="../../demo3/dist" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">HTML</a>
-							<a href="https://preview.keenthemes.com/keen/demo3/rtl/index.html" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">RTL</a>
-						</div>
-					</div>
-					<h5 class="font-weight-bold mb-4 text-center">Demo 4</h5>
-					<div class="overlay rounded-lg mb-8 offcanvas-demo">
-						<div class="overlay-wrapper rounded-lg">
-							<img src="assets/media/demos/demo4.png" alt="" class="w-100" />
-						</div>
-						<div class="overlay-layer">
-							<a href="../../demo4/dist" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">HTML</a>
-							<a href="https://preview.keenthemes.com/keen/demo4/rtl/index.html" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">RTL</a>
-						</div>
-					</div>
-					<h5 class="font-weight-bold mb-4 text-center">Demo 5</h5>
-					<div class="overlay rounded-lg mb-8 offcanvas-demo">
-						<div class="overlay-wrapper rounded-lg">
-							<img src="assets/media/demos/demo5.png" alt="" class="w-100" />
-						</div>
-						<div class="overlay-layer">
-							<a href="../../demo5/dist" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">HTML</a>
-							<a href="https://preview.keenthemes.com/keen/demo5/rtl/index.html" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">RTL</a>
-						</div>
-					</div>
-					<h5 class="font-weight-bold mb-4 text-center">Demo 6</h5>
-					<div class="overlay rounded-lg mb-8 offcanvas-demo">
-						<div class="overlay-wrapper rounded-lg">
-							<img src="assets/media/demos/demo6.png" alt="" class="w-100" />
-						</div>
-						<div class="overlay-layer">
-							<a href="../../demo6/dist" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">HTML</a>
-							<a href="https://preview.keenthemes.com/keen/demo6/rtl/index.html" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">RTL</a>
-						</div>
-					</div>
-					<h5 class="font-weight-bold mb-4 text-center">Demo 7</h5>
-					<div class="overlay rounded-lg mb-8 offcanvas-demo">
-						<div class="overlay-wrapper rounded-lg">
-							<img src="assets/media/demos/demo7.png" alt="" class="w-100" />
-						</div>
-						<div class="overlay-layer">
-							<a href="../../demo7/dist" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">HTML</a>
-							<a href="https://preview.keenthemes.com/keen/demo7/rtl/index.html" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">RTL</a>
-						</div>
-					</div>
-					<h5 class="font-weight-bold mb-4 text-center">Demo 8</h5>
-					<div class="overlay rounded-lg mb-8 offcanvas-demo">
-						<div class="overlay-wrapper rounded-lg">
-							<img src="assets/media/demos/demo8.png" alt="" class="w-100" />
-						</div>
-						<div class="overlay-layer">
-							<a href="#" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow disabled opacity-90">Coming soon</a>
-						</div>
-					</div>
-					<h5 class="font-weight-bold mb-4 text-center">Demo 9</h5>
-					<div class="overlay rounded-lg mb-8 offcanvas-demo">
-						<div class="overlay-wrapper rounded-lg">
-							<img src="assets/media/demos/demo9.png" alt="" class="w-100" />
-						</div>
-						<div class="overlay-layer">
-							<a href="#" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow disabled opacity-90">Coming soon</a>
-						</div>
-					</div>
-				</div>
-				<!--end::Wrapper-->
-				<!--begin::Purchase-->
-				<div class="offcanvas-footer">
-					<a href="https://themes.getbootstrap.com/product/keen-the-ultimate-bootstrap-admin-theme/" target="_blank" class="btn btn-block btn-danger btn-shadow font-weight-bolder text-uppercase">Buy Keen Now!</a>
-				</div>
-				<!--end::Purchase-->
-			</div>
-			<!--end::Content-->
 		</div>
 		<!--end::Demo Panel-->
 		<script>var HOST_URL = "https://preview.keenthemes.com/keen/theme/tools/preview";</script>
@@ -1689,6 +1681,37 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 		<!--end::Page Vendors-->
 		<!--begin::Page Scripts(used by this page)-->
 		<script src="assets/admin/js/pages/widgets.js"></script>
+        <script src="assets/keen/js/pages/features/file-upload/image-input.js"></script>
+        <script scr="https://code.jquery.com/jquery-3.6.0.js"></script>
+        <script>
+            $(document).ready(function(){
+                $(document).on('click','.remove-btn', function(){
+                    $(this).closest('.pb-5').remove();
+                });
+                $(document).on('click','.add-more-form', function(){
+                    $('.paste-new-forms').append('<div class="pb-5" data-wizard-type="step-content" data-wizard-state="current">\
+                                <div class="row">\
+                                    <div class="col-lg-6">\
+                                        <div class="form-group">\
+                                            <input type="text" class="form-control" name="req_name[]" autocomplete="off">\
+                                        </div>\
+                                    </div>\
+                                    <div class="col-lg-4">\
+                                        <div class="form-group">\
+                                            <input type="text" class="form-control" name="remarks[]" autocomplete="off">\
+                                        </div>\
+                                    </div>\
+                                    <div class="col-lg-2">\
+                                        <div class="form-group">\
+                                            <button type="button" class="remove-btn btn btn-danger">Remove</button>\
+                                        </div>\
+                                    </div>\
+                                </div>\
+                            </div>');
+                            
+                });
+             });
+        </script>
 		<!--end::Page Scripts-->
 	</body>
 	<!--end::Body-->

@@ -1,9 +1,11 @@
 <?php
 session_start();
-error_reporting(-1);
+error_reporting(0);
 include('../db_connection/config.php');
 
-
+if ($_SESSION['user_type'] != 4) {
+	header('location: ../index.php');
+}
 ?>
 
 <!DOCTYPE html>
@@ -142,167 +144,205 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 								</a>
 							</li>
 							<li class="menu-section">
-								<h4 class="menu-text">Manage Account</h4>
-								<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
-							</li>
-							<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-								<a href="javascript:;" class="menu-link menu-toggle">
-									<span class="svg-icon menu-icon">
-									</span>
-									<span class="menu-text">My Account</span>
-									<i class="menu-arrow"></i>
-								</a>
-								<div class="menu-submenu">
-									<i class="menu-arrow"></i>
-									<ul class="menu-subnav">
-										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-											<a href="individual_investor/update_information.php" class="menu-link menu-toggle">
-												<i class="menu-bullet">
-													<span></span>
-												</i>
-												<span class="menu-text">My Profile</span>
-											</a>
-										</li>
-									</ul>
-								</div>
-							</li>
-							<li class="menu-section">
-								<h4 class="menu-text">Manage Loan</h4>
-								<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
-							</li>
-							<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-								<a href="javascript:;" class="menu-link menu-toggle">
-									<span class="svg-icon menu-icon">
-									</span>
-									<span class="menu-text">Setup Loan</span>
-									<i class="menu-arrow"></i>
-								</a>
-								<div class="menu-submenu">
-									<ul class="menu-subnav">
-										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-											<a href="individual_investor/setup_loan.php" class="menu-link menu-toggle">
-												<span class="svg-icon menu-icon">
-												</span>
-												<span class="menu-text">Setup Loan Features</span>
-											</a>
-										</li>
-										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-											<a href="individual_investor/set_requirements.php" class="menu-link menu-toggle">
-												<span class="svg-icon menu-icon">
-												</span>
-												<span class="menu-text">Set Requirements</span>
-											</a>
-										</li>
-										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-											<a href="individual_investor/.php" class="menu-link menu-toggle">
-												<span class="svg-icon menu-icon">
-												</span>
-												<span class="menu-text">Set Mode of Payment</span>
-											</a>
-										</li>
-									</ul>
-								</div>
-							</li>
+                                <h4 class="menu-text">Manage Account</h4>
+                                <i class="menu-icon ki ki-bold-more-hor icon-md"></i>
+                            </li>
+                            <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+                                <a href="javascript:;" class="menu-link menu-toggle">
+                                    <span class="svg-icon menu-icon">
+                                    </span>
+                                    <span class="menu-text">My Account</span>
+                                    <i class="menu-arrow"></i>
+                                </a>
+                                <div class="menu-submenu">
+                                    <i class="menu-arrow"></i>
+                                    <ul class="menu-subnav">
+                                        <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+                                            <a href="individual_investor/update_profile.php" class="menu-link menu-toggle">
+                                                <i class="menu-bullet">
+                                                    <span></span>
+                                                </i>
+                                                <span class="menu-text">My Profile</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li class="menu-section">
+                                <h4 class="menu-text">Manage Loan</h4>
+                                <i class="menu-icon ki ki-bold-more-hor icon-md"></i>
+                            </li>
+                            <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+                                <a href="javascript:;" class="menu-link menu-toggle">
+                                    <span class="svg-icon menu-icon">
+                                    </span>
+                                    <span class="menu-text">Setup Loan</span>
+                                    <i class="menu-arrow"></i>
+                                </a>
+                                <div class="menu-submenu">
+                                    <ul class="menu-subnav">
+                                        <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+                                            <a href="individual_investor/setup_loan.php" class="menu-link menu-toggle">
+                                                <span class="svg-icon menu-icon">
+                                                </span>
+                                                <span class="menu-text">Setup Loan Features</span>
+                                            </a>
+                                        </li>
+                                        <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+                                            <a href="individual_investor/set_requirements.php" class="menu-link menu-toggle">
+                                                <span class="svg-icon menu-icon">
+                                                </span>
+                                                <span class="menu-text">Set Requirements</span>
+                                            </a>
+                                        </li>
+                                        <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+                                            <a href="individual_investor/setup_payment.php" class="menu-link menu-toggle">
+                                                <span class="svg-icon menu-icon">
+                                                </span>
+                                                <span class="menu-text">Set Mode of Payment</span>
+                                            </a>
+                                        </li>
+                                        <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+                                            <a href="individual_investor/set_notice.php" class="menu-link menu-toggle">
+                                                <span class="svg-icon menu-icon">
+                                                </span>
+                                                <span class="menu-text">Set Loan Notice</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+                                <a href="javascript:;" class="menu-link menu-toggle">
+                                    <span class="svg-icon menu-icon">
+                                    </span>
+                                    <span class="menu-text">Loan Application</span>
+                                    <i class="menu-arrow"></i>
+                                </a>
+                                <div class="menu-submenu">
+                                    <i class="menu-arrow"></i>
+                                    <ul class="menu-subnav">
+                                        <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+                                            <a href="individual_investor/pending_loan.php" class="menu-link menu-toggle">
+                                                <i class="menu-bullet">
+                                                    <span></span>
+                                                </i>
+                                                <span class="menu-text">Pending Loan</span>
+                                            </a>
+                                        </li>
+                                        <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+                                            <a href="individual_investor/approved_loan.php" class="menu-link menu-toggle">
+                                                <i class="menu-bullet">
+                                                    <span></span>
+                                                </i>
+                                                <span class="menu-text">Approved Loan</span>
+                                            </a>
+                                        </li>
+                                        <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+                                            <a href="individual_investor/released_loan.php" class="menu-link menu-toggle">
+                                                <i class="menu-bullet">
+                                                    <span></span>
+                                                </i>
+                                                <span class="menu-text">Release Loan</span>
+                                            </a>
+                                        </li>
+                                        <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+                                            <a href="individual_investor/declined_loan.php" class="menu-link menu-toggle">
+                                                <i class="menu-bullet">
+                                                    <span></span>
+                                                </i>
+                                                <span class="menu-text">Declined Loan</span>
+                                            </a>
+                                        </li>
 
-							<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-								<a href="javascript:;" class="menu-link menu-toggle">
-									<span class="svg-icon menu-icon">
-									</span>
-									<span class="menu-text">Loan Application</span>
-									<i class="menu-arrow"></i>
-								</a>
-								<div class="menu-submenu">
-									<i class="menu-arrow"></i>
-									<ul class="menu-subnav">
-										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-											<a href="individual_investor/pending_loan.php" class="menu-link menu-toggle">
-												<i class="menu-bullet">
-													<span></span>
-												</i>
-												<span class="menu-text">Pending Loan</span>
-											</a>
-										</li>
-										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-											<a href="individual_investor/approvedloan.php" class="menu-link menu-toggle">
-												<i class="menu-bullet">
-													<span></span>
-												</i>
-												<span class="menu-text">Approved Loan</span>
-											</a>
-										</li>
-										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-											<a href="individual_investor/.php" class="menu-link menu-toggle">
-												<i class="menu-bullet">
-													<span></span>
-												</i>
-												<span class="menu-text">Declined Loan</span>
-											</a>
-										</li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li class="menu-section">
+                                <h4 class="menu-text">Manage Payment</h4>
+                                <i class="menu-icon ki ki-bold-more-hor icon-md"></i>
+                            </li>
+                            <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+                                <a href="javascript:;" class="menu-link menu-toggle">
+                                    <span class="svg-icon menu-icon">
+                                    </span>
+                                    <span class="menu-text">Payment Information</span>
+                                    <i class="menu-arrow"></i>
+                                </a>
+                                <div class="menu-submenu">
+                                    <i class="menu-arrow"></i>
+                                    <ul class="menu-subnav">
+                                        <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+                                            <a href="individual_investor/payment_received.php" class="menu-link menu-toggle">
+                                                <i class="menu-bullet">
+                                                    <span></span>
+                                                </i>
+                                                <span class="menu-text">Payment Received</span>
+                                                <span class="menu-label">
+                                                </span>
+                                                <i class="menu-arrow"></i>
+                                            </a>
+                                        </li>
+                                        <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+                                            <a href="individual_investor/payment_records.php" class="menu-link menu-toggle">
+                                                <i class="menu-bullet">
+                                                    <span></span>
+                                                </i>
+                                                <span class="menu-text">Payment Records</span>
+                                                <span class="menu-label">
+                                                </span>
+                                                <i class="menu-arrow"></i>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
 
-									</ul>
-								</div>
-							</li>
-							<li class="menu-section">
-								<h4 class="menu-text">Manage Payment</h4>
-								<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
-							</li>
-							<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-								<a href="javascript:;" class="menu-link menu-toggle">
-									<span class="svg-icon menu-icon">
-									</span>
-									<span class="menu-text">Payment Information</span>
-									<i class="menu-arrow"></i>
-								</a>
-								<div class="menu-submenu">
-									<i class="menu-arrow"></i>
-									<ul class="menu-subnav">
-										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-											<a href="individual_investor/.php" class="menu-link menu-toggle">
-												<i class="menu-bullet">
-													<span></span>
-												</i>
-												<span class="menu-text">Payment Received</span>
-												<span class="menu-label">
-												</span>
-												<i class="menu-arrow"></i>
-											</a>
-										</li>
-										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-											<a href="individual_investor/.php" class="menu-link menu-toggle">
-												<i class="menu-bullet">
-													<span></span>
-												</i>
-												<span class="menu-text">Payment Records</span>
-												<span class="menu-label">
-												</span>
-												<i class="menu-arrow"></i>
-											</a>
-										</li>
-									</ul>
-								</div>
-							</li>
-
-							<li class="menu-section">
-								<h4 class="menu-text">Manage Report</h4>
-								<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
-							</li>
-							<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-								<a href="javascript:;" class="menu-link menu-toggle">
-									<span class="svg-icon menu-icon">
-									</span>
-									<span class="menu-text">Generate Report</span>
-									<i class="menu-arrow"></i>
-								</a>
-								
-							</li>
-							<!--end::Menu Nav-->
-					</div>
-					<!--end::Menu Container-->
-				</div>
-				<!--end::Aside Menu-->
-			</div>
-			<!--end::Aside-->
-			<!--begin::Wrapper-->
+                            <li class="menu-section">
+                                <h4 class="menu-text">Manage Report</h4>
+                                <i class="menu-icon ki ki-bold-more-hor icon-md"></i>
+                            </li>
+                            <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+                                <a href="javascript:;" class="menu-link menu-toggle">
+                                    <span class="svg-icon menu-icon">
+                                    </span>
+                                    <span class="menu-text">Generate Report</span>
+                                    <i class="menu-arrow"></i>
+                                </a>
+                                <div class="menu-submenu">
+                                    <i class="menu-arrow"></i>
+                                    <ul class="menu-subnav">
+                                        <li class="menu-item menu-item-parent" aria-haspopup="true">
+                                            <span class="menu-link">
+                                                <span class="menu-text">Themes</span>
+                                            </span>
+                                        </li>
+                                        <li class="menu-item" aria-haspopup="true">
+                                            <a href="layout/themes/aside-light.html" class="menu-link">
+                                                <i class="menu-bullet menu-bullet-dot">
+                                                    <span></span>
+                                                </i>
+                                                <span class="menu-text">Loan Records</span>
+                                            </a>
+                                        </li>
+                                        <li class="menu-item" aria-haspopup="true">
+                                            <a href="layout/themes/header-dark.html" class="menu-link">
+                                                <i class="menu-bullet menu-bullet-dot">
+                                                    <span></span>
+                                                </i>
+                                                <span class="menu-text">Payment Records</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <!--end::Menu Nav-->
+                    </div>
+                    <!--end::Menu Container-->
+                </div>
+                <!--end::Aside Menu-->
+            </div>
+            <!--end::Aside-->			<!--begin::Wrapper-->
 			<div class="d-flex flex-column flex-row-fluid wrapper" id="kt_wrapper">
 				<!--begin::Header-->
 				<div id="kt_header" class="header header-fixed">

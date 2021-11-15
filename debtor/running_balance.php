@@ -1,6 +1,6 @@
 <?php
 session_start();
-error_reporting(-1);
+error_reporting(0);
 include('../db_connection/config.php');
 
 if($_SESSION['user_type'] != 2) {
@@ -189,44 +189,45 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 											<div class="card-body">
 												<h5 style="color:royalblue"> Running Balance to: <?= $run['company_name']?> &nbsp;Loan </h5>
 												<table class="table table-bordered">
-													<thead>
-														<tr>
-															<th>Payment Month Date</th>
-															<th>Principal Payment</th>
-															<th>Interest Payment</th>
-															<th>Total Monthly Payment</th>
-															<th>Remaining Balance</th>
-														</tr>
-													</thead>
-													<tbody>
-														<?php 
-														$loan_app_id = intval($_GET['loan_app_id']);
+												<thead>
+													<tr>
+														<th>Payment Month Date</th>
+														<th>Principal Payment</th>
+														<th>Interest Payment</th>
+														<th>Total Monthly Payment</th>
+														<th>Remaining Balance</th>
+													</tr>
+												</thead>
+												<tbody>
+													<?php
+													$loan_app_id = intval($_GET['loan_app_id']);
 
-														$sql = "SELECT * FROM loan_application WHERE loan_app_id = $loan_app_id";
-														$query = $dbh->prepare($sql);
-														$query->execute();
-														$results = $query->fetchAll(PDO::FETCH_OBJ);
-														if($query->rowCount() > 0){
-															foreach($results as $result){
-														?>
-														<tr>
-															<th scope="row">
-															<?php 
-															// $date = date("y-m-d");
-															// $approval_date = "2022-01-01";
-															// while(strtotime($approval_date)<=strtotime($date)){
-															// 	echo date("F-Y",strtotime($date));
-															// 	$date = date("y-m-d",strtotime("+1 month",strtotime($date)));
-															?>
-															</th>
-															<td><?= $m = htmlentities($result->monthly_payment)-(htmlentities($result->total_interest)/htmlentities($result->loan_term));?></td>
-															<td><?= $in = htmlentities($result->total_interest)/htmlentities($result->loan_term);?></td>
-															<td><?= $total = $m + $in; ?></td>
-															<td><?= htmlentities($result->total_amount)-$total ?></td>
-														</tr>
-													</tbody>
-													<?php }} ?>
-												</table></br><!--
+													$sql = "SELECT * FROM loan_payment INNER JOIN loan_application ON loan_payment.loan_app_id = loan_application.loan_app_id WHERE loan_payment.loan_app_id = $loan_app_id AND loan_application.loan_status = 'Released'";
+													$query = $dbh->prepare($sql);
+													$query->execute();
+													$results = $query->fetchAll(PDO::FETCH_OBJ);
+													if ($query->rowCount() > 0) {
+														foreach ($results as $res) {
+															//$d = date("d F Y",strtotime('+1 month',strtotime($res->approval_date)));
+														
+													?>
+													<tr>
+														<td><?php 
+															date_default_timezone_set('Asia/Manila');
+															$monthly_due_date = date($res->monthly_due_date);
+															$d = strtotime($monthly_due_date);
+															echo date("F-m- Y", $d); ?></td>
+														<td><?= number_format(htmlentities($res->monthly_payable), 2)?></td>
+														<td><?= htmlentities($res->monthly_interest)?></td>
+														<td><?php $total_monthly_pay = htmlentities($res->monthly_payable)+htmlentities($res->monthly_interest);
+															echo number_format($total_monthly_pay, 2); ?> </td>
+														<td><?= $total_remaining = number_format(htmlentities($res->remaining_balance)- $total_monthly_pay, 2)?></td>
+													</tr>
+													
+												</tbody>
+										<?php }} ?>
+											</table>
+											</br><!--
 												<div class="separator separator-dashed mt-8 mb-5"></div>
 												<h5> Pending Loan Application</h5>
 												<table class="table table-bordered">

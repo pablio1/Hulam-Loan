@@ -2,9 +2,10 @@
 session_start();
 error_reporting(0);
 include('../db_connection/config.php');
-?>
+if ($_SESSION['user_type'] != 3) {
+	header('location: ../index.php');
+}?>
 
-<!--codes to insert the image -->
 <?php
 
 if(isset($_POST['add_req'])){
@@ -23,11 +24,11 @@ if(isset($_POST['add_req'])){
         $query->execute();
     }
     if($query){
-        $_SESSION['status'] = "Added successfully" ;
+        $_SESSION['status_message'] = "Added successfully" ;
         header("Location: set_requirements.php");
         exit();
     }else{
-        $_SESSION['status'] = "Error! Not Added" ;
+        $_SESSION['status_message'] = "Error! Not Added" ;
         header("Location: set_requirements.php");
         exit();
     }
@@ -966,29 +967,35 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 					<!--end::Header-->
 					<!--begin::Content-->
 					<div class="content d-flex flex-column flex-column-fluid" id="kt_content" style="background-image:url('assets/keen/media/logos/banner.png')">
-						<!--begin::Subheader-->
-						<div class="subheader py-6 py-lg-8 subheader-transparent" id="kt_subheader">
-							<div class="container d-flex align-items-center justify-content-between flex-wrap flex-sm-nowrap">
-								<!--begin::Info-->
-								<div class="d-flex align-items-center flex-wrap mr-1">
-									<!--begin::Page Heading-->
-									<div class="d-flex align-items-baseline flex-wrap mr-5">
-										<!--begin::Page Title-->
-										<h4 class="text-white font-weight-bold my-1 mr-5">Dashboard |</h4><h5 class="text-white font-weight-bold my-1 mr-5">Lending Investor</h5>
-										<!--end::Page Title-->
+					<div class="subheader py-6 py-lg-8 subheader-transparent" id="kt_subheader">
+						<div class="container d-flex align-items-center justify-content-between flex-wrap flex-sm-nowrap">
+							<div class="d-flex align-items-center flex-wrap mr-1">
+								<div class="d-flex align-items-baseline flex-wrap mr-5">
+									<h4 class="text-white font-weight-bold my-1 mr-5">Dashboard |</h4>
+									<h5 class="text-white font-weight-bold my-1 mr-5">Lending Investor</h5>
+									<div class="col-xl-12 col-xl-12">
+										<?php
+										if(isset($_SESSION['status'])){
+										?>
+											<div class="alert alert-custom alert-notice alert-light-success fade show" role="alert">
+												<div class="alert-text">
+													<h4><?php echo $_SESSION['status'];?></h4>
+												</div>
+												<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+											</div>
+										<?php unset($_SESSION['status']);
+										}?>
 									</div>
-                                    <?php
-                                    if(isset($_SESSION['status'])){
-                                        ?>
-                                        <h4 class="alert alert-success"><?php echo $_SESSION['status'];?></h4>
-                                        <?php
-                                        unset($_SESSION['status']);
-                                    }?>
-									<!--end::Page Heading-->
 								</div>
-								<!--end::Info-->
+							</div>
+							<div class="d-flex align-items-center flex-wrap">
+								<a href="#" class="btn btn-fixed-height btn-bg-white btn-text-dark-50 btn-hover-text-primary btn-icon-primary font-weight-bolder font-size-sm px-5 my-1 mr-3" id="kt_dashboard_daterangepicker" data-toggle="tooltip" title="Select dashboard daterange" data-placement="top">
+									<span class="opacity-60 font-weight-bolder mr-2" id="kt_dashboard_daterangepicker_title">Today</span>
+									<span class="font-weight-bolder" id="kt_dashboard_daterangepicker_date">Aug 16</span>
+								</a>
 							</div>
 						</div>
+					</div>
 						<!--end::Subheader-->
 							<!--begin::Entry-->
                             <div class="d-flex flex-column-fluid" >

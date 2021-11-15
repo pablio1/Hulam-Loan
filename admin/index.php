@@ -1,14 +1,11 @@
 <?php
 session_start();
-error_reporting(-1);
+error_reporting(0);
 include('../db_connection/config.php');
 
 if ($_SESSION['user_type'] != 1) {
 	header('location: ../index.php');
-}
-
-
-?>
+}?>
 
 
 <!DOCTYPE html>
@@ -921,7 +918,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 											</div>
 										</div>
 									</div>
-									<div class="col-lg-3">
+									<!-- <div class="col-lg-3">
 										<div class="card card-custom card-stretch gutter-b">
 											<div class="card-body">
 												<div class="d-flex align-items-center justify-content-between flex-wrap">
@@ -930,12 +927,12 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 												<div class="card-body d-flex align-items-center justify-content-between pt-7 flex-wrap">
 													<span class="font-weight-bolder display5 text-dark-75 py-4 pl-5 pr-5">
 													<p class="text-primary font-size-h2 font-weight-bolder pt-3 mb-0">
-													<?php
-													$sql = "SELECT COUNT(*) AS investor FROM user WHERE user_type ='4' AND eligible='no'";
-													$result= mysqli_query($conn,$sql);
-													$res = mysqli_fetch_array($result);
+													<?php 
+													// $sql = "SELECT COUNT(*) AS investor FROM user WHERE user_type ='4' AND eligible='no'";
+													// $result= mysqli_query($conn,$sql);
+													// $res = mysqli_fetch_array($result);
 													
-													echo $res['investor'];
+													// echo $res['investor'];
 													?></p>
 												</div>
 											</div>
@@ -945,7 +942,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 											</div>
 										</div>
 									</div>
-									<div class="col-lg-3">
+									 <div class="col-lg-3">
 										<div class="card card-custom card-stretch gutter-b">
 											<div class="card-body">
 												<div class="d-flex align-items-center justify-content-between flex-wrap">
@@ -953,22 +950,22 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 												</div>
 												<div class="card-body d-flex align-items-center justify-content-between pt-7 flex-wrap">
 													<span class="font-weight-bolder display5 text-dark-75 py-4 pl-5 pr-5">
-													<p class="text-primary font-size-h2 font-weight-bolder pt-3 mb-0">
+													<p class="text-primary font-size-h2 font-weight-bolder pt-3 mb-0"> -->
 													<?php
-														$sql = "SELECT COUNT(*) AS ps FROM user WHERE user_type ='5' AND eligible='no'";
-														$result= mysqli_query($conn,$sql);
-														$res = mysqli_fetch_array($result);
+														// $sql = "SELECT COUNT(*) AS ps FROM user WHERE user_type ='5' AND eligible='no'";
+														// $result= mysqli_query($conn,$sql);
+														// $res = mysqli_fetch_array($result);
 														
-														echo $res['ps'];
+														// echo $res['ps'];
 													?></p>
-												</div>
+												<!-- </div>
 											</div>
 											<div class="card-footer border-0 d-flex align-items-center justify-content-between pt-0">
 												<span></span>
 												<a href="admin/pending_payment_center.php" class="btn btn-sm btn-primary font-weight-bolder px-6">View</a>
 											</div>
-										</div>
-									</div>
+										</div> -->
+									<!-- </div> -->
 									 <!-- <div class="col-lg-3">
 										<div class="card card-custom card-stretch gutter-b">
 											<div class="card-body">

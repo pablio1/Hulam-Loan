@@ -1,6 +1,6 @@
 <?php
 session_start();
-error_reporting(-1);
+error_reporting(0);
 include('../db_connection/config.php');
 
 if ($_SESSION['user_type'] != 2) {
@@ -9,40 +9,40 @@ if ($_SESSION['user_type'] != 2) {
 ?>
 
 <?php
-	if(isset($_POST['barangay_clearance'])){
+	if(isset($_POST['valid_id'])){
 		$loan_app_id = intval($_GET['loan_app_id']);
 
-		$images =$_FILES['barangay_clearance']['name'];
-		$tmp_dir = $_FILES['barangay_clearance']['tmp_name'];
-		$imageSize=$_FILES['barangay_clearance']['size'];
+		$images =$_FILES['valid_id']['name'];
+		$tmp_dir = $_FILES['valid_id']['tmp_name'];
+		$imageSize=$_FILES['valid_id']['size'];
 
 		$upload_dir2='../assets/keen/requirements/';
 		$imgExt=strtolower(pathinfo($images,PATHINFO_EXTENSION));
 		$valid_extensions=array('jpeg','jpg','gif','pdf','doc','docx');
-		$barangay_clearance=rand(1000,10000000).".".$imgExt;
-		move_uploaded_file($tmp_dir,$upload_dir2.$barangay_clearance);
+		$valid_id=rand(1000,10000000).".".$imgExt;
+		move_uploaded_file($tmp_dir,$upload_dir2.$valid_id);
 
 		$sql = "SELECT * FROM loan_application WHERE loan_app_id = $loan_app_id";
 		$query = $dbh->prepare($sql);
 		$query->execute();
 		if($query->rowCount()==0){
-			$insert = "INSERT INTO loan_application(barangay_clearance)VALUES(:barangay_clearance)";
+			$insert = "INSERT INTO loan_application(valid_id)VALUES(:valid_id)";
 			$insert_query = $dbh->prepare($insert);
-			$insert_query->bindParam(':barangay_clearance',$barangay_clearance,PDO::PARAM_STR);
+			$insert_query->bindParam(':valid_id',$valid_id,PDO::PARAM_STR);
 			$insert_query->execute();
 		}else{
-			$update = "UPDATE loan_application SET barangay_clearance = :barangay_clearance WHERE loan_app_id = $loan_app_id";
+			$update = "UPDATE loan_application SET valid_id = :valid_id WHERE loan_app_id = $loan_app_id";
 			$update_query = $dbh->prepare($update);
-			$update_query->bindParam(':barangay_clearance',$barangay_clearance,PDO::PARAM_STR);
+			$update_query->bindParam(':valid_id',$valid_id,PDO::PARAM_STR);
 			$update_query->execute();
 		}
 		if($update_query){
-			$_SESSION['status'] = "Success";
-			header("location: view_application.php?loan_app_id=$loan_app_id");
+			$_SESSION['status_message'] = "Success";
+			header("location: view_approved_application.php?loan_app_id=$loan_app_id");
 			exit();
 		}else{
-			$_SESSION['status'] = "Error!";
-			header("location: view_application.php?loan_app_id=$loan_app_id");
+			$_SESSION['status_message'] = "Error!";
+			header("location: view_approved_application.php?loan_app_id=$loan_app_id");
 			exit();
 		}
 	}
@@ -76,12 +76,12 @@ if ($_SESSION['user_type'] != 2) {
 			$update_query->execute();
 		}
 		if($update_query){
-			$_SESSION['status'] = "Success";
-			header("location: view_application.php?loan_app_id=$loan_app_id");
+			$_SESSION['status_message'] = "Success";
+			header("location: view_approved_application.php?loan_app_id=$loan_app_id");
 			exit();
 		}else{
-			$_SESSION['status'] = "Error!";
-			header("location: view_application.php?loan_app_id=$loan_app_id");
+			$_SESSION['status_message'] = "Error!";
+			header("location: view_approved_application.php?loan_app_id=$loan_app_id");
 			exit();
 		}
 	}
@@ -116,12 +116,12 @@ if ($_SESSION['user_type'] != 2) {
 			$update_query->execute();
 		}
 		if($update_query){
-			$_SESSION['status'] = "Success";
-			header("location: view_application.php?loan_app_id=$loan_app_id");
+			$_SESSION['status_message'] = "Success";
+			header("location: view_approved_application.php?loan_app_id=$loan_app_id");
 			exit();
 		}else{
-			$_SESSION['status'] = "Error!";
-			header("location: view_application.php?loan_app_id=$loan_app_id");
+			$_SESSION['status_message'] = "Error!";
+			header("location: view_approved_application.php?loan_app_id=$loan_app_id");
 			exit();
 		}
 	}
@@ -155,12 +155,12 @@ if ($_SESSION['user_type'] != 2) {
 			$update_query->execute();
 		}
 		if($update_query){
-			$_SESSION['status'] = "Success";
-			header("location: view_application.php?loan_app_id=$loan_app_id");
+			$_SESSION['status_message'] = "Success";
+			header("location: view_approved_application.php?loan_app_id=$loan_app_id");
 			exit();
 		}else{
-			$_SESSION['status'] = "Error!";
-			header("location: view_application.php?loan_app_id=$loan_app_id");
+			$_SESSION['status_message_message'] = "Error!";
+			header("location: view_approved_application.php?loan_app_id=$loan_app_id");
 			exit();
 		}
 	}
@@ -194,12 +194,12 @@ if ($_SESSION['user_type'] != 2) {
 			$update_query->execute();
 		}
 		if($update_query){
-			$_SESSION['status'] = "Success";
-			header("location: view_application.php?loan_app_id=$loan_app_id");
+			$_SESSION['status_message'] = "Success";
+			header("location: view_approved_application.php?loan_app_id=$loan_app_id");
 			exit();
 		}else{
-			$_SESSION['status'] = "Error!";
-			header("location: view_application.php?loan_app_id=$loan_app_id");
+			$_SESSION['status_message'] = "Error!";
+			header("location: view_approved_application.php?loan_app_id=$loan_app_id");
 			exit();
 		}
 	}
@@ -233,12 +233,12 @@ if ($_SESSION['user_type'] != 2) {
 			$update_query->execute();
 		}
 		if($update_query){
-			$_SESSION['status'] = "Success";
-			header("location: view_application.php?loan_app_id=$loan_app_id");
+			$_SESSION['status_message'] = "Success";
+			header("location: view_approved_application.php?loan_app_id=$loan_app_id");
 			exit();
 		}else{
-			$_SESSION['status'] = "Error!";
-			header("location: view_application.php?loan_app_id=$loan_app_id");
+			$_SESSION['status_message'] = "Error!";
+			header("location: view_approved_application.php?loan_app_id=$loan_app_id");
 			exit();
 		}
 	}
@@ -272,12 +272,12 @@ if ($_SESSION['user_type'] != 2) {
 			$update_query->execute();
 		}
 		if($update_query){
-			$_SESSION['status'] = "Success";
-			header("location: view_application.php?loan_app_id=$loan_app_id");
+			$_SESSION['status_message'] = "Success";
+			header("location: view_approved_application.php?loan_app_id=$loan_app_id");
 			exit();
 		}else{
-			$_SESSION['status'] = "Error!";
-			header("location: view_application.php?loan_app_id=$loan_app_id");
+			$_SESSION['status_message'] = "Error!";
+			header("location: view_approved_application.php?loan_app_id=$loan_app_id");
 			exit();
 		}
 	}
@@ -311,12 +311,12 @@ if ($_SESSION['user_type'] != 2) {
 			$update_query->execute();
 		}
 		if($update_query){
-			$_SESSION['status'] = "Success";
-			header("location: view_application.php?loan_app_id=$loan_app_id");
+			$_SESSION['status_message'] = "Success";
+			header("location: view_approved_application.php?loan_app_id=$loan_app_id");
 			exit();
 		}else{
-			$_SESSION['status'] = "Error!";
-			header("location: view_application.php?loan_app_id=$loan_app_id");
+			$_SESSION['status_message'] = "Error!";
+			header("location: view_approved_application.php?loan_app_id=$loan_app_id");
 			exit();
 		}
 	}
@@ -350,12 +350,12 @@ if ($_SESSION['user_type'] != 2) {
 			$update_query->execute();
 		}
 		if($update_query){
-			$_SESSION['status'] = "Success";
-			header("location: view_application.php?loan_app_id=$loan_app_id");
+			$_SESSION['status_message'] = "Success";
+			header("location: view_approved_application.php?loan_app_id=$loan_app_id");
 			exit();
 		}else{
-			$_SESSION['status'] = "Error!";
-			header("location: view_application.php?loan_app_id=$loan_app_id");
+			$_SESSION['status_message'] = "Error!";
+			header("location: view_approved_application.php?loan_app_id=$loan_app_id");
 			exit();
 		}
 	}
@@ -389,12 +389,12 @@ if ($_SESSION['user_type'] != 2) {
 			$update_query->execute();
 		}
 		if($update_query){
-			$_SESSION['status'] = "Success";
-			header("location: view_application.php?loan_app_id=$loan_app_id");
+			$_SESSION['status_message'] = "Success";
+			header("location: view_approved_application.php?loan_app_id=$loan_app_id");
 			exit();
 		}else{
-			$_SESSION['status'] = "Error!";
-			header("location: view_application.php?loan_app_id=$loan_app_id");
+			$_SESSION['status_message'] = "Error!";
+			header("location: view_approved_application.php?loan_app_id=$loan_app_id");
 			exit();
 		}
 	}
@@ -428,12 +428,12 @@ if ($_SESSION['user_type'] != 2) {
 			$update_query->execute();
 		}
 		if($update_query){
-			$_SESSION['status'] = "Success";
-			header("location: view_application.php?loan_app_id=$loan_app_id");
+			$_SESSION['status_message'] = "Success";
+			header("location: view_approved_application.php?loan_app_id=$loan_app_id");
 			exit();
 		}else{
-			$_SESSION['status'] = "Error!";
-			header("location: view_application.php?loan_app_id=$loan_app_id");
+			$_SESSION['status_message'] = "Error!";
+			header("location: view_approved_application.php?loan_app_id=$loan_app_id");
 			exit();
 		}
 	}
@@ -714,16 +714,19 @@ if ($_SESSION['user_type'] != 2) {
 																	} ?>
 															</table></br>
 															<h5>Uploaded Requirements</h5>
-															<?php
-																if(isset($_SESSION['status'])){
-																	?>
-																	<div class="alert alert-success alert-dismissable" id="flash-msg">
-																	<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
-																	<h4>Success!</h4>
+															<div class="col-xl-12 col-xl-12">
+																<?php
+																if (isset($_SESSION['status_message'])) {
+																?>
+																	<div class="alert alert-custom alert-notice alert-light-success fade show" role="alert">
+																		<div class="alert-text">
+																			<h4><?php echo $_SESSION['status_message']; ?></h4>
+																		</div>
+																		<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
 																	</div>
-																	<?php
-																	unset($_SESSION['status']);
-																}?>
+																<?php unset($_SESSION['status_message']);
+																} ?>
+															</div>
 															<table class="table table-bordered">
 																<thead>
 																	<tr>

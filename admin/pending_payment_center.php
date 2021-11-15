@@ -5,10 +5,7 @@ include('../db_connection/config.php');
 
 if ($_SESSION['user_type'] != 1) {
 	header('location: ../index.php');
-}
-
-
-?>
+}?>
 
 
 <!DOCTYPE html>
@@ -907,15 +904,15 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
                                             </tr>
                                         </thead>
                                         <tbody>
-                                        <?php
-                                            $sql = "SELECT  * FROM user WHERE user_type = '2' AND eligible ='no' ORDER BY user_id desc";
+										<?php
+                                            $sql = "SELECT  * FROM user  WHERE user_type = '5' AND eligible ='no' ORDER BY user_id desc";
                                             $query = $dbh->prepare($sql);
                                             $query->execute();
                                             $res = $query->fetchAll(PDO::FETCH_OBJ);
                                             if ($query->rowCount() > 0) {
                                                 foreach ($res as $rem) { ?>
                                             <tr>
-												<th scope="row"><?= htmlentities($rem->firstname); ?>&nbsp;<?= htmlentities($rem->middlename); ?>&nbsp;<?= htmlentities($rem->lastname); ?></th>
+												<th scope="row"><?= htmlentities($rem->company_name); ?></th>
                                                 <td><?= htmlentities($rem->email); ?></td>
                                                 <td><?= htmlentities($rem->mobile); ?><br><?= htmlentities($rem->landline); ?> </td>
                                                 <td><?= htmlentities($rem->c_street); ?>&nbsp;<?= htmlentities($rem->c_barangay); ?>&nbsp;<?= htmlentities($rem->c_city); ?>&nbsp;<?= htmlentities($rem->c_province); ?>&nbsp;<?= htmlentities($rem->c_zipcode); ?></td>
@@ -930,7 +927,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 																	Choose an action:
 																</li>
 																<li class="navi-item"> 
-																	<a href="admin/view_request.php?user_id=<?= htmlentities($rem->user_id) ?>" class="navi-link"> <span class="navi-icon"><i class="la la-copy"></i></span> <span class="navi-text">Show Details</span> </a> </li>
+																	<a href="admin/view_paymentcenter_request.php?user_id=<?= htmlentities($rem->user_id) ?>" class="navi-link"> <span class="navi-icon"><i class="la la-copy"></i></span> <span class="navi-text">Show Details</span> </a> </li>
 															</ul>
 														</div>
 													</div>

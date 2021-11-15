@@ -2,7 +2,10 @@
 session_start();
 error_reporting(0);
 include('../db_connection/config.php');
-?>
+
+if ($_SESSION['user_type'] != 1) {
+	header('location: ../index.php');
+}?>
 
 <?php
 $id = intval($_GET['user_id']);

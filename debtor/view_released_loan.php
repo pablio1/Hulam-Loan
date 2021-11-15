@@ -1,6 +1,6 @@
 <?php
 session_start();
-error_reporting(-1);
+error_reporting(0);
 include('../db_connection/config.php');
 
 if ($_SESSION['user_type'] != 2) {
@@ -38,11 +38,11 @@ if ($_SESSION['user_type'] != 2) {
 		}
 		if($update_query){
 			$_SESSION['status'] = "Success";
-			header("location: view_application.php?loan_app_id=$loan_app_id");
+			header("location: view_released_loan.php?loan_app_id=$loan_app_id");
 			exit();
 		}else{
 			$_SESSION['status'] = "Error!";
-			header("location: view_application.php?loan_app_id=$loan_app_id");
+			header("location: view_released_loan.php?loan_app_id=$loan_app_id");
 			exit();
 		}
 	}
@@ -77,11 +77,11 @@ if ($_SESSION['user_type'] != 2) {
 		}
 		if($update_query){
 			$_SESSION['status'] = "Success";
-			header("location: view_application.php?loan_app_id=$loan_app_id");
+			header("location: view_released_loan.php?loan_app_id=$loan_app_id");
 			exit();
 		}else{
 			$_SESSION['status'] = "Error!";
-			header("location: view_application.php?loan_app_id=$loan_app_id");
+			header("location: view_released_loan.php?loan_app_id=$loan_app_id");
 			exit();
 		}
 	}
@@ -117,11 +117,11 @@ if ($_SESSION['user_type'] != 2) {
 		}
 		if($update_query){
 			$_SESSION['status'] = "Success";
-			header("location: view_application.php?loan_app_id=$loan_app_id");
+			header("location: view_released_loan.php?loan_app_id=$loan_app_id");
 			exit();
 		}else{
 			$_SESSION['status'] = "Error!";
-			header("location: view_application.php?loan_app_id=$loan_app_id");
+			header("location: view_released_loan.php?loan_app_id=$loan_app_id");
 			exit();
 		}
 	}
@@ -156,11 +156,11 @@ if ($_SESSION['user_type'] != 2) {
 		}
 		if($update_query){
 			$_SESSION['status'] = "Success";
-			header("location: view_application.php?loan_app_id=$loan_app_id");
+			header("location: view_released_loan.php?loan_app_id=$loan_app_id");
 			exit();
 		}else{
 			$_SESSION['status'] = "Error!";
-			header("location: view_application.php?loan_app_id=$loan_app_id");
+			header("location: view_released_loan.php?loan_app_id=$loan_app_id");
 			exit();
 		}
 	}
@@ -195,11 +195,11 @@ if ($_SESSION['user_type'] != 2) {
 		}
 		if($update_query){
 			$_SESSION['status'] = "Success";
-			header("location: view_application.php?loan_app_id=$loan_app_id");
+			header("location: view_released_loan.php?loan_app_id=$loan_app_id");
 			exit();
 		}else{
 			$_SESSION['status'] = "Error!";
-			header("location: view_application.php?loan_app_id=$loan_app_id");
+			header("location: view_released_loan.php?loan_app_id=$loan_app_id");
 			exit();
 		}
 	}
@@ -234,11 +234,11 @@ if ($_SESSION['user_type'] != 2) {
 		}
 		if($update_query){
 			$_SESSION['status'] = "Success";
-			header("location: view_application.php?loan_app_id=$loan_app_id");
+			header("location: view_released_loan.php?loan_app_id=$loan_app_id");
 			exit();
 		}else{
 			$_SESSION['status'] = "Error!";
-			header("location: view_application.php?loan_app_id=$loan_app_id");
+			header("location: view_released_loan.php?loan_app_id=$loan_app_id");
 			exit();
 		}
 	}
@@ -273,11 +273,11 @@ if ($_SESSION['user_type'] != 2) {
 		}
 		if($update_query){
 			$_SESSION['status'] = "Success";
-			header("location: view_application.php?loan_app_id=$loan_app_id");
+			header("location: view_released_loan.php?loan_app_id=$loan_app_id");
 			exit();
 		}else{
 			$_SESSION['status'] = "Error!";
-			header("location: view_application.php?loan_app_id=$loan_app_id");
+			header("location: view_released_loan.php?loan_app_id=$loan_app_id");
 			exit();
 		}
 	}
@@ -312,11 +312,11 @@ if ($_SESSION['user_type'] != 2) {
 		}
 		if($update_query){
 			$_SESSION['status'] = "Success";
-			header("location: view_application.php?loan_app_id=$loan_app_id");
+			header("location: view_released_loan.php?loan_app_id=$loan_app_id");
 			exit();
 		}else{
 			$_SESSION['status'] = "Error!";
-			header("location: view_application.php?loan_app_id=$loan_app_id");
+			header("location: view_released_loan.php?loan_app_id=$loan_app_id");
 			exit();
 		}
 	}
@@ -351,11 +351,11 @@ if ($_SESSION['user_type'] != 2) {
 		}
 		if($update_query){
 			$_SESSION['status'] = "Success";
-			header("location: view_application.php?loan_app_id=$loan_app_id");
+			header("location: view_released_loan.php?loan_app_id=$loan_app_id");
 			exit();
 		}else{
 			$_SESSION['status'] = "Error!";
-			header("location: view_application.php?loan_app_id=$loan_app_id");
+			header("location: view_released_loan.php?loan_app_id=$loan_app_id");
 			exit();
 		}
 	}
@@ -390,11 +390,11 @@ if ($_SESSION['user_type'] != 2) {
 		}
 		if($update_query){
 			$_SESSION['status'] = "Success";
-			header("location: view_application.php?loan_app_id=$loan_app_id");
+			header("location: view_released_loan.php?loan_app_id=$loan_app_id");
 			exit();
 		}else{
 			$_SESSION['status'] = "Error!";
-			header("location: view_application.php?loan_app_id=$loan_app_id");
+			header("location: view_released_loan.php?loan_app_id=$loan_app_id");
 			exit();
 		}
 	}
@@ -429,11 +429,11 @@ if ($_SESSION['user_type'] != 2) {
 		}
 		if($update_query){
 			$_SESSION['status'] = "Success";
-			header("location: view_application.php?loan_app_id=$loan_app_id");
+			header("location: view_released_loan.php?loan_app_id=$loan_app_id");
 			exit();
 		}else{
 			$_SESSION['status'] = "Error!";
-			header("location: view_application.php?loan_app_id=$loan_app_id");
+			header("location: view_released_loan.php?loan_app_id=$loan_app_id");
 			exit();
 		}
 	}

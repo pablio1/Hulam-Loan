@@ -10,12 +10,19 @@ if ($_SESSION['user_type'] != 2) {
 ?>
 <?php
 $user_id = $_SESSION['user_id'];
-
 $sql = "SELECT * FROM user WHERE user_id =$user_id";
 $query = $dbh->prepare($sql);
 $query->execute();
 $user = $query->fetch();
+?>
 
+<?php
+$user_id = $_SESSION['user_id'];
+
+$sql = "SELECT * FROM loan_application WHERE debtor_id = $user_id";
+$query = $dbh->prepare($sql);
+$query->execute();
+$loan_app = $query->fetch();
 ?>
 
 
@@ -231,14 +238,14 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 							<?php
 							if (!isset($_GET['amount']) && !isset($_GET['type'])) {
 
-								$sql = $dbh->prepare("SELECT * FROM user INNER JOIN loan_features ON user.user_id = loan_features.lender_id WHERE (user_type = 3 OR user_type = 4) AND loan_features.status = 'Approved' AND user.eligible = 'yes'");
+								$sql = $dbh->prepare("SELECT * FROM user INNER JOIN loan_features ON user.user_id = loan_features.lender_id WHERE (user_type = 3 OR user_type = 4) AND user.eligible = 'yes'");
 								$sql->execute();
 								$lenders = $sql->fetchAll();
 							} else {
 								$amount = $_GET['amount'];
 								$type = $_GET['type'];
 								$month = $_GET['month'];
-								$sql = $dbh->prepare("SELECT * FROM `user` INNER JOIN `loan_features` ON user.user_id = loan_features.lender_id WHERE loan_features.min_loan <= $amount AND $amount <= loan_features.max_loan AND user.user_type = $type AND loan_features.min_term <= $month AND loan_features.max_term >= $month AND loan_features.status != 'Pending';");
+								$sql = $dbh->prepare("SELECT * FROM `user` INNER JOIN `loan_features` ON user.user_id = loan_features.lender_id WHERE loan_features.min_loan <= $amount AND $amount <= loan_features.max_loan AND user.user_type = $type AND loan_features.min_term <= $month AND loan_features.max_term >= $month AND user.eligible = 'yes'");
 								$sql->execute();
 								$lenders = $sql->fetchAll();
 							}
@@ -295,6 +302,23 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 													</div>
 													<div class="modal-body">
 														<label class="font-weight-bolder font-size-lg" for="input-username">To activate your account you need to complete updating your profile information and wait for the activation to start applying loan.</label>
+													</div>
+												</div>
+											</div>
+										</div>
+										<!-- End Modal -->
+										<!-- Start Modal -->
+										<div class="modal fade" id="notice2" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
+											<div class="modal-dialog modal-dialog-centered modal-m" role="document">
+												<div class="modal-content">
+													<div class="modal-header">
+														<h5 class="modal-title" id="exampleModalLabel" >You have an existing loan associated with this account.</h5>
+														<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+															<i aria-hidden="true" class="ki ki-close"></i>
+														</button>
+													</div>
+													<div class="modal-body">
+														<label class="font-weight-bolder font-size-lg" for="input-username"></label>
 													</div>
 												</div>
 											</div>

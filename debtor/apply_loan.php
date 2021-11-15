@@ -376,15 +376,16 @@ $lender = $query->fetch();
 													</br></br>
 												<h5>Please upload Requeirements here</h5>
 												<?php
-													if(isset($_SESSION['status'])){
+													//if(isset($_SESSION['status'])){
 														?>
-														<div class="alert alert-success alert-dismissable" id="flash-msg">
+														<!-- <div class="alert alert-success alert-dismissable" id="flash-msg">
 														<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
 														<h4>Success!</h4>
-														</div>
+														</div> -->
 														<?php
-														unset($_SESSION['status']);
-													}?>
+														//unset($_SESSION['status']);
+													//}
+													?>
 													<table class="table table-bordered">
 														<thead>
 															<tr>
