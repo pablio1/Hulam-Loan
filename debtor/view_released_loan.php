@@ -5,43 +5,41 @@ include('../db_connection/config.php');
 
 if ($_SESSION['user_type'] != 2) {
 	header('location: ../index.php');
-}
+}?>
+
+<?php
+$user_id = $_SESSION['user_id'];
+$sql = "SELECT * FROM user WHERE user_id =$user_id";
+$query = $dbh->prepare($sql);
+$query->execute();
+$user = $query->fetch();
 ?>
 
 <?php
-	if(isset($_POST['barangay_clearance'])){
+	if(isset($_POST['valid_id'])){
 		$loan_app_id = intval($_GET['loan_app_id']);
 
-		$images =$_FILES['barangay_clearance']['name'];
-		$tmp_dir = $_FILES['barangay_clearance']['tmp_name'];
-		$imageSize=$_FILES['barangay_clearance']['size'];
+		$images =$_FILES['valid_id']['name'];
+		$tmp_dir = $_FILES['valid_id']['tmp_name'];
+		$imageSize=$_FILES['valid_id']['size'];
 
-		$upload_dir2='../assets/keen/requirements/';
+		$upload_dir2='../assets/keen/hulam_media/';
 		$imgExt=strtolower(pathinfo($images,PATHINFO_EXTENSION));
 		$valid_extensions=array('jpeg','jpg','gif','pdf','doc','docx');
-		$barangay_clearance=rand(1000,10000000).".".$imgExt;
-		move_uploaded_file($tmp_dir,$upload_dir2.$barangay_clearance);
+		$valid_id=rand(1000,10000000).".".$imgExt;
+		move_uploaded_file($tmp_dir,$upload_dir2.$valid_id);
 
-		$sql = "SELECT * FROM loan_application WHERE loan_app_id = $loan_app_id";
-		$query = $dbh->prepare($sql);
+		$update = "UPDATE loan_application SET valid_id = :valid_id WHERE loan_app_id = $loan_app_id";
+		$query = $dbh->prepare($update);
+		$query->bindParam(':valid_id',$valid_id,PDO::PARAM_STR);
 		$query->execute();
-		if($query->rowCount()==0){
-			$insert = "INSERT INTO loan_application(barangay_clearance)VALUES(:barangay_clearance)";
-			$insert_query = $dbh->prepare($insert);
-			$insert_query->bindParam(':barangay_clearance',$barangay_clearance,PDO::PARAM_STR);
-			$insert_query->execute();
-		}else{
-			$update = "UPDATE loan_application SET barangay_clearance = :barangay_clearance WHERE loan_app_id = $loan_app_id";
-			$update_query = $dbh->prepare($update);
-			$update_query->bindParam(':barangay_clearance',$barangay_clearance,PDO::PARAM_STR);
-			$update_query->execute();
-		}
-		if($update_query){
-			$_SESSION['status'] = "Success";
+		
+		if($query){
+			$_SESSION['status_released'] = "Success";
 			header("location: view_released_loan.php?loan_app_id=$loan_app_id");
 			exit();
 		}else{
-			$_SESSION['status'] = "Error!";
+			$_SESSION['status_released'] = "Error!";
 			header("location: view_released_loan.php?loan_app_id=$loan_app_id");
 			exit();
 		}
@@ -55,32 +53,23 @@ if ($_SESSION['user_type'] != 2) {
 		$tmp_dir = $_FILES['barangay_clearance']['tmp_name'];
 		$imageSize=$_FILES['barangay_clearance']['size'];
 
-		$upload_dir2='../assets/keen/requirements/';
+		$upload_dir2='../assets/keen/hulam_media/';
 		$imgExt=strtolower(pathinfo($images,PATHINFO_EXTENSION));
 		$valid_extensions=array('jpeg','jpg','gif','pdf','doc','docx');
 		$barangay_clearance=rand(1000,10000000).".".$imgExt;
 		move_uploaded_file($tmp_dir,$upload_dir2.$barangay_clearance);
 
-		$sql = "SELECT * FROM loan_application WHERE loan_app_id = $loan_app_id";
-		$query = $dbh->prepare($sql);
+		$update = "UPDATE loan_application SET barangay_clearance = :barangay_clearance WHERE loan_app_id = $loan_app_id";
+		$query = $dbh->prepare($update);
+		$query->bindParam(':barangay_clearance',$barangay_clearance,PDO::PARAM_STR);
 		$query->execute();
-		if($query->rowCount()==0){
-			$insert = "INSERT INTO loan_application(barangay_clearance)VALUES(:barangay_clearance)";
-			$insert_query = $dbh->prepare($insert);
-			$insert_query->bindParam(':barangay_clearance',$barangay_clearance,PDO::PARAM_STR);
-			$insert_query->execute();
-		}else{
-			$update = "UPDATE loan_application SET barangay_clearance = :barangay_clearance WHERE loan_app_id = $loan_app_id";
-			$update_query = $dbh->prepare($update);
-			$update_query->bindParam(':barangay_clearance',$barangay_clearance,PDO::PARAM_STR);
-			$update_query->execute();
-		}
-		if($update_query){
-			$_SESSION['status'] = "Success";
+
+		if($query){
+			$_SESSION['status_released'] = "Success";
 			header("location: view_released_loan.php?loan_app_id=$loan_app_id");
 			exit();
 		}else{
-			$_SESSION['status'] = "Error!";
+			$_SESSION['status_released'] = "Error!";
 			header("location: view_released_loan.php?loan_app_id=$loan_app_id");
 			exit();
 		}
@@ -94,7 +83,7 @@ if ($_SESSION['user_type'] != 2) {
 		$tmp_dir = $_FILES['payslip']['tmp_name'];
 		$imageSize=$_FILES['payslip']['size'];
 
-		$upload_dir2='../assets/keen/requirements/';
+		$upload_dir2='../assets/keen/hulam_media/';
 		$imgExt=strtolower(pathinfo($images,PATHINFO_EXTENSION));
 		$valid_extensions=array('jpeg','jpg','gif','pdf','doc','docx');
 		$payslip=rand(1000,10000000).".".$imgExt;
@@ -104,23 +93,17 @@ if ($_SESSION['user_type'] != 2) {
 		$query = $dbh->prepare($sql);
 		$query->execute();
 
-		if($query->rowCount()==0){
-			$insert = "INSERT INTO loan_application(payslip)VALUES(:payslip)";
-			$insert_query = $dbh->prepare($insert);
-			$insert_query->bindParam(':payslip',$payslip,PDO::PARAM_STR);
-			$insert_query->execute();
-		}else{
-			$update = "UPDATE loan_application SET payslip = :payslip WHERE loan_app_id = $loan_app_id";
-			$update_query = $dbh->prepare($update);
-			$update_query->bindParam(':payslip',$payslip,PDO::PARAM_STR);
-			$update_query->execute();
-		}
-		if($update_query){
-			$_SESSION['status'] = "Success";
+		$update = "UPDATE loan_application SET payslip = :payslip WHERE loan_app_id = $loan_app_id";
+		$query = $dbh->prepare($update);
+		$query->bindParam(':payslip',$payslip,PDO::PARAM_STR);
+		$query->execute();
+		
+		if($query){
+			$_SESSION['status_released'] = "Success";
 			header("location: view_released_loan.php?loan_app_id=$loan_app_id");
 			exit();
 		}else{
-			$_SESSION['status'] = "Error!";
+			$_SESSION['status_released'] = "Error!";
 			header("location: view_released_loan.php?loan_app_id=$loan_app_id");
 			exit();
 		}
@@ -134,7 +117,7 @@ if ($_SESSION['user_type'] != 2) {
 		$tmp_dir = $_FILES['cedula']['tmp_name'];
 		$imageSize=$_FILES['cedula']['size'];
 
-		$upload_dir2='../assets/keen/requirements/';
+		$upload_dir2='../assets/keen/hulam_media/';
 		$imgExt=strtolower(pathinfo($images,PATHINFO_EXTENSION));
 		$valid_extensions=array('jpeg','jpg','gif','pdf','doc','docx');
 		$cedula=rand(1000,10000000).".".$imgExt;
@@ -143,23 +126,18 @@ if ($_SESSION['user_type'] != 2) {
 		$sql = "SELECT * FROM loan_application WHERE loan_app_id = $loan_app_id";
 		$query = $dbh->prepare($sql);
 		$query->execute();
-		if($query->rowCount()==0){
-			$insert = "INSERT INTO loan_application(cedula)VALUES(:cedula)";
-			$insert_query = $dbh->prepare($insert);
-			$insert_query->bindParam(':cedula',$cedula,PDO::PARAM_STR);
-			$insert_query->execute();
-		}else{
-			$update = "UPDATE loan_application SET cedula = :cedula WHERE loan_app_id = $loan_app_id";
-			$update_query = $dbh->prepare($update);
-			$update_query->bindParam(':cedula',$cedula,PDO::PARAM_STR);
-			$update_query->execute();
-		}
-		if($update_query){
-			$_SESSION['status'] = "Success";
+		
+		$update = "UPDATE loan_application SET cedula = :cedula WHERE loan_app_id = $loan_app_id";
+		$query = $dbh->prepare($update);
+		$query->bindParam(':cedula',$cedula,PDO::PARAM_STR);
+		$query->execute();
+		
+		if($query){
+			$_SESSION['status_released'] = "Success";
 			header("location: view_released_loan.php?loan_app_id=$loan_app_id");
 			exit();
 		}else{
-			$_SESSION['status'] = "Error!";
+			$_SESSION['status_released'] = "Error!";
 			header("location: view_released_loan.php?loan_app_id=$loan_app_id");
 			exit();
 		}
@@ -173,32 +151,23 @@ if ($_SESSION['user_type'] != 2) {
 		$tmp_dir = $_FILES['atm_transaction']['tmp_name'];
 		$imageSize=$_FILES['atm_transaction']['size'];
 
-		$upload_dir2='../assets/keen/requirements/';
+		$upload_dir2='../assets/keen/hulam_media/';
 		$imgExt=strtolower(pathinfo($images,PATHINFO_EXTENSION));
 		$valid_extensions=array('jpeg','jpg','gif','pdf','doc','docx');
 		$atm_transaction=rand(1000,10000000).".".$imgExt;
 		move_uploaded_file($tmp_dir,$upload_dir2.$atm_transaction);
 
-		$sql = "SELECT * FROM loan_application WHERE loan_app_id = $loan_app_id";
-		$query = $dbh->prepare($sql);
+		$update = "UPDATE loan_application SET atm_transaction = :atm_transaction WHERE loan_app_id = $loan_app_id";
+		$query = $dbh->prepare($update);
+		$query->bindParam(':atm_transaction',$atm_transaction,PDO::PARAM_STR);
 		$query->execute();
-		if($query->rowCount()==0){
-			$insert = "INSERT INTO loan_application(atm_transaction)VALUES(:atm_transaction)";
-			$insert_query = $dbh->prepare($insert);
-			$insert_query->bindParam(':atm_transaction',$atm_transaction,PDO::PARAM_STR);
-			$insert_query->execute();
-		}else{
-			$update = "UPDATE loan_application SET atm_transaction = :atm_transaction WHERE loan_app_id = $loan_app_id";
-			$update_query = $dbh->prepare($update);
-			$update_query->bindParam(':atm_transaction',$atm_transaction,PDO::PARAM_STR);
-			$update_query->execute();
-		}
-		if($update_query){
-			$_SESSION['status'] = "Success";
+		
+		if($query){
+			$_SESSION['status_released'] = "Success";
 			header("location: view_released_loan.php?loan_app_id=$loan_app_id");
 			exit();
 		}else{
-			$_SESSION['status'] = "Error!";
+			$_SESSION['status_released'] = "Error!";
 			header("location: view_released_loan.php?loan_app_id=$loan_app_id");
 			exit();
 		}
@@ -212,32 +181,23 @@ if ($_SESSION['user_type'] != 2) {
 		$tmp_dir = $_FILES['coe']['tmp_name'];
 		$imageSize=$_FILES['coe']['size'];
 
-		$upload_dir2='../assets/keen/requirements/';
+		$upload_dir2='../assets/keen/hulam_media/';
 		$imgExt=strtolower(pathinfo($images,PATHINFO_EXTENSION));
 		$valid_extensions=array('jpeg','jpg','gif','pdf','doc','docx');
 		$coe=rand(1000,10000000).".".$imgExt;
 		move_uploaded_file($tmp_dir,$upload_dir2.$coe);
 
-		$sql = "SELECT * FROM loan_application WHERE loan_app_id = $loan_app_id";
-		$query = $dbh->prepare($sql);
-		$query->execute();
-		if($query->rowCount()==0){
-			$insert = "INSERT INTO loan_application(coe)VALUES(:coe)";
-			$insert_query = $dbh->prepare($insert);
-			$insert_query->bindParam(':coe',$coe,PDO::PARAM_STR);
-			$insert_query->execute();
-		}else{
-			$update = "UPDATE loan_application SET coe = :coe WHERE loan_app_id = $loan_app_id";
-			$update_query = $dbh->prepare($update);
-			$update_query->bindParam(':coe',$coe,PDO::PARAM_STR);
-			$update_query->execute();
-		}
-		if($update_query){
-			$_SESSION['status'] = "Success";
+		$update = "UPDATE loan_application SET coe = :coe WHERE loan_app_id = $loan_app_id";
+		$update_query = $dbh->prepare($update);
+		$update_query->bindParam(':coe',$coe,PDO::PARAM_STR);
+		$update_query->execute();
+		
+		if($query){
+			$_SESSION['status_released'] = "Success";
 			header("location: view_released_loan.php?loan_app_id=$loan_app_id");
 			exit();
 		}else{
-			$_SESSION['status'] = "Error!";
+			$_SESSION['status_released'] = "Error!";
 			header("location: view_released_loan.php?loan_app_id=$loan_app_id");
 			exit();
 		}
@@ -251,32 +211,24 @@ if ($_SESSION['user_type'] != 2) {
 		$tmp_dir = $_FILES['bank_statement']['tmp_name'];
 		$imageSize=$_FILES['bank_statement']['size'];
 
-		$upload_dir2='../assets/keen/requirements/';
+		$upload_dir2='../assets/keen/hulam_media/';
 		$imgExt=strtolower(pathinfo($images,PATHINFO_EXTENSION));
 		$valid_extensions=array('jpeg','jpg','gif','pdf','doc','docx');
 		$bank_statement=rand(1000,10000000).".".$imgExt;
 		move_uploaded_file($tmp_dir,$upload_dir2.$bank_statement);
 
-		$sql = "SELECT * FROM loan_application WHERE loan_app_id = $loan_app_id";
-		$query = $dbh->prepare($sql);
-		$query->execute();
-		if($query->rowCount()==0){
-			$insert = "INSERT INTO loan_application(bank_statement)VALUES(:bank_statement)";
-			$insert_query = $dbh->prepare($insert);
-			$insert_query->bindParam(':bank_statement',$bank_statement,PDO::PARAM_STR);
-			$insert_query->execute();
-		}else{
-			$update = "UPDATE loan_application SET bank_statement = :bank_statement WHERE loan_app_id = $loan_app_id";
-			$update_query = $dbh->prepare($update);
-			$update_query->bindParam(':bank_statement',$bank_statement,PDO::PARAM_STR);
-			$update_query->execute();
-		}
-		if($update_query){
-			$_SESSION['status'] = "Success";
+		
+		$update = "UPDATE loan_application SET bank_statement = :bank_statement WHERE loan_app_id = $loan_app_id";
+		$update_query = $dbh->prepare($update);
+		$update_query->bindParam(':bank_statement',$bank_statement,PDO::PARAM_STR);
+		$update_query->execute();
+		
+		if($query){
+			$_SESSION['status_released'] = "Success";
 			header("location: view_released_loan.php?loan_app_id=$loan_app_id");
 			exit();
 		}else{
-			$_SESSION['status'] = "Error!";
+			$_SESSION['status_released'] = "Error!";
 			header("location: view_released_loan.php?loan_app_id=$loan_app_id");
 			exit();
 		}
@@ -290,32 +242,24 @@ if ($_SESSION['user_type'] != 2) {
 		$tmp_dir = $_FILES['proof_billing']['tmp_name'];
 		$imageSize=$_FILES['proof_billing']['size'];
 
-		$upload_dir2='../assets/keen/requirements/';
+		$upload_dir2='../assets/keen/hulam_media/';
 		$imgExt=strtolower(pathinfo($images,PATHINFO_EXTENSION));
 		$valid_extensions=array('jpeg','jpg','gif','pdf','doc','docx');
 		$proof_billing=rand(1000,10000000).".".$imgExt;
 		move_uploaded_file($tmp_dir,$upload_dir2.$proof_billing);
 
-		$sql = "SELECT * FROM loan_application WHERE loan_app_id = $loan_app_id";
-		$query = $dbh->prepare($sql);
-		$query->execute();
-		if($query->rowCount()==0){
-			$insert = "INSERT INTO loan_application(proof_billing)VALUES(:proof_billing)";
-			$insert_query = $dbh->prepare($insert);
-			$insert_query->bindParam(':proof_billing',$proof_billing,PDO::PARAM_STR);
-			$insert_query->execute();
-		}else{
-			$update = "UPDATE loan_application SET proof_billing = :proof_billing WHERE loan_app_id = $loan_app_id";
-			$update_query = $dbh->prepare($update);
-			$update_query->bindParam(':proof_billing',$proof_billing,PDO::PARAM_STR);
-			$update_query->execute();
-		}
-		if($update_query){
-			$_SESSION['status'] = "Success";
+		
+		$update = "UPDATE loan_application SET proof_billing = :proof_billing WHERE loan_app_id = $loan_app_id";
+		$update_query = $dbh->prepare($update);
+		$update_query->bindParam(':proof_billing',$proof_billing,PDO::PARAM_STR);
+		$update_query->execute();
+		
+		if($query){
+			$_SESSION['status_released'] = "Success";
 			header("location: view_released_loan.php?loan_app_id=$loan_app_id");
 			exit();
 		}else{
-			$_SESSION['status'] = "Error!";
+			$_SESSION['status_released'] = "Error!";
 			header("location: view_released_loan.php?loan_app_id=$loan_app_id");
 			exit();
 		}
@@ -329,32 +273,23 @@ if ($_SESSION['user_type'] != 2) {
 		$tmp_dir = $_FILES['co_maker_id']['tmp_name'];
 		$imageSize=$_FILES['co_maker_id']['size'];
 
-		$upload_dir2='../assets/keen/requirements/';
+		$upload_dir2='../assets/keen/hulam_media/';
 		$imgExt=strtolower(pathinfo($images,PATHINFO_EXTENSION));
 		$valid_extensions=array('jpeg','jpg','gif','pdf','doc','docx');
 		$co_maker_id=rand(1000,10000000).".".$imgExt;
 		move_uploaded_file($tmp_dir,$upload_dir2.$co_maker_id);
 
-		$sql = "SELECT * FROM loan_application WHERE loan_app_id = $loan_app_id";
-		$query = $dbh->prepare($sql);
-		$query->execute();
-		if($query->rowCount()==0){
-			$insert = "INSERT INTO loan_application(co_maker_id)VALUES(:co_maker_id)";
-			$insert_query = $dbh->prepare($insert);
-			$insert_query->bindParam(':co_maker_id',$co_maker_id,PDO::PARAM_STR);
-			$insert_query->execute();
-		}else{
-			$update = "UPDATE loan_application SET co_maker_id = :co_maker_id WHERE loan_app_id = $loan_app_id";
-			$update_query = $dbh->prepare($update);
-			$update_query->bindParam(':co_maker_id',$co_maker_id,PDO::PARAM_STR);
-			$update_query->execute();
-		}
-		if($update_query){
-			$_SESSION['status'] = "Success";
+		$update = "UPDATE loan_application SET co_maker_id = :co_maker_id WHERE loan_app_id = $loan_app_id";
+		$update_query = $dbh->prepare($update);
+		$update_query->bindParam(':co_maker_id',$co_maker_id,PDO::PARAM_STR);
+		$update_query->execute();
+		
+		if($query){
+			$_SESSION['status_released'] = "Success";
 			header("location: view_released_loan.php?loan_app_id=$loan_app_id");
 			exit();
 		}else{
-			$_SESSION['status'] = "Error!";
+			$_SESSION['status_released'] = "Error!";
 			header("location: view_released_loan.php?loan_app_id=$loan_app_id");
 			exit();
 		}
@@ -368,32 +303,23 @@ if ($_SESSION['user_type'] != 2) {
 		$tmp_dir = $_FILES['co_maker_cedula']['tmp_name'];
 		$imageSize=$_FILES['co_maker_cedula']['size'];
 
-		$upload_dir2='../assets/keen/requirements/';
+		$upload_dir2='../assets/keen/hulam_media/';
 		$imgExt=strtolower(pathinfo($images,PATHINFO_EXTENSION));
 		$valid_extensions=array('jpeg','jpg','gif','pdf','doc','docx');
 		$co_maker_cedula=rand(1000,10000000).".".$imgExt;
 		move_uploaded_file($tmp_dir,$upload_dir2.$co_maker_cedula);
 
-		$sql = "SELECT * FROM loan_application WHERE loan_app_id = $loan_app_id";
-		$query = $dbh->prepare($sql);
-		$query->execute();
-		if($query->rowCount()==0){
-			$insert = "INSERT INTO loan_application(co_maker_cedula)VALUES(:co_maker_cedula)";
-			$insert_query = $dbh->prepare($insert);
-			$insert_query->bindParam(':co_maker_cedula',$co_maker_cedula,PDO::PARAM_STR);
-			$insert_query->execute();
-		}else{
-			$update = "UPDATE loan_application SET co_maker_cedula = :co_maker_cedula WHERE loan_app_id = $loan_app_id";
-			$update_query = $dbh->prepare($update);
-			$update_query->bindParam(':co_maker_cedula',$co_maker_cedula,PDO::PARAM_STR);
-			$update_query->execute();
-		}
-		if($update_query){
-			$_SESSION['status'] = "Success";
+		$update = "UPDATE loan_application SET co_maker_cedula = :co_maker_cedula WHERE loan_app_id = $loan_app_id";
+		$update_query = $dbh->prepare($update);
+		$update_query->bindParam(':co_maker_cedula',$co_maker_cedula,PDO::PARAM_STR);
+		$update_query->execute();
+		
+		if($query){
+			$_SESSION['status_released'] = "Success";
 			header("location: view_released_loan.php?loan_app_id=$loan_app_id");
 			exit();
 		}else{
-			$_SESSION['status'] = "Error!";
+			$_SESSION['status_released'] = "Error!";
 			header("location: view_released_loan.php?loan_app_id=$loan_app_id");
 			exit();
 		}
@@ -407,51 +333,29 @@ if ($_SESSION['user_type'] != 2) {
 		$tmp_dir = $_FILES['id_pic']['tmp_name'];
 		$imageSize=$_FILES['id_pic']['size'];
 
-		$upload_dir2='../assets/keen/requirements/';
+		$upload_dir2='../assets/keen/hulam_media/';
 		$imgExt=strtolower(pathinfo($images,PATHINFO_EXTENSION));
 		$valid_extensions=array('jpeg','jpg','gif','pdf','doc','docx');
 		$id_pic=rand(1000,10000000).".".$imgExt;
 		move_uploaded_file($tmp_dir,$upload_dir2.$id_pic);
 
-		$sql = "SELECT * FROM loan_application WHERE loan_app_id = $loan_app_id";
-		$query = $dbh->prepare($sql);
-		$query->execute();
-		if($query->rowCount()==0){
-			$insert = "INSERT INTO loan_application(id_pic)VALUES(:id_pic)";
-			$insert_query = $dbh->prepare($insert);
-			$insert_query->bindParam(':id_pic',$id_pic,PDO::PARAM_STR);
-			$insert_query->execute();
-		}else{
-			$update = "UPDATE loan_application SET id_pic = :id_pic WHERE loan_app_id = $loan_app_id";
-			$update_query = $dbh->prepare($update);
-			$update_query->bindParam(':id_pic',$id_pic,PDO::PARAM_STR);
-			$update_query->execute();
-		}
-		if($update_query){
-			$_SESSION['status'] = "Success";
+		$update = "UPDATE loan_application SET id_pic = :id_pic WHERE loan_app_id = $loan_app_id";
+		$update_query = $dbh->prepare($update);
+		$update_query->bindParam(':id_pic',$id_pic,PDO::PARAM_STR);
+		$update_query->execute();
+		
+		if($query){
+			$_SESSION['status_released'] = "Success";
 			header("location: view_released_loan.php?loan_app_id=$loan_app_id");
 			exit();
 		}else{
-			$_SESSION['status'] = "Error!";
+			$_SESSION['status_released'] = "Error!";
 			header("location: view_released_loan.php?loan_app_id=$loan_app_id");
 			exit();
 		}
 	}
 ?>
 
-<?php 
-// if(isset($_POST['remove_valid_id'])){
-// 	$loan_app_id = intval($_GET['loan_app_id']);
-	
-// 	$sql = "SELECT * FROM `loan_application`";
-// 	$select = $dbh->prepare($sql);
-// 	$select->execute();
-// 	$result = $select->fetch();
-// 	$valid_id = $result['valid_id'];
-// 	$sql = "DELETE FROM `loan_application` WHERE valid_id = $valid_id AND loan_app_id = $loan_app_id";
-
-
-?>
 
 
 
@@ -513,38 +417,26 @@ if ($_SESSION['user_type'] != 2) {
 				<!--end::Logo-->
 				<!--begin::Nav-->
 				<div class="subheader-nav nav flex-grow-1">
-					<!--begin::Item-->
-					<a href="debtor/index.php" class="nav-item">
+					<a href="debtor/index.php" class="nav-item active">
 						<span class="nav-label px-10">
 							<span class="nav-title text-dark-75 font-weight-bold font-size-h4">&nbsp;&nbsp;&nbsp;&nbsp&nbsp;HOME</span>
-							<!-- <span class="nav-desc text-muted">Profile &amp; Account</span> -->
 						</span>
 					</a>
-					<!--end::Item-->
-					<!--begin::Item-->
-					<a href="debtor/apply_now.php" class="nav-item active">
-						<span class="nav-label px-10">
-							<span class="nav-title text-dark-75 font-weight-bold font-size-h4">APPLY NOW</span>
-							<!-- <span class="nav-desc text-muted">My Order List</span> -->
-						</span>
-					</a>
-					<!--end::Item-->
-					<!--begin::Item-->
 					<a href="debtor/update_information.php" class="nav-item">
 						<span class="nav-label px-10">
 							<span class="nav-title text-dark-75 font-weight-bold font-size-h4">UPDATE INFORMATION</span>
-							<!-- <span class="nav-desc text-muted">My Order List</span> -->
 						</span>
 					</a>
-					<!--end::Item-->
-					<!--begin::Item-->
 					<a href="debtor/loan_information.php" class="nav-item">
 						<span class="nav-label px-10">
 							<span class="nav-title text-dark-75 font-weight-bold font-size-h4">LOAN INFORMATION</span>
-							<!-- <span class="nav-desc text-muted">Dashboard &amp; Reports</span> -->
 						</span>
 					</a>
-					<!--end::Item-->
+					<a href="debtor/payment_information.php" class="nav-item">
+						<span class="nav-label px-5">
+							<span class="nav-title text-dark-75 font-weight-bold font-size-h4">PAYMENT INFORMATION</span>
+						</span>
+					</a>
 				</div>
 				<!--end::Nav-->
 			</div>
@@ -627,7 +519,7 @@ if ($_SESSION['user_type'] != 2) {
 												<div class="d-flex">
 													<div class="flex-shrink-0 mr-7">
 														<div class="symbol symbol-50 symbol-lg-120 symbol-circle">
-															<img alt="Pic" src="/hulam/assets/keen/company_logo/<?= $lender['company_logo'] ?>" />
+															<img alt="Pic" src="/hulam/assets/keen/hulam_media/<?= $lender['profile_pic'] ?>" />
 														</div>
 													</div>
 													<div class="flex-grow-1">
@@ -652,7 +544,7 @@ if ($_SESSION['user_type'] != 2) {
 												<div class="card-body pt-2">
 													<div class="card card-custom">
 														<div class="card-body">
-															<h5>Loan Information</h5>
+														<h5 class="text-info font-weight-bolder">Loan Information</h5>
 															<table class="table table-bordered">
 																<?php
 																		$loan_app_id = intval($_GET['loan_app_id']);
@@ -667,7 +559,7 @@ if ($_SESSION['user_type'] != 2) {
 																<thead>
 																	<tr>
 																		<th>Loan Status</th>
-																		<th><?= htmlentities($res->loan_status);?></th>
+																		<th><h6 class="text-info font-weight-bold"><?= htmlentities($res->loan_status);?></h6></th>
 
 																	</tr>
 																</thead>
@@ -713,18 +605,18 @@ if ($_SESSION['user_type'] != 2) {
 														<?php }
 																	} ?>
 															</table></br>
-															<h5>Uploaded Requirements</h5>
+															<h5 class="text-info font-weight-bolder">Uploaded Requirements</h5>
 															<?php
-																if(isset($_SESSION['status'])){
+																if(isset($_SESSION['status_released'])){
 																	?>
 																	<div class="alert alert-success alert-dismissable" id="flash-msg">
 																	<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
-																	<h4>Success!</h4>
+																	<h4><?= $_SESSION['status_released']?></h4>
 																	</div>
 																	<?php
-																	unset($_SESSION['status']);
+																	unset($_SESSION['status_released']);
 																}?>
-															<table class="table table-bordered">
+																<table class="table table-bordered">
 																<thead>
 																	<tr>
 																		<th>Type of Documents</th>
@@ -745,58 +637,57 @@ if ($_SESSION['user_type'] != 2) {
 																	?>
 																			<tr>
 																				<td>Valid ID</td>
-																				<td><a href="/hulam/assets/keen/requirements/<?= htmlentities($res->barangay_clearance) ?>" target="_blank"><?= htmlentities($res->barangay_clearance); ?></a></td>
+																				<td><a href="/hulam/assets/keen/hulam_media/<?= htmlentities($res->valid_id) ?>" target="_blank"><?= htmlentities($res->valid_id); ?></a></td>
 																				<td><a href="" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#view">Update</a></td>
-																					<!-- <button type="submit" class="btn btn-sm btn-light-danger font-weight-bolder mr-2" data-toggle="modal" data-target="#view2">Remove</button></td> -->
 																			</tr>
 																			<tr>
 																				<td>Barangay Clearanace</td>
-																				<td><a href="/hulam/assets/keen/requirements/<?= htmlentities($res->barangay_clearance) ?>" target="_blank"><?= htmlentities($res->barangay_clearance); ?></a></td>
+																				<td><a href="/hulam/assets/keen/hulam_media/<?= htmlentities($res->barangay_clearance) ?>" target="_blank"><?= htmlentities($res->barangay_clearance); ?></a></td>
 																				<td><a href="" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#barangay_clearance">Update</a></td>
 																			</tr>
 																			<tr>
 																				<td>Payslip</td>
-																				<td><a href="/hulam/assets/keen/requirements/<?= htmlentities($res->payslip) ?>" target="_blank"><?= htmlentities($res->payslip); ?></a></td>
+																				<td><a href="/hulam/assets/keen/hulam_media/<?= htmlentities($res->payslip) ?>" target="_blank"><?= htmlentities($res->payslip); ?></a></td>
 																				<td><a href="" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#payslip">Update</a></td>
 																			</tr>
 																			<tr>
 																				<td>Cedula</td>
-																				<td><a href="/hulam/assets/keen/requirements/<?= htmlentities($res->cedula) ?>" target="_blank"><?= htmlentities($res->cedula); ?></a></td>
+																				<td><a href="/hulam/assets/keen/hulam_media/<?= htmlentities($res->cedula) ?>" target="_blank"><?= htmlentities($res->cedula); ?></a></td>
 																				<td><a href="" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#cedula">Update</a></td>
 																			</tr>
 																			<tr>
 																				<td>ATM Latest Transaction Receipt</td>
-																				<td><a href="/hulam/assets/keen/requirements/<?= htmlentities($res->atm_transaction) ?>" target="_blank"><?= htmlentities($res->atm_transaction); ?></a></td>
+																				<td><a href="/hulam/assets/keen/hulam_media/<?= htmlentities($res->atm_transaction) ?>" target="_blank"><?= htmlentities($res->atm_transaction); ?></a></td>
 																				<td><a href="" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#atm_transaction">Update</a></td>
 																			</tr>
 																			<tr>
 																				<td>Certificate of Employment</td>
-																				<td><a href="/hulam/assets/keen/requirements/<?= htmlentities($res->coe) ?>" target="_blank"><?= htmlentities($res->coe); ?></a></td>
+																				<td><a href="/hulam/assets/keen/hulam_media/<?= htmlentities($res->coe) ?>" target="_blank"><?= htmlentities($res->coe); ?></a></td>
 																				<td><a href="" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#coe">Update</a></td>
 																			</tr>
 																			<tr>
 																				<td>Bank Statement</td>
-																				<td><a href="/hulam/assets/keen/requirements/<?= htmlentities($res->bank_statement) ?>" target="_blank"><?= htmlentities($res->bank_statement); ?></a></td>
+																				<td><a href="/hulam/assets/keen/hulam_media/<?= htmlentities($res->bank_statement) ?>" target="_blank"><?= htmlentities($res->bank_statement); ?></a></td>
 																				<td><a href="" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#bank_statement">Update</a></td>
 																			</tr>
 																			<tr>
 																				<td>Proof of Billing</td>
-																				<td><a href="/hulam/assets/keen/requirements/<?= htmlentities($res->proof_billing) ?>" target="_blank"><?= htmlentities($res->proof_billing); ?></a></td>
+																				<td><a href="/hulam/assets/keen/hulam_media/<?= htmlentities($res->proof_billing) ?>" target="_blank"><?= htmlentities($res->proof_billing); ?></a></td>
 																				<td><a href="" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#proof_billing">Update</a></td>
 																			</tr>
 																			<tr>
 																				<td>Co-Maker ID</td>
-																				<td><a href="/hulam/assets/keen/requirements/<?= htmlentities($res->co_maker_id) ?>" target="_blank"><?= htmlentities($res->co_maker_id); ?></a></td>
+																				<td><a href="/hulam/assets/keen/hulam_media/<?= htmlentities($res->co_maker_id) ?>" target="_blank"><?= htmlentities($res->co_maker_id); ?></a></td>
 																				<td><a href="" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#co_maker_id">Update</a></td>
 																			</tr>
 																			<tr>
 																				<td>Co-Maker Cedula</td>
-																				<td><a href="/hulam/assets/keen/requirements/<?= htmlentities($res->co_maker_cedula) ?>" target="_blank"><?= htmlentities($res->co_maker_cedula); ?></a></td>
+																				<td><a href="/hulam/assets/keen/hulam_media/<?= htmlentities($res->co_maker_cedula) ?>" target="_blank"><?= htmlentities($res->co_maker_cedula); ?></a></td>
 																				<td><a href="" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#co_maker_cedula">Update</a></td>
 																			</tr>
 																			<tr>
 																				<td>2x2 ID</td>
-																				<td><a href="/hulam/assets/keen/requirements/<?= htmlentities($res->id_pic) ?>" target="_blank"><?= htmlentities($res->id_pic); ?></a></td>
+																				<td><a href="/hulam/assets/keen/hulam_media/<?= htmlentities($res->id_pic) ?>" target="_blank"><?= htmlentities($res->id_pic); ?></a></td>
 																				<td><a href="" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#id_pic">Update</a></td>
 																			</tr>
 																</tbody>
@@ -806,31 +697,21 @@ if ($_SESSION['user_type'] != 2) {
 															<!-- Start Modal -->
 															<form action="" method="post" enctype="multipart/form-data">
 															<div class="modal fade" id="view" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
-																<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+																<div class="modal-dialog modal-dialog-centered modal-md" role="document">
 																	<div class="modal-content">
 																		<div class="modal-header">
-																			<h5 class="modal-title" id="exampleModalLabel">Valid ID</h5>
+																			<h5 class="modal-title" id="exampleModalLabel">Update Valid ID</h5>
 																			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 																				<i aria-hidden="true" class="ki ki-close"></i>
 																			</button>
 																		</div>
-																		<!-- <div class="modal-body">
-																			<div class="ExternalFiles">
-																				<img src="/hulam/assets/keen/requirements/<?= htmlentities($res->barangay_clearance) ?>" style="width: 500px; height:auto">
-																			</div>
-																			<div class="ExternalFiles">		
-																				<iframe src="/hulam/assets/keen/requirements/<?= htmlentities($res->barangay_clearance) ?>" width="1000" height="1000"></iframe>
-																			</div>
-																		</div> -->
 																			<div class="col-xl-4">
-																				<label class="font-weight-bolder font-size-lg" for="input-username">Edit Valid ID</label>
 																				<div class="form-group">
 																					<input type="file" name="valid_id" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3" />
 																				</div>
 																			</div>
 																			<div class="modal-footer">
-																				<button type="button" class="btn btn-light-primary font-weight-bold" data-dismiss="modal">Close</button>
-																				<button type="submit" name="valid_id" class="btn btn-primary font-weight-bold">Save changes</button>
+																				<button type="submit" name="valid_id" class="btn btn-primary font-weight-bold">Save</button>
 																			</div>
 																		</div>
 																	</div>
@@ -840,22 +721,20 @@ if ($_SESSION['user_type'] != 2) {
 															<!-- Start Modal -->
 															<form action="" method="post" enctype="multipart/form-data">
 															<div class="modal fade" id="barangay_clearance" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
-																<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+																<div class="modal-dialog modal-dialog-centered modal-md" role="document">
 																	<div class="modal-content">
 																		<div class="modal-header">
-																			<h5 class="modal-title" id="exampleModalLabel">Barangay Clearance</h5>
+																			<h5 class="modal-title" id="exampleModalLabel">Update Barangay Clearance</h5>
 																			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 																				<i aria-hidden="true" class="ki ki-close"></i>
 																			</button>
 																		</div>
 																			<div class="col-xl-4">
-																				<label class="font-weight-bolder font-size-lg" for="input-username">Edit Barangay Clearance</label>
 																				<div class="form-group">
 																					<input type="file" name="barangay_clearance" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3" />
 																				</div>
 																			</div>
 																			<div class="modal-footer">
-																				<button type="button" class="btn btn-light-primary font-weight-bold" data-dismiss="modal">Close</button>
 																				<button type="barangay_clearance" name="barangay_clearance" class="btn btn-primary font-weight-bold">Save changes</button>
 																			</div>
 																		</div>
@@ -866,22 +745,20 @@ if ($_SESSION['user_type'] != 2) {
 															<!-- Start Modal -->
 															<form action="" method="post" enctype="multipart/form-data">
 															<div class="modal fade" id="payslip" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
-																<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+																<div class="modal-dialog modal-dialog-centered modal-md" role="document">
 																	<div class="modal-content">
 																		<div class="modal-header">
-																			<h5 class="modal-title" id="exampleModalLabel">Payslip</h5>
+																			<h5 class="modal-title" id="exampleModalLabel">Update Payslip</h5>
 																			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 																				<i aria-hidden="true" class="ki ki-close"></i>
 																			</button>
 																		</div>
 																			<div class="col-xl-4">
-																				<label class="font-weight-bolder font-size-lg" for="input-username">Edit Payslip</label>
 																				<div class="form-group">
 																					<input type="file" name="payslip" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3" />
 																				</div>
 																			</div>
 																			<div class="modal-footer">
-																				<button type="button" class="btn btn-light-primary font-weight-bold" data-dismiss="modal">Close</button>
 																				<button type="submit" name="payslip" class="btn btn-primary font-weight-bold">Save changes</button>
 																			</div>
 																		</div>
@@ -892,22 +769,20 @@ if ($_SESSION['user_type'] != 2) {
 															<!-- Start Modal -->
 															<form action="" method="post" enctype="multipart/form-data">
 															<div class="modal fade" id="cedula" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
-																<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+																<div class="modal-dialog modal-dialog-centered modal-md" role="document">
 																	<div class="modal-content">
 																		<div class="modal-header">
-																			<h5 class="modal-title" id="exampleModalLabel">Cedula</h5>
+																			<h5 class="modal-title" id="exampleModalLabel">Update Cedula</h5>
 																			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 																				<i aria-hidden="true" class="ki ki-close"></i>
 																			</button>
 																		</div>
 																			<div class="col-xl-4">
-																				<label class="font-weight-bolder font-size-lg" for="input-username">Edit Cedula</label>
 																				<div class="form-group">
 																					<input type="file" name="cedula" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3" />
 																				</div>
 																			</div>
 																			<div class="modal-footer">
-																				<button type="button" class="btn btn-light-primary font-weight-bold" data-dismiss="modal">Close</button>
 																				<button type="submit" name="cedula" class="btn btn-primary font-weight-bold">Save changes</button>
 																			</div>
 																		</div>
@@ -918,23 +793,21 @@ if ($_SESSION['user_type'] != 2) {
 															<!-- Start Modal -->
 															<form action="" method="post" enctype="multipart/form-data">
 															<div class="modal fade" id="atm_transaction" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
-																<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+																<div class="modal-dialog modal-dialog-centered modal-md" role="document">
 																	<div class="modal-content">
 																		<div class="modal-header">
-																			<h5 class="modal-title" id="exampleModalLabel">ATM Latest Transaction Receipt</h5>
+																			<h5 class="modal-title" id="exampleModalLabel">Update ATM Latest Transaction Receipt</h5>
 																			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 																				<i aria-hidden="true" class="ki ki-close"></i>
 																			</button>
 																		</div>
 																			<div class="col-xl-4">
-																				<label class="font-weight-bolder font-size-lg" for="input-username">Edit Latest Transaction Receipt</label>
 																				<div class="form-group">
 																					<input type="file" name="atm_transaction" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3" />
 																				</div>
 																			</div>
 																			<div class="modal-footer">
-																				<button type="button" class="btn btn-light-primary font-weight-bold" data-dismiss="modal">Close</button>
-																				<button type="submit" name="atm_transaction" class="btn btn-primary font-weight-bold">Save changes</button>
+																				<button type="submit" name="atm_transaction" class="btn btn-primary font-weight-bold">Save</button>
 																			</div>
 																		</div>
 																	</div>
@@ -944,23 +817,21 @@ if ($_SESSION['user_type'] != 2) {
 															<!-- Start Modal -->
 															<form action="" method="post" enctype="multipart/form-data">
 															<div class="modal fade" id="coe" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
-																<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+																<div class="modal-dialog modal-dialog-centered modal-md" role="document">
 																	<div class="modal-content">
 																		<div class="modal-header">
-																			<h5 class="modal-title" id="exampleModalLabel">Certificate of Employment</h5>
+																			<h5 class="modal-title" id="exampleModalLabel">Update Certificate of Employment</h5>
 																			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 																				<i aria-hidden="true" class="ki ki-close"></i>
 																			</button>
 																		</div>
 																			<div class="col-xl-4">
-																				<label class="font-weight-bolder font-size-lg" for="input-username">Edit Certificate of Employment</label>
 																				<div class="form-group">
 																					<input type="file" name="coe" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3" />
 																				</div>
 																			</div>
 																			<div class="modal-footer">
-																				<button type="button" class="btn btn-light-primary font-weight-bold" data-dismiss="modal">Close</button>
-																				<button type="submit" name="coe" class="btn btn-primary font-weight-bold">Save changes</button>
+																				<button type="submit" name="coe" class="btn btn-primary font-weight-bold">Save</button>
 																			</div>
 																		</div>
 																	</div>
@@ -970,23 +841,21 @@ if ($_SESSION['user_type'] != 2) {
 															<!-- Start Modal -->
 															<form action="" method="post" enctype="multipart/form-data">
 															<div class="modal fade" id="bank_statement" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
-																<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+																<div class="modal-dialog modal-dialog-centered modal-md" role="document">
 																	<div class="modal-content">
 																		<div class="modal-header">
-																			<h5 class="modal-title" id="exampleModalLabel">Bank Statement</h5>
+																			<h5 class="modal-title" id="exampleModalLabel">Update Bank Statement</h5>
 																			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 																				<i aria-hidden="true" class="ki ki-close"></i>
 																			</button>
 																		</div>
 																			<div class="col-xl-4">
-																				<label class="font-weight-bolder font-size-lg" for="input-username">Edit Bank Statement</label>
 																				<div class="form-group">
 																					<input type="file" name="bank_statement" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3" />
 																				</div>
 																			</div>
 																			<div class="modal-footer">
-																				<button type="button" class="btn btn-light-primary font-weight-bold" data-dismiss="modal">Close</button>
-																				<button type="submit" name="bank_statement" class="btn btn-primary font-weight-bold">Save changes</button>
+																				<button type="submit" name="bank_statement" class="btn btn-primary font-weight-bold">Save</button>
 																			</div>
 																		</div>
 																	</div>
@@ -996,23 +865,21 @@ if ($_SESSION['user_type'] != 2) {
 															<!-- Start Modal -->
 															<form action="" method="post" enctype="multipart/form-data">
 															<div class="modal fade" id="proof_billing" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
-																<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+																<div class="modal-dialog modal-dialog-centered modal-md" role="document">
 																	<div class="modal-content">
 																		<div class="modal-header">
-																			<h5 class="modal-title" id="exampleModalLabel">Proof of Billing</h5>
+																			<h5 class="modal-title" id="exampleModalLabel">Update Proof of Billing</h5>
 																			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 																				<i aria-hidden="true" class="ki ki-close"></i>
 																			</button>
 																		</div>
 																			<div class="col-xl-4">
-																				<label class="font-weight-bolder font-size-lg" for="input-username">Edit Proof of Billing</label>
 																				<div class="form-group">
 																					<input type="file" name="proof_billing" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3" />
 																				</div>
 																			</div>
 																			<div class="modal-footer">
-																				<button type="button" class="btn btn-light-primary font-weight-bold" data-dismiss="modal">Close</button>
-																				<button type="submit" name="proof_billing" class="btn btn-primary font-weight-bold">Save changes</button>
+																				<button type="submit" name="proof_billing" class="btn btn-primary font-weight-bold">Save</button>
 																			</div>
 																		</div>
 																	</div>
@@ -1022,23 +889,21 @@ if ($_SESSION['user_type'] != 2) {
 															<!-- Start Modal -->
 															<form action="" method="post" enctype="multipart/form-data">
 															<div class="modal fade" id="co_maker_id" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
-																<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+																<div class="modal-dialog modal-dialog-centered modal-md" role="document">
 																	<div class="modal-content">
 																		<div class="modal-header">
-																			<h5 class="modal-title" id="exampleModalLabel">Co-Maker ID</h5>
+																			<h5 class="modal-title" id="exampleModalLabel">Update Co-Maker ID</h5>
 																			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 																				<i aria-hidden="true" class="ki ki-close"></i>
 																			</button>
 																		</div>
 																			<div class="col-xl-4">
-																				<label class="font-weight-bolder font-size-lg" for="input-username">Edit Co-Maker ID</label>
 																				<div class="form-group">
 																					<input type="file" name="co_maker_id" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3" />
 																				</div>
 																			</div>
 																			<div class="modal-footer">
-																				<button type="button" class="btn btn-light-primary font-weight-bold" data-dismiss="modal">Close</button>
-																				<button type="submit" name="co_maker_id" class="btn btn-primary font-weight-bold">Save changes</button>
+																				<button type="submit" name="co_maker_id" class="btn btn-primary font-weight-bold">Save</button>
 																			</div>
 																		</div>
 																	</div>
@@ -1049,23 +914,21 @@ if ($_SESSION['user_type'] != 2) {
 															<!-- Start Modal -->
 															<form action="" method="post" enctype="multipart/form-data">
 															<div class="modal fade" id="co_maker_cedula" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
-																<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+																<div class="modal-dialog modal-dialog-centered modal-md" role="document">
 																	<div class="modal-content">
 																		<div class="modal-header">
-																			<h5 class="modal-title" id="exampleModalLabel">Co-Maker Cedula</h5>
+																			<h5 class="modal-title" id="exampleModalLabel">Update Co-Maker Cedula</h5>
 																			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 																				<i aria-hidden="true" class="ki ki-close"></i>
 																			</button>
 																		</div>
 																			<div class="col-xl-4">
-																				<label class="font-weight-bolder font-size-lg" for="input-username">Edit Co-Maker Cedula</label>
 																				<div class="form-group">
 																					<input type="file" name="co_maker_cedula" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3" />
 																				</div>
 																			</div>
 																			<div class="modal-footer">
-																				<button type="button" class="btn btn-light-primary font-weight-bold" data-dismiss="modal">Close</button>
-																				<button type="submit" name="co_maker_cedula" class="btn btn-primary font-weight-bold">Save changes</button>
+																				<button type="submit" name="co_maker_cedula" class="btn btn-primary font-weight-bold">Save</button>
 																			</div>
 																		</div>
 																	</div>
@@ -1075,23 +938,21 @@ if ($_SESSION['user_type'] != 2) {
 															<!-- Start Modal -->
 															<form action="" method="post" enctype="multipart/form-data">
 															<div class="modal fade" id="id_pic" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
-																<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+																<div class="modal-dialog modal-dialog-centered modal-md" role="document">
 																	<div class="modal-content">
 																		<div class="modal-header">
-																			<h5 class="modal-title" id="exampleModalLabel">2X2 ID Picture</h5>
+																			<h5 class="modal-title" id="exampleModalLabel">Update 2X2 ID Picture</h5>
 																			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 																				<i aria-hidden="true" class="ki ki-close"></i>
 																			</button>
 																		</div>
 																			<div class="col-xl-4">
-																				<label class="font-weight-bolder font-size-lg" for="input-username">Edit 2X2 ID Picture</label>
 																				<div class="form-group">
 																					<input type="file" name="id_pic" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3" />
 																				</div>
 																			</div>
 																			<div class="modal-footer">
-																				<button type="button" class="btn btn-light-primary font-weight-bold" data-dismiss="modal">Close</button>
-																				<button type="submit" name="id_pic" class="btn btn-primary font-weight-bold">Save changes</button>
+																				<button type="submit" name="id_pic" class="btn btn-primary font-weight-bold">Save</button>
 																			</div>
 																		</div>
 																	</div>
@@ -1123,15 +984,10 @@ if ($_SESSION['user_type'] != 2) {
 															</form>
 															<!-- End Modal -->
 
-														</div>
-													</div>
-												</div>
-
-
 												<!-- UPLOAD REQUIREMENTS -->
 												<div class="separator separator-solid my-7"></div>
 												<div class="form-group row">
-													<h4>Reminders:</h4>
+												<h5 class="text-info font-weight-bolder">Reminders:</h5>
 													<div class="col-lg-12 col-xl-12">
 														<p class="font-weight-bolder font-size-lg py-4">
 															<!-- ▸ Loan application is subject for approval.</br> -->
@@ -1190,7 +1046,7 @@ if ($_SESSION['user_type'] != 2) {
 												</div>
 											</div>
 											<!-- End Modal -->
-
+											</div>
 										</div>
 									</div>
 								</div>
@@ -1236,7 +1092,7 @@ if ($_SESSION['user_type'] != 2) {
 			<!--begin::Header-->
 			<div class="d-flex align-items-center mt-5">
 				<div class="symbol symbol-100 mr-5">
-					<div class="symbol-label" style="background-image:url('assets/keen/media/logos/icon-debtors.png')"></div>
+				<div class="symbol-label" style="background-image:url('assets/keen/hulam_media/<?= $user['profile_pic']?>')"></div>
 					<i class="symbol-badge bg-success"></i>
 				</div>
 				<div class="d-flex flex-column">
@@ -1258,7 +1114,7 @@ if ($_SESSION['user_type'] != 2) {
 										<!--end::Svg Icon-->
 									</span>
 								</span>
-								<span class="navi-text text-muted text-hover-primary"><?= $_SESSION['email']?>/span>
+								<span class="navi-text text-muted text-hover-primary"><?= $_SESSION['email']?></span>
 							</span>
 						</a>
 					</div>

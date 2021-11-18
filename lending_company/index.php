@@ -18,18 +18,7 @@ $user = $query->fetch();
 
 
 <!DOCTYPE html>
-<!--
-Template Name: Keen - The Ultimate Bootstrap 4 HTML Admin Dashboard Theme
-Author: KeenThemes
-Website: http://www.keenthemes.com/
-Contact: support@keenthemes.com
-Follow: www.twitter.com/keenthemes
-Dribbble: www.dribbble.com/keenthemes
-Like: www.facebook.com/keenthemes
-Purchase: https://themes.getbootstrap.com/product/keen-the-ultimate-bootstrap-admin-theme/
-Support: https://keenthemes.com/theme-support
-License: You must have a valid license purchased only from themes.getbootstrap.com(the above link) in order to legally use the theme for your project.
--->
+
 <html lang="en">
 <!--begin::Head-->
 
@@ -271,6 +260,14 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 								<h4 class="menu-text">Manage Payment</h4>
 								<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
 							</li>
+							<li class="menu-item menu-item-submenu" data-menu-toggle="hover">
+							<a href="lending_company/record_payment.php" class="menu-link menu-toggle">
+									<span class="svg-icon menu-icon">
+									</span>
+									<span class="menu-text">Record Payment</span>
+									<!-- <i class="menu-arrow"></i> -->
+								</a>
+							</li>
 							<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
 								<a href="javascript:;" class="menu-link menu-toggle">
 									<span class="svg-icon menu-icon">
@@ -282,18 +279,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 									<i class="menu-arrow"></i>
 									<ul class="menu-subnav">
 										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-											<a href="lending_company/pending_loan.php" class="menu-link menu-toggle">
-												<i class="menu-bullet">
-													<span></span>
-												</i>
-												<span class="menu-text">Payment Received</span>
-												<span class="menu-label">
-												</span>
-												<i class="menu-arrow"></i>
-											</a>
-										</li>
-										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-											<a href="lending_company/payment_records.php" class="menu-link menu-toggle">
+											<a href="lending_company/payment_mark_received.php" class="menu-link menu-toggle">
 												<i class="menu-bullet">
 													<span></span>
 												</i>
@@ -303,6 +289,17 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 												<i class="menu-arrow"></i>
 											</a>
 										</li>
+										<!-- <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+											<a href="lending_company/payment_records.php" class="menu-link menu-toggle">
+												<i class="menu-bullet">
+													<span></span>
+												</i>
+												<span class="menu-text">Payment Records</span>
+												<span class="menu-label">
+												</span>
+												<i class="menu-arrow"></i>
+											</a>
+										</li> -->
 									</ul>
 								</div>
 							</li>
@@ -1017,7 +1014,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
                                         </div>
                                         <div class="card-footer border-0 d-flex align-items-center justify-content-between pt-0">
                                             <span></span>
-                                            <a href="lending_company/pending_loan.php" class="btn btn-sm btn-primary font-weight-bolder px-6">View</a>
+                                            <a href="lending_company/pending_loan.php" class="btn btn-md btn-primary font-weight-bolder px-6">View</a>
                                         </div>
                                     </div>
                                 </div>
@@ -1047,7 +1044,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
                                         </div>
                                         <div class="card-footer border-0 d-flex align-items-center justify-content-between pt-0">
                                             <span></span>
-                                            <a href="lending_company/approved_loan.php" class="btn btn-sm btn-primary font-weight-bolder px-6">View</a>
+                                            <a href="lending_company/approved_loan.php" class="btn btn-md btn-primary font-weight-bolder px-6">View</a>
                                         </div>
                                     </div>
                                 </div>
@@ -1078,20 +1075,20 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
                                         </div>
                                         <div class="card-footer border-0 d-flex align-items-center justify-content-between pt-0">
                                             <span></span>
-                                            <a href="lending_company/released_loan.php" class="btn btn-sm btn-primary font-weight-bolder px-6">View</a>
+                                            <a href="lending_company/released_loan.php" class="btn btn-md btn-primary font-weight-bolder px-6">View</a>
                                         </div>
                                     </div>
                                 </div>
-								<!-- <div class="col-lg-3">
+								<div class="col-lg-3">
                                     <div class="card card-custom card-stretch gutter-b">
                                         <div class="card-body">
                                             <div class="d-flex align-items-center justify-content-between flex-wrap">
-                                                <span class="font-size-h6 text-muted font-weight-bolder text-uppercase pr-2">Payment Received</span>
+                                                <span class="font-size-h6 text-muted font-weight-bolder text-uppercase pr-2">Record Payment</span>
                                             </div>
                                             <div class="card-body d-flex align-items-center justify-content-between pt-7 flex-wrap">
                                                 <span class="font-weight-bolder display5 text-dark-75 py-4 pl-5 pr-5">
                                                 <p class="text-primary font-size-h2 font-weight-bolder pt-3 mb-0">
-                                                
+												
                                                    
                                                 </p>
                                             </div>
@@ -1099,10 +1096,10 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 
                                         <div class="card-footer border-0 d-flex align-items-center justify-content-between pt-0">
                                             <span></span>
-                                            <a href="lending_company/payment_received.php" class="btn btn-sm btn-primary font-weight-bolder px-6">View</a>
+                                            <a href="lending_company/released_loan.php" class="btn btn-md btn-primary font-weight-bolder px-6">Add</a>
                                         </div>
                                     </div>
-                                </div> -->
+                                </div>
                                 </div>
 								<!--end::Dashboard-->
 							</div>

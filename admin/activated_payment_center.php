@@ -895,6 +895,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 									<table class="table table-bordered">
                                         <thead>
                                             <tr>
+												<th>User ID</th>
                                                 <th>Name</th>
                                                 <th>Email</th>
                                                 <th>Contact No.</th>
@@ -904,19 +905,20 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
                                         </thead>
                                         <tbody>
                                         <?php
-                                            $sql = "SELECT  * FROM user WHERE user_type = '2' AND eligible = 'yes'";
+                                            $sql = "SELECT  * FROM user WHERE user_type = '5' AND eligible = 'yes'";
                                             $query = $dbh->prepare($sql);
                                             $query->execute();
                                             $res = $query->fetchAll(PDO::FETCH_OBJ);
                                             if ($query->rowCount() > 0) {
                                                 foreach ($res as $rem) { ?>
                                             <tr>
-                                                <td><?= htmlentities($rem->firstname); ?>&nbsp;<?= htmlentities($rem->middlename); ?>&nbsp;<?= htmlentities($rem->lastname); ?></td>
+												<td><?= htmlentities($rem->user_id); ?></td>
+                                                <td><?= htmlentities($rem->company_name); ?></td>
                                                 <td><?= htmlentities($rem->email); ?></td>
                                                 <td><?= htmlentities($rem->mobile); ?><br><?= htmlentities($rem->landline); ?> </td>
                                                 <td><?= htmlentities($rem->c_street); ?>&nbsp;<?= htmlentities($rem->c_barangay); ?>&nbsp;<?= htmlentities($rem->c_city); ?>&nbsp;<?= htmlentities($rem->c_province); ?>&nbsp;<?= htmlentities($rem->c_zipcode); ?></td>
                                                 <td>
-                                                    <a href="admin/view_information.php?user_id=<?= htmlentities($rem->user_id) ?>" class="kt-nav__link">
+                                                    <a href="admin/view_paymentcenter_info.php?user_id=<?= htmlentities($rem->user_id) ?>" class="kt-nav__link">
                                                         <span class="kt-nav__link-text">Show</span>
                                                     </a>
                                                 </td>

@@ -1,6 +1,6 @@
 <?php
 session_start();
-error_reporting(0);
+error_reporting(-1);
 include('../db_connection/config.php');
 if ($_SESSION['user_type'] != 3) {
 	header('location: ../index.php');
@@ -31,11 +31,11 @@ if (isset($_POST['send_message'])) {
 	$query->bindParam(':message', $message, PDO::PARAM_STR);
 	$query->bindParam(':date_message', $date_message, PDO::PARAM_STR);
 	if ($query->execute()) {
-		$_SESSION['status'] = "Message Sent";
+		$_SESSION['status_approved'] = "Message Sent";
 		header("Location: view_approved.php?loan_app_id=$id");
 		exit();
 	} else {
-		$_SESSION['status'] = "Message Not Sent";
+		$_SESSION['status_approved'] = "Message Not Sent";
 		header('Location: view_approved.php?loan_app_id=$id');
 		exit();
 	}
@@ -49,7 +49,7 @@ if (isset($_POST['released_loan'])) {
     $sender_id = $_POST['sender_id'];
 	$receiver_id = $_POST['receiver_id'];
     $loan_message = $_POST['loan_message'];
-	$monthly_due_date = $_POST['monthly_due_date'];
+	// $monthly_due_date = $_POST['monthly_due_date'];
 	$remaining_balance = $_POST['remaining_balance'];
 	$monthly_interest = $_POST['monthly_interest'];
 	$monthly_payable= $_POST['monthly_payable'];
@@ -59,6 +59,15 @@ if (isset($_POST['released_loan'])) {
 	$query2 = $dbh->prepare($update);
 	$query2->bindParam(':released_date',$released_date,PDO::PARAM_STR);
     $query2->execute();
+	
+	$select ="SELECT * FROM loan_application WHERE loan_app_id = $id";
+	$query2 = $dbh->prepare($select);
+	$query2->execute();
+	$months = $query2->fetch();
+
+	$approved = $months['released_date']; 
+	$nextduedate = strtotime('+1 month',strtotime($approved));
+	$monthly_due_date = date('y-m-d h:i:sa', $nextduedate);
 
 	$s = "SELECT * FROM loan_payment WHERE loan_app_id = $id";
 	$ss = $dbh->prepare($s);
@@ -98,15 +107,16 @@ if (isset($_POST['released_loan'])) {
 	$query->bindParam(':date_message', $released_date, PDO::PARAM_STR);
 
 	if($query->execute()){
-		$_SESSION['status'] = "Loan Released!";
+		$_SESSION['statu_released'] = "Loan Released!";
 		header("Location: view_released.php?loan_app_id=$id");
 		exit();
 	} else {
-		$_SESSION['status'] = "Error!";
+		$_SESSION['status_released'] = "Error!";
 		header('Location: view_released.php?loan_app_id=$id');
 		exit();
 	}
 }
+
 ?>
 
 <?php
@@ -117,11 +127,11 @@ if (isset($_POST['declined_loan'])) {
 	$query2 = $dbh->prepare($update);
 
 	if($query2->execute()){
-		$_SESSION['status'] = "Loan Declined!";
+		$_SESSION['status_declined'] = "Loan Declined!";
 		header("Location: view_declined.php?loan_app_id=$id");
 		exit();
 	} else {
-		$_SESSION['status'] = "Error!";
+		$_SESSION['status_declined'] = "Error!";
 		header('Location: view_declined.php?loan_app_id=$id');
 		exit();
 	}
@@ -130,18 +140,7 @@ if (isset($_POST['declined_loan'])) {
 
 
 <!DOCTYPE html>
-<!--
-Template Name: Keen - The Ultimate Bootstrap 4 HTML Admin Dashboard Theme
-Author: KeenThemes
-Website: http://www.keenthemes.com/
-Contact: support@keenthemes.com
-Follow: www.twitter.com/keenthemes
-Dribbble: www.dribbble.com/keenthemes
-Like: www.facebook.com/keenthemes
-Purchase: https://themes.getbootstrap.com/product/keen-the-ultimate-bootstrap-admin-theme/
-Support: https://keenthemes.com/theme-support
-License: You must have a valid license purchased only from themes.getbootstrap.com(the above link) in order to legally use the theme for your project.
--->
+
 <html lang="en">
 <!--begin::Head-->
 
@@ -394,18 +393,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 									<i class="menu-arrow"></i>
 									<ul class="menu-subnav">
 										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-											<a href="lending_company/pending_loan.php" class="menu-link menu-toggle">
-												<i class="menu-bullet">
-													<span></span>
-												</i>
-												<span class="menu-text">Payment Received</span>
-												<span class="menu-label">
-												</span>
-												<i class="menu-arrow"></i>
-											</a>
-										</li>
-										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-											<a href="lending_company/payment_records.php" class="menu-link menu-toggle">
+											<a href="lending_company/payment_mark_received.php" class="menu-link menu-toggle">
 												<i class="menu-bullet">
 													<span></span>
 												</i>
@@ -415,6 +403,17 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 												<i class="menu-arrow"></i>
 											</a>
 										</li>
+										<!-- <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+											<a href="lending_company/payment_records.php" class="menu-link menu-toggle">
+												<i class="menu-bullet">
+													<span></span>
+												</i>
+												<span class="menu-text">Payment Records</span>
+												<span class="menu-label">
+												</span>
+												<i class="menu-arrow"></i>
+											</a>
+										</li> -->
 									</ul>
 								</div>
 							</li>
@@ -1130,15 +1129,15 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 									<h5 class="text-white font-weight-bold my-1 mr-5">Lending Investor</h5>
 									<div class="col-xl-12 col-xl-12">
 										<?php
-										if(isset($_SESSION['status'])){
+										if(isset($_SESSION['status_approved'])){
 										?>
 											<div class="alert alert-custom alert-notice alert-light-success fade show" role="alert">
 												<div class="alert-text">
-													<h4><?php echo $_SESSION['status'];?></h4>
+													<h4><?php echo $_SESSION['status_approved'];?></h4>
 												</div>
 												<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
 											</div>
-										<?php unset($_SESSION['status']);
+										<?php unset($_SESSION['status_approved']);
 										}?>
 									</div>
 								</div>
@@ -1163,7 +1162,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 										<!--begin::Pic-->
 										<div class="flex-shrink-0 mr-7">
 											<div class="symbol symbol-50 symbol-lg-120">
-												<img alt="Pic" src="/hulam/assets/keen/debtors/<?= $user['profile_pic'] ?>">
+												<img alt="Pic" src="/hulam/assets/keen/hulam_media/<?= $user['profile_pic'] ?>">
 											</div>
 										</div>
 										<!--end::Pic-->
@@ -1460,10 +1459,10 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 																	<i aria-hidden="true" class="ki ki-close"></i>
 																</button>
 															</div>
-															<!-- <div class="modal-body">
+															<div class="modal-body">
 																	<label>Set Releasing Date:</label>
-																	<input type="date" name="release_schedule">
-															</div> -->
+																	<input type="date" name="released_date">
+															</div>
 																<?php
 
 																// $id = intval($_GET['loan_app_id']);
@@ -1479,7 +1478,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 																$det = date('Y-m-d h:i:sa', $today);
 
 																?>
-																<input type="hidden" name="released_date" value="<?= $det; ?>">
+																<!-- <input type="hidden" name="released_date" value="<?= $det; ?>"> -->
                                                                 <input type="hidden" name="loan_message" value="Your loan is released dated <?= $det; ?>. Thank you!">
                                                                 <input type="hidden" name="receiver_id" value="<?= htmlentities($res->debtor_id) ?>"> 
 																<input type="hidden" name="sender_id" value="<?= $_SESSION['user_id'] ?>">
@@ -1489,13 +1488,37 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 															
 																
 																<?php 
-																date_default_timezone_set('Asia/Manila');
-																$set_date = date("y-m-d h:i:sa");
-																$nextduedate = strtotime('+1 month',strtotime($set_date));
-																$det2 = date('Y-m-d h:i:sa', $nextduedate);
+
+																// date_default_timezone_set('Asia/Manila');
+																// $set_date = date("y-m-d h:i:sa");
+																// $nextduedate = strtotime('+1 month',strtotime($set_date));
+																// $det2 = date('Y-m-d h:i:sa', $nextduedate);
+																// date_default_timezone_set('Asia/Manila');
+																// $set_date = date("y-m-d h:i:sa");
+																// $nextduedate = strtotime('+1 month',strtotime($set_date));
+																// $det2 = date('Y-m-d h:i:sa', $nextduedate);
 																// $d = date("d F Y",strtotime('+1 month',strtotime($res->approval_date)));
+
+
+																// $approved = $_GET['released_date']; 
+																// $nextduedate = strtotime('+1 month',strtotime($approved));
+																// echo $det2 = date('Y-F-d h:i:sa', $nextduedate);
 																?>
-																<input type="hidden" name="monthly_due_date" value="<?= $det2; ?>">
+																<!-- <input type="hidden" name="monthly_due_date" value="<?= $det2; ?>"> -->
+																<!-- <input type="text" name="monthly_due_date" value="<?php $det2 
+																
+																// $approved = $user['approval_date']; 
+																// $nextduedate = strtotime('+1 month',strtotime($approved));
+																// echo $det2 = date('Y-F-d h:i:sa', $nextduedate);
+																
+																
+																?>
+
+																$are = $query2->fetch();
+
+																$approved = $are['released_date']; 
+																$nextduedate = strtotime('+1 month',strtotime($approved));
+																$monthly_due_date = date('Y-F-d h:i:sa', $nextduedate); -->
 
 
 															<div class="modal-footer">

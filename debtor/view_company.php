@@ -5,8 +5,14 @@ include('../db_connection/config.php');
 
 if ($_SESSION['user_type'] != 2) {
     header('location: ../index.php');
-}
+}?>
 
+<?php
+$user_id = $_SESSION['user_id'];
+$sql = "SELECT * FROM user WHERE user_id =$user_id";
+$query = $dbh->prepare($sql);
+$query->execute();
+$user = $query->fetch();
 ?>
 
 <?php
@@ -81,39 +87,27 @@ $res = $query->fetch();
                 <!--end::Logo-->
                 <!--begin::Nav-->
                 <div class="subheader-nav nav flex-grow-1">
-                    <!--begin::Item-->
-                    <a href="debtor/index.php" class="nav-item">
-                        <span class="nav-label px-10">
-                            <span class="nav-title text-dark-75 font-weight-bold font-size-h4">&nbsp;&nbsp;&nbsp;&nbsp&nbsp;HOME</span>
-                            <!-- <span class="nav-desc text-muted">Profile &amp; Account</span> -->
-                        </span>
-                    </a>
-                    <!--end::Item-->
-                    <!--begin::Item-->
-                    <a href="debtor/apply_now.php" class="nav-item">
-                        <span class="nav-label px-10">
-                            <span class="nav-title text-dark-75 font-weight-bold font-size-h4">APPLY NOW</span>
-                            <!-- <span class="nav-desc text-muted">My Order List</span> -->
-                        </span>
-                    </a>
-                    <!--end::Item-->
-                    <!--begin::Item-->
-                    <a href="debtor/update_information.php" class="nav-item">
-                        <span class="nav-label px-10">
-                            <span class="nav-title text-dark-75 font-weight-bold font-size-h4">UPDATE INFORMATION</span>
-                            <!-- <span class="nav-desc text-muted">My Order List</span> -->
-                        </span>
-                    </a>
-                    <!--end::Item-->
-                    <!--begin::Item-->
-                    <a href="debtor/loan_information.php" class="nav-item active">
-                        <span class="nav-label px-10">
-                            <span class="nav-title text-dark-75 font-weight-bold font-size-h4">LOAN INFORMATION</span>
-                            <!-- <span class="nav-desc text-muted">Dashboard &amp; Reports</span> -->
-                        </span>
-                    </a>
-                    <!--end::Item-->
-                </div>
+					<a href="debtor/index.php" class="nav-item active">
+						<span class="nav-label px-10">
+							<span class="nav-title text-dark-75 font-weight-bold font-size-h4">&nbsp;&nbsp;&nbsp;&nbsp&nbsp;HOME</span>
+						</span>
+					</a>
+					<a href="debtor/update_information.php" class="nav-item">
+						<span class="nav-label px-10">
+							<span class="nav-title text-dark-75 font-weight-bold font-size-h4">UPDATE INFORMATION</span>
+						</span>
+					</a>
+					<a href="debtor/loan_information.php" class="nav-item">
+						<span class="nav-label px-10">
+							<span class="nav-title text-dark-75 font-weight-bold font-size-h4">LOAN INFORMATION</span>
+						</span>
+					</a>
+					<a href="debtor/payment_information.php" class="nav-item">
+						<span class="nav-label px-5">
+							<span class="nav-title text-dark-75 font-weight-bold font-size-h4">PAYMENT INFORMATION</span>
+						</span>
+					</a>
+				</div>
                 <!--end::Nav-->
             </div>
 
@@ -169,7 +163,7 @@ $res = $query->fetch();
                                     <div class="d-flex">
                                         <div class="flex-shrink-0 mr-7">
                                             <div class="symbol symbol-50 symbol-lg-120 symbol-circle">
-                                                <img alt="Pic" src="./assets/keen/company_logo/<?= $res['company_logo'] ?>" />
+                                                <img alt="Pic" src="./assets/keen/hulam_media/<?= $res['profile_pic'] ?>" />
                                             </div>
                                         </div>
                                         <div class="flex-grow-1">
@@ -179,7 +173,7 @@ $res = $query->fetch();
                                                 </div>
                                                 <div class="my-lg-0 my-1">
                                                     
-                                                    <a href="debtor/apply_now.php" class="btn btn-sm btn-light-primary font-weight-bolder mr-2">
+                                                    <a href="debtor/index.php" class="btn btn-sm btn-light-primary font-weight-bolder mr-2">
                                                         << Back</a>
                                                 </div>
                                             </div>
@@ -210,7 +204,7 @@ $res = $query->fetch();
                                     <div class="card-body pt-4">
                                         <div class="card card-custom">
                                             <div class="card-body">
-                                                <h5> Loan Features</h5>
+                                                <h5 class="text-info font-weight-bolder"> Loan Features</h5>
                                                 <table class="table table-bordered">
                                                     <thead>
                                                         <tr>
@@ -235,7 +229,7 @@ $res = $query->fetch();
 
                                                 </table></br>
                                                 <div class="separator separator-dashed mt-8 mb-5"></div>
-                                                <h5>Loan Requirements</h5>
+                                                <h5 class="text-info font-weight-bolder">List of Required Documents</h5>
                                                 <table class="table table-bordered">
                                                     <thead>
                                                         <tr>
@@ -263,7 +257,7 @@ $res = $query->fetch();
                                                     </tbody>
                                                 </table>
                                                 <div class="separator separator-dashed mt-8 mb-5"></div>
-                                                <h5>Payment Method</h5>
+                                                <h5 class="text-info font-weight-bolder">Payment Method</h5>
                                                 <table class="table table-bordered">
                                                     <thead>
                                                         <tr>
@@ -299,7 +293,7 @@ $res = $query->fetch();
                                                 $res3 = $query->fetchAll();
                                                 foreach($res3 as $y):
                                                 ?>
-                                                <h5 class="mb-10 font-weight-bold text-dark"><?= $y['notice_title']?>: </h5>
+                                                <h5 class="text-info font-weight-bolder"><?= $y['notice_title']?>: </h5>
                                                 <div class="pb-5" data-wizard-type="step-content" data-wizard-state="current">
                                                     <div class="row">
                                                         <div class="col-lg-9">
@@ -314,6 +308,7 @@ $res = $query->fetch();
                                             </div>
                                         </div>
                                     </div>
+                                    
                                 </div>
                             </div>
                         </div>
@@ -538,7 +533,7 @@ $res = $query->fetch();
 			<!--begin::Header-->
 			<div class="d-flex align-items-center mt-5">
 				<div class="symbol symbol-100 mr-5">
-					<div class="symbol-label" style="background-image:url('assets/keen/media/logos/icon-debtors.png')"></div>
+                <div class="symbol-label" style="background-image:url('assets/keen/hulam_media/<?= $user['profile_pic']?>')"></div>
 					<i class="symbol-badge bg-success"></i>
 				</div>
 				<div class="d-flex flex-column">

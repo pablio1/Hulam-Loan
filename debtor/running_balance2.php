@@ -1,13 +1,21 @@
 <?php
 session_start();
-error_reporting(-1);
+error_reporting(0);
 include('../db_connection/config.php');
 
 if($_SESSION['user_type'] != 2) {
 	header('location: ../index.php');
-}
+}?>
 
+
+<?php
+$user_id = $_SESSION['user_id'];
+$sql = "SELECT * FROM user WHERE user_id =$user_id";
+$query = $dbh->prepare($sql);
+$query->execute();
+$user = $query->fetch();
 ?>
+
 <?php 
 //$loan_app_id = intval($_GET['loan_app_id']);
 
@@ -20,18 +28,7 @@ if($_SESSION['user_type'] != 2) {
 ?>
 
 <!DOCTYPE html>
-<!--
-Template Name: Keen - The Ultimate Bootstrap 4 HTML Admin Dashboard Theme
-Author: KeenThemes
-Website: http://www.keenthemes.com/
-Contact: support@keenthemes.com
-Follow: www.twitter.com/keenthemes
-Dribbble: www.dribbble.com/keenthemes
-Like: www.facebook.com/keenthemes
-Purchase: https://themes.getbootstrap.com/product/keen-the-ultimate-bootstrap-admin-theme/
-Support: https://keenthemes.com/theme-support
-License: You must have a valid license purchased only from themes.getbootstrap.com(the above link) in order to legally use the theme for your project.
--->
+
 <html lang="en">
 	<!--begin::Head-->
 	<head><base href="../">
@@ -89,42 +86,28 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 								<!--end::Logo-->
 							</div>
 							<!--end::Logo-->
-							<!--begin::Nav-->
 							<div class="subheader-nav nav flex-grow-1">
-								<!--begin::Item-->
-								<a href="debtor/index.php" class="nav-item">
+								<a href="debtor/index.php" class="nav-item active">
 									<span class="nav-label px-10">
 										<span class="nav-title text-dark-75 font-weight-bold font-size-h4">&nbsp;&nbsp;&nbsp;&nbsp&nbsp;HOME</span>
-										<!-- <span class="nav-desc text-muted">Profile &amp; Account</span> -->
 									</span>
 								</a>
-								<!--end::Item-->
-								<!--begin::Item-->
-								<a href="debtor/apply_now.php" class="nav-item">
-									<span class="nav-label px-10">
-										<span class="nav-title text-dark-75 font-weight-bold font-size-h4">APPLY NOW</span>
-										<!-- <span class="nav-desc text-muted">My Order List</span> -->
-									</span>
-								</a>
-								<!--end::Item-->
-								<!--begin::Item-->
 								<a href="debtor/update_information.php" class="nav-item">
 									<span class="nav-label px-10">
 										<span class="nav-title text-dark-75 font-weight-bold font-size-h4">UPDATE INFORMATION</span>
-										<!-- <span class="nav-desc text-muted">My Order List</span> -->
 									</span>
 								</a>
-								<!--end::Item-->
-								<!--begin::Item-->
-								<a href="debtor/loan_information.php" class="nav-item active">
+								<a href="debtor/loan_information.php" class="nav-item">
 									<span class="nav-label px-10">
 										<span class="nav-title text-dark-75 font-weight-bold font-size-h4">LOAN INFORMATION</span>
-										<!-- <span class="nav-desc text-muted">Dashboard &amp; Reports</span> -->
 									</span>
 								</a>
-								<!--end::Item-->
+								<a href="debtor/payment_information.php" class="nav-item">
+									<span class="nav-label px-5">
+										<span class="nav-title text-dark-75 font-weight-bold font-size-h4">PAYMENT INFORMATION</span>
+									</span>
+								</a>
 							</div>
-							<!--end::Nav-->
 						</div>
 						
 						<!--begin::Topbar-->
@@ -936,7 +919,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 				<!--begin::Header-->
 				<div class="d-flex align-items-center mt-5">
 					<div class="symbol symbol-100 mr-5">
-						<div class="symbol-label" style="background-image:url('assets/keen/media/logos/icon-debtors.png')"></div>
+					<div class="symbol-label" style="background-image:url('assets/keen/hulam_media/<?= $user['profile_pic']?>')"></div>
 						<i class="symbol-badge bg-success"></i>
 					</div>
 					<div class="d-flex flex-column">

@@ -33,11 +33,11 @@ if (isset($_POST['send_message'])) {
 	$query->bindParam(':message', $message, PDO::PARAM_STR);
 	$query->bindParam(':date_message', $date_message, PDO::PARAM_STR);
 	if ($query->execute()) {
-		$_SESSION['status'] = "Message Sent";
+		$_SESSION['status_message'] = "Message Sent";
 		header("Location: view_application.php?loan_app_id=$id");
 		exit();
 	} else {
-		$_SESSION['status'] = "Message Not Sent";
+		$_SESSION['status_message'] = "Message Not Sent";
 		header('Location: view_application.php?loan_app_id=$id');
 		exit();
 	}
@@ -66,11 +66,11 @@ if (isset($_POST['approved_loan'])) {
 	$query->execute();
 
 	if($query2->execute()){
-		$_SESSION['status'] = "Loan Approved!";
+		$_SESSION['status_approved'] = "Loan Approved!";
 		header("Location: view_approved.php?loan_app_id=$id");
 		exit();
 	} else {
-		$_SESSION['status'] = "Error!";
+		$_SESSION['status_approved'] = "Error!";
 		header('Location: view_approved.php?loan_app_id=$id');
 		exit();
 	}
@@ -97,11 +97,11 @@ if (isset($_POST['declined_loan'])) {
 	$query->bindParam(':declined_date', $declined_date, PDO::PARAM_STR);
 
 	if($query->execute()){
-		$_SESSION['status'] = "Loan Declined!";
+		$_SESSION['status_declined'] = "Loan Declined!";
 		header("Location: view_declined.php?loan_app_id=$id");
 		exit();
 	} else {
-		$_SESSION['status'] = "Error!";
+		$_SESSION['status_declined'] = "Error!";
 		header('Location: view_declined.php?loan_app_id=$id');
 		exit();
 	}
@@ -363,18 +363,7 @@ if (isset($_POST['declined_loan'])) {
 									<i class="menu-arrow"></i>
 									<ul class="menu-subnav">
 										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-											<a href="lending_company/pending_loan.php" class="menu-link menu-toggle">
-												<i class="menu-bullet">
-													<span></span>
-												</i>
-												<span class="menu-text">Payment Received</span>
-												<span class="menu-label">
-												</span>
-												<i class="menu-arrow"></i>
-											</a>
-										</li>
-										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-											<a href="lending_company/payment_records.php" class="menu-link menu-toggle">
+											<a href="lending_company/payment_mark_received.php" class="menu-link menu-toggle">
 												<i class="menu-bullet">
 													<span></span>
 												</i>
@@ -384,6 +373,17 @@ if (isset($_POST['declined_loan'])) {
 												<i class="menu-arrow"></i>
 											</a>
 										</li>
+										<!-- <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+											<a href="lending_company/payment_records.php" class="menu-link menu-toggle">
+												<i class="menu-bullet">
+													<span></span>
+												</i>
+												<span class="menu-text">Payment Records</span>
+												<span class="menu-label">
+												</span>
+												<i class="menu-arrow"></i>
+											</a>
+										</li> -->
 									</ul>
 								</div>
 							</li>
@@ -1099,15 +1099,15 @@ if (isset($_POST['declined_loan'])) {
 									<h5 class="text-white font-weight-bold my-1 mr-5">Lending Investor</h5>
 									<div class="col-xl-12 col-xl-12">
 										<?php
-										if(isset($_SESSION['status'])){
+										if(isset($_SESSION['status_declined'])){
 										?>
 											<div class="alert alert-custom alert-notice alert-light-success fade show" role="alert">
 												<div class="alert-text">
-													<h4><?php echo $_SESSION['status'];?></h4>
+													<h4><?php echo $_SESSION['status_declined'];?></h4>
 												</div>
 												<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
 											</div>
-										<?php unset($_SESSION['status']);
+										<?php unset($_SESSION['status_declined']);
 										}?>
 									</div>
 								</div>

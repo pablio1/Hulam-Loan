@@ -5,12 +5,45 @@ include('../db_connection/config.php');
 
 if ($_SESSION['user_type'] != 2) {
 	header('location: ../index.php');
+}?>
+
+<?php
+$user_id = $_SESSION['user_id'];
+$sql = "SELECT * FROM user WHERE user_id =$user_id";
+$query = $dbh->prepare($sql);
+$query->execute();
+$user = $query->fetch();
+?>
+
+<?php
+if (isset($_POST['upload_photo'])) {
+	$user_id = $_SESSION['user_id'];
+
+	$images = $_FILES['profile_pic']['name'];
+	$tmp_dir = $_FILES['profile_pic']['tmp_name'];
+	$imageSize = $_FILES['profile_pic']['size'];
+
+	$upload_dir = '../assets/keen/hulam_media/';
+	$imgExt = strtolower(pathinfo($images, PATHINFO_EXTENSION));
+	$valid_extensions = array('jpeg', 'jpg', 'gif', 'pdf', 'doc', 'docx');
+	$profile_pic = rand(1000, 10000000) . "." . $imgExt;
+	move_uploaded_file($tmp_dir, $upload_dir . $profile_pic);
+
+	$update = "UPDATE user SET profile_pic = :profile_pic WHERE user_id = $user_id";
+	$update_query = $dbh->prepare($update);
+	$update_query->bindParam(':profile_pic', $profile_pic, PDO::PARAM_STR);
+	$update_query->execute();
+
+	if ($update_query) {
+		$_SESSION['status_profile'] = "Updated Profile Photo!";
+		header("location: update_information.php");
+		exit();
+	} else {
+		$_SESSION['status_profile'] = "Error!";
+		header("location: update_information.php");
+		exit();
+	}
 }
-
-$sql = $dbh->prepare("SELECT * FROM user INNER JOIN debtors_info ON user.user_id = debtors_info.user_id WHERE user.user_id = :user_id");
-$sql->execute(['user_id' => $_SESSION['user_id']]);
-$user = $sql->fetch();
-
 ?>
 <?php
 if (isset($_POST['valid_id'])) {
@@ -20,7 +53,7 @@ if (isset($_POST['valid_id'])) {
 	$tmp_dir = $_FILES['valid_id']['tmp_name'];
 	$imageSize = $_FILES['valid_id']['size'];
 
-	$upload_dir = '../assets/keen/debtors/';
+	$upload_dir = '../assets/keen/hulam_media/';
 	$imgExt = strtolower(pathinfo($images, PATHINFO_EXTENSION));
 	$valid_extensions = array('jpeg', 'jpg', 'gif', 'pdf', 'doc', 'docx');
 	$valid_id = rand(1000, 10000000) . "." . $imgExt;
@@ -30,22 +63,23 @@ if (isset($_POST['valid_id'])) {
 	$query = $dbh->prepare($sql);
 	$query->execute();
 	if ($query->rowCount() == 0) {
-		$insert = "INSERT INTO debtors_info(valid_id)VALUES(:valid_id)";
+		$insert = "INSERT INTO debtors_info(user_id,valid_id)VALUES(:user_id,:valid_id)";
 		$insert_query = $dbh->prepare($insert);
+		$insert_query->bindParam(':user_id', $user_id, PDO::PARAM_STR);
 		$insert_query->bindParam(':valid_id', $valid_id, PDO::PARAM_STR);
 		$insert_query->execute();
 	} else {
 		$update = "UPDATE debtors_info SET valid_id = :valid_id WHERE user_id = $user_id";
-		$update_query = $dbh->prepare($update);
-		$update_query->bindParam(':valid_id', $valid_id, PDO::PARAM_STR);
-		$update_query->execute();
+		$insert_query = $dbh->prepare($update);
+		$insert_query->bindParam(':valid_id', $valid_id, PDO::PARAM_STR);
+		$insert_query->execute();
 	}
-	if ($update_query) {
-		$_SESSION['status_message'] = "Updated Valid ID!";
+	if ($insert_query) {
+		$_SESSION['status_profile'] = "Updated Profile Photo!";
 		header("location: update_information.php");
 		exit();
 	} else {
-		$_SESSION['status_message'] = "Error!";
+		$_SESSION['status_profile'] = "Error!";
 		header("location: update_information.php");
 		exit();
 	}
@@ -59,7 +93,7 @@ if (isset($_POST['selfie_id'])) {
 	$tmp_dir = $_FILES['selfie_id']['tmp_name'];
 	$imageSize = $_FILES['selfie_id']['size'];
 
-	$upload_dir = '../assets/keen/debtors/';
+	$upload_dir = '../assets/keen/hulam_media/';
 	$imgExt = strtolower(pathinfo($images, PATHINFO_EXTENSION));
 	$valid_extensions = array('jpeg', 'jpg', 'gif', 'pdf', 'doc', 'docx');
 	$selfie_id = rand(1000, 10000000) . "." . $imgExt;
@@ -69,57 +103,29 @@ if (isset($_POST['selfie_id'])) {
 	$query = $dbh->prepare($sql);
 	$query->execute();
 	if ($query->rowCount() == 0) {
-		$insert = "INSERT INTO debtors_info(selfie_id)VALUES(:bselfie_id)";
+		$insert = "INSERT INTO debtors_info(user_id,selfie_id)VALUES(:user_id,:selfie_id)";
 		$insert_query = $dbh->prepare($insert);
+		$insert_query->bindParam(':user_id', $user_id, PDO::PARAM_STR);
 		$insert_query->bindParam(':selfie_id', $selfie_id, PDO::PARAM_STR);
 		$insert_query->execute();
 	} else {
 		$update = "UPDATE debtors_info SET selfie_id = :selfie_id WHERE user_id = $user_id";
-		$update_query = $dbh->prepare($update);
-		$update_query->bindParam(':selfie_id', $selfie_id, PDO::PARAM_STR);
-		$update_query->execute();
+		$insert_query = $dbh->prepare($update);
+		$insert_query->bindParam(':selfie_id', $selfie_id, PDO::PARAM_STR);
+		$insert_query->execute();
 	}
-	if ($update_query) {
-		$_SESSION['status_message'] = "Updated Selfie with ID!";
+	if ($insert_query) {
+		$_SESSION['status_profile'] = "Updated Selfie ID!";
 		header("location: update_information.php");
 		exit();
 	} else {
-		$_SESSION['status_message'] = "Error!";
+		$_SESSION['status_profile'] = "Error!";
 		header("location: update_information.php");
 		exit();
 	}
 }
 ?>
-<?php
-if (isset($_POST['upload_photo'])) {
-	$user_id = $_SESSION['user_id'];
 
-	$images = $_FILES['profile_pic']['name'];
-	$tmp_dir = $_FILES['profile_pic']['tmp_name'];
-	$imageSize = $_FILES['profile_pic']['size'];
-
-	$upload_dir = '../assets/keen/debtors/';
-	$imgExt = strtolower(pathinfo($images, PATHINFO_EXTENSION));
-	$valid_extensions = array('jpeg', 'jpg', 'gif', 'pdf', 'doc', 'docx');
-	$profile_pic = rand(1000, 10000000) . "." . $imgExt;
-	move_uploaded_file($tmp_dir, $upload_dir . $profile_pic);
-
-	$update = "UPDATE user SET profile_pic = :profile_pic WHERE user_id = $user_id";
-	$update_query = $dbh->prepare($update);
-	$update_query->bindParam(':profile_pic', $profile_pic, PDO::PARAM_STR);
-	$update_query->execute();
-
-	if ($update_query) {
-		$_SESSION['status_message'] = "Updated Profile Photo!";
-		header("location: update_information.php");
-		exit();
-	} else {
-		$_SESSION['status_message'] = "Error!";
-		header("location: update_information.php");
-		exit();
-	}
-}
-?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -156,14 +162,9 @@ if (isset($_POST['upload_photo'])) {
 					</a>
 				</div>
 				<div class="subheader-nav nav flex-grow-1">
-					<a href="debtor/index.php" class="nav-item">
+					<a href="debtor/index.php" class="nav-item ">
 						<span class="nav-label px-10">
 							<span class="nav-title text-dark-75 font-weight-bold font-size-h4">&nbsp;&nbsp;&nbsp;&nbsp&nbsp;HOME</span>
-						</span>
-					</a>
-					<a href="debtor/apply_now.php" class="nav-item">
-						<span class="nav-label px-10">
-							<span class="nav-title text-dark-75 font-weight-bold font-size-h4">APPLY NOW</span>
 						</span>
 					</a>
 					<a href="debtor/update_information.php" class="nav-item active">
@@ -176,7 +177,13 @@ if (isset($_POST['upload_photo'])) {
 							<span class="nav-title text-dark-75 font-weight-bold font-size-h4">LOAN INFORMATION</span>
 						</span>
 					</a>
+					<a href="debtor/payment_information.php" class="nav-item">
+						<span class="nav-label px-5">
+							<span class="nav-title text-dark-75 font-weight-bold font-size-h4">PAYMENT INFORMATION</span>
+						</span>
+					</a>
 				</div>
+                <!--end::Nav-->
 			</div>
 			<div class="topbar">
 				<div class="topbar-item mr-1">
@@ -236,14 +243,14 @@ if (isset($_POST['upload_photo'])) {
 											</div>
 										<?php endif; ?>
 										<?php
-										if (isset($_SESSION['status_message'])) {
+										if (isset($_SESSION['status_profile'])) {
 										?>
 											<div class="alert alert-success alert-dismissable" id="flash-msg">
 												<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
-												<h4><?= $_SESSION['status_message'] ?></h4>
+												<h4><?= $_SESSION['status_profile'] ?></h4>
 											</div>
 										<?php
-											unset($_SESSION['status_message']);
+											unset($_SESSION['status_profile']);
 										} ?>
 										<h4 class="mb-10 font-weight-bold text-dark">Update Your Information</h4>
 										<form action="" method="post" id="kt_form" enctype="multipart/form-data">
@@ -251,7 +258,7 @@ if (isset($_POST['upload_photo'])) {
 												<label class="col-xl-3 col-lg-3 col-form-label text-right"></label>
 												<div class="col-lg-9 col-xl-6">
 													<div class="image-input image-input-outline" id="kt_image_1">
-														<div class="image-input-wrapper" style="background-image: url(/hulam/assets/keen/debtors/<?= $user['profile_pic'] ?>"></div>
+														<div class="image-input-wrapper" style="background-image: url(/hulam/assets/keen/hulam_media/<?= $user['profile_pic']?>"></div>
 														<label class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow" data-action="change" data-toggle="tooltip" title="" data-original-title="upload photo">
 															<i class="fa fa-pen icon-sm text-muted" style="margin-left: 27px;"></i>
 															<!-- <input type="file" name="profile" accept=".png, .jpg, .jpeg" /> -->
@@ -292,7 +299,7 @@ if (isset($_POST['upload_photo'])) {
 													<div class="form-group">
 														<label>Gender</label> <span class="text-danger">*</span>
 														<select name="gender" class="form-control" required>
-															<option value="" hidden>Select Gender</option>
+															<option value="<?= $user['gender']?>"><?= $user['gender']?></option>
 															<option value="Male" <?php if (isset($_GET['e'])) {
 																						if ($_GET['gender'] == 'Male') {
 																							echo 'selected';
@@ -331,8 +338,9 @@ if (isset($_POST['upload_photo'])) {
 												<div class="col-xl-4">
 													<div class="form-group">
 														<label>Mobile</label> <span class="text-danger">*</span>
-														<input maxlength="11" minlength="11" type="text" required="required" class="form-control" required name="mobile" placeholder="0900000000" value="<?= isset($_GET['e']) ? $_GET['mobile'] :  $user['mobile'] ?>" placeholder="Enter mobile number" />
+														<input maxlength="11" minlength="11" type="text" required="required" class="form-control" required name="mobile" placeholder="0900000000" value="<?= isset($_GET['e']) ? $_GET['mobile'] :  $_SESSION['mobile']?>"/>
 														<label><span style="color:green">&#x2714;</span><span style="font-family: Courier New; font-size: 11px"> Atleast 11 digits</label></span>
+				
 													</div>
 
 												</div>
@@ -418,7 +426,7 @@ if (isset($_POST['upload_photo'])) {
 												<div class="col-xl-4">
 													<div class="form-group">
 														<label>Province</label> <span class="text-danger">*</span>
-														<input type="text" class="form-control" required name="p_province" value="<?= isset($_GET['e']) ? $_GET['p_province'] : $user['p_province'] ?>" placeholder="Enter barangay" />
+														<input type="text" class="form-control" required name="p_province" value="<?= isset($_GET['e']) ? $_GET['p_province'] : $user['p_province'] ?>" placeholder="Enter province" />
 													</div>
 												</div>
 												<div class="col-xl-4">
@@ -546,11 +554,11 @@ if (isset($_POST['upload_photo'])) {
 												</div>
 											</div>
 											<div class="d-flex justify-content-between border-top mt-5 pt-10">
-												<div></div>
-												<div>
-													<button type="submit" name="submit" class="btn btn-success font-weight-bolder px-10 py-3">Submit</button>
-												</div>
+											<div></div>
+											<div>
+												<button type="submit" name="submit" class="btn btn-success font-weight-bolder px-10 py-3">Submit</button>
 											</div>
+										</div>
 										</form>
 										<div class="separator separator-solid my-7"></div>
 										<div class="row">
@@ -564,34 +572,22 @@ if (isset($_POST['upload_photo'])) {
 													</tr>
 												</thead>
 												<tbody>
-													<?php
-													$user_id = $_SESSION['user_id'];
-
-													$sql = "SELECT * FROM debtors_info WHERE user_id = $user_id";
-													$query = $dbh->prepare($sql);
-													$query->execute();
-													$results = $query->fetchAll(PDO::FETCH_OBJ);
-													if ($query->rowCount() > 0) {
-														foreach ($results as $res) {
-													?>
-															<tr>
-																<td>Valid ID</br>
-																	<span class="text-muted font-size-sm">UMID/SSS ID, PASSPORT ID, NATIONAL ID</span>
-																	<p class="text-muted font-size-sm">Accept files docx, jpeg, png, pdf</p>
-																</td>
-																<td><a href="/hulam/assets/keen/debtors/<?= htmlentities($res->valid_id) ?>" target="_blank"><?= htmlentities($res->valid_id); ?></a></td>
-																<td><a href="" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#valid_id">Update</a></td>
-															</tr>
-															<tr>
-																<td>Selfie Holding Your ID</br>
-																	<span class="text-muted font-size-sm">Hold your ID just below your chin and take photo.</span>
-																	<p class="text-muted font-size-sm">Accept files docx, jpeg, png, pdf</p>
-																</td>
-																<td><a href="/hulam/assets/keen/debtors/<?= htmlentities($res->selfie_id) ?>" target="_blank"><?= htmlentities($res->selfie_id); ?></a></td>
-																<td><a href="" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#bselfie">Update</a></td>
-															</tr>
-													<?php }
-													} ?>
+													<tr>
+														<td>Valid ID</br>
+															<span class="text-muted font-size-sm">UMID/SSS ID, PASSPORT ID, NATIONAL ID</span>
+															<p class="text-muted font-size-sm">Accept files docx, jpeg, png, pdf</p>
+														</td>
+														<td><a href="/hulam/assets/keen/hulam_media/<?= $set['valid_id']?>" target="_blank"><?= $set['valid_id']; ?></a></td>
+														<td><a href="" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#valid_id">Update</a></td>
+													</tr>
+													<tr>
+														<td>Selfie Holding Your ID</br>
+															<span class="text-muted font-size-sm">Hold your ID just below your chin and take photo.</span>
+															<p class="text-muted font-size-sm">Accept files docx, jpeg, png, pdf</p>
+														</td>
+														<td><a href="/hulam/assets/keen/hulam_media/<?= $set['selfie_id']?>" target="_blank"><?= $set['selfie_id']?></a></td>
+														<td><a href="" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#bselfie">Update</a></td>
+													</tr>
 												</tbody>
 											</table>
 										</div>
@@ -601,22 +597,21 @@ if (isset($_POST['upload_photo'])) {
 									<!-- Start Modal -->
 									<form action="" method="post" enctype="multipart/form-data">
 										<div class="modal fade" id="valid_id" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
-											<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+											<div class="modal-dialog modal-dialog-centered modal-md" role="document">
 												<div class="modal-content">
 													<div class="modal-header">
-														<h5 class="modal-title" id="exampleModalLabel">VALID ID</h5>
+														<h5 class="modal-title" id="exampleModalLabel">Upload VALID ID</h5>
 														<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 															<i aria-hidden="true" class="ki ki-close"></i>
 														</button>
 													</div>
 													<div class="col-xl-4">
-														<label class="font-weight-bolder font-size-lg" for="input-username">Upload/Edit Valid ID</label>
+														<!-- <label class="font-weight-bolder font-size-lg" for="input-username">Upload/Edit Valid ID</label> -->
 														<div class="form-group">
 															<input type="file" name="valid_id" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3" />
 														</div>
 													</div>
 													<div class="modal-footer">
-														<button type="button" class="btn btn-light-primary font-weight-bold" data-dismiss="modal">Close</button>
 														<button type="submit" name="valid_id" class="btn btn-primary font-weight-bold">Save changes</button>
 													</div>
 												</div>
@@ -627,22 +622,21 @@ if (isset($_POST['upload_photo'])) {
 									<!-- Start Modal -->
 									<form action="" method="post" enctype="multipart/form-data">
 										<div class="modal fade" id="bselfie" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
-											<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+											<div class="modal-dialog modal-dialog-centered modal-md" role="document">
 												<div class="modal-content">
 													<div class="modal-header">
-														<h5 class="modal-title" id="exampleModalLabel">SELFIE HOLDING YOUR ID</h5>
+														<h5 class="modal-title" id="exampleModalLabel">Upload SELFIE HOLDING YOUR ID</h5>
 														<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 															<i aria-hidden="true" class="ki ki-close"></i>
 														</button>
 													</div>
 													<div class="col-xl-4">
-														<label class="font-weight-bolder font-size-lg" for="input-username">Upload/Edit Selfie Holding Your ID</label>
+														<!-- <label class="font-weight-bolder font-size-lg" for="input-username">Upload/Edit Selfie Holding Your ID</label> -->
 														<div class="form-group">
 															<input type="file" name="selfie_id" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3" />
 														</div>
 													</div>
 													<div class="modal-footer">
-														<button type="button" class="btn btn-light-primary font-weight-bold" data-dismiss="modal">Close</button>
 														<button type="submit" name="selfie_id" class="btn btn-primary font-weight-bold">Save changes</button>
 													</div>
 												</div>
@@ -687,7 +681,7 @@ if (isset($_POST['upload_photo'])) {
 			<!--begin::Header-->
 			<div class="d-flex align-items-center mt-5">
 				<div class="symbol symbol-100 mr-5">
-					<div class="symbol-label" style="background-image:url('assets/keen/media/logos/icon-debtors.png')"></div>
+					<div class="symbol-label" style="background-image:url('assets/keen/hulam_media/<?= $user['profile_pic']?>')"></div>
 					<i class="symbol-badge bg-success"></i>
 				</div>
 				<div class="d-flex flex-column">
@@ -709,7 +703,7 @@ if (isset($_POST['upload_photo'])) {
 										<!--end::Svg Icon-->
 									</span>
 								</span>
-								<span class="navi-text text-muted text-hover-primary"><?= $_SESSION['email']?>/span>
+								<span class="navi-text text-muted text-hover-primary"><?= $_SESSION['email']?></span>
 							</span>
 						</a>
 					</div>

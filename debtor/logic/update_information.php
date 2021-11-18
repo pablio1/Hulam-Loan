@@ -113,11 +113,11 @@ if(isset($_POST['submit'])){
           $query4->execute();
      }
      if($query->execute()){
-         $_SESSION['status']= 'Updated Successfully';
+         $_SESSION['status_profile']= 'Updated Successfully';
          header("Location: ../update_information.php");
          exit();
     }else{
-        $_SESSION['error'] = $e->getMessage();
+        $_SESSION['status_profile']= 'Error!';
         header("Location: ../update_information.php");
         exit();
     }

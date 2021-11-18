@@ -1,13 +1,36 @@
 <?php
 session_start();
-error_reporting(0);
+error_reporting(-1);
 include('../db_connection/config.php');
 if ($_SESSION['user_type'] != 3) {
 	header('location: ../index.php');
 }?>
 
-<?php
 
+<?php 
+if(isset($_POST['upload_logo'])){
+	$user_id = $_SESSION['user_id'];
+
+	$images = $_FILES['logo']['name'];
+	$tmp_dir = $_FILES['logo']['tmp_name'];
+	$imageSize = $_FILES['logo']['size'];
+
+	$upload_dir = '../assets/keen/hulam_media/';
+	$imgExt = strtolower(pathinfo($images, PATHINFO_EXTENSION));
+	$valid_extensions = array('jpeg', 'jpg', 'gif', 'pdf', 'doc', 'docx');
+	$logo = rand(1000, 10000000) . "." . $imgExt;
+	move_uploaded_file($tmp_dir, $upload_dir . $logo);
+
+	$sql = "UPDATE user SET profile_pic = '$logo' WHERE user_id = $user_id";
+	$query = $dbh->prepare($sql);
+	$query->execute();
+
+}?>
+
+
+
+
+<?php
 if (isset($_POST['submit'])) {
 
 	$lender_id = $_SESSION['user_id'];
@@ -23,11 +46,11 @@ if (isset($_POST['submit'])) {
 	$notice_message = $_POST['notice_message'];
 	$status = 'Pending';
 
-	$images = $_FILES['company_logo']['name'];
-	$tmp_dir = $_FILES['company_logo']['tmp_name'];
-	$imageSize = $_FILES['company_logo']['size'];
+	$images = $_FILES['logo']['name'];
+	$tmp_dir = $_FILES['logo']['tmp_name'];
+	$imageSize = $_FILES['logo']['size'];
 
-	$upload_dir = '../assets/keen/company_logo/';
+	$upload_dir = '../assets/keen/hulam_media/';
 	$imgExt = strtolower(pathinfo($images, PATHINFO_EXTENSION));
 	$valid_extensions = array('jpeg', 'jpg', 'gif', 'pdf', 'doc', 'docx');
 	$pic1 = rand(1000, 10000000) . "." . $imgExt;
@@ -45,8 +68,8 @@ if (isset($_POST['submit'])) {
 	$q->execute();
 	if ($q->rowCount() == 0) {
 
-		$sql = "INSERT INTO loan_features(lender_id,description,company_street,company_barangay,company_city,company_province,company_zipcode,company_landline,company_logo,dti_permit,b_permit,notice_message,status)
-	VALUES(:lender_id,:description,:company_street,:company_barangay,:company_city,:company_province,:company_zipcode,:company_landline,:company_logo,:dti_permit,:b_permit,:notice_message,:status)";
+		$sql = "INSERT INTO loan_features(lender_id,description,company_street,company_barangay,company_city,company_province,company_zipcode,company_landline,company_logo)
+	VALUES(:lender_id,:description,:company_street,:company_barangay,:company_city,:company_province,:company_zipcode,:company_landline,:company_logo)";
 		$query = $dbh->prepare($sql);
 		$query->bindParam(':lender_id', $lender_id, PDO::PARAM_STR);
 		$query->bindParam(':description', $description, PDO::PARAM_STR);
@@ -57,15 +80,10 @@ if (isset($_POST['submit'])) {
 		$query->bindParam(':company_zipcode', $company_zipcode, PDO::PARAM_STR);
 		$query->bindParam(':company_landline', $company_landline, PDO::PARAM_STR);
 		$query->bindParam(':company_logo', $pic1, PDO::PARAM_STR);
-		$query->bindParam(':dti_permit', $pic2, PDO::PARAM_STR);
-		$query->bindParam(':b_permit', $pic3, PDO::PARAM_STR);
-		$query->bindParam(':notice_message', $notice_message, PDO::PARAM_STR);
-		$query->bindParam(':status', $status, PDO::PARAM_STR);
 	} else {
 
 		$sql = "UPDATE loan_features SET description=:description,company_street=:company_street,company_barangay=:company_barangay,company_city=:company_city,
-        company_province=:company_province,company_zipcode=:company_zipcode,company_landline=:company_landline
-        WHERE lender_id = :lender_id";
+        company_province=:company_province,company_zipcode=:company_zipcode,company_landline=:company_landline,company_logo=:company_logo WHERE lender_id = :lender_id";
 		$query = $dbh->prepare($sql);
 		$query->bindParam(':lender_id', $lender_id, PDO::PARAM_STR);
 		$query->bindParam(':description', $description, PDO::PARAM_STR);
@@ -75,6 +93,7 @@ if (isset($_POST['submit'])) {
 		$query->bindParam(':company_province', $company_province, PDO::PARAM_STR);
 		$query->bindParam(':company_zipcode', $company_zipcode, PDO::PARAM_STR);
 		$query->bindParam(':company_landline', $company_landline, PDO::PARAM_STR);
+		$query->bindParam(':company_logo', $pic1, PDO::PARAM_STR);
 	}
 
 	if ($query->execute()) {
@@ -116,7 +135,7 @@ if (isset($_POST['b_permit'])) {
 	$q->execute();
 	if ($q->rowCount() == 0) {
 	$sql = "INSERT INTO loan_features(lender_id,b_permit)
-	VALUES(:lender_id,:dti_permit,:b_permit)";
+	VALUES(:lender_id,:b_permit)";
 		$query = $dbh->prepare($sql);
 		$query->bindParam(':lender_id',$lender_id,PDO::PARAM_STR);
 		$query->bindParam(':b_permit', $pic3, PDO::PARAM_STR);
@@ -127,11 +146,11 @@ if (isset($_POST['b_permit'])) {
 		$query->bindParam(':b_permit', $pic3, PDO::PARAM_STR);
 	}
 	if ($query->execute()) {
-		$_SESSION['status'] = "Business Permit Updated!";
+		$_SESSION['status_message'] = "Business Permit Updated!";
 		header("location: update_profile.php");
 		exit();
 	} else {
-		$_SESSION['status'] = "Error!";
+		$_SESSION['status_message'] = "Error!";
 		header("location: update_profile.php");
 		exit();
 	}
@@ -158,7 +177,7 @@ if (isset($_POST['dti_permit'])) {
 	$q->execute();
 	if ($q->rowCount() == 0) {
 	$sql = "INSERT INTO loan_features(lender_id,dti_permit)
-	VALUES(:lender_id,:dti_permit,:dti_permit)";
+	VALUES(:lender_id,:dti_permit)";
 		$query = $dbh->prepare($sql);
 		$query->bindParam(':lender_id',$lender_id,PDO::PARAM_STR);
 		$query->bindParam(':dti_permit', $dti_permit, PDO::PARAM_STR);
@@ -169,11 +188,11 @@ if (isset($_POST['dti_permit'])) {
 		$query->bindParam(':dti_permit', $dti_permit, PDO::PARAM_STR);
 	}
 	if ($query->execute()) {
-		$_SESSION['status'] = "DTI Permit Updated!";
+		$_SESSION['status_message'] = "DTI Permit Updated!";
 		header("location: update_profile.php");
 		exit();
 	} else {
-		$_SESSION['status'] = "Error!";
+		$_SESSION['status_message'] = "Error!";
 		header("location: update_profile.php");
 		exit();
 	}
@@ -341,6 +360,31 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 								</div>
 							</li>
 							<li class="menu-section">
+								<h4 class="menu-text">Manage Account</h4>
+								<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
+							</li>
+							<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+								<a href="javascript:;" class="menu-link menu-toggle">
+									<span class="svg-icon menu-icon">
+									</span>
+									<span class="menu-text">My Account</span>
+									<i class="menu-arrow"></i>
+								</a>
+								<div class="menu-submenu">
+									<i class="menu-arrow"></i>
+									<ul class="menu-subnav">
+										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+											<a href="lending_company/update_profile.php" class="menu-link menu-toggle">
+												<i class="menu-bullet">
+													<span></span>
+												</i>
+												<span class="menu-text">My Profile</span>
+											</a>
+										</li>
+									</ul>
+								</div>
+							</li>
+							<li class="menu-section">
 								<h4 class="menu-text">Manage Loan</h4>
 								<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
 							</li>
@@ -411,13 +455,13 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 											</a>
 										</li>
 										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-											<a href="lending_company/released_loan.php" class="menu-link menu-toggle">
-												<i class="menu-bullet">
-													<span></span>
-												</i>
-												<span class="menu-text">Release Loan</span>
-											</a>
-										</li>
+                                            <a href="lending_company/released_loan.php" class="menu-link menu-toggle">
+                                                <i class="menu-bullet">
+                                                    <span></span>
+                                                </i>
+                                                <span class="menu-text">Release Loan</span>
+                                            </a>
+                                        </li>
 										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
 											<a href="lending_company/declined_loan.php" class="menu-link menu-toggle">
 												<i class="menu-bullet">
@@ -445,18 +489,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 									<i class="menu-arrow"></i>
 									<ul class="menu-subnav">
 										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-											<a href="lending_company/payment_received.php" class="menu-link menu-toggle">
-												<i class="menu-bullet">
-													<span></span>
-												</i>
-												<span class="menu-text">Payment Received</span>
-												<span class="menu-label">
-												</span>
-												<i class="menu-arrow"></i>
-											</a>
-										</li>
-										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-											<a href="lending_company/payment_records.php" class="menu-link menu-toggle">
+											<a href="lending_company/payment_mark_received.php" class="menu-link menu-toggle">
 												<i class="menu-bullet">
 													<span></span>
 												</i>
@@ -466,6 +499,17 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 												<i class="menu-arrow"></i>
 											</a>
 										</li>
+										<!-- <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+											<a href="lending_company/payment_records.php" class="menu-link menu-toggle">
+												<i class="menu-bullet">
+													<span></span>
+												</i>
+												<span class="menu-text">Payment Records</span>
+												<span class="menu-label">
+												</span>
+												<i class="menu-arrow"></i>
+											</a>
+										</li> -->
 									</ul>
 								</div>
 							</li>
@@ -1126,6 +1170,16 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 									<h4 class="text-white font-weight-bold my-1 mr-5">Dashboard |</h4>
 									<h5 class="text-white font-weight-bold my-1 mr-5">Lending Investor</h5>
 									<!--end::Page Title-->
+									<?php
+										if (isset($_SESSION['status_message'])) {
+										?>
+											<div class="alert alert-success alert-dismissable" id="flash-msg">
+												<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+												<h4><?= $_SESSION['status_message'] ?></h4>
+											</div>
+										<?php
+											unset($_SESSION['status_message']);
+										} ?>
 								</div>
 								<!--end::Page Heading-->
 							</div>
@@ -1156,25 +1210,26 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 													<!--begin: Wizard Step 1-->
 													<div class="pb-5" data-wizard-type="step-content" data-wizard-state="current">
 														<h4 class="mb-10 font-weight-bold text-dark">Enter your Company Details</h4>
-
-														<div class="form-group row">
-															<label class="col-xl-3 col-lg-3 col-form-label text-right"></label>
-															<div class="col-lg-9 col-xl-6">
-																<div class="image-input image-input-outline" id="kt_image_1">
-																	<div class="image-input-wrapper" style="background-image: url(/hulam/assets/keen/company_logo/<?= $res['company_logo'] ?>"></div>
-																	<label class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow" data-action="change" data-toggle="tooltip" title="" data-original-title="upload company logo">
-																		<i class="fa fa-pen icon-sm text-muted"></i>
-																		<!-- <input type="file" name="profile" accept=".png, .jpg, .jpeg" /> -->
-																		<input type="file" name="company_logo" class="form-control" accept="*/image">
-																		<input type="hidden" name="profile_avatar_remove" />
-																	</label>
-																	<span class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow" data-action="cancel" data-toggle="tooltip" title="Cancel Photo">
-																		<i class="ki ki-bold-close icon-xs text-muted"></i>
-																	</span>
+														<form action="" method="post" id="kt_form" enctype="multipart/form-data">
+															<div class="form-group row">
+																<label class="col-xl-3 col-lg-3 col-form-label text-right"></label>
+																<div class="col-lg-9 col-xl-6">
+																	<div class="image-input image-input-outline" id="kt_image_1">
+																		<div class="image-input-wrapper" style="background-image: url(/hulam/assets/keen/hulam_media/<?= $res['profile_pic'] ?>"></div>
+																		<label class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow" data-action="change" data-toggle="tooltip" title="" data-original-title="upload photo">
+																			<i class="fa fa-pen icon-sm text-muted" style="margin-left: 27px;"></i>
+																			<!-- <input type="file" name="profile" accept=".png, .jpg, .jpeg" /> -->
+																			<input type="file" name="logo" class="form-control" accept="*/image">
+																			<input type="hidden" name="profile_avatar_remove" />
+																		</label>
+																		<span class="btn btn-xs btn-white btn-hover-text-primary btn-shadow" data-action="cancel" data-toggle="tooltip" title="Cancel Photo">
+																			<i class="ki ki-bold-close icon-xs text-muted"></i>
+																		</span>
+																	</div>
+																	&nbsp;&nbsp;<button type="submit" name="upload_logo" class="btn btn-primary btn-sm">confirm logo</button>
 																</div>
-																<!-- <span class="form-text text-muted">Allowed file types: png, jpg, jpeg.</span> -->
 															</div>
-														</div>
+														</form>
 														<div class="form-group row">
 															<label class="col-xl-3 col-lg-3 col-form-label text-right">Company Name</label>
 															<div class="col-lg-9 col-xl-6">
@@ -1271,6 +1326,12 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 																</div>
 																<!--end::Input-->
 															</div>
+															<div class="d-flex justify-content-between border-top mt-5 pt-10">
+															<div class="mr-2"></div>
+															<div>
+																<button type="submit" name="submit" class="btn btn-primary font-weight-bolder px-10 py-3" data-wizard-type="action-next">Submit</button>
+															</div>
+														</div>
 
 														</div>
 														<div class="row">
@@ -1309,12 +1370,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 																</tbody>
 															</table>
 														</div>
-														<div class="d-flex justify-content-between border-top mt-5 pt-10">
-															<div class="mr-2"></div>
-															<div>
-																<button type="submit" name="submit" class="btn btn-primary font-weight-bolder px-10 py-3" data-wizard-type="action-next">Submit</button>
-															</div>
-														</div>
+														
 														<!--end: Wizard Actions-->
 													</div>
 													<!--end::Body-->

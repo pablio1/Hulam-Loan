@@ -111,7 +111,7 @@ include('db_connection/config.php');
                         </div>
                     </div>
                 </div>
-                <div class="row">
+                <div class="row align-items-center justify-content-center">
                     <?php
                         $sql = "SELECT * FROM user_type WHERE user_name != 'Admin'";
                         $query = $dbh->prepare($sql);
@@ -119,7 +119,7 @@ include('db_connection/config.php');
                         $result = $query->fetchAll();
                         foreach($result as $user):
                     ?>
-                    <div class="col-lg-3 col-md-6">
+                   <div class="col-md-3 col-md-3 ">
                         <div class="payment_form white-bg wow fadeInDown" data-wow-duration="1.2s" data-wow-delay=".2s">
                             <div class="info text-center">
                                 <img src="assets/finloans/img/<?= $user['image'] ?>" alt="Icons" width="100%" height="150">

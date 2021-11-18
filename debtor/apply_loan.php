@@ -1,21 +1,385 @@
 <?php
 session_start();
-error_reporting(0);
+error_reporting(-1);
 include('../db_connection/config.php');
 
 if ($_SESSION['user_type'] != 2) {
 	header('location: ../index.php');
 }
 ?>
+
 <?php
-
-$id = intval($_GET['lender_id']);
-
-$sql = "SELECT * FROM loan_features INNER JOIN user ON loan_features.lender_id = user.user_id WHERE loan_features.lender_id = $id";
+$user_id = $_SESSION['user_id'];
+$sql = "SELECT * FROM user WHERE user_id =$user_id";
 $query = $dbh->prepare($sql);
 $query->execute();
-$lender = $query->fetch();
+$user = $query->fetch();
+?>
 
+<?php
+	if(isset($_POST['valid_id'])){
+		$debtor_id = $_SESSION['user_id'];
+		$lender_id = $_GET['lender_id'];
+
+		$images =$_FILES['valid_id']['name'];
+		$tmp_dir = $_FILES['valid_id']['tmp_name'];
+		$imageSize=$_FILES['valid_id']['size'];
+
+		$upload_dir2='../assets/keen/hulam_media/';
+		$imgExt=strtolower(pathinfo($images,PATHINFO_EXTENSION));
+		$valid_extensions=array('jpeg','jpg','gif','pdf','doc','docx');
+		$valid_id=rand(1000,10000000).".".$imgExt;
+		move_uploaded_file($tmp_dir,$upload_dir2.$valid_id);
+
+		$sql = "SELECT * FROM loan_application WHERE debtor_id= $debtor_id AND lender_id = $lender_id";
+		$query = $dbh->prepare($sql);
+		$query->execute();
+		if($query->rowCount()==0){
+			$insert = "INSERT INTO loan_application(debtor_id,lender_id,valid_id)VALUES(:debtor_id,:lender_id,:valid_id)";
+			$insert_query = $dbh->prepare($insert);
+			$insert_query->bindParam(':debtor_id',$debtor_id,PDO::PARAM_STR);
+			$insert_query->bindParam(':lender_id',$lender_id,PDO::PARAM_STR);
+			$insert_query->bindParam(':valid_id',$valid_id,PDO::PARAM_STR);
+			$insert_query->execute();
+		}else{
+			$update = "UPDATE loan_application SET valid_id = :valid_id WHERE debtor_id= $debtor_id AND lender_id = $lender_id";
+			$update_query = $dbh->prepare($update);
+			$update_query->bindParam(':valid_id',$valid_id,PDO::PARAM_STR);
+			$update_query->execute();
+		}	
+	}
+?>
+<?php
+	if(isset($_POST['barangay_clearance'])){
+		$debtor_id = $_SESSION['user_id'];
+		$lender_id = $_GET['lender_id'];
+
+		$images =$_FILES['barangay_clearance']['name'];
+		$tmp_dir = $_FILES['barangay_clearance']['tmp_name'];
+		$imageSize=$_FILES['barangay_clearance']['size'];
+
+		$upload_dir2='../assets/keen/hulam_media/';
+		$imgExt=strtolower(pathinfo($images,PATHINFO_EXTENSION));
+		$valid_extensions=array('jpeg','jpg','gif','pdf','doc','docx');
+		$barangay_clearance=rand(1000,10000000).".".$imgExt;
+		move_uploaded_file($tmp_dir,$upload_dir2.$barangay_clearance);
+
+		$sql = "SELECT * FROM loan_application WHERE debtor_id= $debtor_id AND lender_id = $lender_id";
+		$query = $dbh->prepare($sql);
+		$query->execute();
+		if($query->rowCount()==0){
+			$insert = "INSERT INTO loan_application(debtor_id,lender_id,barangay_clearance)VALUES(:debtor_id,:lender_id,:barangay_clearance)";
+			$insert_query = $dbh->prepare($insert);
+			$insert_query->bindParam(':debtor_id',$debtor_id,PDO::PARAM_STR);
+			$insert_query->bindParam(':lender_id',$lender_id,PDO::PARAM_STR);
+			$insert_query->bindParam(':barangay_clearance',$barangay_clearance,PDO::PARAM_STR);
+			$insert_query->execute();
+		}else{
+			$update = "UPDATE loan_application SET barangay_clearance = :barangay_clearance WHERE debtor_id= $debtor_id AND lender_id = $lender_id";
+			$update_query = $dbh->prepare($update);
+			$update_query->bindParam(':barangay_clearance',$barangay_clearance,PDO::PARAM_STR);
+			$update_query->execute();
+		}
+		
+	}
+?>
+<?php
+	if(isset($_POST['payslip'])){
+		$debtor_id = $_SESSION['user_id'];
+		$lender_id = $_GET['lender_id'];
+
+		$images =$_FILES['payslip']['name'];
+		$tmp_dir = $_FILES['payslip']['tmp_name'];
+		$imageSize=$_FILES['payslip']['size'];
+
+		$upload_dir2='../assets/keen/hulam_media/';
+		$imgExt=strtolower(pathinfo($images,PATHINFO_EXTENSION));
+		$valid_extensions=array('jpeg','jpg','gif','pdf','doc','docx');
+		$payslip=rand(1000,10000000).".".$imgExt;
+		move_uploaded_file($tmp_dir,$upload_dir2.$payslip);
+
+		$sql = "SELECT * FROM loan_application WHERE debtor_id= $debtor_id AND lender_id = $lender_id";
+		$query = $dbh->prepare($sql);
+		$query->execute();
+
+		if($query->rowCount()==0){
+			$insert = "INSERT INTO loan_application(debtor_id,lender_id,payslip)VALUES(:debtor_id,:lender_id,:payslip)";
+			$insert_query = $dbh->prepare($insert);
+			$insert_query->bindParam(':debtor_id',$debtor_id,PDO::PARAM_STR);
+			$insert_query->bindParam(':lender_id',$lender_id,PDO::PARAM_STR);
+			$insert_query->bindParam(':payslip',$payslip,PDO::PARAM_STR);
+			$insert_query->execute();
+		}else{
+			$update = "UPDATE loan_application SET payslip = :payslip WHERE debtor_id= $debtor_id AND lender_id = $lender_id";
+			$update_query = $dbh->prepare($update);
+			$update_query->bindParam(':payslip',$payslip,PDO::PARAM_STR);
+			$update_query->execute();
+		}
+	}
+?>
+<?php
+	if(isset($_POST['cedula'])){
+		$debtor_id = $_SESSION['user_id'];
+		$lender_id = $_GET['lender_id'];
+
+		$images =$_FILES['cedula']['name'];
+		$tmp_dir = $_FILES['cedula']['tmp_name'];
+		$imageSize=$_FILES['cedula']['size'];
+
+		$upload_dir2='../assets/keen/hulam_media/';
+		$imgExt=strtolower(pathinfo($images,PATHINFO_EXTENSION));
+		$valid_extensions=array('jpeg','jpg','gif','pdf','doc','docx');
+		$cedula=rand(1000,10000000).".".$imgExt;
+		move_uploaded_file($tmp_dir,$upload_dir2.$cedula);
+
+		$sql = "SELECT * FROM loan_application WHERE debtor_id= $debtor_id AND lender_id = $lender_id";
+		$query = $dbh->prepare($sql);
+		$query->execute();
+		if($query->rowCount()==0){
+			$insert = "INSERT INTO loan_application(debtor_id,lender_id,cedula)VALUES(:debtor_id,:lender_id,:cedula)";
+			$insert_query = $dbh->prepare($insert);
+			$insert_query->bindParam(':debtor_id',$debtor_id,PDO::PARAM_STR);
+			$insert_query->bindParam(':lender_id',$lender_id,PDO::PARAM_STR);
+			$insert_query->bindParam(':cedula',$cedula,PDO::PARAM_STR);
+			$insert_query->execute();
+		}else{
+			$update = "UPDATE loan_application SET cedula = :cedula WHERE debtor_id= $debtor_id AND lender_id = $lender_id";
+			$update_query = $dbh->prepare($update);
+			$update_query->bindParam(':cedula',$cedula,PDO::PARAM_STR);
+			$update_query->execute();
+		}
+	}
+?>
+<?php
+	if(isset($_POST['atm_transaction'])){
+		$debtor_id = $_SESSION['user_id'];
+		$lender_id = $_GET['lender_id'];
+
+		$images =$_FILES['atm_transaction']['name'];
+		$tmp_dir = $_FILES['atm_transaction']['tmp_name'];
+		$imageSize=$_FILES['atm_transaction']['size'];
+
+		$upload_dir2='../assets/keen/hulam_media/';
+		$imgExt=strtolower(pathinfo($images,PATHINFO_EXTENSION));
+		$valid_extensions=array('jpeg','jpg','gif','pdf','doc','docx');
+		$atm_transaction=rand(1000,10000000).".".$imgExt;
+		move_uploaded_file($tmp_dir,$upload_dir2.$atm_transaction);
+
+		$sql = "SELECT * FROM loan_application WHERE debtor_id= $debtor_id AND lender_id = $lender_id";
+		$query = $dbh->prepare($sql);
+		$query->execute();
+		if($query->rowCount()==0){
+			$insert = "INSERT INTO loan_application(debtor_id,lender_id,atm_transaction)VALUES(:debtor_id,:lender_id,:atm_transaction)";
+			$insert_query = $dbh->prepare($insert);
+			$insert_query->bindParam(':debtor_id',$debtor_id,PDO::PARAM_STR);
+			$insert_query->bindParam(':lender_id',$lender_id,PDO::PARAM_STR);
+			$insert_query->bindParam(':atm_transaction',$atm_transaction,PDO::PARAM_STR);
+			$insert_query->execute();
+		}else{
+			$update = "UPDATE loan_application SET atm_transaction = :atm_transaction WHERE debtor_id= $debtor_id AND lender_id = $lender_id";
+			$update_query = $dbh->prepare($update);
+			$update_query->bindParam(':atm_transaction',$atm_transaction,PDO::PARAM_STR);
+			$update_query->execute();
+		}
+	}
+?>
+<?php
+	if(isset($_POST['coe'])){
+		$debtor_id = $_SESSION['user_id'];
+		$lender_id = $_GET['lender_id'];
+
+		$images =$_FILES['coe']['name'];
+		$tmp_dir = $_FILES['coe']['tmp_name'];
+		$imageSize=$_FILES['coe']['size'];
+
+		$upload_dir2='../assets/keen/hulam_media/';
+		$imgExt=strtolower(pathinfo($images,PATHINFO_EXTENSION));
+		$valid_extensions=array('jpeg','jpg','gif','pdf','doc','docx');
+		$coe=rand(1000,10000000).".".$imgExt;
+		move_uploaded_file($tmp_dir,$upload_dir2.$coe);
+
+		$sql = "SELECT * FROM loan_application WHERE debtor_id= $debtor_id AND lender_id = $lender_id";
+		$query = $dbh->prepare($sql);
+		$query->execute();
+		if($query->rowCount()==0){
+			$insert = "INSERT INTO loan_application(debtor_id,lender_id,coe)VALUES(:debtor_id,:lender_id,:coe)";
+			$insert_query = $dbh->prepare($insert);
+			$insert_query->bindParam(':debtor_id',$debtor_id,PDO::PARAM_STR);
+			$insert_query->bindParam(':lender_id',$lender_id,PDO::PARAM_STR);
+			$insert_query->bindParam(':coe',$coe,PDO::PARAM_STR);
+			$insert_query->execute();
+		}else{
+			$update = "UPDATE loan_application SET coe = :coe WHERE debtor_id= $debtor_id AND lender_id = $lender_id";
+			$update_query = $dbh->prepare($update);
+			$update_query->bindParam(':coe',$coe,PDO::PARAM_STR);
+			$update_query->execute();
+		}
+	}
+?>
+<?php
+	if(isset($_POST['bank_statement'])){
+		$debtor_id = $_SESSION['user_id'];
+		$lender_id = $_GET['lender_id'];
+
+		$images =$_FILES['bank_statement']['name'];
+		$tmp_dir = $_FILES['bank_statement']['tmp_name'];
+		$imageSize=$_FILES['bank_statement']['size'];
+
+		$upload_dir2='../assets/keen/hulam_media/';
+		$imgExt=strtolower(pathinfo($images,PATHINFO_EXTENSION));
+		$valid_extensions=array('jpeg','jpg','gif','pdf','doc','docx');
+		$bank_statement=rand(1000,10000000).".".$imgExt;
+		move_uploaded_file($tmp_dir,$upload_dir2.$bank_statement);
+
+		$sql = "SELECT * FROM loan_application WHERE debtor_id= $debtor_id AND lender_id = $lender_id";
+		$query = $dbh->prepare($sql);
+		$query->execute();
+		if($query->rowCount()==0){
+			$insert = "INSERT INTO loan_application(debtor_id,lender_id,bank_statement)VALUES(:debtor_id,:lender_id,:bank_statement)";
+			$insert_query = $dbh->prepare($insert);
+			$insert_query->bindParam(':debtor_id',$debtor_id,PDO::PARAM_STR);
+			$insert_query->bindParam(':lender_id',$lender_id,PDO::PARAM_STR);
+			$insert_query->bindParam(':bank_statement',$bank_statement,PDO::PARAM_STR);
+			$insert_query->execute();
+		}else{
+			$update = "UPDATE loan_application SET bank_statement =:bank_statement WHERE debtor_id= $debtor_id AND lender_id = $lender_id";
+			$update_query = $dbh->prepare($update);
+			$update_query->bindParam(':bank_statement',$bank_statement,PDO::PARAM_STR);
+			$update_query->execute();
+		}
+	}
+?>
+<?php
+	if(isset($_POST['proof_billing'])){
+		$debtor_id = $_SESSION['user_id'];
+		$lender_id = $_GET['lender_id'];
+
+		$images =$_FILES['proof_billing']['name'];
+		$tmp_dir = $_FILES['proof_billing']['tmp_name'];
+		$imageSize=$_FILES['proof_billing']['size'];
+
+		$upload_dir2='../assets/keen/hulam_media/';
+		$imgExt=strtolower(pathinfo($images,PATHINFO_EXTENSION));
+		$valid_extensions=array('jpeg','jpg','gif','pdf','doc','docx');
+		$proof_billing=rand(1000,10000000).".".$imgExt;
+		move_uploaded_file($tmp_dir,$upload_dir2.$proof_billing);
+
+		$sql = "SELECT * FROM loan_application WHERE debtor_id= $debtor_id AND lender_id = $lender_id";
+		$query = $dbh->prepare($sql);
+		$query->execute();
+		if($query->rowCount()==0){
+			$insert = "INSERT INTO loan_application(debtor_id,lender_id,proof_billing)VALUES(:debtor_id,:lender_id,:proof_billing)";
+			$insert_query = $dbh->prepare($insert);
+			$insert_query->bindParam(':debtor_id',$debtor_id,PDO::PARAM_STR);
+			$insert_query->bindParam(':lender_id',$lender_id,PDO::PARAM_STR);
+			$insert_query->bindParam(':proof_billing',$proof_billing,PDO::PARAM_STR);
+			$insert_query->execute();
+		}else{
+			$update = "UPDATE loan_application SET proof_billing = :proof_billing WHERE debtor_id= $debtor_id AND lender_id = $lender_id";
+			$update_query = $dbh->prepare($update);
+			$update_query->bindParam(':proof_billing',$proof_billing,PDO::PARAM_STR);
+			$update_query->execute();
+		}
+	}
+?>
+<?php
+	if(isset($_POST['co_maker_id'])){
+		$debtor_id = $_SESSION['user_id'];
+		$lender_id = $_GET['lender_id'];
+
+		$images =$_FILES['co_maker_id']['name'];
+		$tmp_dir = $_FILES['co_maker_id']['tmp_name'];
+		$imageSize=$_FILES['co_maker_id']['size'];
+
+		$upload_dir2='../assets/keen/hulam_media/';
+		$imgExt=strtolower(pathinfo($images,PATHINFO_EXTENSION));
+		$valid_extensions=array('jpeg','jpg','gif','pdf','doc','docx');
+		$co_maker_id=rand(1000,10000000).".".$imgExt;
+		move_uploaded_file($tmp_dir,$upload_dir2.$co_maker_id);
+
+		$sql = "SELECT * FROM loan_application WHERE debtor_id= $debtor_id AND lender_id = $lender_id";
+		$query = $dbh->prepare($sql);
+		$query->execute();
+		if($query->rowCount()==0){
+			$insert = "INSERT INTO loan_application(debtor_id,lender_id,co_maker_id)VALUES(:debtor_id,:lender_id,:co_maker_id)";
+			$insert_query = $dbh->prepare($insert);
+			$insert_query->bindParam(':debtor_id',$debtor_id,PDO::PARAM_STR);
+			$insert_query->bindParam(':lender_id',$lender_id,PDO::PARAM_STR);
+			$insert_query->bindParam(':co_maker_id',$co_maker_id,PDO::PARAM_STR);
+			$insert_query->execute();
+		}else{
+			$update = "UPDATE loan_application SET co_maker_id = :co_maker_id WHERE debtor_id= $debtor_id AND lender_id = $lender_id";
+			$update_query = $dbh->prepare($update);
+			$update_query->bindParam(':co_maker_id',$co_maker_id,PDO::PARAM_STR);
+			$update_query->execute();
+		}
+	}
+?>
+<?php
+	if(isset($_POST['co_maker_cedula'])){
+		$debtor_id = $_SESSION['user_id'];
+		$lender_id = $_GET['lender_id'];
+
+		$images =$_FILES['co_maker_cedula']['name'];
+		$tmp_dir = $_FILES['co_maker_cedula']['tmp_name'];
+		$imageSize=$_FILES['co_maker_cedula']['size'];
+
+		$upload_dir2='../assets/keen/hulam_media/';
+		$imgExt=strtolower(pathinfo($images,PATHINFO_EXTENSION));
+		$valid_extensions=array('jpeg','jpg','gif','pdf','doc','docx');
+		$co_maker_cedula=rand(1000,10000000).".".$imgExt;
+		move_uploaded_file($tmp_dir,$upload_dir2.$co_maker_cedula);
+
+		$sql = "SELECT * FROM loan_application WHERE debtor_id= $debtor_id AND lender_id = $lender_id";
+		$query = $dbh->prepare($sql);
+		$query->execute();
+		if($query->rowCount()==0){
+			$insert = "INSERT INTO loan_application(debtor_id,lender_id,co_maker_cedula)VALUES(:debtor_id,:lender_id,:co_maker_cedula)";
+			$insert_query = $dbh->prepare($insert);
+			$insert_query->bindParam(':debtor_id',$debtor_id,PDO::PARAM_STR);
+			$insert_query->bindParam(':lender_id',$lender_id,PDO::PARAM_STR);
+			$insert_query->bindParam(':co_maker_cedula',$co_maker_cedula,PDO::PARAM_STR);
+			$insert_query->execute();
+		}else{
+			$update = "UPDATE loan_application SET co_maker_cedula = :co_maker_cedula WHERE debtor_id= $debtor_id AND lender_id = $lender_id";
+			$update_query = $dbh->prepare($update);
+			$update_query->bindParam(':co_maker_cedula',$co_maker_cedula,PDO::PARAM_STR);
+			$update_query->execute();
+		}
+	}
+?>
+<?php
+	if(isset($_POST['id_pic'])){
+		$debtor_id = $_SESSION['user_id'];
+		$lender_id = $_GET['lender_id'];
+
+		$images =$_FILES['id_pic']['name'];
+		$tmp_dir = $_FILES['id_pic']['tmp_name'];
+		$imageSize=$_FILES['id_pic']['size'];
+
+		$upload_dir2='../assets/keen/hulam_media/';
+		$imgExt=strtolower(pathinfo($images,PATHINFO_EXTENSION));
+		$valid_extensions=array('jpeg','jpg','gif','pdf','doc','docx');
+		$id_pic=rand(1000,10000000).".".$imgExt;
+		move_uploaded_file($tmp_dir,$upload_dir2.$id_pic);
+
+		$sql = "SELECT * FROM loan_application WHERE debtor_id= $debtor_id AND lender_id = $lender_id";
+		$query = $dbh->prepare($sql);
+		$query->execute();
+		if($query->rowCount()==0){
+			$insert = "INSERT INTO loan_application(debtor_id,lender_id,id_pic)VALUES(:debtor_id,:lender_id,:id_pic)";
+			$insert_query = $dbh->prepare($insert);
+			$insert_query->bindParam(':debtor_id',$debtor_id,PDO::PARAM_STR);
+			$insert_query->bindParam(':lender_id',$lender_id,PDO::PARAM_STR);
+			$insert_query->bindParam(':id_pic',$id_pic,PDO::PARAM_STR);
+			$insert_query->execute();
+		}else{
+			$update = "UPDATE loan_application SET id_pic = :id_pic WHERE debtor_id= $debtor_id AND lender_id = $lender_id";
+			$update_query = $dbh->prepare($update);
+			$update_query->bindParam(':id_pic',$id_pic,PDO::PARAM_STR);
+			$update_query->execute();
+		}
+	}
 ?>
 
 <!DOCTYPE html>
@@ -74,42 +438,28 @@ $lender = $query->fetch();
 					<!--end::Logo-->
 				</div>
 				<!--end::Logo-->
-				<!--begin::Nav-->
 				<div class="subheader-nav nav flex-grow-1">
-					<!--begin::Item-->
-					<a href="debtor/index.php" class="nav-item">
+					<a href="debtor/index.php" class="nav-item active">
 						<span class="nav-label px-10">
 							<span class="nav-title text-dark-75 font-weight-bold font-size-h4">&nbsp;&nbsp;&nbsp;&nbsp&nbsp;HOME</span>
-							<!-- <span class="nav-desc text-muted">Profile &amp; Account</span> -->
 						</span>
 					</a>
-					<!--end::Item-->
-					<!--begin::Item-->
-					<a href="debtor/apply_now.php" class="nav-item active">
-						<span class="nav-label px-10">
-							<span class="nav-title text-dark-75 font-weight-bold font-size-h4">APPLY NOW</span>
-							<!-- <span class="nav-desc text-muted">My Order List</span> -->
-						</span>
-					</a>
-					<!--end::Item-->
-					<!--begin::Item-->
 					<a href="debtor/update_information.php" class="nav-item">
 						<span class="nav-label px-10">
 							<span class="nav-title text-dark-75 font-weight-bold font-size-h4">UPDATE INFORMATION</span>
-							<!-- <span class="nav-desc text-muted">My Order List</span> -->
 						</span>
 					</a>
-					<!--end::Item-->
-					<!--begin::Item-->
 					<a href="debtor/loan_information.php" class="nav-item">
 						<span class="nav-label px-10">
 							<span class="nav-title text-dark-75 font-weight-bold font-size-h4">LOAN INFORMATION</span>
-							<!-- <span class="nav-desc text-muted">Dashboard &amp; Reports</span> -->
 						</span>
 					</a>
-					<!--end::Item-->
+					<a href="debtor/payment_information.php" class="nav-item">
+						<span class="nav-label px-5">
+							<span class="nav-title text-dark-75 font-weight-bold font-size-h4">PAYMENT INFORMATION</span>
+						</span>
+					</a>
 				</div>
-				<!--end::Nav-->
 			</div>
 
 			<!--begin::Topbar-->
@@ -155,25 +505,78 @@ $lender = $query->fetch();
 		<!--end::Subheader-->
 
 
-		<!--begin::Content-->
-		<div class="content d-flex flex-column flex-column-fluid" id="kt_content">
-			<!--begin::Entry-->
-			<div class="d-flex flex-column-fluid">
-				<!--begin::Container-->
-				<div class="container">
-
+			<!--begin::Content-->
+			<div class="content d-flex flex-column flex-column-fluid" id="kt_content">
 					<div class="d-flex flex-column-fluid">
 						<div class="container">
-							<!-- begin::Card-->
 							<div class="card card-custom overflow-hidden">
 								<div class="card-body p-0">
 									<div class="card card-custom gutter-b">
 										<div class="card-body">
+											
+											<div class="col-lg-12">
+												<div class="form-group">
+													<div class="card card-custom card-stretch card-stretch-half gutter-b">
+														<div class="card-body d-flex flex-column">
+															<div class="d-flex align-items-center">
+															<!-- <div class="info text-center"> -->
+																<div class="d-flex flex-column">
+																	<h4>Calculate Amount</h4>
+																</div>
+															</div>
+															<form method="get" autocomplete="off">
+																<input type="hidden" name="lender_id" value="<?= $_GET['lender_id'] ?>">
+																<div class="row">
+																	<div class="col-lg-4">
+																		<div class="input-group mb-3">
+																			<input class="form-control form-control-lg" type="number" name="amount" value="<?= isset($_GET['amount']) ? $_GET['amount'] : '' ?>" placeholder="Enter Loan Amount" required />
+																		</div>
+																	</div>
+																	<div class="col-lg-4">
+																		<div class="input-group mb-3">
+																			<input class="form-control form-control-lg" type="number" name="month" value="<?= isset($_GET['month']) ? $_GET['month'] : '' ?>" placeholder="Months To Pay" required />
+																		</div>
+																	</div>
+																	<div class="col-lg-3">
+																		<button type="submit" class="btn btn-primary btn-block font-weight-bolder btn-lg">SHOW</button>
+																	</div>
+																</div>
+															</form>
+															
+														</div>
+													</div>
+												</div>
+											</div>
+											<?php
+												if (!isset($_GET['amount']) && !isset($_GET['lender_id'])) {
+													$lender_id = $_GET['lender_id'];
+
+													$sql = $dbh->prepare("SELECT * FROM user INNER JOIN loan_features ON user.user_id = loan_features.lender_id WHERE loan_features.lender_id = $lender_id");
+													$sql->execute();
+													$lenders = $sql->fetchAll();
+												} else {
+													$amount = $_GET['amount'];
+													$lender_id = $_GET['lender_id'];
+													$month = $_GET['month'];
+													$sql = $dbh->prepare("SELECT * FROM `user` INNER JOIN `loan_features` ON user.user_id = loan_features.lender_id WHERE loan_features.min_loan <= $amount AND $amount <= loan_features.max_loan AND loan_features.min_term <= $month AND loan_features.max_term >= $month AND user.eligible = 'yes'");
+													$sql->execute();
+													$lenders = $sql->fetchAll();
+												}
+												?>
+											<?php if ($sql->rowCount() == 0) : ?>
+												<div class="card card-custom gutter-b">
+													<div class="card-body">
+														<h1 class="text-center">NO RECORDS FOUND</h1>
+													</div>
+												</div>
+											<?php endif; ?>
+											<?php foreach ($lenders as $lender) : ?>
 											<form action="debtor/logic/apply_loan.php" method="post" enctype="multipart/form-data">
+											<div class="card-body">
 												<div class="d-flex">
 													<div class="flex-shrink-0 mr-7">
 														<div class="symbol symbol-50 symbol-lg-120 symbol-circle">
-															<img alt="Pic" src="/hulam/assets/keen/company_logo/<?= $lender['company_logo'] ?>" />
+															<img alt="Pic" src="/hulam/assets/keen/hulam_media/<?= $lender['profile_pic'] ?>" />
 														</div>
 													</div>
 													<div class="flex-grow-1">
@@ -193,45 +596,44 @@ $lender = $query->fetch();
 														</div>
 													</div>
 												</div>
-												<div class="separator separator-solid my-7"></div>
-												<div class="d-flex align-items-center flex-wrap">
-													<div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
-														<div class="d-flex flex-column text-dark-75">
-															<span class="font-weight-bolder font-size-m">Loan Amount</span>
-															<span class="font-weight-bolder font-size-h5">
-																<span class="text-dark-50 font-weight-bold">Php &nbsp;</span>
-																<?php
-																if (!isset($_GET['amount'])) {
-																	echo '0.00';
-																} else {
-																	echo number_format($_GET['amount'], 2);
-																}
-																?>
-
-															</span>
-														</div>
-													</div>
-													<div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
-														<div class="d-flex flex-column text-dark-75">
-															<span class="font-weight-bolder font-size-m">Loan Term</span>
-															<span class="font-weight-bolder font-size-h5">
-																<?= $_GET['month'] ?><span class="text-dark-50 font-weight-bold">&nbsp; Months</span>
-														</div>
-													</div>
-													<div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
-														<div class="d-flex flex-column text-dark-75">
-															<span class="font-weight-bolder font-size-m">Interest Rate</span>
+												
+												<table class="table table-bordered">
+													<thead>
+													</thead>
+													<tbody>
+														<tr>
+															<td>Loan Amount</td>
+															<td>
+																<span class="font-weight-bolder font-size-h5">
+																	<span class="text-dark-50 font-weight-bold">Php &nbsp;</span>
+																	<?php
+																	if (!isset($_GET['amount'])) {
+																		echo '0.00';
+																	} else {
+																		echo number_format($_GET['amount'], 2);
+																	}
+																	?>
+																</span>
+															</td>
+														</tr>
+														<tr>
+															<td>Loan Term</td>
+															<td>
+																<span class="font-weight-bolder font-size-h5">
+																<?= $_GET['month'] ?><span class="text-dark-50 font-weight-bold">&nbsp; Months
+																</span>
+															</td>
+														</tr>
+														<tr>
+															<td>Interest Rate</td>
+															<td>
 															<span class="font-weight-bolder font-size-h5">
 																<span class="text-dark-50 font-weight-bold"></span><?= $lender['fix_rate'] ?>%</span>
-														</div>
-													</div>
-												</div>
-												<div class="separator separator-solid my-7"></div>
-												<div class="d-flex align-items-center flex-wrap">
-													<div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
-														<div class="d-flex flex-column text-dark-75">
-
-															<span class="font-weight-bolder font-size-sm">Total Amount to Pay</span>
+															</td>
+														</tr>
+														<tr>
+															<td>Total Amount to Pay</td>
+															<td>
 															<span class="font-weight-bolder font-size-h5">
 																<span class="text-dark-50 font-weight-bold">Php &nbsp;</span>
 																<?php
@@ -264,12 +666,11 @@ $lender = $query->fetch();
 																}
 																?>
 															</span>
-														</div>
-													</div>
-													<div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
-														<div class="d-flex flex-column text-dark-75">
-
-															<span class="font-weight-bolder font-size-sm">Monthly Payment</span>
+															</td>
+														</tr>
+														<tr>
+															<td>Monthly Payment</td>
+															<td>
 															<span class="font-weight-bolder font-size-h5">
 																<span class="text-dark-50 font-weight-bold">Php &nbsp;</span>
 																<?php
@@ -301,11 +702,11 @@ $lender = $query->fetch();
 																}
 																?>
 															</span>
-														</div>
-													</div>
-													<div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
-														<div class="d-flex flex-column text-dark-75">
-															<span class="font-weight-bolder font-size-sm">Total Interest to Pay</span>
+															</td>
+														</tr>
+														<tr>
+															<td>Total Interest to Pay</td>
+															<td>
 															<span class="font-weight-bolder font-size-h5">
 																<span class="text-dark-50 font-weight-bold">Php &nbsp;</span>
 																<?php
@@ -328,11 +729,21 @@ $lender = $query->fetch();
 																	}
 																} ?>
 															</span>
-														</div>
-													</div>
-												</div>
-												<!-- UPLOAD REQUIREMENTS -->
+															</td>
+														</tr>
+														<tr>
+															<td>Late Charges</td>
+															<td>
+															<span class="font-weight-bolder font-size-h5">
+																<span class="text-dark-50 font-weight-bold"></span><?= $lender['late_charges'] ?>%</span>
+															</td>
+														</tr>
+
+													</tbody>
+												</table>		
 												<div class="separator separator-solid my-7"></div>
+												<h5 class="text-info font-weight-bolder">Reminders</h5>
+												
 												<div class="form-group row">
 													<label class="col-xl-3 col-lg-3 col-form-label"></label>
 													<div class="col-lg-12 col-xl-12">
@@ -345,11 +756,11 @@ $lender = $query->fetch();
 												</div>
 												
 												<div class="separator separator-solid my-7"></div>
-												<h5>Loan Requirements</h5>
+												<h5 class="text-info font-weight-bolder">List of Required Documents</h5>
                                                 <table class="table table-bordered">
                                                     <thead>
                                                         <tr>
-                                                            <th>Requirements</th>
+                                                            <t >Requirements</th>
                                                             <th>Remarks</th>
                                                         </tr>
                                                     </thead>
@@ -374,77 +785,79 @@ $lender = $query->fetch();
                                                     </tbody>
                                                 </table>
 													</br></br>
-												<h5>Please upload Requeirements here</h5>
-												<?php
-													//if(isset($_SESSION['status'])){
-														?>
-														<!-- <div class="alert alert-success alert-dismissable" id="flash-msg">
-														<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
-														<h4>Success!</h4>
-														</div> -->
-														<?php
-														//unset($_SESSION['status']);
-													//}
-													?>
+													<h5 class="text-info font-weight-bolder">Please upload Requeirements here:</h5>
 													<table class="table table-bordered">
 														<thead>
 															<tr>
 																<th>Type of Documents</th>
+																<th>Documents</th>
 																<th>Action</th>
 															</tr>
 														</thead>
 														<tbody>
 															<?php
-															// $loan_app_id = intval($_GET['loan_app_id']);
-
-															// $sql = "SELECT * FROM loan_application";
-															// $query = $dbh->prepare($sql);
-															// $query->execute();
-															// $results = $query->fetch();
-															?>															
+															$user_id = $_SESSION['user_id'];
+															$lender_id = $_GET['lender_id'];
+															$sql = "SELECT * FROM loan_application WHERE debtor_id = $user_id";
+															$query = $dbh->prepare($sql);
+															$query->execute();
+															$result = $query->fetch();
+															?>
+																														
 															<tr>
 																<td>Valid ID</td>
-																<td><input type="file" name="valid_id" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3"/></td>
+																<td><a href="/hulam/assets/keen/hulam_media/<?= $result['valid_id']?>" target="_blank"><?= $result['valid_id']?></a></td>
+																<td><a href="" class="btn btn-outline-primary" data-toggle="modal" data-target="#valid_id">Upload</a></td>
 															</tr>
 															<tr>
 																<td>Barangay Clearanace</td>
-																<td><input type="file" name="barangay_clearance" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3"/></td>
+																<td><a href="/hulam/assets/keen/hulam_media/<?= $result['barangay_clearance']?>" target="_blank"><?= $result['barangay_clearance']?></a></td>
+																<td><a href="" class="btn btn-outline-primary" data-toggle="modal" data-target="#barangay_clearance">Upload</a></td>
 															</tr>
 															<tr>
 																<td>Payslip</td>
-																<td><input type="file" name="payslip" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3"/></td>
+																<td><a href="/hulam/assets/keen/hulam_media/<?= $result['payslip']?>" target="_blank"><?= $result['payslip']?></a></td>
+																<td><a href="" class="btn btn-outline-primary" data-toggle="modal" data-target="#payslip">Upload</a></td>
 															</tr>
 															<tr>
 																<td>Cedula</td>
-																<td><input type="file" name="cedula" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3"/></td>
+																<td><a href="/hulam/assets/keen/hulam_media/<?= $result['cedula']?>" target="_blank"><?= $result['cedula']?></a></td>
+																<td><a href="" class="btn btn-outline-primary" data-toggle="modal" data-target="#cedula">Upload</a></td>
 															</tr>
 															<tr>
 																<td>ATM Latest Transaction Receipt</td>
-																<td><input type="file" name="atm_transaction" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3"/></td>
+																<td><a href="/hulam/assets/keen/hulam_media/<?= $result['atm_transaction']?>" target="_blank"><?= $result['atm_transaction']?></a></td>
+																<td><a href="" class="btn btn-outline-primary" data-toggle="modal" data-target="#atm_transaction">Upload</a></td>
 															</tr>
 															<tr>
 																<td>Certificate of Employment</td>
-																<td><input type="file" name="coe" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3"/></td>
+																<td><a href="/hulam/assets/keen/hulam_media/<?= $result['coe']?>" target="_blank"><?= $result['coe']?></a></td>
+																<td><a href="" class="btn btn-outline-primary" data-toggle="modal" data-target="#coe">Upload</a></td>
 															</tr>
 															<tr>
 																<td>Bank Statement</td>
-																<td><input type="file" name="bank_statement" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3"/></td>
+																<td><a href="/hulam/assets/keen/hulam_media/<?= $result['bank_statement']?>" target="_blank"><?= $result['bank_statement']?></a></td>
+																<td><a href="" class="btn btn-outline-primary" data-toggle="modal" data-target="#bank_statement">Upload</a></td>
 															</tr>
 															<tr>
 																<td>Proof of Billing</td>
-																<td><input type="file" name="proof_billing" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3"/></td>
+																<td><a href="/hulam/assets/keen/hulam_media/<?= $result['proof_billing']?>" target="_blank"><?= $result['proof_billing']?></a></td>
+																<td><a href="" class="btn btn-outline-primary" data-toggle="modal" data-target="#proof_billing">Upload</a></td>
 															</tr>
 															<tr>
 																<td>Co-Maker ID</td>
-																<td><input type="file" name="co_maker_id" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3"/></td>
+																<td><a href="/hulam/assets/keen/hulam_media/<?= $result['co_maker_id']?>" target="_blank"><?= $result['co_maker_id']?></a></td>
+																<td><a href="" class="btn btn-outline-primary" data-toggle="modal" data-target="#co_maker_id">Upload</a></td>
 															</tr>
 															<tr>
 																<td>Co-Maker Cedula</td>
-																<td><input type="file" name="co_maker_cedula" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3"/></td>
+																<td><a href="/hulam/assets/keen/hulam_media/<?= $result['co_maker_cedula']?>" target="_blank"><?= $result['co_maker_cedula']?></a></td>
+																<td><a href="" class="btn btn-outline-primary" data-toggle="modal" data-target="#co_maker_cedula">Upload</a></td>
 															</tr>
 															<tr>
 																<td>2x2 ID</td>
-																<td><input type="file" name="x_id" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3"/></td>
+																<td><a href="/hulam/assets/keen/hulam_media/<?= $result['id_pic']?>" target="_blank"><?= $result['id_pic']?></a></td>
+																<td><a href="" class="btn btn-outline-primary" data-toggle="modal" data-target="#id_pic">Upload</a></td>
 															</tr>
 														</tbody>
 													</table>
@@ -558,7 +971,7 @@ $lender = $query->fetch();
 																										} ?>">
 													<input type="hidden" name="late_charges" value="<?= $lender['late_charges'] ?>">
 
-													<button type="submit" name="submit" class="btn btn-sm btn-primary font-weight-bolder">Submit
+													<button type="submit" name="submit" class="btn btn-primary btn-lg btn-shadow font-weight-bold mr-2">Submit
 														<span class="svg-icon svg-icon-md ml-3">
 															<!--begin::Svg Icon | path:assets/media/svg/icons/Navigation/Check.svg-->
 															<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
@@ -571,6 +984,7 @@ $lender = $query->fetch();
 														</span>
 													</button>
 											</form>
+											<?php endforeach; ?>
 											<!-- Start Modal -->
 											<div class="modal fade" id="view_terms" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
 												<div class="modal-dialog modal-dialog-centered modal-xl" role="document">
@@ -617,7 +1031,281 @@ $lender = $query->fetch();
 												</div>
 											</div>
 											<!-- End Modal -->
-											
+											<!-- Start Modal -->
+											<form action="" method="post" enctype="multipart/form-data">
+												<div class="modal fade" id="valid_id" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
+													<div class="modal-dialog modal-dialog-centered modal-md" role="document">
+														<div class="modal-content">
+															<div class="modal-header">
+																<h5 class="modal-title" id="exampleModalLabel">Upload Valid ID</h5>
+																<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+																	<i aria-hidden="true" class="ki ki-close"></i>
+																</button>
+															</div>
+															<div class="col-xl-4">
+																<div class="form-group">
+																	<input type="file" name="valid_id" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3" />
+																</div>
+															</div>
+															<div class="modal-footer">
+																
+																<button type="submit" name="valid_id" class="btn btn-primary font-weight-bold">Save</button>
+															</div>
+														</div>
+													</div>
+												</div>
+											</form>
+											<!-- End Modal -->
+											<!-- Start Modal -->
+											<form action="" method="post" enctype="multipart/form-data">
+												<div class="modal fade" id="barangay_clearance" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
+													<div class="modal-dialog modal-dialog-centered modal-md" role="document">
+														<div class="modal-content">
+															<div class="modal-header">
+																<h5 class="modal-title" id="exampleModalLabel">Upload Barangay Clearance</h5>
+																<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+																	<i aria-hidden="true" class="ki ki-close"></i>
+																</button>
+															</div>
+															<div class="col-xl-4">
+																<div class="form-group">
+																	<input type="file" name="barangay_clearance" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3" />
+																</div>
+															</div>
+															<div class="modal-footer">
+																
+																<button type="submit" name="barangay_clearance" class="btn btn-primary font-weight-bold">Save</button>
+															</div>
+														</div>
+													</div>
+												</div>
+											</form>
+											<!-- End Modal -->
+											<!-- Start Modal -->
+											<form action="" method="post" enctype="multipart/form-data">
+												<div class="modal fade" id="payslip" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
+													<div class="modal-dialog modal-dialog-centered modal-md" role="document">
+														<div class="modal-content">
+															<div class="modal-header">
+																<h5 class="modal-title" id="exampleModalLabel">Upload Payslip</h5>
+																<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+																	<i aria-hidden="true" class="ki ki-close"></i>
+																</button>
+															</div>
+															<div class="col-xl-4">
+																<div class="form-group">
+																	<input type="file" name="payslip" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3" />
+																</div>
+															</div>
+															<div class="modal-footer">
+																
+																<button type="submit" name="payslip" class="btn btn-primary font-weight-bold">Save</button>
+															</div>
+														</div>
+													</div>
+												</div>
+											</form>
+											<!-- End Modal -->
+											<!-- Start Modal -->
+											<form action="" method="post" enctype="multipart/form-data">
+												<div class="modal fade" id="cedula" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
+													<div class="modal-dialog modal-dialog-centered modal-md" role="document">
+														<div class="modal-content">
+															<div class="modal-header">
+																<h5 class="modal-title" id="exampleModalLabel">Upload Cedula</h5>
+																<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+																	<i aria-hidden="true" class="ki ki-close"></i>
+																</button>
+															</div>
+															<div class="col-xl-4">
+																<div class="form-group">
+																	<input type="file" name="cedula" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3" />
+																</div>
+															</div>
+															<div class="modal-footer">
+																
+																<button type="submit" name="cedula" class="btn btn-primary font-weight-bold">Save</button>
+															</div>
+														</div>
+													</div>
+												</div>
+											</form>
+											<!-- End Modal -->
+											<!-- Start Modal -->
+											<form action="" method="post" enctype="multipart/form-data">
+												<div class="modal fade" id="atm_transaction" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
+													<div class="modal-dialog modal-dialog-centered modal-md" role="document">
+														<div class="modal-content">
+															<div class="modal-header">
+																<h5 class="modal-title" id="exampleModalLabel">Upload ATM Transaction Receipt</h5>
+																<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+																	<i aria-hidden="true" class="ki ki-close"></i>
+																</button>
+															</div>
+															<div class="col-xl-4">
+																<div class="form-group">
+																	<input type="file" name="atm_transaction" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3" />
+																</div>
+															</div>
+															<div class="modal-footer">
+																
+																<button type="submit" name="atm_transaction" class="btn btn-primary font-weight-bold">Save</button>
+															</div>
+														</div>
+													</div>
+												</div>
+											</form>
+											<!-- End Modal -->
+											<!-- Start Modal -->
+											<form action="" method="post" enctype="multipart/form-data">
+												<div class="modal fade" id="coe" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
+													<div class="modal-dialog modal-dialog-centered modal-md" role="document">
+														<div class="modal-content">
+															<div class="modal-header">
+																<h5 class="modal-title" id="exampleModalLabel">Upload Certificate of Employment</h5>
+																<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+																	<i aria-hidden="true" class="ki ki-close"></i>
+																</button>
+															</div>
+															<div class="col-xl-4">
+																<div class="form-group">
+																	<input type="file" name="coe" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3" />
+																</div>
+															</div>
+															<div class="modal-footer">
+																
+																<button type="submit" name="coe" class="btn btn-primary font-weight-bold">Save</button>
+															</div>
+														</div>
+													</div>
+												</div>
+											</form>
+											<!-- End Modal -->
+											<!-- Start Modal -->
+											<form action="" method="post" enctype="multipart/form-data">
+												<div class="modal fade" id="bank_statement" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
+													<div class="modal-dialog modal-dialog-centered modal-md" role="document">
+														<div class="modal-content">
+															<div class="modal-header">
+																<h5 class="modal-title" id="exampleModalLabel">Upload Bank Statement</h5>
+																<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+																	<i aria-hidden="true" class="ki ki-close"></i>
+																</button>
+															</div>
+															<div class="col-xl-4">
+																<div class="form-group">
+																	<input type="file" name="bank_statement" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3" />
+																</div>
+															</div>
+															<div class="modal-footer">
+																
+																<button type="submit" name="bank_statement" class="btn btn-primary font-weight-bold">Save</button>
+															</div>
+														</div>
+													</div>
+												</div>
+											</form>
+											<!-- End Modal -->
+											<!-- Start Modal -->
+											<form action="" method="post" enctype="multipart/form-data">
+												<div class="modal fade" id="proof_billing" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
+													<div class="modal-dialog modal-dialog-centered modal-md" role="document">
+														<div class="modal-content">
+															<div class="modal-header">
+																<h5 class="modal-title" id="exampleModalLabel">Upload Proof of Billing</h5>
+																<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+																	<i aria-hidden="true" class="ki ki-close"></i>
+																</button>
+															</div>
+															<div class="col-xl-4">
+																<div class="form-group">
+																	<input type="file" name="proof_billing" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3" />
+																</div>
+															</div>
+															<div class="modal-footer">
+																
+																<button type="submit" name="proof_billing" class="btn btn-primary font-weight-bold">Save</button>
+															</div>
+														</div>
+													</div>
+												</div>
+											</form>
+											<!-- End Modal -->
+											<!-- Start Modal -->
+											<form action="" method="post" enctype="multipart/form-data">
+												<div class="modal fade" id="co_maker_id" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
+													<div class="modal-dialog modal-dialog-centered modal-md" role="document">
+														<div class="modal-content">
+															<div class="modal-header">
+																<h5 class="modal-title" id="exampleModalLabel">Upload Co-Maker ID</h5>
+																<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+																	<i aria-hidden="true" class="ki ki-close"></i>
+																</button>
+															</div>
+															<div class="col-xl-4">
+																<div class="form-group">
+																	<input type="file" name="co_maker_id" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3" />
+																</div>
+															</div>
+															<div class="modal-footer">
+																
+																<button type="submit" name="co_maker_id" class="btn btn-primary font-weight-bold">Save</button>
+															</div>
+														</div>
+													</div>
+												</div>
+											</form>
+											<!-- End Modal -->
+											<!-- Start Modal -->
+											<form action="" method="post" enctype="multipart/form-data">
+												<div class="modal fade" id="co_maker_cedula" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
+													<div class="modal-dialog modal-dialog-centered modal-md" role="document">
+														<div class="modal-content">
+															<div class="modal-header">
+																<h5 class="modal-title" id="exampleModalLabel">Upload Co-Maker Cedula</h5>
+																<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+																	<i aria-hidden="true" class="ki ki-close"></i>
+																</button>
+															</div>
+															<div class="col-xl-4">
+																<div class="form-group">
+																	<input type="file" name="co_maker_cedula" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3" />
+																</div>
+															</div>
+															<div class="modal-footer">
+																
+																<button type="submit" name="co_maker_cedula" class="btn btn-primary font-weight-bold">Save</button>
+															</div>
+														</div>
+													</div>
+												</div>
+											</form>
+											<!-- End Modal -->
+											<!-- Start Modal -->
+											<form action="" method="post" enctype="multipart/form-data">
+												<div class="modal fade" id="id_pic" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
+													<div class="modal-dialog modal-dialog-centered modal-md" role="document">
+														<div class="modal-content">
+															<div class="modal-header">
+																<h5 class="modal-title" id="exampleModalLabel">Upload 2x2 Picture</h5>
+																<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+																	<i aria-hidden="true" class="ki ki-close"></i>
+																</button>
+															</div>
+															<div class="col-xl-4">
+																<div class="form-group">
+																	<input type="file" name="id_pic" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3" />
+																</div>
+															</div>
+															<div class="modal-footer">
+																
+																<button type="submit" name="id_pic" class="btn btn-primary font-weight-bold">Save</button>
+															</div>
+														</div>
+													</div>
+												</div>
+											</form>
+											<!-- End Modal -->
 										</div>
 									</div>
 								</div>
@@ -627,9 +1315,7 @@ $lender = $query->fetch();
 				</div>
 			</div>
 		</div>
-	</div>
-	</div>
-
+	
 	<div class="footer bg-white py-4 d-flex flex-lg-column" id="kt_footer">
 		<div class="container d-flex flex-column flex-md-row align-items-center justify-content-between">
 			<div class="text-dark order-2 order-md-1">
@@ -663,7 +1349,7 @@ $lender = $query->fetch();
 			<!--begin::Header-->
 			<div class="d-flex align-items-center mt-5">
 				<div class="symbol symbol-100 mr-5">
-					<div class="symbol-label" style="background-image:url('assets/keen/media/logos/icon-debtors.png')"></div>
+				<div class="symbol-label" style="background-image:url('assets/keen/hulam_media/<?= $user['profile_pic']?>')"></div>
 					<i class="symbol-badge bg-success"></i>
 				</div>
 				<div class="d-flex flex-column">

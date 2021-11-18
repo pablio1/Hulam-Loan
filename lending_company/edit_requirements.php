@@ -154,7 +154,7 @@ if(isset($_POST['update_req'])){
 										<span class="menu-text">Dashboard</span>
 									</a>
 								</li>
-							<li class="menu-section">
+								<li class="menu-section">
 								<h4 class="menu-text">Manage Account</h4>
 								<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
 							</li>
@@ -269,89 +269,91 @@ if(isset($_POST['update_req'])){
 									</ul>
 								</div>
 							</li>
+							<li class="menu-section">
+								<h4 class="menu-text">Manage Payment</h4>
+								<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
+							</li>
 							<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
 								<a href="javascript:;" class="menu-link menu-toggle">
 									<span class="svg-icon menu-icon">
 									</span>
-									<span class="menu-text">Loan Application</span>
+									<span class="menu-text">Payment Information</span>
 									<i class="menu-arrow"></i>
 								</a>
 								<div class="menu-submenu">
 									<i class="menu-arrow"></i>
 									<ul class="menu-subnav">
-										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-											<a href="lending_company/pending_loan.php" class="menu-link menu-toggle">
-												<i class="menu-bullet">
-													<span></span>
-												</i>
-												<span class="menu-text">Pending Loan</span>
-											</a>
-										</li>
-										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-											<a href="lending_company/approved_loan.php" class="menu-link menu-toggle">
-												<i class="menu-bullet">
-													<span></span>
-												</i>
-												<span class="menu-text">Approved Loan</span>
-											</a>
-										</li>
-										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-											<a href="lending_company/declined_loan.php" class="menu-link menu-toggle">
-												<i class="menu-bullet">
-													<span></span>
-												</i>
-												<span class="menu-text">Declined Loan</span>
-											</a>
-										</li>
-
+									<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+												<a href="lending_company/payment_mark_received.php" class="menu-link menu-toggle">
+													<i class="menu-bullet">
+														<span></span>
+													</i>
+													<span class="menu-text">Payment Records</span>
+													<span class="menu-label">
+													</span>
+													<i class="menu-arrow"></i>
+												</a>
+											</li>
+											<!-- <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+												<a href="lending_company/payment_records.php" class="menu-link menu-toggle">
+													<i class="menu-bullet">
+														<span></span>
+													</i>
+													<span class="menu-text">Payment Records</span>
+													<span class="menu-label">
+													</span>
+													<i class="menu-arrow"></i>
+												</a>
+											</li> -->
 									</ul>
 								</div>
 							</li>
-								<li class="menu-section">
-									<h4 class="menu-text">Manage Report</h4>
-									<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
-								</li>
-								<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-									<a href="javascript:;" class="menu-link menu-toggle">
-										<span class="svg-icon menu-icon">
-										</span>
-										<span class="menu-text">Generate Report</span>
-										<i class="menu-arrow"></i>
-									</a>
-									<div class="menu-submenu">
-										<i class="menu-arrow"></i>
-										<ul class="menu-subnav">
-											<li class="menu-item menu-item-parent" aria-haspopup="true">
-												<span class="menu-link">
-													<span class="menu-text">Themes</span>
-												</span>
-											</li>
-											<li class="menu-item" aria-haspopup="true">
-												<a href="layout/themes/aside-light.html" class="menu-link">
-													<i class="menu-bullet menu-bullet-dot">
-														<span></span>
-													</i>
-													<span class="menu-text">Light Aside</span>
-												</a>
-											</li>
-											<li class="menu-item" aria-haspopup="true">
-												<a href="layout/themes/header-dark.html" class="menu-link">
-													<i class="menu-bullet menu-bullet-dot">
-														<span></span>
-													</i>
-													<span class="menu-text">Dark Header</span>
-												</a>
-											</li>
-										</ul>
-									</div>
-								</li>
+
+							<li class="menu-section">
+								<h4 class="menu-text">Manage Report</h4>
+								<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
+							</li>
+							<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+								<a href="javascript:;" class="menu-link menu-toggle">
+									<span class="svg-icon menu-icon">
+									</span>
+									<span class="menu-text">Generate Report</span>
+									<i class="menu-arrow"></i>
+								</a>
+								<div class="menu-submenu">
+									<i class="menu-arrow"></i>
+									<ul class="menu-subnav">
+										<li class="menu-item menu-item-parent" aria-haspopup="true">
+											<span class="menu-link">
+												<span class="menu-text">Themes</span>
+											</span>
+										</li>
+										<li class="menu-item" aria-haspopup="true">
+											<a href="layout/themes/aside-light.html" class="menu-link">
+												<i class="menu-bullet menu-bullet-dot">
+													<span></span>
+												</i>
+												<span class="menu-text">Light Aside</span>
+											</a>
+										</li>
+										<li class="menu-item" aria-haspopup="true">
+											<a href="layout/themes/header-dark.html" class="menu-link">
+												<i class="menu-bullet menu-bullet-dot">
+													<span></span>
+												</i>
+												<span class="menu-text">Dark Header</span>
+											</a>
+										</li>
+									</ul>
+								</div>
+							</li>
 							<!--end::Menu Nav-->
-						</div>
-						<!--end::Menu Container-->
 					</div>
-					<!--end::Aside Menu-->
+					<!--end::Menu Container-->
 				</div>
-				<!--end::Aside-->
+				<!--end::Aside Menu-->
+			</div>
+			<!--end::Aside-->
 				<!--begin::Wrapper-->
 				<div class="d-flex flex-column flex-row-fluid wrapper" id="kt_wrapper">
 					<!--begin::Header-->

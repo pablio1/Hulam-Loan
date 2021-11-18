@@ -271,28 +271,28 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 								<div class="menu-submenu">
 									<i class="menu-arrow"></i>
 									<ul class="menu-subnav">
-										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-											<a href="lending_company/pending_loan.php" class="menu-link menu-toggle">
-												<i class="menu-bullet">
-													<span></span>
-												</i>
-												<span class="menu-text">Payment Received</span>
-												<span class="menu-label">
-												</span>
-												<i class="menu-arrow"></i>
-											</a>
-										</li>
-										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-											<a href="lending_company/payment_records.php" class="menu-link menu-toggle">
-												<i class="menu-bullet">
-													<span></span>
-												</i>
-												<span class="menu-text">Payment Records</span>
-												<span class="menu-label">
-												</span>
-												<i class="menu-arrow"></i>
-											</a>
-										</li>
+									<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+												<a href="lending_company/payment_mark_received.php" class="menu-link menu-toggle">
+													<i class="menu-bullet">
+														<span></span>
+													</i>
+													<span class="menu-text">Payment Records</span>
+													<span class="menu-label">
+													</span>
+													<i class="menu-arrow"></i>
+												</a>
+											</li>
+											<!-- <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+												<a href="lending_company/payment_records.php" class="menu-link menu-toggle">
+													<i class="menu-bullet">
+														<span></span>
+													</i>
+													<span class="menu-text">Payment Records</span>
+													<span class="menu-label">
+													</span>
+													<i class="menu-arrow"></i>
+												</a>
+											</li> -->
 									</ul>
 								</div>
 							</li>

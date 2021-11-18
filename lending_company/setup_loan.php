@@ -201,7 +201,7 @@
 											<span class="menu-text">Dashboard</span>
 										</a>
 									</li>
-							<li class="menu-section">
+									<li class="menu-section">
 								<h4 class="menu-text">Manage Account</h4>
 								<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
 							</li>
@@ -316,173 +316,91 @@
 									</ul>
 								</div>
 							</li>
-								<li class="menu-section">
-									<h4 class="menu-text">Manage Payment</h4>
-									<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
-								</li>
-								<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-									<a href="javascript:;" class="menu-link menu-toggle">
-										<span class="svg-icon menu-icon">
-										</span>
-										<span class="menu-text">Setup Loan</span>
-										<i class="menu-arrow"></i>
-									</a>
-									<div class="menu-submenu">
-										<ul class="menu-subnav">
-											<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-												<a href="lending_company/setup_loan.php" class="menu-link menu-toggle">
-													<span class="svg-icon menu-icon">
-													</span>
-													<span class="menu-text">Setup Loan Features</span>
-												</a>
-											</li>
-											<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-												<a href="lending_company/set_requirements.php" class="menu-link menu-toggle">
-													<span class="svg-icon menu-icon">
-													</span>
-													<span class="menu-text">Set Requirements</span>
-												</a>
-											</li>
-											<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-												<a href="lending_company/setup_payment.php" class="menu-link menu-toggle">
-													<span class="svg-icon menu-icon">
-													</span>
-													<span class="menu-text">Set Mode of Payment</span>
-												</a>
-											</li>
-											<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-												<a href="lending_company/set_notice.php" class="menu-link menu-toggle">
-													<span class="svg-icon menu-icon">
-													</span>
-													<span class="menu-text">Set Loan Notice</span>
-												</a>
-											</li>
-										</ul>
-									</div>
-								</li>
-								<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-									<a href="javascript:;" class="menu-link menu-toggle">
-										<span class="svg-icon menu-icon">
-										</span>
-										<span class="menu-text">Loan Application</span>
-										<i class="menu-arrow"></i>
-									</a>
-									<div class="menu-submenu">
-										<i class="menu-arrow"></i>
-										<ul class="menu-subnav">
-											<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-												<a href="lending_company/pending_loan.php" class="menu-link menu-toggle">
+							<li class="menu-section">
+								<h4 class="menu-text">Manage Payment</h4>
+								<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
+							</li>
+							<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+								<a href="javascript:;" class="menu-link menu-toggle">
+									<span class="svg-icon menu-icon">
+									</span>
+									<span class="menu-text">Payment Information</span>
+									<i class="menu-arrow"></i>
+								</a>
+								<div class="menu-submenu">
+									<i class="menu-arrow"></i>
+									<ul class="menu-subnav">
+									<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+												<a href="lending_company/payment_mark_received.php" class="menu-link menu-toggle">
 													<i class="menu-bullet">
 														<span></span>
 													</i>
-													<span class="menu-text">Pending Loan</span>
+													<span class="menu-text">Payment Records</span>
+													<span class="menu-label">
+													</span>
+													<i class="menu-arrow"></i>
 												</a>
 											</li>
-											<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-												<a href="lending_company/approved_loan.php" class="menu-link menu-toggle">
+											<!-- <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+												<a href="lending_company/payment_records.php" class="menu-link menu-toggle">
 													<i class="menu-bullet">
 														<span></span>
 													</i>
-													<span class="menu-text">Approved Loan</span>
+													<span class="menu-text">Payment Records</span>
+													<span class="menu-label">
+													</span>
+													<i class="menu-arrow"></i>
 												</a>
-											</li>
-											<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-												<a href="lending_company/declined_loan.php" class="menu-link menu-toggle">
-													<i class="menu-bullet">
-														<span></span>
-													</i>
-													<span class="menu-text">Declined Loan</span>
-												</a>
-											</li>
+											</li> -->
+									</ul>
+								</div>
+							</li>
 
-										</ul>
-									</div>
-								</li>
-									<li class="menu-section">
-										<h4 class="menu-text">Manage Payment</h4>
-										<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
-									</li>
-									<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-										<a href="javascript:;" class="menu-link menu-toggle">
-											<span class="svg-icon menu-icon">
+							<li class="menu-section">
+								<h4 class="menu-text">Manage Report</h4>
+								<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
+							</li>
+							<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+								<a href="javascript:;" class="menu-link menu-toggle">
+									<span class="svg-icon menu-icon">
+									</span>
+									<span class="menu-text">Generate Report</span>
+									<i class="menu-arrow"></i>
+								</a>
+								<div class="menu-submenu">
+									<i class="menu-arrow"></i>
+									<ul class="menu-subnav">
+										<li class="menu-item menu-item-parent" aria-haspopup="true">
+											<span class="menu-link">
+												<span class="menu-text">Themes</span>
 											</span>
-											<span class="menu-text">Payment Information</span>
-											<i class="menu-arrow"></i>
-										</a>
-										<div class="menu-submenu">
-											<i class="menu-arrow"></i>
-											<ul class="menu-subnav">
-												<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-													<a href="lending_company/payment_received.php" class="menu-link menu-toggle">
-														<i class="menu-bullet">
-															<span></span>
-														</i>
-														<span class="menu-text">Payment Received</span>
-														<span class="menu-label">
-														</span>
-														<i class="menu-arrow"></i>
-													</a>
-												</li>
-												<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-													<a href="lending_company/payment_records.php" class="menu-link menu-toggle">
-														<i class="menu-bullet">
-															<span></span>
-														</i>
-														<span class="menu-text">Payment Records</span>
-														<span class="menu-label">
-														</span>
-														<i class="menu-arrow"></i>
-													</a>
-												</li>
-											</ul>
-										</div>
-									</li>
-									
-									<li class="menu-section">
-										<h4 class="menu-text">Manage Report</h4>
-										<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
-									</li>
-									<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-										<a href="javascript:;" class="menu-link menu-toggle">
-											<span class="svg-icon menu-icon">
-											</span>
-											<span class="menu-text">Generate Report</span>
-											<i class="menu-arrow"></i>
-										</a>
-										<div class="menu-submenu">
-											<i class="menu-arrow"></i>
-											<ul class="menu-subnav">
-												<li class="menu-item menu-item-parent" aria-haspopup="true">
-													<span class="menu-link">
-														<span class="menu-text">Themes</span>
-													</span>
-												</li>
-												<li class="menu-item" aria-haspopup="true">
-													<a href="layout/themes/aside-light.html" class="menu-link">
-														<i class="menu-bullet menu-bullet-dot">
-															<span></span>
-														</i>
-														<span class="menu-text">Light Aside</span>
-													</a>
-												</li>
-												<li class="menu-item" aria-haspopup="true">
-													<a href="layout/themes/header-dark.html" class="menu-link">
-														<i class="menu-bullet menu-bullet-dot">
-															<span></span>
-														</i>
-														<span class="menu-text">Dark Header</span>
-													</a>
-												</li>
-											</ul>
-										</div>
-									</li>
-								<!--end::Menu Nav-->
-							</div>
-							<!--end::Menu Container-->
-						</div>
-						<!--end::Aside Menu-->
+										</li>
+										<li class="menu-item" aria-haspopup="true">
+											<a href="layout/themes/aside-light.html" class="menu-link">
+												<i class="menu-bullet menu-bullet-dot">
+													<span></span>
+												</i>
+												<span class="menu-text">Light Aside</span>
+											</a>
+										</li>
+										<li class="menu-item" aria-haspopup="true">
+											<a href="layout/themes/header-dark.html" class="menu-link">
+												<i class="menu-bullet menu-bullet-dot">
+													<span></span>
+												</i>
+												<span class="menu-text">Dark Header</span>
+											</a>
+										</li>
+									</ul>
+								</div>
+							</li>
+							<!--end::Menu Nav-->
 					</div>
-					<!--end::Aside-->
+					<!--end::Menu Container-->
+				</div>
+				<!--end::Aside Menu-->
+			</div>
+			<!--end::Aside-->
 					<!--begin::Wrapper-->
 					<div class="d-flex flex-column flex-row-fluid wrapper" id="kt_wrapper">
 						<!--begin::Header-->

@@ -7,6 +7,24 @@ if ($_SESSION['user_type'] != 3) {
 	header('location: ../index.php');
 }?>
 
+<?php
+if(isset($_POST['received'])){
+$file_id = $_POST['file_id'];
+$sql = "UPDATE uploadfile_payment set file_status = 'Received' WHERE file_id = $file_id";	
+$query = $dbh->prepare($sql);
+if($query->execute()){
+	$_SESSION['status_message'] = "Payment File Received!" ;
+        header("Location: payment_received.php");
+        exit();
+    }else{
+        $_SESSION['status_message'] = "Error!" ;
+        header("Location: payment_received.php");
+        exit();
+    }
+}
+
+?>
+
 <!DOCTYPE html>
 <!--
 Template Name: Keen - The Ultimate Bootstrap 4 HTML Admin Dashboard Theme
@@ -254,75 +272,22 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 									</ul>
 								</div>
 							</li>
-								<li class="menu-section">
-									<h4 class="menu-text">Manage Loan</h4>
-									<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
-								</li>
-								<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-									<a href="javascript:;" class="menu-link menu-toggle">
-										<span class="svg-icon menu-icon">
-										</span>
-										<span class="menu-text">Loan Application</span>
-										<i class="menu-arrow"></i>
-									</a>
-									<div class="menu-submenu">
-										<i class="menu-arrow"></i>
-										<ul class="menu-subnav">
-											<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-												<a href="lending_company/pending_loan.php" class="menu-link menu-toggle">
-													<i class="menu-bullet">
-														<span></span>
-													</i>
-													<span class="menu-text">Pending Loan</span>
-												</a>
-											</li>
-											<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-												<a href="lending_company/pending_loan.php" class="menu-link menu-toggle">
-													<i class="menu-bullet">
-														<span></span>
-													</i>
-													<span class="menu-text">Approved Loan</span>
-												</a>
-											</li>
-											<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-												<a href="lending_company/pending_loan.php" class="menu-link menu-toggle">
-													<i class="menu-bullet">
-														<span></span>
-													</i>
-													<span class="menu-text">Declined Loan</span>
-												</a>
-											</li>
-											
-										</ul>
-									</div>
-								</li>
-								<li class="menu-section">
-									<h4 class="menu-text">Manage Payment</h4>
-									<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
-								</li>
-								<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-									<a href="javascript:;" class="menu-link menu-toggle">
-										<span class="svg-icon menu-icon">
-										</span>
-										<span class="menu-text">Payment Information</span>
-										<i class="menu-arrow"></i>
-									</a>
-									<div class="menu-submenu">
-										<i class="menu-arrow"></i>
-										<ul class="menu-subnav">
-											<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-												<a href="lending_company/pending_loan.php" class="menu-link menu-toggle">
-													<i class="menu-bullet">
-														<span></span>
-													</i>
-													<span class="menu-text">Payment Received</span>
-													<span class="menu-label">
-													</span>
-													<i class="menu-arrow"></i>
-												</a>
-											</li>
-											<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-												<a href="lending_company/payment_records.php" class="menu-link menu-toggle">
+							<li class="menu-section">
+								<h4 class="menu-text">Manage Payment</h4>
+								<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
+							</li>
+							<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+								<a href="javascript:;" class="menu-link menu-toggle">
+									<span class="svg-icon menu-icon">
+									</span>
+									<span class="menu-text">Payment Information</span>
+									<i class="menu-arrow"></i>
+								</a>
+								<div class="menu-submenu">
+									<i class="menu-arrow"></i>
+									<ul class="menu-subnav">
+									<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+												<a href="lending_company/payment_mark_received.php" class="menu-link menu-toggle">
 													<i class="menu-bullet">
 														<span></span>
 													</i>
@@ -332,55 +297,66 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 													<i class="menu-arrow"></i>
 												</a>
 											</li>
-										</ul>
-									</div>
-								</li>
-								
-								<li class="menu-section">
-									<h4 class="menu-text">Manage Report</h4>
-									<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
-								</li>
-								<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-									<a href="javascript:;" class="menu-link menu-toggle">
-										<span class="svg-icon menu-icon">
-										</span>
-										<span class="menu-text">Generate Report</span>
-										<i class="menu-arrow"></i>
-									</a>
-									<div class="menu-submenu">
-										<i class="menu-arrow"></i>
-										<ul class="menu-subnav">
-											<li class="menu-item menu-item-parent" aria-haspopup="true">
-												<span class="menu-link">
-													<span class="menu-text">Themes</span>
-												</span>
-											</li>
-											<li class="menu-item" aria-haspopup="true">
-												<a href="layout/themes/aside-light.html" class="menu-link">
-													<i class="menu-bullet menu-bullet-dot">
+											<!-- <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+												<a href="lending_company/payment_records.php" class="menu-link menu-toggle">
+													<i class="menu-bullet">
 														<span></span>
 													</i>
-													<span class="menu-text">Light Aside</span>
+													<span class="menu-text">Payment Records</span>
+													<span class="menu-label">
+													</span>
+													<i class="menu-arrow"></i>
 												</a>
-											</li>
-											<li class="menu-item" aria-haspopup="true">
-												<a href="layout/themes/header-dark.html" class="menu-link">
-													<i class="menu-bullet menu-bullet-dot">
-														<span></span>
-													</i>
-													<span class="menu-text">Dark Header</span>
-												</a>
-											</li>
-										</ul>
-									</div>
-								</li>
+											</li> -->
+									</ul>
+								</div>
+							</li>
+
+							<li class="menu-section">
+								<h4 class="menu-text">Manage Report</h4>
+								<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
+							</li>
+							<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+								<a href="javascript:;" class="menu-link menu-toggle">
+									<span class="svg-icon menu-icon">
+									</span>
+									<span class="menu-text">Generate Report</span>
+									<i class="menu-arrow"></i>
+								</a>
+								<div class="menu-submenu">
+									<i class="menu-arrow"></i>
+									<ul class="menu-subnav">
+										<li class="menu-item menu-item-parent" aria-haspopup="true">
+											<span class="menu-link">
+												<span class="menu-text">Themes</span>
+											</span>
+										</li>
+										<li class="menu-item" aria-haspopup="true">
+											<a href="layout/themes/aside-light.html" class="menu-link">
+												<i class="menu-bullet menu-bullet-dot">
+													<span></span>
+												</i>
+												<span class="menu-text">Light Aside</span>
+											</a>
+										</li>
+										<li class="menu-item" aria-haspopup="true">
+											<a href="layout/themes/header-dark.html" class="menu-link">
+												<i class="menu-bullet menu-bullet-dot">
+													<span></span>
+												</i>
+												<span class="menu-text">Dark Header</span>
+											</a>
+										</li>
+									</ul>
+								</div>
+							</li>
 							<!--end::Menu Nav-->
-						</div>
-						<!--end::Menu Container-->
 					</div>
-					<!--end::Aside Menu-->
+					<!--end::Menu Container-->
 				</div>
-				<!--end::Aside-->
+				<!--end::Aside Menu-->
+			</div>
+			<!--end::Aside-->
 				<!--begin::Wrapper-->
 				<div class="d-flex flex-column flex-row-fluid wrapper" id="kt_wrapper">
 					<!--begin::Header-->
@@ -921,7 +897,9 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 								</div>
 								<!--end::Notifications-->
 								<!--begin::Quick panel-->
-								<!--<div class="topbar-item mr-1">
+								<!--end::Notifications-->
+                            <!--begin::Quick panel-->
+                            <!--<div class="topbar-item mr-1">
                                 <div class="btn btn-icon btn-clean btn-lg" id="kt_quick_panel_toggle">
                                     <span class="svg-icon svg-icon-xl svg-icon-primary">
                                         <!--begin::Svg Icon | path:assets/media/svg/icons/Layout/Layout-4-blocks.svg
@@ -989,7 +967,16 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 									<div class="d-flex align-items-baseline flex-wrap mr-5">
 										<!--begin::Page Title-->
 										<h4 class="text-white font-weight-bold my-1 mr-5">Dashboard |</h4><h5 class="text-white font-weight-bold my-1 mr-5">Lending Investor</h5>
-										<!--end::Page Title-->
+										<?php
+                                            if (isset($_SESSION['status_message'])) {
+                                            ?>
+                                                <div class="alert alert-success alert-dismissable" id="flash-msg">
+                                                    <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+                                                    <h4><?= $_SESSION['status_message'] ?></h4>
+                                                </div>
+                                            <?php
+                                                unset($_SESSION['status_message']);
+                                        } ?>
 									</div>
 									<!--end::Page Heading-->
 								</div>
@@ -1008,76 +995,51 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 						</div>
 						<!--end::Subheader-->
 						<!--begin::Entry-->
-						<div class="d-flex flex-column-fluid">
-							<!--begin::Container-->
-							<div class="container">
-								<!--begin::Body-->
-								<div class="card-body pt-2">
-										<!--end::Nav-->
-										<!--begin::Tab Content-->
-										<div class="tab-content mt-9" id="myTabMixed2">
-											<!--begin::Tab Pane-->
-											<div class="tab-pane fade active show" id="kt_tab_mixed_2_1" role="tabpanel" aria-labelledby="kt_tab_mixed_2_1">
-													<!--begin::Card-->
-												<div class="card card-custom">
-													<div class="card-body">
-														<h5>Payment Received</h5>
-														<table class="table table-bordered">
-															<thead>
-																<tr>
-																	<th>Loan Account No:</th>
-                                                                    <th>Remittance Name</th>
-																	<th>Sender Fullname</th>
-                                                                    <th>Phone No</th>
-                                                                    <th>Lending Company Name</th>
-                                                                    <th>Bank Name</th>
-                                                                    <th>Bank Account No</th>
-                                                                    <th>Payment Date</th>
-                                                                    <th>Reference No</th>
-                                                                    <th>Amount Paid</th>
-                                                                    <th>Posted Date</th>
-																	<th>Action</th>
-																</tr>
-															</thead>
-															<tbody>
-															<?php
-																$lender_id =$_SESSION['user_id'];
+							<div class="d-flex flex-column-fluid">
+								<!--begin::Container-->
+								<div class="container">
+									<div class="card card-custom">
+										<div class="card-body">
+												<h5>Payment Received</h5>
+												<table class="table table-bordered">
+													<thead>
+														<tr>
+															<th>Uploader Details</th>
+															<th>Date</th>
+															<th>Files</th>
+															<th>Action</th>
+														</tr>
+													</thead>
+													<tbody>
+														<?php
+														$lender_id = $_SESSION['user_id'];
 
-                                                                $select = "SELECT * FROM loan_application WHERE lender_id = $lender_id";
-                                                                $query = $dbh->prepare($select);
-                                                                $query->execute();
-                                                                $res2 = $query->fetch();
-
-                                                                $loan_id = $res2['id'];
-
-																$sql = "SELECT payment_details.*, user.*, loan_application.* FROM payment_details INNER JOIN user ON payment_details.remittance_id = user.user_id INNER JOIN loan_application ON payment_details.loan_id = loan_application.id WHERE payment_details.loan_id = $loan_id";
-																$query = $dbh->prepare($sql);
-																$query->execute();
-																$rem = $query->fetchAll(PDO::FETCH_OBJ);
-																if($query->rowCount()>0){
-																	foreach($rem as $res){?>
-																
-																<tr>
-                                                                    <th scope="row"><?= htmlentities($res->loan_id);?></th>
-																	<td><?= htmlentities($res->firstname);?>&nbsp;<?= htmlentities($res->lastname);?></td>
-                                                                    <td><?= htmlentities($res->f_name);?>&nbsp;<?= htmlentities($res->l_name);?></td>
-																	<td><?= htmlentities($res->phone_no);?></td>
-                                                                    <td><?= htmlentities($res->lending_company_name);?></td>
-                                                                    <td><?= htmlentities($res->bank_name);?></td>   
-                                                                    <td><?= htmlentities($res->bank_account_no);?></td>
-                                                                    <td><?= htmlentities($res->payment_date);?></td>
-                                                                    <td><?= htmlentities($res->reference_no);?></td>
-                                                                    <td><?= htmlentities($res->amount_paid);?></td>
-                                                                    <td><?= htmlentities($res->posted_date);?></td>
-																	<td>
-																		<a href="lending_company/view_payment.php?loan_payment_id=<?= htmlentities($res->loan_payment_id)?>" class="kt-nav__link">
-																		<span class="kt-nav__link-text">View</span>
-																		</a>
-																	</td>
-																</tr>
+														$sql = "SELECT * FROM uploadfile_payment INNER JOIN user ON uploadfile_payment.lender_id = user.user_id WHERE uploadfile_payment.lender_id  = $lender_id AND uploadfile_payment.file_status = 'Sent'";
+														$query = $dbh->prepare($sql);
+														$query->execute();
+														$res = $query->fetchAll(PDO::FETCH_ASSOC);
+														foreach ($res as $rem):?>
+															<tr>
+																<th scope="row">
+																	File ID:&nbsp;<?= $rem['file_id'];?></br>
+																	Payment Center:&nbsp;<?php $id = $rem['uploader_id'];
+																	$sql = "SELECT * FROM user INNER JOIN uploadfile_payment ON uploadfile_payment.uploader_id = user.user_id WHERE uploadfile_payment.uploader_id = $id";
+																	$query =$dbh->prepare($sql);
+																	$query->execute();
+																	$ter = $query->fetch();
+																	echo $ter['company_name'];
+																	?></br>
+																	Mobile No: <?= $rem['mobile']?>
+																</th>
+																<td><?= $rem['filedate_upload']?></td>
+																<td><?= $rem['files']?> | <a href="/hulam/assets/keen/payment_files/<?= $rem['files'] ?>" target="_blank">Download</a></td>
+																<td><a href="" class="font-size-lg" data-target="#received" data-toggle="modal">Mark as Received</a></td>
+															</tr>
+															<?php endforeach;?>
 															</tbody>
+															
 														</table>
-														<?php }}?>
+														
 													</div>
 												</div>
 											
@@ -1090,6 +1052,24 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 							</div>
 						</div>
 					</div>
+					<form action="" method="post" >
+					<div class="modal fade" id="received" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
+						<div class="modal-dialog modal-dialog-centered modal-xs" role="document">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h5 class="modal-title" id="exampleModalLabel">RECEIVED</h5>
+									<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+										<i aria-hidden="true" class="ki ki-close"></i>
+									</button>
+									<input type="hidden" name="file_id" value="<?= $rem['file_id'];?>">
+								</div>
+								<div class="modal-footer">
+									<button type="submit" name="received" class="btn btn-primary font-weight-bold">YES</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</form>
 					
 				<!--end::Content-->
 				<!--begin::Footer-->

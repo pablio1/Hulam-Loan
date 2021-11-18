@@ -33,11 +33,11 @@ if (isset($_POST['send_message'])) {
 	$query->bindParam(':message', $message, PDO::PARAM_STR);
 	$query->bindParam(':date_message', $date_message, PDO::PARAM_STR);
 	if ($query->execute()) {
-		$_SESSION['status'] = "Message Sent";
+		$_SESSION['status_application'] = "Message Sent";
 		header("Location: view_application.php?loan_app_id=$id");
 		exit();
 	} else {
-		$_SESSION['status'] = "Message Not Sent";
+		$_SESSION['status_application'] = "Message Not Sent";
 		header('Location: view_application.php?loan_app_id=$id');
 		exit();
 	}
@@ -66,11 +66,11 @@ if (isset($_POST['approved_loan'])) {
 	$query->execute();
 
 	if($query2->execute()){
-		$_SESSION['status'] = "Loan Approved!";
+		$_SESSION['status_approved'] = "Loan Approved!";
 		header("Location: view_approved.php?loan_app_id=$id");
 		exit();
 	} else {
-		$_SESSION['status'] = "Error!";
+		$_SESSION['status_approved'] = "Error!";
 		header('Location: view_approved.php?loan_app_id=$id');
 		exit();
 	}
@@ -97,11 +97,11 @@ if (isset($_POST['declined_loan'])) {
 	$query->bindParam(':declined_date', $declined_date, PDO::PARAM_STR);
 
 	if($query->execute()){
-		$_SESSION['status'] = "Loan Declined!";
+		$_SESSION['status_declined'] = "Loan Declined!";
 		header("Location: view_declined.php?loan_app_id=$id");
 		exit();
 	} else {
-		$_SESSION['status'] = "Error!";
+		$_SESSION['status_declined'] = "Error!";
 		header('Location: view_declined.php?loan_app_id=$id');
 		exit();
 	}
@@ -110,18 +110,7 @@ if (isset($_POST['declined_loan'])) {
 
 
 <!DOCTYPE html>
-<!--
-Template Name: Keen - The Ultimate Bootstrap 4 HTML Admin Dashboard Theme
-Author: KeenThemes
-Website: http://www.keenthemes.com/
-Contact: support@keenthemes.com
-Follow: www.twitter.com/keenthemes
-Dribbble: www.dribbble.com/keenthemes
-Like: www.facebook.com/keenthemes
-Purchase: https://themes.getbootstrap.com/product/keen-the-ultimate-bootstrap-admin-theme/
-Support: https://keenthemes.com/theme-support
-License: You must have a valid license purchased only from themes.getbootstrap.com(the above link) in order to legally use the theme for your project.
--->
+
 <html lang="en">
 <!--begin::Head-->
 
@@ -374,18 +363,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 									<i class="menu-arrow"></i>
 									<ul class="menu-subnav">
 										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-											<a href="lending_company/pending_loan.php" class="menu-link menu-toggle">
-												<i class="menu-bullet">
-													<span></span>
-												</i>
-												<span class="menu-text">Payment Received</span>
-												<span class="menu-label">
-												</span>
-												<i class="menu-arrow"></i>
-											</a>
-										</li>
-										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-											<a href="lending_company/payment_records.php" class="menu-link menu-toggle">
+											<a href="lending_company/payment_mark_received.php" class="menu-link menu-toggle">
 												<i class="menu-bullet">
 													<span></span>
 												</i>
@@ -395,6 +373,17 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 												<i class="menu-arrow"></i>
 											</a>
 										</li>
+										<!-- <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+											<a href="lending_company/payment_records.php" class="menu-link menu-toggle">
+												<i class="menu-bullet">
+													<span></span>
+												</i>
+												<span class="menu-text">Payment Records</span>
+												<span class="menu-label">
+												</span>
+												<i class="menu-arrow"></i>
+											</a>
+										</li> -->
 									</ul>
 								</div>
 							</li>
@@ -1110,15 +1099,15 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 									<h5 class="text-white font-weight-bold my-1 mr-5">Lending Investor</h5>
 									<div class="col-xl-12 col-xl-12">
 										<?php
-										if(isset($_SESSION['status'])){
+										if(isset($_SESSION['status_application'])){
 										?>
 											<div class="alert alert-custom alert-notice alert-light-success fade show" role="alert">
 												<div class="alert-text">
-													<h4><?php echo $_SESSION['status'];?></h4>
+													<h4><?php echo $_SESSION['status_application'];?></h4>
 												</div>
 												<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
 											</div>
-										<?php unset($_SESSION['status']);
+										<?php unset($_SESSION['status_application']);
 										}?>
 									</div>
 								</div>
@@ -1143,7 +1132,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 										<!--begin::Pic-->
 										<div class="flex-shrink-0 mr-7">
 											<div class="symbol symbol-50 symbol-lg-120">
-												<img alt="Pic" src="/hulam/assets/keen/debtors/<?= $user['profile_pic'] ?>">
+												<img alt="Pic" src="/hulam/assets/keen/hulam_media/<?= $user['profile_pic'] ?>">
 											</div>
 										</div>
 										<!--end::Pic-->
@@ -1422,7 +1411,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 											<!-- Start Modal Approved Loan -->
 											<form action="" method="post" enctype="multipart/form-data">
 												<div class="modal fade" id="approved_loan" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
-													<div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+													<div class="modal-dialog modal-dialog-centered modal-md" role="document">
 														<div class="modal-content">
 															<div class="modal-header">
 																<h5 class="modal-title" id="exampleModalLabel">Approve Loan</h5>

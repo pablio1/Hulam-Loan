@@ -10,35 +10,44 @@ if ($_SESSION['user_type'] != 1) {
 <?php
 $id = intval($_GET['user_id']);
 
-// $sql = "SELECT loan_application.*, user.* FROM loan_application INNER JOIN user on loan_application.debtor_id = user.user_id WHERE loan_application.loan_app_id = $id";
-$sql = "SELECT * FROM user INNER JOIN loan_features ON user.user_id = loan_features.lender_id WHERE user.user_id = $id";
+$sql = "SELECT * FROM user WHERE user_id = $id";
 $query = $dbh->prepare($sql);
 $query->execute();
 $user = $query->fetch();
 ?>
 
+<?php
+$id = intval($_GET['user_id']);
+
+$sql = "SELECT * FROM loan_features WHERE paycenter_id = $id";
+$query = $dbh->prepare($sql);
+$query->execute();
+$user2 = $query->fetch();
+?>
+
 
 <?php if (isset($_POST['valid_d'])) {
 	$user_id = intval($_GET['user_id']);
-	$sql = "UPDATE loan_features SET status_dti= 'valid' WHERE lender_id = $user_id";
+
+	$sql = "UPDATE loan_features SET status_dti= 'valid' WHERE paycenter_id = $user_id";
 	$query = $dbh->prepare($sql);
 	$query->execute();
 } ?>
 <?php if (isset($_POST['invalid_d'])) {
 	$user_id = intval($_GET['user_id']);
-	$sql = "UPDATE loan_features SET status_dti = 'invalid' WHERE lender_id = $user_id";
+	$sql = "UPDATE loan_features SET status_dti = 'invalid' WHERE paycenter_id = $user_id";
 	$query = $dbh->prepare($sql);
 	$query->execute();
 } ?>
 <?php if (isset($_POST['valid_b'])) {
 	$user_id = intval($_GET['user_id']);
-	$sql = "UPDATE loan_features SET status_b_permit = 'valid' WHERE lender_id = $user_id";
+	$sql = "UPDATE loan_features SET status_b_permit = 'valid' WHERE paycenter_id = $user_id";
 	$query = $dbh->prepare($sql);
 	$query->execute();
 } ?>
 <?php if (isset($_POST['invalid_b'])) {
 	$user_id = intval($_GET['user_id']);
-	$sql = "UPDATE loan_features SET status_b_permit = 'invalid' WHERE lender_id = $user_id";
+	$sql = "UPDATE loan_features SET status_b_permit = 'invalid' WHERE paycenter_id = $user_id";
 	$query = $dbh->prepare($sql);
 	$query->execute();
 } ?>
@@ -60,11 +69,11 @@ if (isset($_POST['send_message'])) {
 	$query->bindParam(':date_message', $date_message, PDO::PARAM_STR);
 	if ($query->execute()) {
 		$_SESSION['status_message'] = "Message Sent";
-		header("Location: view_lendingcompany_request.php?user_id=$receiver_id");
+		header("Location: view_paymentcenter_request.php?user_id=$receiver_id");
 		exit();
 	} else {
 		$_SESSION['status_message'] = "Message Not Sent";
-		header('Location: view_lendingcompany_request.php?user_id=$receiver_id');
+		header('Location: view_paymentcenter_request.php?user_id=$receiver_id');
 		exit();
 	}
 }
@@ -96,11 +105,11 @@ if (isset($_POST['activate'])) {
 
 	if ($query->execute()) {
 		$_SESSION['status_message'] = "Account Activated Successfully!";
-		header("Location: activated_lendingcompany.php");
+		header("Location: activated_payment_center.php");
 		exit();
 	} else {
 		$_SESSION['status_message'] = "Error! Failed to Activate Account!";
-		header("Location: activated_lendingcompany.php");
+		header("Location: activated_payment_center.php");
 		exit();
 	}
 }
@@ -130,7 +139,7 @@ if (isset($_POST['deactivate'])) {
 		exit();
 	} else {
 		$_SESSION['status_message'] = "Error!";
-		header("Location: activated_lendingcompany.php");
+		header("Location: activated_payment_center.php");
 		exit();
 	}
 } ?>
@@ -1077,7 +1086,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 										<!--begin::Pic-->
 										<div class="flex-shrink-0 mr-7">
 											<div class="image-input image-input-outline" id="kt_image_1">
-												<div class="image-input-wrapper" style="background-image: url(/hulam/assets/keen/company_logo/<?= $user['company_logo'] ?>"></div>
+												<div class="image-input-wrapper" style="background-image: url(/hulam/assets/keen/files/<?= $user['company_logo'] ?>"></div>
 											</div>
 										</div>
 										<!--end::Pic-->
@@ -1116,24 +1125,20 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 																</g>
 															</svg>
 															<!--end::Svg Icon-->
-														</span><?= $user['company_street'] . ' ' . $user['company_barangay'] . ' ' . $user['company_city'] . ' ' . $user['company_province'] . ' ' . $user['company_zipcode'] ?>
+														</span><?= $user2['company_street'] . ' ' . $user2['company_barangay'] . ' ' . $user2['company_city'] . ' ' . $user2['company_province'] . ' ' . $user2['company_zipcode'] ?>
 													</div>
 													<div class="d-flex flex-wrap my-2">
-														<span class="font-weight-bolder font-size-sm">&nbsp;&nbsp;Contact No:
-														</span><?= $user['mobile'] ?>
-													</div>
-													<div class="d-flex flex-wrap my-2">
-														<span class="font-weight-bolder font-size-sm">&nbsp;&nbsp;Contact No:
-														</span><?= $user['company_landline'] ?>
+														<span class="font-weight-bolder font-size-sm">&nbsp;&nbsp;Mobile No:
+														</span><?= $user2['company_landline'] ?>
 													</div>
 													<!--end::Contacts-->
 												</div>
 												<!--begin::User-->
 												<!--begin::Actions-->
 												<div class="my-lg-0 my-1">
-													<?php if ($user['status_dti'] == 'invalid') : ?>
+													<?php if ($user2['status_dti'] == 'invalid') : ?>
 														<a href="#" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#notice1">Activate</a>
-													<?php elseif ($user['status_b_permit'] == 'invalid') : ?>
+													<?php elseif ($user2['status_b_permit'] == 'invalid') : ?>
 														<a href="#" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#notice2">Activate</a>
 													<?php else : ?>
 														<a href="#" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#activate_debtor">Activate</a>
@@ -1165,7 +1170,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 
 										// $id = $user['debtor_id'];
 
-										$sql = "SELECT * FROM loan_features WHERE lender_id = $id";
+										$sql = "SELECT * FROM loan_features WHERE paycenter_id = $id";
 										$que = $dbh->prepare($sql);
 										$que->execute();
 										$res = $que->fetch();
@@ -1207,51 +1212,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 									</div>
 									<!-- End Modal -->
 
-									<div class="row">
-										<div class="col-lg-6">
-											<div class="card card-custom card-stretch gutter-b" style="background-color:whitesmoke;">
-												<div class="card-header h-auto border-0">
-													<div class="card-title py-5">
-														<h4 class="d-flex align-items-center text-dark font-size-h5 font-weight-bold mr-3">Loan Features</h4>
-													</div>
-													<table class="table table-bordered">
-														<thead>
-															<!-- <tr>
-															<th>Application Date</th>
-
-														</tr> -->
-														</thead>
-														<tbody>
-															<tr>
-																<td>Minimum Loan</td>
-																<td><?= number_format($res['min_loan'], 2); ?></td>
-															</tr>
-															<tr>
-																<td>Maximum Loan</td>
-																<td><?= number_format($res['max_loan'], 2); ?></td>
-															</tr>
-															<tr>
-																<td>Minimum Term</td>
-																<td><?=$res['min_term']; ?></td>
-															</tr>
-															<tr>
-																<td>Maximum Term</td>
-																<td><?= $res['max_term']; ?></td>
-															</tr>
-															<tr>
-																<td>Fix Interest Rate</td>
-																<td><?= number_format($res['fix_rate'], 2); ?>%</td>
-															</tr>
-															<tr>
-																<td>Late Charges</td>
-																<td><?= number_format($res['late_charges'], 2); ?>%</td>
-															</tr>
-														</tbody>
-													</table>
-												</div>
-											</div>
-										</div>
-										<div class="col-lg-6">
+										<div class="col-lg-12">
 											<div class="card card-custom card-stretch gutter-b" style="background-color:whitesmoke;">
 												<div class="card-header h-auto border-0">
 													<div class="card-title py-5">
@@ -1316,75 +1277,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 												</div>
 											</div>
 										</div>
-									</div>
-									<div class="row">
-										<div class="col-lg-6">
-											<div class="card card-custom card-stretch gutter-b" style="background-color:whitesmoke;">
-												<div class="card-header h-auto border-0">
-													<div class="card-title py-5">
-														<h4 class="d-flex align-items-center text-dark font-size-h5 font-weight-bold mr-3">Notice/Reminders</h4>
-													</div>
-													<table class="table table-bordered">
-														<thead>
-															<!-- <tr>
-															<th>Application Date</th>
-
-														</tr> -->
-														</thead>
-														<tbody>
-														<?php
-															$id = intval($_GET['user_id']);
-
-															$sql = "SELECT * FROM notice WHERE lender_id = $id";
-															$query = $dbh->prepare($sql);
-															$query->execute();
-															$user2 = $query->fetchAll();
-															foreach($user2 as $user22): ?>
-															
-															<tr>
-																<td><?= $user22['notice_title']?></td>
-																<td><?= $user22['remarks'] ?></td>
-															</tr>
-															<?php endforeach; ?>
-														</tbody>
-													</table>
-												</div>
-											</div>
-										</div>
-										<div class="col-lg-6">
-											<div class="card card-custom card-stretch gutter-b" style="background-color:whitesmoke;">
-												<div class="card-header h-auto border-0">
-													<div class="card-title py-5">
-														<h4 class="d-flex align-items-center text-dark font-size-h5 font-weight-bold mr-3">List of Requirements for Loan Application</h4>
-													</div>
-													<table class="table table-bordered">
-														<thead>
-															<tr>
-																<th>Type of Documents</th>
-																<th>Remarks</th>
-															</tr>
-														</thead>
-														<tbody>
-															<?php
-															$id = intval($_GET['user_id']);
-															
-															$sql = "SELECT * FROM loan_requirements WHERE lender_id = $id";
-															$query = $dbh->prepare($sql);
-															$query->execute();
-															$user2 = $query->fetchAll();
-															foreach($user2 as $us): ?>
-															<tr>
-																<td><?= $us['req_name']?></td>
-																<td><?= $us['remarks']?></td>
-																
-															</tr>
-															<?php endforeach;?>
-														</tbody>
-													</table>
-												</div>
-											</div>
-										</div>
-									</div>
+									
 										<!-- Start Modal Approved Loan -->
 										<form action="" method="post">
 											<div class="modal fade" id="confirm_dti" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
