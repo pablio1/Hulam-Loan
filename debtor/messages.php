@@ -318,54 +318,46 @@ if (isset($_POST['send_message'])) {
     </div>
     </div>
     <!--end::Content-->
-    <!--begin::Footer-->
-    <div class="footer bg-white py-4 d-flex flex-lg-column" id="kt_footer">
 
-    </div>
-    </div>
-    <!--end::Entry-->
-    </div>
-    <!--end::Content-->
-    <!--begin::Footer-->
-    <div class="footer bg-white py-4 d-flex flex-lg-column" id="kt_footer">
-        <!--begin::Container-->
-        <div class="container d-flex flex-column flex-md-row align-items-center justify-content-between">
-            <!--begin::Copyright-->
-            <div class="text-dark order-2 order-md-1">
-                <span class="text-muted font-weight-bold mr-2">2021©</span>
-                <a href="http://keenthemes.com/keen" target="_blank" class="text-dark-75 text-hover-primary">The Hulam Team</a>
-            </div>
-            <div class="nav nav-dark order-1 order-md-2">
-                <a href="http://keenthemes.com/keen" target="_blank" class="nav-link pr-3 pl-0">About</a>
-                <a href="http://keenthemes.com/keen" target="_blank" class="nav-link px-3">Team</a>
-                <a href="http://keenthemes.com/keen" target="_blank" class="nav-link pl-3 pr-0">Contact</a>
-            </div>
-        </div>
-    </div>
-    <!--end::Footer-->
-    </div>
-    <!--end::Wrapper-->
-    </div>
-    <!--end::Page-->
-    </div>
-    <!--end::Main-->
-    <!-- begin::User Panel-->
-    <div id="kt_quick_user" class="offcanvas offcanvas-right p-10">
-        <!--begin::Header-->
-        <div class="offcanvas-header d-flex align-items-center justify-content-between pb-5">
-            <h3 class="font-weight-bold m-0">User Profile
-                <!-- <small class="text-muted font-size-sm ml-2">15 messages</small></h3> -->
-                <a href="#" class="btn btn-xs btn-icon btn-light btn-hover-primary" id="kt_quick_user_close">
-                    <i class="ki ki-close icon-xs text-muted"></i>
-                </a>
-        </div>
-        		<!--end::Header-->
+    
+<!--begin::Footer-->
+<div class="footer bg-white py-4 d-flex flex-lg-column" id="kt_footer">
+		<!--begin::Container-->
+		<div class="container d-flex flex-column flex-md-row align-items-center justify-content-between">
+			<!--begin::Copyright-->
+			<div class="text-dark order-2 order-md-1">
+				<span class="text-muted font-weight-bold mr-2">2021©</span>
+				<a href="http://keenthemes.com/keen" target="_blank" class="text-dark-75 text-hover-primary">The Hulam Team</a>
+			</div>
+			<!--end::Copyright-->
+			<!--begin::Nav-->
+			<div class="nav nav-dark order-1 order-md-2">
+				<a href="http://keenthemes.com/keen" target="_blank" class="nav-link pr-3 pl-0">About</a>
+				<a href="http://keenthemes.com/keen" target="_blank" class="nav-link px-3">Team</a>
+				<a href="http://keenthemes.com/keen" target="_blank" class="nav-link pl-3 pr-0">Contact</a>
+			</div>
+
+		</div>
+	</div>
+	</div>
+
+	<!-- begin::User Panel-->
+	<div id="kt_quick_user" class="offcanvas offcanvas-right p-10">
+		<!--begin::Header-->
+		<div class="offcanvas-header d-flex align-items-center justify-content-between pb-5">
+			<h3 class="font-weight-bold m-0">User Profile
+				<!-- <small class="text-muted font-size-sm ml-2">15 messages</small></h3> -->
+				<a href="#" class="btn btn-xs btn-icon btn-light btn-hover-primary" id="kt_quick_user_close">
+					<i class="ki ki-close icon-xs text-muted"></i>
+				</a>
+		</div>
+		<!--end::Header-->
 		<!--begin::Content-->
 		<div class="offcanvas-content pr-5 mr-n5">
 			<!--begin::Header-->
 			<div class="d-flex align-items-center mt-5">
 				<div class="symbol symbol-100 mr-5">
-                <div class="symbol-label" style="background-image:url('assets/keen/hulam_media/<?= $user['profile_pic']?>')"></div>
+					<div class="symbol-label" style="background-image:url('assets/keen/hulam_media/<?= $user['profile_pic'] ?>')"></div>
 					<i class="symbol-badge bg-success"></i>
 				</div>
 				<div class="d-flex flex-column">
@@ -387,7 +379,7 @@ if (isset($_POST['send_message'])) {
 										<!--end::Svg Icon-->
 									</span>
 								</span>
-								<span class="navi-text text-muted text-hover-primary"><?= $_SESSION['email']?>/span>
+								<span class="navi-text text-muted text-hover-primary"><?= $_SESSION['email'] ?></span>
 							</span>
 						</a>
 					</div>
@@ -424,6 +416,30 @@ if (isset($_POST['send_message'])) {
 				</a>
 				<!--end:Item-->
 				<!--begin::Item-->
+				<a href="debtor/send_feedback.php" class="navi-item">
+					<div class="navi-link">
+						<div class="symbol symbol-40 bg-light mr-3">
+							<div class="symbol-label">
+								<span class="svg-icon svg-icon-md svg-icon-success">
+									<!--begin::Svg Icon | path:assets/media/svg/icons/General/Settings-1.svg-->
+									<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+										<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+											<rect x="0" y="0" width="24" height="24" />
+											<path d="M7,3 L17,3 C19.209139,3 21,4.790861 21,7 C21,9.209139 19.209139,11 17,11 L7,11 C4.790861,11 3,9.209139 3,7 C3,4.790861 4.790861,3 7,3 Z M7,9 C8.1045695,9 9,8.1045695 9,7 C9,5.8954305 8.1045695,5 7,5 C5.8954305,5 5,5.8954305 5,7 C5,8.1045695 5.8954305,9 7,9 Z" fill="#000000" />
+											<path d="M7,13 L17,13 C19.209139,13 21,14.790861 21,17 C21,19.209139 19.209139,21 17,21 L7,21 C4.790861,21 3,19.209139 3,17 C3,14.790861 4.790861,13 7,13 Z M17,19 C18.1045695,19 19,18.1045695 19,17 C19,15.8954305 18.1045695,15 17,15 C15.8954305,15 15,15.8954305 15,17 C15,18.1045695 15.8954305,19 17,19 Z" fill="#000000" opacity="0.3" />
+										</g>
+									</svg>
+									<!--end::Svg Icon-->
+									</span>
+								</div>
+							</div>
+						<div class="navi-text">
+							<div class="font-weight-bold">Send Feedback</div>
+						</div>
+					</div>
+				</a>
+				<!--end:Item-->
+				<!--begin::Item-->
 				<span class="navi-item mt-2">
 					<span class="navi-link">
 						<a href="logout.php" class="btn btn-sm btn-light-primary font-weight-bolder py-3 px-6">Sign Out</a>
@@ -439,236 +455,177 @@ if (isset($_POST['send_message'])) {
 		<!--end::Content-->
 	</div>
 	<!-- end::User Panel-->
-    <!--begin::Chat Panel-->
-    <div class="modal modal-body modal-sticky modal-sticky-bottom-right" id="chat_modal" role="dialog" data-backdrop="false">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <!--begin::Card-->
-                <div class="card card-custom">
-                    <!--begin::Header-->
-                    <div class="card-header align-items-center px-4 py-3">
-                        <div class="text-left flex-grow-1">
-                            <!--begin::Dropdown Menu-->
-                            <div class="dropdown dropdown-inline">
-                                <button type="button" class="btn btn-clean btn-sm btn-icon btn-icon-md" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <span class="svg-icon svg-icon-lg">
-                                    </span>
-                                </button>
-                            </div>
-                        </div>
-
-                        <div class="text-center flex-grow-1">
-                            <div class="text-dark-75 font-weight-bold font-size-h5">
-                                <?php
 
 
-                                if ($red == 1) : ?>
-                                    <?= htmlentities($res->firstname) . '' . htmlentities($res->middlename) . ' ' . htmlentities($res->lastname); ?>
-                                <?php elseif ($red == 2) : ?>
-                                    <?= htmlentities($res->firstname) . '' . htmlentities($res->middlename) . ' ' . htmlentities($res->lastname); ?>
-                                <?php elseif ($red == 3) : ?>
-                                    <?= htmlentities($res->company_name); ?>
-                                <?php elseif ($red == 4) : ?>
-                                    <?= htmlentities($res->firstname) . '' . htmlentities($res->middlename) . ' ' . htmlentities($res->lastname); ?>
-                                <?php else : ?>
-                                    <?= htmlentities($res->company_name); ?>
-                                <?php endif; ?>
-                            </div>
-                        </div>
-                        <div class="text-right flex-grow-1">
-                            <button type="button" class="btn btn-clean btn-sm btn-icon btn-icon-md" data-dismiss="modal">
-                                <i class="ki ki-close icon-1x"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <!--end::Header-->
-                    <!--begin::Body-->
-                    <div class="card-body">
-                        <!--begin::Scroll-->
-                        <div class="scroll scroll-pull" data-height="375" data-mobile-height="300">
-                            <!--begin::Messages-->
-                            <div class="messages">
-                                    <!-- COmpany -->
-                                <!--begin::Message In-->
-                                <div class="d-flex flex-column mb-5 align-items-start">
-                                    <div class="d-flex align-items-center">
-                                        <div class="symbol symbol-circle symbol-40 mr-3">
-                                            <!-- <img alt="Pic" src="/hulam/assets/keen/company_logo/<?= htmlentities($res->company_logo) ?>" /> -->
-                                        </div>
-                                        <div>
-                                            <span class="text-dark-75 text-hover-primary font-weight-bold font-size-h6">
-                                                <?php
-                                                $red = htmlentities($res->user_type);
 
-                                                if ($red == 1) : ?>
-                                                    <?= htmlentities($res->firstname) . '' . htmlentities($res->middlename) . ' ' . htmlentities($res->lastname); ?>
-                                                <?php elseif ($red == 2) : ?>
-                                                    <?= htmlentities($res->firstname) . '' . htmlentities($res->middlename) . ' ' . htmlentities($res->lastname); ?>
-                                                <?php elseif ($red == 3) : ?>
-                                                    <?= htmlentities($res->company_name); ?>
-                                                <?php elseif ($red == 4) : ?>
-                                                    <?= htmlentities($res->firstname) . '' . htmlentities($res->middlename) . ' ' . htmlentities($res->lastname); ?>
-                                                <?php else : ?>
-                                                    <?= htmlentities($res->company_name); ?>
-                                                <?php endif; ?>
-                                            </span>
-                                            <!-- <span class="text-muted font-size-sm">2 Hours</span> -->
-                                        </div>
-                                    </div>
-                                    <div class="mt-2 rounded p-5 bg-light-success text-dark-50 font-weight-bold font-size-lg text-left max-w-400px"><?= htmlentities($res->message) ?></div>
-                                </div>
-                                <!--end::Message In-->
-                               
-                                <!--begin::Message Out-->
-                                <div class="d-flex flex-column mb-5 align-items-end">
-                                    <div class="d-flex align-items-center">
-                                        <div>
-                                            <span class="text-muted font-size-sm">3 minutes</span>
-                                            <a href="#" class="text-dark-75 text-hover-primary font-weight-bold font-size-h6">You</a>
-                                        </div>
-                                        <div class="symbol symbol-circle symbol-40 ml-3">
-                                            <img alt="Pic" src="assets/keen/media/users/150-9.jpg" />
-                                        </div>
-                                    </div>
-                                    <div class="mt-2 rounded p-5 bg-light-primary text-dark-50 font-weight-bold font-size-lg text-right max-w-400px">Hey there, we’re just writing to let you know that you’ve been subscribed to a repository on GitHub.</div>
-                                </div>
-                                <!--end::Message Out-->
-                            </div>
-                            <!--end::Messages-->
-                        </div>
-                        <!--end::Scroll-->
-                    </div>
-                    <!--end::Body-->
-                    <!--begin::Footer-->
-                    <div class="card-footer align-items-center">
-                        <!--begin::Compose-->
-                        <textarea class="form-control border-0 p-0" rows="2" placeholder="Type a message"></textarea>
-                        <div class="d-flex align-items-center justify-content-between mt-5">
-                            <div class="mr-3">
-                            </div>
-                            <div>
-                                <button type="button" class="btn btn-primary btn-md text-uppercase font-weight-bold chat-send py-2 px-6">Send</button>
-                            </div>
-                        </div>
-                        <!--begin::Compose-->
-                    </div>
-                    <!--end::Footer-->
-                </div>
-                <!--end::Card-->
-            </div>
-        </div>
-    </div>
-    <!--end::Chat Panel-->
-    <!--begin::Scrolltop-->
-    <div id="kt_scrolltop" class="scrolltop">
-        <span class="svg-icon">
-            <!--begin::Svg Icon | path:assets/media/svg/icons/Navigation/Up-2.svg-->
-            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                    <polygon points="0 0 24 0 24 24 0 24" />
-                    <rect fill="#000000" opacity="0.3" x="11" y="10" width="2" height="10" rx="1" />
-                    <path d="M6.70710678,12.7071068 C6.31658249,13.0976311 5.68341751,13.0976311 5.29289322,12.7071068 C4.90236893,12.3165825 4.90236893,11.6834175 5.29289322,11.2928932 L11.2928932,5.29289322 C11.6714722,4.91431428 12.2810586,4.90106866 12.6757246,5.26284586 L18.6757246,10.7628459 C19.0828436,11.1360383 19.1103465,11.7686056 18.7371541,12.1757246 C18.3639617,12.5828436 17.7313944,12.6103465 17.3242754,12.2371541 L12.0300757,7.38413782 L6.70710678,12.7071068 Z" fill="#000000" fill-rule="nonzero" />
-                </g>
-            </svg>
-            <!--end::Svg Icon-->
-        </span>
-    </div>
-    <!--end::Scrolltop-->
-    <!--begin::Demo Panel-->
-    <div id="kt_demo_panel" class="offcanvas offcanvas-right p-10">
+	<!--begin::Quick Panel-->
+	<div id="kt_quick_panel" class="offcanvas offcanvas-right pt-5 pb-10">
+		<!--begin::Header-->
+		<div class="offcanvas-header offcanvas-header-navs d-flex align-items-center justify-content-between mb-5">
+			<ul class="nav nav-bold nav-tabs nav-tabs-line nav-tabs-line-3x nav-tabs-primary flex-grow-1 px-10" role="tablist">
+				<li class="nav-item">
+					<a class="nav-link active" data-toggle="tab" href="#kt_chat_modal">Messages</a>
+				</li>
+			</ul>
+			<div class="offcanvas-close mt-n1 pr-5">
+				<a href="#" class="btn btn-xs btn-icon btn-light btn-hover-primary" id="kt_quick_panel_close">
+					<i class="ki ki-close icon-xs text-muted"></i>
+				</a>
+			</div>
+		</div>
+		<!--end::Header-->
+		<!--begin::Content-->
+		<div class="offcanvas-content px-10">
+			<div class="tab-content">
+				<div class="navi navi-icon-circle navi-spacer-x-0">
+					<?php
+					$user_id = $_SESSION['user_id'];
+					$sql = "SELECT * FROM message INNER JOIN user ON message.sender_id = user.user_id WHERE message.receiver_id = $user_id ORDER BY date_message desc";
+					$query = $dbh->prepare($sql);
+					$query->execute();
+					$results = $query->fetchAll(PDO::FETCH_OBJ);
 
-    </div>
-    <!--end::Demo Panel-->
-    <script>
-        var HOST_URL = "https://preview.keenthemes.com/keen/theme/tools/preview";
-    </script>
-    <!--begin::Global Config(global config for global JS scripts)-->
-    <script>
-        var KTAppSettings = {
-            "breakpoints": {
-                "sm": 576,
-                "md": 768,
-                "lg": 992,
-                "xl": 1200,
-                "xxl": 1200
-            },
-            "colors": {
-                "theme": {
-                    "base": {
-                        "white": "#ffffff",
-                        "primary": "#0BB783",
-                        "secondary": "#E5EAEE",
-                        "success": "#1BC5BD",
-                        "info": "#8950FC",
-                        "warning": "#FFA800",
-                        "danger": "#F64E60",
-                        "light": "#F3F6F9",
-                        "dark": "#212121"
-                    },
-                    "light": {
-                        "white": "#ffffff",
-                        "primary": "#D7F9EF",
-                        "secondary": "#ECF0F3",
-                        "success": "#C9F7F5",
-                        "info": "#EEE5FF",
-                        "warning": "#FFF4DE",
-                        "danger": "#FFE2E5",
-                        "light": "#F3F6F9",
-                        "dark": "#D6D6E0"
-                    },
-                    "inverse": {
-                        "white": "#ffffff",
-                        "primary": "#ffffff",
-                        "secondary": "#212121",
-                        "success": "#ffffff",
-                        "info": "#ffffff",
-                        "warning": "#ffffff",
-                        "danger": "#ffffff",
-                        "light": "#464E5F",
-                        "dark": "#ffffff"
-                    }
-                },
-                "gray": {
-                    "gray-100": "#F3F6F9",
-                    "gray-200": "#ECF0F3",
-                    "gray-300": "#E5EAEE",
-                    "gray-400": "#D6D6E0",
-                    "gray-500": "#B5B5C3",
-                    "gray-600": "#80808F",
-                    "gray-700": "#464E5F",
-                    "gray-800": "#1B283F",
-                    "gray-900": "#212121"
-                }
-            },
-            "font-family": "Poppins"
-        };
-    </script>
-    <!--end::Global Config-->
+					foreach ($results as $res) :
 
-    <!--begin::Global Theme Bundle(used by all pages)-->
-    <script src="assets/keen/plugins/global/plugins.bundle.js"></script>
-    <script src="assets/keen/plugins/custom/prismjs/prismjs.bundle.js"></script>
-    <script src="assets/keen/js/scripts.bundle.js"></script>
-    <!--end::Global Theme Bundle-->
-    <!--begin::Page Scripts(used by this page)-->
-    <script src="assets/keen/js/pages/custom/wizard/wizard-2.js"></script>
-    <!--begin::Page Scripts(used by this page)-->
-    <script src="assets/keen/js/pages/features/file-upload/image-input.js"></script>
-    <script src="assets/keen/js/pages/features/file-upload/dropzonejs.js"></script>
-    <!--begin::Page Scripts(used by this page)-->
-    <script src="assets/keen/js/pages/features/ktdatatable/base/data-local.js"></script>
-    <!--end::Page Scripts-->
-    <script type="text/javascript">
-        $("#submit").click(function() {
-            var sender_id = $("#sender_id").val();
-            var debtor_id = $("#debtor_id").val();
-            var message_id = "You Have Entered " +
-                "Name: " + sender_id +
-                " and Marks: " + message_id;
-            $("#modal_body").html(str);
-        });
-    </script>
+					?> <a href="debtor/messages.php?sender_id=<?= htmlentities($res->sender_id) ?>">
+							<div class="navi-link rounded">
+								<div class="symbol symbol-50 mr-3">
+								</div>
+								<div class="navi-text">
+									<div class="font-weight-bold font-size-lg">
+										<?php
+										$red = htmlentities($res->user_type);
 
+										if ($red == 1) : ?>
+											<?= htmlentities($res->firstname) . '' . htmlentities($res->middlename) . ' ' . htmlentities($res->lastname); ?>
+										<?php elseif ($red == 2) : ?>
+											<?= htmlentities($res->firstname) . '' . htmlentities($res->middlename) . ' ' . htmlentities($res->lastname); ?>
+										<?php elseif ($red == 3) : ?>
+											<?= htmlentities($res->company_name); ?>
+										<?php elseif ($red == 4) : ?>
+											<?= htmlentities($res->firstname) . '' . htmlentities($res->middlename) . ' ' . htmlentities($res->lastname); ?>
+										<?php else : ?>
+											<?= htmlentities($res->company_name); ?>
+										<?php endif; ?>
+									</div><span class="font-size-sm"><?= htmlentities($res->date_message); ?></span>
+									<div class="text-muted"><?= htmlentities($res->message) ?></div>
+								</div>
+							</div>
+						</a>
+					<?php endforeach; ?>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--end::Content-->
+	</div>
+	<!--end::Quick Panel-->
+
+	<!--begin::Scrolltop-->
+	<div id="kt_scrolltop" class="scrolltop">
+		<span class="svg-icon">
+			<!--begin::Svg Icon | path:assets/media/svg/icons/Navigation/Up-2.svg-->
+			<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+				<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+					<polygon points="0 0 24 0 24 24 0 24" />
+					<rect fill="#000000" opacity="0.3" x="11" y="10" width="2" height="10" rx="1" />
+					<path d="M6.70710678,12.7071068 C6.31658249,13.0976311 5.68341751,13.0976311 5.29289322,12.7071068 C4.90236893,12.3165825 4.90236893,11.6834175 5.29289322,11.2928932 L11.2928932,5.29289322 C11.6714722,4.91431428 12.2810586,4.90106866 12.6757246,5.26284586 L18.6757246,10.7628459 C19.0828436,11.1360383 19.1103465,11.7686056 18.7371541,12.1757246 C18.3639617,12.5828436 17.7313944,12.6103465 17.3242754,12.2371541 L12.0300757,7.38413782 L6.70710678,12.7071068 Z" fill="#000000" fill-rule="nonzero" />
+				</g>
+			</svg>
+			<!--end::Svg Icon-->
+		</span>
+	</div>
+	<!--end::Scrolltop-->
+	<!--end::Sticky Toolbar-->
+	<!--begin::Demo Panel-->
+	<div id="kt_demo_panel" class="offcanvas offcanvas-right p-10">
+		<!--begin::Header-->
+		<div class="offcanvas-header d-flex align-items-center justify-content-between pb-7">
+			<h4 class="font-weight-bold m-0">Select A Demo</h4>
+			<a href="#" class="btn btn-xs btn-icon btn-light btn-hover-primary" id="kt_demo_panel_close">
+				<i class="ki ki-close icon-xs text-muted"></i>
+			</a>
+		</div>
+		<!--end::Header-->
+
+	</div>
+	<!--end::Demo Panel-->
+	<script>
+		var HOST_URL = "https://preview.keenthemes.com/keen/theme/tools/preview";
+	</script>
+	<!--begin::Global Config(global config for global JS scripts)-->
+	<script>
+		var KTAppSettings = {
+			"breakpoints": {
+				"sm": 576,
+				"md": 768,
+				"lg": 992,
+				"xl": 1200,
+				"xxl": 1200
+			},
+			"colors": {
+				"theme": {
+					"base": {
+						"white": "#ffffff",
+						"primary": "#0BB783",
+						"secondary": "#E5EAEE",
+						"success": "#1BC5BD",
+						"info": "#8950FC",
+						"warning": "#FFA800",
+						"danger": "#F64E60",
+						"light": "#F3F6F9",
+						"dark": "#212121"
+					},
+					"light": {
+						"white": "#ffffff",
+						"primary": "#D7F9EF",
+						"secondary": "#ECF0F3",
+						"success": "#C9F7F5",
+						"info": "#EEE5FF",
+						"warning": "#FFF4DE",
+						"danger": "#FFE2E5",
+						"light": "#F3F6F9",
+						"dark": "#D6D6E0"
+					},
+					"inverse": {
+						"white": "#ffffff",
+						"primary": "#ffffff",
+						"secondary": "#212121",
+						"success": "#ffffff",
+						"info": "#ffffff",
+						"warning": "#ffffff",
+						"danger": "#ffffff",
+						"light": "#464E5F",
+						"dark": "#ffffff"
+					}
+				},
+				"gray": {
+					"gray-100": "#F3F6F9",
+					"gray-200": "#ECF0F3",
+					"gray-300": "#E5EAEE",
+					"gray-400": "#D6D6E0",
+					"gray-500": "#B5B5C3",
+					"gray-600": "#80808F",
+					"gray-700": "#464E5F",
+					"gray-800": "#1B283F",
+					"gray-900": "#212121"
+				}
+			},
+			"font-family": "Poppins"
+		};
+	</script>
+	<!--end::Global Config-->
+	<!--begin::Global Theme Bundle(used by all pages)-->
+	<script src="assets/keen/plugins/global/plugins.bundle.js"></script>
+	<script src="assets/keen/plugins/custom/prismjs/prismjs.bundle.js"></script>
+	<script src="assets/keen/js/scripts.bundle.js"></script>
+	<!--end::Global Theme Bundle-->
+	<!--begin::Page Vendors(used by this page)-->
+	<script src="assets/keen/plugins/custom/fullcalendar/fullcalendar.bundle.js"></script>
+	<!--end::Page Vendors-->
+	<!--begin::Page Scripts(used by this page)-->
+	<script src="assets/keen/js/pages/widgets.js"></script>
+	<!--end::Page Scripts-->
 </body>
 <!--end::Body-->
 

@@ -1088,7 +1088,6 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 								<!--end::Dropdown-->
 							</div>
 							<!--end::Notifications-->
-<<<<<<< HEAD:individual_investor/update_profile.php
 							<!--begin::Quick panel-->
 							<div class="topbar-item mr-1">
 								<div class="btn btn-icon btn-clean btn-lg" id="kt_quick_panel_toggle">
@@ -1106,10 +1105,6 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 								</div>
 							</div>
 							<!--end::Quick panel-->
-=======
-
-							
->>>>>>> e42937b0885e872be4ee431a15a529761ed93304:payment_center/upload_payment.php
 							<!--begin::Chat-->
 							<div class="topbar-item">
 								<div class="btn btn-icon btn-clean btn-lg mr-1" data-toggle="modal" data-target="#kt_chat_modal">
@@ -1504,7 +1499,10 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 				</div>
 			</div>
 		</div>
-	</div>
+		</div>
+		</div>
+
+	
 			<!--begin::Footer-->
 				<div class="footer bg-white py-4 d-flex flex-lg-column" id="kt_footer">
 					<!--begin::Container-->

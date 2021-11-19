@@ -225,11 +225,8 @@ $user = $query->fetch();
                                         </div>
                                         <div class="my-lg-0 my-1">
                                             <a href="debtor/view_company.php?lender_id=<?= $lender['lender_id'] ?>" class="btn btn-sm btn-light-primary font-weight-bolder mr-2">View Details</a>
-                                            <?php if ($user['eligible'] == 'no') : ?>
-                                                <a href="" class="btn btn-sm btn-primary font-weight-bolder" data-target="#notice" data-toggle="modal">Apply Now</a>
-                                            <?php else : ?>
-                                                <a href="debtor/apply_loan.php?lender_id=<?= $lender['lender_id'] . '&amount=' . $_GET['amount'] . '&month=' . $_GET['month']  ?>" class="btn btn-sm btn-primary font-weight-bolder">Apply Now</a>
-                                            <?php endif; ?>
+                                            <a href="login.php" class="btn btn-sm btn-primary font-weight-bolder">Apply Now</a>
+                                           
                                         </div>
                                     </div>
                                     <div class="d-flex align-items-center flex-wrap justify-content-between">

@@ -137,7 +137,7 @@
                                 </div>
                                 <div class="submit_btn">
                                     <button class="boxed-btn3" type="submit" name="login">Log in</button>
-                                    <a href="logincontact.php" class="boxed-btn4 mt-2 btn-block">Log in as Contact</a>
+                                    <!-- <a href="logincontact.php" class="boxed-btn4 mt-2 btn-block">Log in as Contact</a> -->
                                 </div>
                                 </br>
                                 <div class="form">

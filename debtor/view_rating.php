@@ -15,359 +15,17 @@ $query->execute();
 $user = $query->fetch();
 ?>
 
-<?php
-	if(isset($_POST['valid_id'])){
-		$loan_app_id = intval($_GET['loan_app_id']);
-
-		$images =$_FILES['valid_id']['name'];
-		$tmp_dir = $_FILES['valid_id']['tmp_name'];
-		$imageSize=$_FILES['valid_id']['size'];
-
-		$upload_dir2='../assets/keen/hulam_media/';
-		$imgExt=strtolower(pathinfo($images,PATHINFO_EXTENSION));
-		$valid_extensions=array('jpeg','jpg','gif','pdf','doc','docx');
-		$valid_id=rand(1000,10000000).".".$imgExt;
-		move_uploaded_file($tmp_dir,$upload_dir2.$valid_id);
-
-		$update = "UPDATE loan_application SET valid_id = :valid_id WHERE loan_app_id = $loan_app_id";
-		$query = $dbh->prepare($update);
-		$query->bindParam(':valid_id',$valid_id,PDO::PARAM_STR);
-		$query->execute();
-		
-		if($query){
-			$_SESSION['status_approved'] = "Success";
-			header("location: view_approved_application.php?loan_app_id=$loan_app_id");
-			exit();
-		}else{
-			$_SESSION['status_approved'] = "Error!";
-			header("location: view_approved_application.php?loan_app_id=$loan_app_id");
-			exit();
-		}
-	}
-?>
-<?php
-	if(isset($_POST['barangay_clearance'])){
-		$loan_app_id = intval($_GET['loan_app_id']);
-
-		$images =$_FILES['barangay_clearance']['name'];
-		$tmp_dir = $_FILES['barangay_clearance']['tmp_name'];
-		$imageSize=$_FILES['barangay_clearance']['size'];
-
-		$upload_dir2='../assets/keen/hulam_media/';
-		$imgExt=strtolower(pathinfo($images,PATHINFO_EXTENSION));
-		$valid_extensions=array('jpeg','jpg','gif','pdf','doc','docx');
-		$barangay_clearance=rand(1000,10000000).".".$imgExt;
-		move_uploaded_file($tmp_dir,$upload_dir2.$barangay_clearance);
-
-		$update = "UPDATE loan_application SET barangay_clearance = :barangay_clearance WHERE loan_app_id = $loan_app_id";
-		$query = $dbh->prepare($update);
-		$query->bindParam(':barangay_clearance',$barangay_clearance,PDO::PARAM_STR);
-		$query->execute();
-
-		if($query){
-			$_SESSION['status_approved'] = "Success";
-			header("location: view_approved_application.php?loan_app_id=$loan_app_id");
-			exit();
-		}else{
-			$_SESSION['status_approved'] = "Error!";
-			header("location: view_approved_application.php?loan_app_id=$loan_app_id");
-			exit();
-		}
-	}
-?>
-<?php
-	if(isset($_POST['payslip'])){
-		$loan_app_id = intval($_GET['loan_app_id']);
-
-		$images =$_FILES['payslip']['name'];
-		$tmp_dir = $_FILES['payslip']['tmp_name'];
-		$imageSize=$_FILES['payslip']['size'];
-
-		$upload_dir2='../assets/keen/hulam_media/';
-		$imgExt=strtolower(pathinfo($images,PATHINFO_EXTENSION));
-		$valid_extensions=array('jpeg','jpg','gif','pdf','doc','docx');
-		$payslip=rand(1000,10000000).".".$imgExt;
-		move_uploaded_file($tmp_dir,$upload_dir2.$payslip);
-
-		$sql = "SELECT * FROM loan_application WHERE loan_app_id = $loan_app_id";
-		$query = $dbh->prepare($sql);
-		$query->execute();
-
-		$update = "UPDATE loan_application SET payslip = :payslip WHERE loan_app_id = $loan_app_id";
-		$query = $dbh->prepare($update);
-		$query->bindParam(':payslip',$payslip,PDO::PARAM_STR);
-		$query->execute();
-		
-		if($query){
-			$_SESSION['status_approved'] = "Success";
-			header("location: view_approved_application.php?loan_app_id=$loan_app_id");
-			exit();
-		}else{
-			$_SESSION['status_approved'] = "Error!";
-			header("location: view_approved_application.php?loan_app_id=$loan_app_id");
-			exit();
-		}
-	}
-?>
-<?php
-	if(isset($_POST['cedula'])){
-		$loan_app_id = intval($_GET['loan_app_id']);
-
-		$images =$_FILES['cedula']['name'];
-		$tmp_dir = $_FILES['cedula']['tmp_name'];
-		$imageSize=$_FILES['cedula']['size'];
-
-		$upload_dir2='../assets/keen/hulam_media/';
-		$imgExt=strtolower(pathinfo($images,PATHINFO_EXTENSION));
-		$valid_extensions=array('jpeg','jpg','gif','pdf','doc','docx');
-		$cedula=rand(1000,10000000).".".$imgExt;
-		move_uploaded_file($tmp_dir,$upload_dir2.$cedula);
-
-		$sql = "SELECT * FROM loan_application WHERE loan_app_id = $loan_app_id";
-		$query = $dbh->prepare($sql);
-		$query->execute();
-		
-		$update = "UPDATE loan_application SET cedula = :cedula WHERE loan_app_id = $loan_app_id";
-		$query = $dbh->prepare($update);
-		$query->bindParam(':cedula',$cedula,PDO::PARAM_STR);
-		$query->execute();
-		
-		if($query){
-			$_SESSION['status_approved'] = "Success";
-			header("location: view_approved_application.php?loan_app_id=$loan_app_id");
-			exit();
-		}else{
-			$_SESSION['status_approved'] = "Error!";
-			header("location: view_approved_application.php?loan_app_id=$loan_app_id");
-			exit();
-		}
-	}
-?>
-<?php
-	if(isset($_POST['atm_transaction'])){
-		$loan_app_id = intval($_GET['loan_app_id']);
-
-		$images =$_FILES['atm_transaction']['name'];
-		$tmp_dir = $_FILES['atm_transaction']['tmp_name'];
-		$imageSize=$_FILES['atm_transaction']['size'];
-
-		$upload_dir2='../assets/keen/hulam_media/';
-		$imgExt=strtolower(pathinfo($images,PATHINFO_EXTENSION));
-		$valid_extensions=array('jpeg','jpg','gif','pdf','doc','docx');
-		$atm_transaction=rand(1000,10000000).".".$imgExt;
-		move_uploaded_file($tmp_dir,$upload_dir2.$atm_transaction);
-
-		$update = "UPDATE loan_application SET atm_transaction = :atm_transaction WHERE loan_app_id = $loan_app_id";
-		$query = $dbh->prepare($update);
-		$query->bindParam(':atm_transaction',$atm_transaction,PDO::PARAM_STR);
-		$query->execute();
-		
-		if($query){
-			$_SESSION['status_approved'] = "Success";
-			header("location: view_approved_application.php?loan_app_id=$loan_app_id");
-			exit();
-		}else{
-			$_SESSION['status_approved'] = "Error!";
-			header("location: view_approved_application.php?loan_app_id=$loan_app_id");
-			exit();
-		}
-	}
-?>
-<?php
-	if(isset($_POST['coe'])){
-		$loan_app_id = intval($_GET['loan_app_id']);
-
-		$images =$_FILES['coe']['name'];
-		$tmp_dir = $_FILES['coe']['tmp_name'];
-		$imageSize=$_FILES['coe']['size'];
-
-		$upload_dir2='../assets/keen/hulam_media/';
-		$imgExt=strtolower(pathinfo($images,PATHINFO_EXTENSION));
-		$valid_extensions=array('jpeg','jpg','gif','pdf','doc','docx');
-		$coe=rand(1000,10000000).".".$imgExt;
-		move_uploaded_file($tmp_dir,$upload_dir2.$coe);
-
-		$update = "UPDATE loan_application SET coe = :coe WHERE loan_app_id = $loan_app_id";
-		$update_query = $dbh->prepare($update);
-		$update_query->bindParam(':coe',$coe,PDO::PARAM_STR);
-		$update_query->execute();
-		
-		if($query){
-			$_SESSION['status_approved'] = "Success";
-			header("location: view_approved_application.php?loan_app_id=$loan_app_id");
-			exit();
-		}else{
-			$_SESSION['status_approved'] = "Error!";
-			header("location: view_approved_application.php?loan_app_id=$loan_app_id");
-			exit();
-		}
-	}
-?>
-<?php
-	if(isset($_POST['bank_statement'])){
-		$loan_app_id = intval($_GET['loan_app_id']);
-
-		$images =$_FILES['bank_statement']['name'];
-		$tmp_dir = $_FILES['bank_statement']['tmp_name'];
-		$imageSize=$_FILES['bank_statement']['size'];
-
-		$upload_dir2='../assets/keen/hulam_media/';
-		$imgExt=strtolower(pathinfo($images,PATHINFO_EXTENSION));
-		$valid_extensions=array('jpeg','jpg','gif','pdf','doc','docx');
-		$bank_statement=rand(1000,10000000).".".$imgExt;
-		move_uploaded_file($tmp_dir,$upload_dir2.$bank_statement);
-
-		
-		$update = "UPDATE loan_application SET bank_statement = :bank_statement WHERE loan_app_id = $loan_app_id";
-		$update_query = $dbh->prepare($update);
-		$update_query->bindParam(':bank_statement',$bank_statement,PDO::PARAM_STR);
-		$update_query->execute();
-		
-		if($query){
-			$_SESSION['status_approved'] = "Success";
-			header("location: view_approved_application.php?loan_app_id=$loan_app_id");
-			exit();
-		}else{
-			$_SESSION['status_approved'] = "Error!";
-			header("location: view_approved_application.php?loan_app_id=$loan_app_id");
-			exit();
-		}
-	}
-?>
-<?php
-	if(isset($_POST['proof_billing'])){
-		$loan_app_id = intval($_GET['loan_app_id']);
-
-		$images =$_FILES['proof_billing']['name'];
-		$tmp_dir = $_FILES['proof_billing']['tmp_name'];
-		$imageSize=$_FILES['proof_billing']['size'];
-
-		$upload_dir2='../assets/keen/hulam_media/';
-		$imgExt=strtolower(pathinfo($images,PATHINFO_EXTENSION));
-		$valid_extensions=array('jpeg','jpg','gif','pdf','doc','docx');
-		$proof_billing=rand(1000,10000000).".".$imgExt;
-		move_uploaded_file($tmp_dir,$upload_dir2.$proof_billing);
-
-		
-		$update = "UPDATE loan_application SET proof_billing = :proof_billing WHERE loan_app_id = $loan_app_id";
-		$update_query = $dbh->prepare($update);
-		$update_query->bindParam(':proof_billing',$proof_billing,PDO::PARAM_STR);
-		$update_query->execute();
-		
-		if($query){
-			$_SESSION['status_approved'] = "Success";
-			header("location: view_approved_application.php?loan_app_id=$loan_app_id");
-			exit();
-		}else{
-			$_SESSION['status_approved'] = "Error!";
-			header("location: view_approved_application.php?loan_app_id=$loan_app_id");
-			exit();
-		}
-	}
-?>
-<?php
-	if(isset($_POST['co_maker_id'])){
-		$loan_app_id = intval($_GET['loan_app_id']);
-
-		$images =$_FILES['co_maker_id']['name'];
-		$tmp_dir = $_FILES['co_maker_id']['tmp_name'];
-		$imageSize=$_FILES['co_maker_id']['size'];
-
-		$upload_dir2='../assets/keen/hulam_media/';
-		$imgExt=strtolower(pathinfo($images,PATHINFO_EXTENSION));
-		$valid_extensions=array('jpeg','jpg','gif','pdf','doc','docx');
-		$co_maker_id=rand(1000,10000000).".".$imgExt;
-		move_uploaded_file($tmp_dir,$upload_dir2.$co_maker_id);
-
-		$update = "UPDATE loan_application SET co_maker_id = :co_maker_id WHERE loan_app_id = $loan_app_id";
-		$update_query = $dbh->prepare($update);
-		$update_query->bindParam(':co_maker_id',$co_maker_id,PDO::PARAM_STR);
-		$update_query->execute();
-		
-		if($query){
-			$_SESSION['status_approved'] = "Success";
-			header("location: view_approved_application.php?loan_app_id=$loan_app_id");
-			exit();
-		}else{
-			$_SESSION['status_approved'] = "Error!";
-			header("location: view_approved_application.php?loan_app_id=$loan_app_id");
-			exit();
-		}
-	}
-?>
-<?php
-	if(isset($_POST['co_maker_cedula'])){
-		$loan_app_id = intval($_GET['loan_app_id']);
-
-		$images =$_FILES['co_maker_cedula']['name'];
-		$tmp_dir = $_FILES['co_maker_cedula']['tmp_name'];
-		$imageSize=$_FILES['co_maker_cedula']['size'];
-
-		$upload_dir2='../assets/keen/hulam_media/';
-		$imgExt=strtolower(pathinfo($images,PATHINFO_EXTENSION));
-		$valid_extensions=array('jpeg','jpg','gif','pdf','doc','docx');
-		$co_maker_cedula=rand(1000,10000000).".".$imgExt;
-		move_uploaded_file($tmp_dir,$upload_dir2.$co_maker_cedula);
-
-		$update = "UPDATE loan_application SET co_maker_cedula = :co_maker_cedula WHERE loan_app_id = $loan_app_id";
-		$update_query = $dbh->prepare($update);
-		$update_query->bindParam(':co_maker_cedula',$co_maker_cedula,PDO::PARAM_STR);
-		$update_query->execute();
-		
-		if($query){
-			$_SESSION['status_approved'] = "Success";
-			header("location: view_approved_application.php?loan_app_id=$loan_app_id");
-			exit();
-		}else{
-			$_SESSION['status_approved'] = "Error!";
-			header("location: view_approved_application.php?loan_app_id=$loan_app_id");
-			exit();
-		}
-	}
-?>
-<?php
-	if(isset($_POST['id_pic'])){
-		$loan_app_id = intval($_GET['loan_app_id']);
-
-		$images =$_FILES['id_pic']['name'];
-		$tmp_dir = $_FILES['id_pic']['tmp_name'];
-		$imageSize=$_FILES['id_pic']['size'];
-
-		$upload_dir2='../assets/keen/hulam_media/';
-		$imgExt=strtolower(pathinfo($images,PATHINFO_EXTENSION));
-		$valid_extensions=array('jpeg','jpg','gif','pdf','doc','docx');
-		$id_pic=rand(1000,10000000).".".$imgExt;
-		move_uploaded_file($tmp_dir,$upload_dir2.$id_pic);
-
-		$update = "UPDATE loan_application SET id_pic = :id_pic WHERE loan_app_id = $loan_app_id";
-		$update_query = $dbh->prepare($update);
-		$update_query->bindParam(':id_pic',$id_pic,PDO::PARAM_STR);
-		$update_query->execute();
-		
-		if($query){
-			$_SESSION['status_approved'] = "Success";
-			header("location: view_approved_application.php?loan_app_id=$loan_app_id");
-			exit();
-		}else{
-			$_SESSION['status_approved'] = "Error!";
-			header("location: view_approved_application.php?loan_app_id=$loan_app_id");
-			exit();
-		}
-	}
-?>
-
-
-
-
 
 <!DOCTYPE html>
+
 <html lang="en">
 <!--begin::Head-->
 
 <head>
+
 	<base href="../">
 	<meta charset="utf-8" />
-	<title>Apply Now</title>
+	<title>Rating</title>
 	<meta name="description" content="Updates and statistics" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 	<!--begin::Fonts-->
@@ -380,11 +38,58 @@ $user = $query->fetch();
 	<link href="assets/keen/plugins/global/plugins.bundle.css" rel="stylesheet" type="text/css" />
 	<link href="assets/keen/plugins/custom/prismjs/prismjs.bundle.css" rel="stylesheet" type="text/css" />
 	<link href="assets/keen/css/style.bundle.css" rel="stylesheet" type="text/css" />
-
 	<!--end::Global Theme Styles-->
 	<!--begin::Layout Themes(used by all pages)-->
 	<!--end::Layout Themes-->
 	<link rel="shortcut icon" href="assets/keen/media/logos/Hulam_Logo.png" />
+	<link href="css/heroic-features.css" rel="stylesheet">
+	<style type="text/css">
+		.rate {
+			float: left;
+			height: 46px;
+			padding: 0 10px;
+		}
+
+		.rate:not(:checked)>input {
+			position: absolute;
+			top: -9999px;
+		}
+
+		.rate:not(:checked)>label {
+			float: right;
+			width: 1em;
+			overflow: hidden;
+			white-space: nowrap;
+			cursor: pointer;
+			font-size: 30px;
+			color: #000;
+		}
+
+		.rate:not(:checked)>label:before {
+			content: '★ ';
+		}
+
+		.rate>input:checked~label {
+			color: #ffc700;
+		}
+
+		.rate:not(:checked)>label:hover,
+		.rate:not(:checked)>label:hover~label {
+			color: #deb217;
+		}
+
+		.rate>input:checked+label:hover,
+		.rate>input:checked+label:hover~label,
+		.rate>input:checked~label:hover,
+		.rate>input:checked~label:hover~label,
+		.rate>label:hover~input:checked~label {
+			color: #c59b08;
+		}
+
+		.hideme {
+			display: none;
+		}
+	</style>
 </head>
 <!--end::Head-->
 <!--begin::Body-->
@@ -416,7 +121,6 @@ $user = $query->fetch();
 					<!--end::Logo-->
 				</div>
 				<!--end::Logo-->
-				<!--begin::Nav-->
 				<div class="subheader-nav nav flex-grow-1">
 					<a href="debtor/index.php" class="nav-item active">
 						<span class="nav-label px-10">
@@ -479,578 +183,111 @@ $user = $query->fetch();
 		</div>
 		<!--end::Subheader-->
 
-
+			
 		<!--begin::Content-->
 		<div class="content d-flex flex-column flex-column-fluid" id="kt_content">
-			<!--begin::Entry-->
+            <div class="gutter-b" id="kt_breadcrumbs">
+                <div class="container d-flex align-items-center justify-content-between flex-wrap flex-sm-nowrap">
+                    <div class="d-flex align-items-center flex-wrap mr-1">
+                        <div class="d-flex align-items-baseline flex-wrap mr-5">
+                            <h2 class="text-white font-weight-bold my-1 mr-5">Ratings And Reviews</h2>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center">
+
+                    </div>
+                </div>
+            </div>
 			<div class="d-flex flex-column-fluid">
-				<!--begin::Container-->
-				<div class="container">
+				<div class="container ">
+					<div class="card card-custom gutter-b card-stretch d-flex align-items-center">
+						<div class="card-header border-0 pt-6">
+							<h3 class="card-title text-center">
+								<span class="card-label font-weight-bolder font-size-h4 text-dark-75 ">
+                                    <?php
+                                    if (isset($_GET['lender_id']))
+                                        $lender_id = $_GET['lender_id'];
+                                    if (isset($_GET['user_id']))
+                                        $user_id = $_GET['user_id'];
 
-					<div class="d-flex flex-column-fluid">
-						<div class="container">
-							<!-- begin::Card-->
-							<div class="card card-custom overflow-hidden">
-								<div class="card-body p-0">
-									<div class="card card-custom gutter-b">
-										<div class="card-body">
-											<!-- <form action="debtor/logic/update_loan_application.php" method="post" enctype="multipart/form-data"> -->
-												<?php
-												$loan_app_id = intval($_GET['loan_app_id']);
+                                    $query_lending = "SELECT * FROM user WHERE user_id = $lender_id";
+                                    $query_lending_result = mysqli_query($conn, $query_lending);
+                                    $lending_result = mysqli_fetch_array($query_lending_result);
+                                    echo $lending_result['company_name'];
+                                    ?></h4>
+                                    <?php
+                                    if (isset($_GET['user_id']))
+                                        $id = $_GET['user_id'];
+                                    ?>
+                                </span>
+							</h3>
+							<div class="my-lg-0 my-1">
+								<a href="debtor/loan_information.php" class="btn btn-sm btn-light-primary font-weight-bolder mr-2">
+									<< Back</a>
+							</div>
+						</div>
 
-												$sql = "SELECT * FROM loan_application WHERE loan_app_id = $loan_app_id";
-												$query = $dbh->prepare($sql);
-												$query->execute();
-												$result = $query->fetch();
-
-												$lender_id = $result['lender_id'];
-
-												$sql2 = "SELECT * FROM loan_features INNER JOIN user ON loan_features.lender_id = user.user_id WHERE loan_features.lender_id = $lender_id";
-												$query2 = $dbh->prepare($sql2);
-												$query2->execute();
-												$lender = $query2->fetch();
-
-
-												?>
-												<div class="d-flex">
-													<div class="flex-shrink-0 mr-7">
-														<div class="symbol symbol-50 symbol-lg-120 symbol-circle">
-															<img alt="Pic" src="/hulam/assets/keen/hulam_media/<?= $lender['profile_pic'] ?>" />
-														</div>
-													</div>
-													<div class="flex-grow-1">
-														<div class="d-flex align-items-center justify-content-between flex-wrap mt-2">
-															<div class="mr-3">
-																<a href="#" class="d-flex align-items-center text-dark text-hover-primary font-size-h5 font-weight-bold mr-3"><?= $lender['company_name'] ?></a>
-															</div>
-															<div class="my-lg-0 my-1">
-																<a href="debtor/loan_information.php" class="btn btn-sm btn-light-primary font-weight-bolder mr-2">
-																	<< Back</a>
-															</div>
-														</div>
-														<div class="d-flex align-items-center flex-wrap justify-content-between">
-															<div class="flex-grow-1 font-weight-bold text-dark-50 py-2 py-lg-2 mr-5">
-																<?= $lender['description'] ?>
-
-															</div>
-														</div>
-													</div>
-												</div>
-												<div class="separator separator-solid my-7"></div>
-												<div class="card-body pt-2">
-													<div class="card card-custom">
-														<div class="card-body">
-														<h5 class="text-info font-weight-bolder">Loan Information</h5>
-															<table class="table table-bordered">
-																<?php
-																		$loan_app_id = intval($_GET['loan_app_id']);
-
-																		$sql = "SELECT * FROM loan_application WHERE loan_app_id = $loan_app_id";
-																		$query = $dbh->prepare($sql);
-																		$query->execute();
-																		$results = $query->fetchAll(PDO::FETCH_OBJ);
-																		if ($query->rowCount() > 0) {
-																			foreach ($results as $res) {
-																		?>
-																<thead>
-																	<tr>
-																		<th>Loan Status</th>
-																		<th><h6 class="text-info font-weight-bold"><?= htmlentities($res->loan_status);?></h6></th>
-
-																	</tr>
-																</thead>
-																<tbody>
-																	<tr>
-																		<td>Application Date</td>
-																		<td><?php echo $year = date('F d, Y - h:i:sa',strtotime($res->date));?></td>
-																	</tr>
-                                                                    <tr>
-																		<td>Approval Date</td>
-																		<td><?php echo $year = date('F d, Y',strtotime($res->approval_date));?></td>
-																	</tr>
-                                                                    <tr>
-																		<td>Releasing Schedule</td>
-																		<td><?= date('F d, Y',strtotime($res->release_schedule)); ?></td>
-																	</tr>
-																	<tr>
-																		<td>Loan Amount</td>
-																		<td><?= number_format(htmlentities($res->loan_amount), 2); ?></td>
-																	</tr>
-																	<tr>
-																		<td>Loan Term</td>
-																		<td><?= htmlentities($res->loan_term); ?></td>
-																	</tr>
-																	<tr>
-																		<td>Fix Rate</td>
-																		<td><?= htmlentities($res->fix_rate); ?>%</td>
-																	</tr>
-																	<tr>
-																		<td>Total Interest</td>
-																		<td><?= number_format(htmlentities($res->total_interest), 2); ?></td>
-																	</tr>
-																	<tr>
-																		<td>Late Charge</td>
-																		<td><?= htmlentities($res->late_charges); ?>%</td>
-																	</tr>
-																	<tr>
-																		<td>Total Loan Amount</td>
-																		<td><?= number_format(htmlentities($res->total_amount), 2); ?></td>
-																	</tr>
-
-																</tbody>
-														<?php }
-																	} ?>
-															</table></br>
-															<h5 class="text-info font-weight-bolder">Uploaded Requirements</h5>
-															<div class="col-xl-12 col-xl-12">
-																<?php
-																if (isset($_SESSION['status_approved'])) {
-																?>
-																	<div class="alert alert-custom alert-notice alert-light-success fade show" role="alert">
-																		<div class="alert-text">
-																			<h4><?php echo $_SESSION['status_approved']; ?></h4>
-																		</div>
-																		<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
-																	</div>
-																<?php unset($_SESSION['status_approved']);
-																} ?>
-															</div>
-															<table class="table table-bordered">
-																<thead>
-																	<tr>
-																		<th>Type of Documents</th>
-																		<th>Uploaded Documents</th>
-																		<th>Action</th>
-																	</tr>
-																</thead>
-																<tbody>
-																	<?php
-																	$loan_app_id = intval($_GET['loan_app_id']);
-
-																	$sql = "SELECT * FROM loan_application WHERE loan_app_id = $loan_app_id";
-																	$query = $dbh->prepare($sql);
-																	$query->execute();
-																	$results = $query->fetchAll(PDO::FETCH_OBJ);
-																	if ($query->rowCount() > 0) {
-																		foreach ($results as $res) {
-																	?>
-																			<tr>
-																				<td>Valid ID</td>
-																				<td><a href="/hulam/assets/keen/hulam_media/<?= htmlentities($res->valid_id) ?>" target="_blank"><?= htmlentities($res->valid_id); ?></a></td>
-																				<td><a href="" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#view">Update</a></td>
-																			</tr>
-																			<tr>
-																				<td>Barangay Clearanace</td>
-																				<td><a href="/hulam/assets/keen/hulam_media/<?= htmlentities($res->barangay_clearance) ?>" target="_blank"><?= htmlentities($res->barangay_clearance); ?></a></td>
-																				<td><a href="" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#barangay_clearance">Update</a></td>
-																			</tr>
-																			<tr>
-																				<td>Payslip</td>
-																				<td><a href="/hulam/assets/keen/hulam_media/<?= htmlentities($res->payslip) ?>" target="_blank"><?= htmlentities($res->payslip); ?></a></td>
-																				<td><a href="" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#payslip">Update</a></td>
-																			</tr>
-																			<tr>
-																				<td>Cedula</td>
-																				<td><a href="/hulam/assets/keen/hulam_media/<?= htmlentities($res->cedula) ?>" target="_blank"><?= htmlentities($res->cedula); ?></a></td>
-																				<td><a href="" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#cedula">Update</a></td>
-																			</tr>
-																			<tr>
-																				<td>ATM Latest Transaction Receipt</td>
-																				<td><a href="/hulam/assets/keen/hulam_media/<?= htmlentities($res->atm_transaction) ?>" target="_blank"><?= htmlentities($res->atm_transaction); ?></a></td>
-																				<td><a href="" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#atm_transaction">Update</a></td>
-																			</tr>
-																			<tr>
-																				<td>Certificate of Employment</td>
-																				<td><a href="/hulam/assets/keen/hulam_media/<?= htmlentities($res->coe) ?>" target="_blank"><?= htmlentities($res->coe); ?></a></td>
-																				<td><a href="" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#coe">Update</a></td>
-																			</tr>
-																			<tr>
-																				<td>Bank Statement</td>
-																				<td><a href="/hulam/assets/keen/hulam_media/<?= htmlentities($res->bank_statement) ?>" target="_blank"><?= htmlentities($res->bank_statement); ?></a></td>
-																				<td><a href="" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#bank_statement">Update</a></td>
-																			</tr>
-																			<tr>
-																				<td>Proof of Billing</td>
-																				<td><a href="/hulam/assets/keen/hulam_media/<?= htmlentities($res->proof_billing) ?>" target="_blank"><?= htmlentities($res->proof_billing); ?></a></td>
-																				<td><a href="" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#proof_billing">Update</a></td>
-																			</tr>
-																			<tr>
-																				<td>Co-Maker ID</td>
-																				<td><a href="/hulam/assets/keen/hulam_media/<?= htmlentities($res->co_maker_id) ?>" target="_blank"><?= htmlentities($res->co_maker_id); ?></a></td>
-																				<td><a href="" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#co_maker_id">Update</a></td>
-																			</tr>
-																			<tr>
-																				<td>Co-Maker Cedula</td>
-																				<td><a href="/hulam/assets/keen/hulam_media/<?= htmlentities($res->co_maker_cedula) ?>" target="_blank"><?= htmlentities($res->co_maker_cedula); ?></a></td>
-																				<td><a href="" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#co_maker_cedula">Update</a></td>
-																			</tr>
-																			<tr>
-																				<td>2x2 ID</td>
-																				<td><a href="/hulam/assets/keen/hulam_media/<?= htmlentities($res->id_pic) ?>" target="_blank"><?= htmlentities($res->id_pic); ?></a></td>
-																				<td><a href="" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#id_pic">Update</a></td>
-																			</tr>
-																</tbody>
-														<?php }
-																	} ?>
-															</table>
-															<!-- Start Modal -->
-															<form action="" method="post" enctype="multipart/form-data">
-															<div class="modal fade" id="view" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
-																<div class="modal-dialog modal-dialog-centered modal-md" role="document">
-																	<div class="modal-content">
-																		<div class="modal-header">
-																			<h5 class="modal-title" id="exampleModalLabel">Update Valid ID</h5>
-																			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-																				<i aria-hidden="true" class="ki ki-close"></i>
-																			</button>
-																		</div>
-																			<div class="col-xl-4">
-																				<div class="form-group">
-																					<input type="file" name="valid_id" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3" />
-																				</div>
-																			</div>
-																			<div class="modal-footer">
-																				<button type="submit" name="valid_id" class="btn btn-primary font-weight-bold">Save</button>
-																			</div>
-																		</div>
-																	</div>
-																</div>
-															</form>
-															<!-- End Modal -->
-															<!-- Start Modal -->
-															<form action="" method="post" enctype="multipart/form-data">
-															<div class="modal fade" id="barangay_clearance" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
-																<div class="modal-dialog modal-dialog-centered modal-md" role="document">
-																	<div class="modal-content">
-																		<div class="modal-header">
-																			<h5 class="modal-title" id="exampleModalLabel">Update Barangay Clearance</h5>
-																			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-																				<i aria-hidden="true" class="ki ki-close"></i>
-																			</button>
-																		</div>
-																			<div class="col-xl-4">
-																				<div class="form-group">
-																					<input type="file" name="barangay_clearance" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3" />
-																				</div>
-																			</div>
-																			<div class="modal-footer">
-																				<button type="barangay_clearance" name="barangay_clearance" class="btn btn-primary font-weight-bold">Save changes</button>
-																			</div>
-																		</div>
-																	</div>
-																</div>
-															</form>
-															<!-- End Modal -->
-															<!-- Start Modal -->
-															<form action="" method="post" enctype="multipart/form-data">
-															<div class="modal fade" id="payslip" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
-																<div class="modal-dialog modal-dialog-centered modal-md" role="document">
-																	<div class="modal-content">
-																		<div class="modal-header">
-																			<h5 class="modal-title" id="exampleModalLabel">Update Payslip</h5>
-																			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-																				<i aria-hidden="true" class="ki ki-close"></i>
-																			</button>
-																		</div>
-																			<div class="col-xl-4">
-																				<div class="form-group">
-																					<input type="file" name="payslip" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3" />
-																				</div>
-																			</div>
-																			<div class="modal-footer">
-																				<button type="submit" name="payslip" class="btn btn-primary font-weight-bold">Save changes</button>
-																			</div>
-																		</div>
-																	</div>
-																</div>
-															</form>
-															<!-- End Modal -->
-															<!-- Start Modal -->
-															<form action="" method="post" enctype="multipart/form-data">
-															<div class="modal fade" id="cedula" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
-																<div class="modal-dialog modal-dialog-centered modal-md" role="document">
-																	<div class="modal-content">
-																		<div class="modal-header">
-																			<h5 class="modal-title" id="exampleModalLabel">Update Cedula</h5>
-																			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-																				<i aria-hidden="true" class="ki ki-close"></i>
-																			</button>
-																		</div>
-																			<div class="col-xl-4">
-																				<div class="form-group">
-																					<input type="file" name="cedula" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3" />
-																				</div>
-																			</div>
-																			<div class="modal-footer">
-																				<button type="submit" name="cedula" class="btn btn-primary font-weight-bold">Save changes</button>
-																			</div>
-																		</div>
-																	</div>
-																</div>
-															</form>
-															<!-- End Modal -->
-															<!-- Start Modal -->
-															<form action="" method="post" enctype="multipart/form-data">
-															<div class="modal fade" id="atm_transaction" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
-																<div class="modal-dialog modal-dialog-centered modal-md" role="document">
-																	<div class="modal-content">
-																		<div class="modal-header">
-																			<h5 class="modal-title" id="exampleModalLabel">Update ATM Latest Transaction Receipt</h5>
-																			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-																				<i aria-hidden="true" class="ki ki-close"></i>
-																			</button>
-																		</div>
-																			<div class="col-xl-4">
-																				<div class="form-group">
-																					<input type="file" name="atm_transaction" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3" />
-																				</div>
-																			</div>
-																			<div class="modal-footer">
-																				<button type="submit" name="atm_transaction" class="btn btn-primary font-weight-bold">Save</button>
-																			</div>
-																		</div>
-																	</div>
-																</div>
-															</form>
-															<!-- End Modal -->
-															<!-- Start Modal -->
-															<form action="" method="post" enctype="multipart/form-data">
-															<div class="modal fade" id="coe" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
-																<div class="modal-dialog modal-dialog-centered modal-md" role="document">
-																	<div class="modal-content">
-																		<div class="modal-header">
-																			<h5 class="modal-title" id="exampleModalLabel">Update Certificate of Employment</h5>
-																			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-																				<i aria-hidden="true" class="ki ki-close"></i>
-																			</button>
-																		</div>
-																			<div class="col-xl-4">
-																				<div class="form-group">
-																					<input type="file" name="coe" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3" />
-																				</div>
-																			</div>
-																			<div class="modal-footer">
-																				<button type="submit" name="coe" class="btn btn-primary font-weight-bold">Save</button>
-																			</div>
-																		</div>
-																	</div>
-																</div>
-															</form>
-															<!-- End Modal -->
-															<!-- Start Modal -->
-															<form action="" method="post" enctype="multipart/form-data">
-															<div class="modal fade" id="bank_statement" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
-																<div class="modal-dialog modal-dialog-centered modal-md" role="document">
-																	<div class="modal-content">
-																		<div class="modal-header">
-																			<h5 class="modal-title" id="exampleModalLabel">Update Bank Statement</h5>
-																			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-																				<i aria-hidden="true" class="ki ki-close"></i>
-																			</button>
-																		</div>
-																			<div class="col-xl-4">
-																				<div class="form-group">
-																					<input type="file" name="bank_statement" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3" />
-																				</div>
-																			</div>
-																			<div class="modal-footer">
-																				<button type="submit" name="bank_statement" class="btn btn-primary font-weight-bold">Save</button>
-																			</div>
-																		</div>
-																	</div>
-																</div>
-															</form>
-															<!-- End Modal -->
-															<!-- Start Modal -->
-															<form action="" method="post" enctype="multipart/form-data">
-															<div class="modal fade" id="proof_billing" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
-																<div class="modal-dialog modal-dialog-centered modal-md" role="document">
-																	<div class="modal-content">
-																		<div class="modal-header">
-																			<h5 class="modal-title" id="exampleModalLabel">Update Proof of Billing</h5>
-																			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-																				<i aria-hidden="true" class="ki ki-close"></i>
-																			</button>
-																		</div>
-																			<div class="col-xl-4">
-																				<div class="form-group">
-																					<input type="file" name="proof_billing" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3" />
-																				</div>
-																			</div>
-																			<div class="modal-footer">
-																				<button type="submit" name="proof_billing" class="btn btn-primary font-weight-bold">Save</button>
-																			</div>
-																		</div>
-																	</div>
-																</div>
-															</form>
-															<!-- End Modal -->
-															<!-- Start Modal -->
-															<form action="" method="post" enctype="multipart/form-data">
-															<div class="modal fade" id="co_maker_id" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
-																<div class="modal-dialog modal-dialog-centered modal-md" role="document">
-																	<div class="modal-content">
-																		<div class="modal-header">
-																			<h5 class="modal-title" id="exampleModalLabel">Update Co-Maker ID</h5>
-																			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-																				<i aria-hidden="true" class="ki ki-close"></i>
-																			</button>
-																		</div>
-																			<div class="col-xl-4">
-																				<div class="form-group">
-																					<input type="file" name="co_maker_id" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3" />
-																				</div>
-																			</div>
-																			<div class="modal-footer">
-																				<button type="submit" name="co_maker_id" class="btn btn-primary font-weight-bold">Save</button>
-																			</div>
-																		</div>
-																	</div>
-																</div>
-															</form>
-															<!-- End Modal -->
-
-															<!-- Start Modal -->
-															<form action="" method="post" enctype="multipart/form-data">
-															<div class="modal fade" id="co_maker_cedula" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
-																<div class="modal-dialog modal-dialog-centered modal-md" role="document">
-																	<div class="modal-content">
-																		<div class="modal-header">
-																			<h5 class="modal-title" id="exampleModalLabel">Update Co-Maker Cedula</h5>
-																			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-																				<i aria-hidden="true" class="ki ki-close"></i>
-																			</button>
-																		</div>
-																			<div class="col-xl-4">
-																				<div class="form-group">
-																					<input type="file" name="co_maker_cedula" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3" />
-																				</div>
-																			</div>
-																			<div class="modal-footer">
-																				<button type="submit" name="co_maker_cedula" class="btn btn-primary font-weight-bold">Save</button>
-																			</div>
-																		</div>
-																	</div>
-																</div>
-															</form>
-															<!-- End Modal -->
-															<!-- Start Modal -->
-															<form action="" method="post" enctype="multipart/form-data">
-															<div class="modal fade" id="id_pic" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
-																<div class="modal-dialog modal-dialog-centered modal-md" role="document">
-																	<div class="modal-content">
-																		<div class="modal-header">
-																			<h5 class="modal-title" id="exampleModalLabel">Update 2X2 ID Picture</h5>
-																			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-																				<i aria-hidden="true" class="ki ki-close"></i>
-																			</button>
-																		</div>
-																			<div class="col-xl-4">
-																				<div class="form-group">
-																					<input type="file" name="id_pic" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3" />
-																				</div>
-																			</div>
-																			<div class="modal-footer">
-																				<button type="submit" name="id_pic" class="btn btn-primary font-weight-bold">Save</button>
-																			</div>
-																		</div>
-																	</div>
-																</div>
-															</form>
-															<!-- End Modal -->
-															<!-- MODAL REMOVE -->
-															<!-- Start Modal -->
-															<form action="" method="post" enctype="multipart/form-data">
-															<div class="modal fade" id="view2" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
-																<div class="modal-dialog modal-dialog-centered modal-sm" role="document">
-																	<div class="modal-content">
-																		<div class="modal-header">
-																			<h5 class="modal-title" id="exampleModalLabel">Valid ID</h5>
-																			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-																				<i aria-hidden="true" class="ki ki-close"></i>
-																			</button>
-																		</div>
-																		<div class="modal-body">
-																			Are you Sure you want to Remove?
-																		</div>
-																			<div class="modal-footer">
-																				<button type="button" class="btn btn-light-primary font-weight-bold" data-dismiss="modal">No</button>
-																				<button type="submit" name="remove_valid_id" class="btn btn-primary font-weight-bold">Yes</button>
-																			</div>
-																		</div>
-																	</div>
-																</div>
-															</form>
-															<!-- End Modal -->
-
-												
-
-														<!-- UPLOAD REQUIREMENTS -->
-														<div class="separator separator-solid my-7"></div>
-														<div class="form-group row">
-														<h5 class="text-info font-weight-bolder">Reminders:</h5>
-															<div class="col-lg-12 col-xl-12">
-																<p class="font-weight-bolder font-size-lg py-4">
-																	<!-- ▸ Loan application is subject for approval.</br> -->
-																	▸ Please comply all the requirements provided below to complete the loan application.</br>
-																	▸ Requirements uploaded will be validated by the <?= $lender['company_name'] ?>.
-																</p>Please read <a href="#" class="font-weight-boldk" data-toggle="modal" data-target="#view_terms">Terms and Conditions |&nbsp;&nbsp;</a><a href="#" class="font-weight-bold" data-toggle="modal" data-target="#view_privacy">Privacy Statement</a>
-															</div>
-														</div>
-
-														<div class="separator separator-solid my-7"></div>
-												
-												
-													<!-- Start Modal -->
-													<div class="modal fade" id="view_terms" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
-														<div class="modal-dialog modal-dialog-centered modal-xl" role="document">
-															<div class="modal-content">
-																<div class="modal-header">
-																	<h5 class="modal-title" id="exampleModalLabel">Hulam Data Privacy</h5>
-																	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-																		<i aria-hidden="true" class="ki ki-close"></i>
-																	</button>
-																</div>
-																<div class="modal-body">
-																	<div class="ExternalFiles">
-																		<iframe src="/hulam/assets/admin/terms_privacy/Hulam-Data-Privacy.pdf" width="1000" height="1000"></iframe>
-																	</div>
-																</div>
-																<div class="modal-footer">
-																	<button type="button" class="btn btn-light-primary font-weight-bold" data-dismiss="modal">Close</button>
-																	<button type="button" class="btn btn-primary font-weight-bold">Save changes</button>
-																</div>
-															</div>
-														</div>
-													</div>
-													<!-- End Modal -->
-													<!-- Start Modal -->
-													<div class="modal fade" id="view_privacy" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
-														<div class="modal-dialog modal-dialog-centered modal-xl" role="document">
-															<div class="modal-content">
-																<div class="modal-header">
-																	<h5 class="modal-title" id="exampleModalLabel">Terms and Conditions</h5>
-																	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-																		<i aria-hidden="true" class="ki ki-close"></i>
-																	</button>
-																</div>
-																<div class="modal-body">
-																	<div class="ExternalFiles">
-																		<iframe src="/hulam/assets/admin/terms_privacy/TERMS-AND-CONDITIONS.pdf" width="1000" height="1000"></iframe>
-																	</div>
-																</div>
-																<div class="modal-footer">
-																	<button type="button" class="btn btn-light-primary font-weight-bold" data-dismiss="modal">Close</button>
-																	<button type="button" class="btn btn-primary font-weight-bold">Save changes</button>
-																</div>
-															</div>
-														</div>
-													</div>
-													<!-- End Modal -->
-												</div>
+						<div class="col-12">
+							<div class="form-group">
+								<form method="get" autocomplete="off">
+									<div class="row">
+										<div class="col-lg-2">
+											<div class="form-group">
+												<form method="GET">
+                                                <?php
+                                                function drawStars(int $starRating)
+                                                {
+                                                    echo "<span style='color: yellow;'>";
+                                                    for ($i = 0; $i < $starRating; $i++) {
+                                                        echo "&#x2605;";
+                                                    }
+                                                    echo "</span>";
+                                                    for ($i = 5 - $starRating; $i > 0; $i--) {
+                                                        echo "&#x2605;";
+                                                    }
+                                                }
+                                                ?>
 											</div>
 										</div>
 									</div>
+								</form>
+								<div class="col-6">
+									<?php
+									$lender_id = intval($_GET['lender_id']);
+									$query = "SELECT * FROM feedback INNER JOIN user ON feedback.debtor_id = user.user_id WHERE lender_id = $lender_id";
+									$result = mysqli_query($conn, $query);
+									$ratingTotal = $ratingCount = 0;
+									while ($row = mysqli_fetch_array($result)) {
+										$ratingTotal += $row['ratings'];
+										$ratingCount++;
+									}
+
+									echo "<h5>Average Rating :</h5>";
+									echo "<p>" . number_format(($ratingTotal / $ratingCount), 2) . " " .
+										drawStars(round($ratingTotal / $ratingCount)) .
+										"</p>";
+									$ratingTotal = 0;
+									$ratingCount = 0;
+
+									$lender_id = intval($_GET['lender_id']);
+									$query = "SELECT * FROM feedback INNER JOIN user ON feedback.debtor_id = user.user_id WHERE lender_id = $lender_id";
+									$result = mysqli_query($conn, $query);
+									while ($row = mysqli_fetch_array($result)) {
+										$ratingTotal += $row['ratings'];
+										$ratingCount++;
+									?>
+										<div class="card">
+											<div class="card-body">
+												<h5 class="card-title"><?php echo "" . $row['firstname'] . " " . $row['lastname']; ?></h5>
+												<p class="card-text"><?php drawStars($row['ratings']); ?>
+													<?php echo "" . $row['comments']; ?></p>
+												<?php echo $row['dateOfRate']; ?>
+											</div class="card-body">
+
+											<div class=""></div>
+										</div>
+									<?php }
+									?>
 								</div>
 							</div>
 						</div>
@@ -1059,23 +296,24 @@ $user = $query->fetch();
 			</div>
 		</div>
 		</div>
-
-	<div class="footer bg-white py-4 d-flex flex-lg-column" id="kt_footer">
-		<div class="container d-flex flex-column flex-md-row align-items-center justify-content-between">
-			<div class="text-dark order-2 order-md-1">
-				<span class="text-muted font-weight-bold mr-2">2021©</span>
-				<a href="http://keenthemes.com/keen" target="_blank" class="text-dark-75 text-hover-primary">Hulam</a>
-			</div>
-			<div class="nav nav-dark order-1 order-md-2">
-				<a href="http://keenthemes.com/keen" target="_blank" class="nav-link pr-3 pl-0">About</a>
-				<a href="http://keenthemes.com/keen" target="_blank" class="nav-link px-3">Team</a>
-				<a href="http://keenthemes.com/keen" target="_blank" class="nav-link pl-3 pr-0">Contact</a>
+		</div>							
+		<div class="footer bg-white py-4 d-flex flex-lg-column" id="kt_footer">
+			<div class="container d-flex flex-column flex-md-row align-items-center justify-content-between">
+				<div class="text-dark order-2 order-md-1">
+					<span class="text-muted font-weight-bold mr-2">2021©</span>
+					<a href="http://keenthemes.com/keen" target="_blank" class="text-dark-75 text-hover-primary">Hulam</a>
+				</div>
+				<div class="nav nav-dark order-1 order-md-2">
+					<a href="http://keenthemes.com/keen" target="_blank" class="nav-link pr-3 pl-0">About</a>
+					<a href="http://keenthemes.com/keen" target="_blank" class="nav-link px-3">Team</a>
+					<a href="http://keenthemes.com/keen" target="_blank" class="nav-link pl-3 pr-0">Contact</a>
+				</div>
 			</div>
 		</div>
 	</div>
 	</div>
 	</div>
-	</div>
+
 
 	<!-- begin::User Panel-->
 	<div id="kt_quick_user" class="offcanvas offcanvas-right p-10">
@@ -1115,7 +353,7 @@ $user = $query->fetch();
 										<!--end::Svg Icon-->
 									</span>
 								</span>
-								<span class="navi-text text-muted text-hover-primary"><?= $_SESSION['email']?></span>
+								<span class="navi-text text-muted text-hover-primary"><?= $_SESSION['email']?>/span>
 							</span>
 						</a>
 					</div>
@@ -1151,8 +389,8 @@ $user = $query->fetch();
 					</div>
 				</a>
 				<!--end:Item-->
-					<!--begin::Item-->
-					<a href="debtor/send_feedback.php" class="navi-item">
+                	<!--begin::Item-->
+				<a href="debtor/send_feedback.php" class="navi-item">
 					<div class="navi-link">
 						<div class="symbol symbol-40 bg-light mr-3">
 							<div class="symbol-label">
@@ -1191,7 +429,6 @@ $user = $query->fetch();
 		<!--end::Content-->
 	</div>
 	<!-- end::User Panel-->
-	
 
     <!--begin::Quick Panel-->
     <div id="kt_quick_panel" class="offcanvas offcanvas-right pt-5 pb-10">
@@ -1255,7 +492,8 @@ $user = $query->fetch();
     </div>
     <!--end::Content-->
     </div>
-    <!--end::Quick Panel-->	<!--begin::Chat Panel-->
+    <!--end::Quick Panel-->
+	<!--begin::Chat Panel-->
 	<div class="modal modal-sticky modal-sticky-bottom-right" id="kt_chat_modal" role="dialog" data-backdrop="false">
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">
@@ -1607,7 +845,119 @@ $user = $query->fetch();
 	</div>
 	<!--end::Scrolltop-->
 	<!--end::Sticky Toolbar-->
-
+	<!--begin::Demo Panel-->
+	<div id="kt_demo_panel" class="offcanvas offcanvas-right p-10">
+		<!--begin::Header-->
+		<div class="offcanvas-header d-flex align-items-center justify-content-between pb-7">
+			<h4 class="font-weight-bold m-0">Select A Demo</h4>
+			<a href="#" class="btn btn-xs btn-icon btn-light btn-hover-primary" id="kt_demo_panel_close">
+				<i class="ki ki-close icon-xs text-muted"></i>
+			</a>
+		</div>
+		<!--end::Header-->
+		<!--begin::Content-->
+		<div class="offcanvas-content">
+			<!--begin::Wrapper-->
+			<div class="offcanvas-wrapper mb-5 scroll-pull">
+				<h5 class="font-weight-bold mb-4 text-center">Demo 1</h5>
+				<div class="overlay rounded-lg mb-8 offcanvas-demo">
+					<div class="overlay-wrapper rounded-lg">
+						<img src="assets/media/demos/demo1.png" alt="" class="w-100" />
+					</div>
+					<div class="overlay-layer">
+						<a href="../../demo1/dist" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">HTML</a>
+						<a href="https://preview.keenthemes.com/keen/demo1/rtl/index.html" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">RTL</a>
+					</div>
+				</div>
+				<h5 class="font-weight-bold mb-4 text-center">Demo 2</h5>
+				<div class="overlay rounded-lg mb-8 offcanvas-demo">
+					<div class="overlay-wrapper rounded-lg">
+						<img src="assets/media/demos/demo2.png" alt="" class="w-100" />
+					</div>
+					<div class="overlay-layer">
+						<a href="../../demo2/dist" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">HTML</a>
+						<a href="https://preview.keenthemes.com/keen/demo2/rtl/index.html" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">RTL</a>
+					</div>
+				</div>
+				<h5 class="font-weight-bold mb-4 text-center">Demo 3</h5>
+				<div class="overlay rounded-lg mb-8 offcanvas-demo offcanvas-demo-active">
+					<div class="overlay-wrapper rounded-lg">
+						<img src="assets/media/demos/demo3.png" alt="" class="w-100" />
+					</div>
+					<div class="overlay-layer">
+						<a href="../../demo3/dist" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">HTML</a>
+						<a href="https://preview.keenthemes.com/keen/demo3/rtl/index.html" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">RTL</a>
+					</div>
+				</div>
+				<h5 class="font-weight-bold mb-4 text-center">Demo 4</h5>
+				<div class="overlay rounded-lg mb-8 offcanvas-demo">
+					<div class="overlay-wrapper rounded-lg">
+						<img src="assets/media/demos/demo4.png" alt="" class="w-100" />
+					</div>
+					<div class="overlay-layer">
+						<a href="../../demo4/dist" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">HTML</a>
+						<a href="https://preview.keenthemes.com/keen/demo4/rtl/index.html" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">RTL</a>
+					</div>
+				</div>
+				<h5 class="font-weight-bold mb-4 text-center">Demo 5</h5>
+				<div class="overlay rounded-lg mb-8 offcanvas-demo">
+					<div class="overlay-wrapper rounded-lg">
+						<img src="assets/media/demos/demo5.png" alt="" class="w-100" />
+					</div>
+					<div class="overlay-layer">
+						<a href="../../demo5/dist" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">HTML</a>
+						<a href="https://preview.keenthemes.com/keen/demo5/rtl/index.html" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">RTL</a>
+					</div>
+				</div>
+				<h5 class="font-weight-bold mb-4 text-center">Demo 6</h5>
+				<div class="overlay rounded-lg mb-8 offcanvas-demo">
+					<div class="overlay-wrapper rounded-lg">
+						<img src="assets/media/demos/demo6.png" alt="" class="w-100" />
+					</div>
+					<div class="overlay-layer">
+						<a href="../../demo6/dist" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">HTML</a>
+						<a href="https://preview.keenthemes.com/keen/demo6/rtl/index.html" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">RTL</a>
+					</div>
+				</div>
+				<h5 class="font-weight-bold mb-4 text-center">Demo 7</h5>
+				<div class="overlay rounded-lg mb-8 offcanvas-demo">
+					<div class="overlay-wrapper rounded-lg">
+						<img src="assets/media/demos/demo7.png" alt="" class="w-100" />
+					</div>
+					<div class="overlay-layer">
+						<a href="../../demo7/dist" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">HTML</a>
+						<a href="https://preview.keenthemes.com/keen/demo7/rtl/index.html" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">RTL</a>
+					</div>
+				</div>
+				<h5 class="font-weight-bold mb-4 text-center">Demo 8</h5>
+				<div class="overlay rounded-lg mb-8 offcanvas-demo">
+					<div class="overlay-wrapper rounded-lg">
+						<img src="assets/media/demos/demo8.png" alt="" class="w-100" />
+					</div>
+					<div class="overlay-layer">
+						<a href="#" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow disabled opacity-90">Coming soon</a>
+					</div>
+				</div>
+				<h5 class="font-weight-bold mb-4 text-center">Demo 9</h5>
+				<div class="overlay rounded-lg mb-8 offcanvas-demo">
+					<div class="overlay-wrapper rounded-lg">
+						<img src="assets/media/demos/demo9.png" alt="" class="w-100" />
+					</div>
+					<div class="overlay-layer">
+						<a href="#" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow disabled opacity-90">Coming soon</a>
+					</div>
+				</div>
+			</div>
+			<!--end::Wrapper-->
+			<!--begin::Purchase-->
+			<div class="offcanvas-footer">
+				<a href="https://themes.getbootstrap.com/product/keen-the-ultimate-bootstrap-admin-theme/" target="_blank" class="btn btn-block btn-danger btn-shadow font-weight-bolder text-uppercase">Buy Keen Now!</a>
+			</div>
+			<!--end::Purchase-->
+		</div>
+		<!--end::Content-->
+	</div>
+	<!--end::Demo Panel-->
 	<script>
 		var HOST_URL = "https://preview.keenthemes.com/keen/theme/tools/preview";
 	</script>
@@ -1683,18 +1033,6 @@ $user = $query->fetch();
 	<!--end::Page Vendors-->
 	<!--begin::Page Scripts(used by this page)-->
 	<script src="assets/keen/js/pages/widgets.js"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-	<script src="assets/keen/js/pages/features/file-upload/dropzonejs.js"></script>
-	<script src="assets/keen/js/pages/features/file-upload/image-input.js"></script>
-	<script src="assets/keen/js/pages/features/file-upload/dropzonejs.js"></script>
-	<script src="https://unpkg.com/dropzone@6.0.0-beta.1/dist/dropzone-min.js"></script>
-	<link href="https://unpkg.com/dropzone@6.0.0-beta.1/dist/dropzone.css" rel="stylesheet" type="text/css" />
-	<script>
-	(document).ready(function () {
-    $("#flash-msg").delay(3000).fadeOut("slow");
-	});
-	</script>
-
 	<!--end::Page Scripts-->
 </body>
 <!--end::Body-->

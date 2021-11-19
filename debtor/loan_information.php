@@ -11,6 +11,14 @@ $sql = $dbh->prepare('SELECT * FROM loan_application INNER JOIN loan_features ON
 $sql->execute(['user_id' => $_SESSION['user_id']]);
 $loan = $sql->fetch();
 ?>
+<?php
+$user_id = $_SESSION['user_id'];
+$sql = "SELECT * FROM user WHERE user_id =$user_id";
+$query = $dbh->prepare($sql);
+$query->execute();
+$user = $query->fetch();
+?>
+
 <!DOCTYPE html>
 
 <html lang="en">
@@ -136,11 +144,22 @@ $loan = $sql->fetch();
 
 		<!--begin::Content-->
 		<div class="content d-flex flex-column flex-column-fluid" id="kt_content" style="background-image:url('assets/keen/media/logos/banner.png')">
+			<div class="gutter-b" id="kt_breadcrumbs">
+                <div class="container d-flex align-items-center justify-content-between flex-wrap flex-sm-nowrap">
+                    <div class="d-flex align-items-center flex-wrap mr-1">
+                        <div class="d-flex align-items-baseline flex-wrap mr-5">
+                            <h2 class="text-white font-weight-bold my-1 mr-5">LOAN INFORMATION</h2>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center">
 
-			<div class="d-flex flex-column-fluid">
+                    </div>
+                </div>
+            </div>
+			<div class="d-flex flex-column-fluid" >
 				<div class="container">
 					<div class="card card-custom gutter-b card-stretch">
-					<div class="card card-custom gutter-b">
+					<div class="card card-custom gutter-b" >
 						<div class="card-body">
 							<div class="d-flex">
 								<div class="flex-shrink-0 mr-7">
@@ -160,8 +179,7 @@ $loan = $sql->fetch();
 							</div></br>
 							<div class="d-flex align-items-center">
 								<div class="d-flex flex-column">
-									<a href="#" class="text-dark-75 text-hover-primary font-weight-bolder font-size-h5">Loan Information
-									</a>
+									
 									<span class="font-weight-bolder text-primary">
 										<?php
 										date_default_timezone_set('Asia/Manila');
@@ -176,7 +194,8 @@ $loan = $sql->fetch();
 							<div class="d-flex align-items-center flex-wrap">
 								<div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
 									<div class="d-flex flex-column text-dark-75">
-										<span class="font-weight-bolder font-size-lg">Remaining Balance: &nbsp; PHP
+										<span class="font-weight-bolder font-size-lg" style="font-size: large;">Remaining Balance: &nbsp; </span>
+										<span class="font-weight-bolder font-size-lg" style="color:red; font-size: large;">PHP
 											<?php
 												$user_id = $_SESSION['user_id'];
 												$loan_id = $loan['loan_app_id'];
@@ -199,7 +218,8 @@ $loan = $sql->fetch();
 								</div>
 								<div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
 									<div class="d-flex flex-column text-dark-75">
-										<span class="font-weight-bolder font-size-lg">Previous Balance:
+										<span class="font-weight-bolder font-size-lg" style="font-size: medium;">Previous Balance:</span>
+										<span class="font-weight-bolder font-size-lg" style="color:red; font-size: large;">PHP
 											<?=
 												$previous= number_format(($loan_app['monthly_pay'] - $loan_app['payment']), 2);
 											?>
@@ -208,18 +228,25 @@ $loan = $sql->fetch();
 								</div>
 								<div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
 									<div class="d-flex flex-column text-dark-75">
-										<span class="font-weight-bolder font-size-lg">Current Balance:&nbsp; PHP
-										<?=
-											$current = number_format(($loan_app['monthly_pay'] - $loan_app['payment']), 2);
-											?>
+										<span class="font-weight-bolder font-size-lg" style="font-size: medium;">Current Balance:&nbsp; </span>
+										<span class="font-weight-bolder font-size-lg" style="color:red; font-size: large;">PHP
+										<?=  number_format($current = $loan_app['monthly_pay'], 2); ?>
 										</span>
 									</div>
 								</div>
 								<div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
 									<div class="d-flex flex-column text-dark-75">
-										<span class="font-weight-bolder font-size-lg">Total Amount Due:&nbsp; PHP
-											<?php
-                                                
+										<span class="font-weight-bolder font-size-lg" style="font-size: medium;">Total Amount Due:&nbsp; </span>
+										<span class="font-weight-bolder font-size-lg" style="color:red; font-size: large;">PHP
+											<?php 
+											// $previous= $loan_app['monthly_pay'] - $loan_app['payment'];
+											// $current = $loan_app['monthly_pay'] - $loan_app['payment'];
+											// echo number_format($previous + $current, 2);
+
+											$previous= $loan_app['monthly_pay'] - $loan_app['payment'];
+											$current = $loan_app['monthly_pay'] + $previous;
+											echo number_format($current, 2);
+
 											?>
 										</span>
 										<span class="font-weight-bolder text-primary">
@@ -231,8 +258,7 @@ $loan = $sql->fetch();
 									</div>
 								</div>
 							</div>
-				
-
+							
 							<!-- begin: display modal of upload payment -->
 							<form action="" method="post" enctype="multipart/form-data">
 							<div class="modal fade" id="upload_payment" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdrop" aria-hidden="true">
@@ -268,13 +294,14 @@ $loan = $sql->fetch();
 								</div>
 							</div>
 							</form>
-		
+						</br>
 						<!--end: display modal of upload payment -->
 						<div class="separator separator-dashed mt-8 mb-5"></div>
 						<!--begin::Body-->
 						<div class="card-body pt-4">
 							<div class="card card-custom">
 								<div class="card-body">
+								<h4 class="font-weight-bolder">Loan Account</h4>
 									<table class="table table-bordered">
 										<thead>
 											<tr>
@@ -342,7 +369,7 @@ $loan = $sql->fetch();
 																			<a href="debtor/rating.php?lender_id=<?php echo htmlentities($res->lender_id); ?>" class="navi-link"> <span class="navi-icon"><i class="la la-file-text-o"></i></span> <span class="navi-text">Rate this Investor</span> </a> </li>
 																		<!-- <li class="navi-item"> <a href="#" class="navi-link"> <span class="navi-icon"><i class="la la-file-pdf-o"></i></span> <span class="navi-text">PDF</span> </a> </li> -->
 																		<li class="navi-item"> 
-																			<a href="debtor/view_payment2.php?loan_app_id=<?php echo htmlentities($res->loan_app_id); ?>" class="navi-link"> <span class="navi-icon"><i class="la la-file-text-o"></i></span> <span class="navi-text">Payment History</span> </a> </li>
+																			<a href="debtor/view_payment.php?loan_app_id=<?php echo htmlentities($res->loan_app_id); ?>" class="navi-link"> <span class="navi-icon"><i class="la la-file-text-o"></i></span> <span class="navi-text">Payment History</span> </a> </li>
 																	</ul>
 																</div>
 															</div>
@@ -591,6 +618,30 @@ $loan = $sql->fetch();
 							<div class="font-weight-bold">My Account</div>
 						</div>
 					</div>
+				</a>
+				<!--end:Item-->
+				<!--begin::Item-->
+				<a href="debtor/send_feedback.php" class="navi-item">
+				<div class="navi-link">
+					<div class="symbol symbol-40 bg-light mr-3">
+						<div class="symbol-label">
+							<span class="svg-icon svg-icon-md svg-icon-success">
+								<!--begin::Svg Icon | path:assets/media/svg/icons/General/Settings-1.svg-->
+								<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+									<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+										<rect x="0" y="0" width="24" height="24" />
+										<path d="M7,3 L17,3 C19.209139,3 21,4.790861 21,7 C21,9.209139 19.209139,11 17,11 L7,11 C4.790861,11 3,9.209139 3,7 C3,4.790861 4.790861,3 7,3 Z M7,9 C8.1045695,9 9,8.1045695 9,7 C9,5.8954305 8.1045695,5 7,5 C5.8954305,5 5,5.8954305 5,7 C5,8.1045695 5.8954305,9 7,9 Z" fill="#000000" />
+										<path d="M7,13 L17,13 C19.209139,13 21,14.790861 21,17 C21,19.209139 19.209139,21 17,21 L7,21 C4.790861,21 3,19.209139 3,17 C3,14.790861 4.790861,13 7,13 Z M17,19 C18.1045695,19 19,18.1045695 19,17 C19,15.8954305 18.1045695,15 17,15 C15.8954305,15 15,15.8954305 15,17 C15,18.1045695 15.8954305,19 17,19 Z" fill="#000000" opacity="0.3" />
+									</g>
+								</svg>
+								<!--end::Svg Icon-->
+								</span>
+							</div>
+						</div>
+					<div class="navi-text">
+						<div class="font-weight-bold">Send Feedback</div>
+					</div>
+				</div>
 				</a>
 				<!--end:Item-->
 				<!--begin::Item-->
