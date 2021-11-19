@@ -871,6 +871,7 @@ if(isset($_POST['add_notice'])){
 									<!--end::Dropdown-->
 								</div>
 								<!--end::Notifications-->
+<<<<<<< HEAD:individual_investor/set_notice.php
 								<!--begin::Quick panel-->
 								<!--<div class="topbar-item mr-1">
                                 <div class="btn btn-icon btn-clean btn-lg" id="kt_quick_panel_toggle">
@@ -888,6 +889,9 @@ if(isset($_POST['add_notice'])){
                                 </div>
                             </div>-->
 								<!--end::Quick panel-->
+=======
+								
+>>>>>>> e42937b0885e872be4ee431a15a529761ed93304:payment_center/report.php
 								<!--begin::Chat-->
 								<div class="topbar-item">
 									<div class="btn btn-icon btn-clean btn-lg mr-1" data-toggle="modal" data-target="#kt_chat_modal">
@@ -1092,7 +1096,7 @@ if(isset($_POST['add_notice'])){
 				<!--begin::Header-->
 				<div class="d-flex align-items-center mt-5">
 					<div class="symbol symbol-100 mr-5">
-						<div class="symbol-label" style="background-image:url('assets/admin/media/users/icon-company.jpg')"></div>
+						<div class="symbol-label" style="background-image: url(/hulam/assets/keen/payment_center/<?= $user['profile_pic'] ?>"></div>
 						<i class="symbol-badge bg-success"></i>
 					</div>
 					<div class="d-flex flex-column">
@@ -1156,6 +1160,7 @@ if(isset($_POST['add_notice'])){
 		</div>
 		<!-- end::User Panel-->
 
+<<<<<<< HEAD:individual_investor/set_notice.php
 		<!--begin::Quick Panel-->
 		<div id="kt_quick_panel" class="offcanvas offcanvas-right pt-5 pb-10">
 			<!--begin::Header-->
@@ -1288,6 +1293,8 @@ if(isset($_POST['add_notice'])){
 			<!--end::Content-->
 		</div>
 		<!--end::Quick Panel-->
+=======
+>>>>>>> e42937b0885e872be4ee431a15a529761ed93304:payment_center/report.php
 		<!--begin::Chat Panel-->
 		<div class="modal modal-sticky modal-sticky-bottom-right" id="kt_chat_modal" role="dialog" data-backdrop="false">
 			<div class="modal-dialog" role="document">

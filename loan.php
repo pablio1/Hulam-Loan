@@ -1,3 +1,16 @@
+<?php
+session_start();
+error_reporting(0);
+include('db_connection/config.php');
+?>
+<?php
+
+$sql ="SELECT loan_features.*, user.* FROM loan_features INNER JOIN user ON loan_features.lender_id = user.user_id";
+$query = $dbh->prepare($sql);
+$query->execute();
+$user = $query->fetch();
+?>
+
 <!doctype html>
 <html class="no-js" lang="zxx">
 
@@ -37,11 +50,6 @@
 </head>
 
 <body>
-    <!--[if lte IE 9]>
-            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
-        <![endif]-->
-
-   <!-- header-start -->
    <header>
         <div class="header-area ">
             <div id="sticky-header" class="main-header-area">
@@ -105,7 +113,7 @@
             <div class="row">
                 <div class="col-lg-8">
                     <div class="bradcam_text" >
-                        <h3>Personal Loan Offers</h3>
+                        <h3>Salary Loan Offers</h3>
                     </div>
                 </div>
             </div>
@@ -121,28 +129,47 @@
                     <aside class="single_sidebar_widget search_widget">
                         <form action="#">
                         <h3>Filter Amount</h3>
-                        <div class="row">
-                            <div class="col-lg-4">
+                         <form method="get" autocomplete="off">
+                            <div class="row">
+                                <div class="col-lg-3">
                                 <div class="form-group">
                                     <div class="input-group mb-3">
-                                        <input type="text" class="form-control" placeholder='5,000'
-                                            onfocus="this.placeholder = ''"
-                                            onblur="this.placeholder = 'Enter Amount'">
+                                    <select name="type" class="form-control form-control-lg" required>
+                                            <option value="" hidden>Type of Lenders</option>
+                                            <option value="3" <?php if (isset($_GET['type'])) {
+                                                                    if ($_GET['type'] == 3) {
+                                                                        echo 'selected';
+                                                                    } else {
+                                                                        echo '';
+                                                                    }
+                                                                } ?>>Lending Company</option>
+                                            <option value="4" <?php if (isset($_GET['type'])) {
+                                                                    if ($_GET['type'] == 4) {
+                                                                        echo 'selected';
+                                                                    } else {
+                                                                        echo '';
+                                                                    }
+                                                                } ?>>Individual Investor</option>
+                                    </select>                       
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-lg-4">
-                                <div class="form-group">
+                            <div class="col-lg-3">
                                 <div class="form-group">
                                     <div class="input-group mb-3">
-                                        <input type="text" class="form-control" placeholder='12 Months'
-                                            onfocus="this.placeholder = ''"
-                                            onblur="this.placeholder = 'Enter Amount'">
+                                    <input type="number" class="form-control" type="number" name="amount" value="<?= isset($_GET['amount']) ? $_GET['amount'] : '' ?>" placeholder="Enter Loan Amount" required />
                                     </div>
                                 </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="form-group">
+                                    <div class="input-group mb-3">
+                                        <input type="number" class="form-control" type="number" name="month" value="<?= isset($_GET['month']) ? $_GET['month'] : '' ?>" placeholder="Months To Pay" required />
+                                        
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-lg-4">
+                            <div class="col-lg-2">
                                 <div class="form-group">
                                     <a href="loan.php">
                                     <button class="button rounded-0 primary-bg text-primary w-100 btn_1 boxed-btn" type="submit">Search
@@ -155,331 +182,212 @@
                 </div>
             </div> 
             <div class="row">
-                <!--begin::Entry-->
-                <!--begin::Container-->
                 <di v class="container">
-                    <!--begin::Card-->
-                    <div class="card card-custom gutter-b">
-                        <div class="card-body">
-                            <!--begin::Top-->
-                            <div class="d-flex">
-                                <!--begin::Pic-->
-                                <div class="flex-shrink-0 mr-7">
-                                    <div class="symbol symbol-50 symbol-lg-120 symbol-circle">
-                                        <img alt="Pic" src="assets/keen/media/logos/asteria_logo.png" />
-                                    </div>
-                                </div>
-                                <!--end::Pic-->
-                                <!--begin: Info-->
-                                <div class="flex-grow-1" >
-                                    <!--begin::Title-->
-                                    <div class="d-flex align-items-center justify-content-between flex-wrap mt-2">
-                                        <!--begin::User-->
-                                        <div class="mr-3">
-                                            <!--begin::Name-->
-                                            <a href="#" class="d-flex align-items-center text-dark text-hover-primary font-size-h5 font-weight-bold mr-3">Asteria Lending Inc.</a>
-                                            <!--end::Name-->
-                                            <!--begin::Contacts-->
-                                            <div class="d-flex flex-wrap my-2">
-                                                <a href="#" class="text-muted text-hover-primary font-weight-bold mr-lg-8 mr-5 mb-lg-0 mb-2">
-                                                <span class="svg-icon svg-icon-md svg-icon-gray-500 mr-1">
-                                                </span>View site >></a>
-                                                <a href="#" class="text-muted text-hover-primary font-weight-bold mr-lg-8 mr-5 mb-lg-0 mb-2">
-                                            
-                                                <a href="#" class="text-muted text-hover-primary font-weight-bold">
-                                            
-                                            </div>
-                                            <!--end::Contacts-->
-                                        </div>
-                                        <!--begin::User-->
-                                        <!--begin::Actions-->
-                                        <div class="my-lg-0 my-1">
-                                            <a href="#" class="btn btn-sm btn-light-primary font-weight-bolder mr-2">View Details</a>
-                                            <a href="login.php" class="btn btn-sm btn-primary font-weight-bolder">Apply Now</a>
-                                        </div>
-                                        <!--end::Actions-->
-                                    </div>
-                                    <!--end::Title-->
-                                    <!--begin::Content-->
-                                    <div class="d-flex align-items-center flex-wrap justify-content-between">
-                                        <!--begin::Description-->
-                                        <div class="flex-grow-1 font-weight-bold text-dark-50 py-2 py-lg-2 mr-5">Asteria Lending offers the cheapest Online Lending rates in the Philippines..
-                                        <!-- <br />Quis autem vel eum iure reprehenderit qui in.--></div> 
-                                        <!--end::Description-->
-                                    </div>
-                                    <!--end::Content-->
-                                </div>
-                                <!--end::Info-->
-                            </div>
-                            <!--end::Top-->
-                            <!--begin::Separator-->
-                            <div class="separator separator-solid my-7"></div>
-                            <!--end::Separator-->
-                            <!--begin::Bottom-->
-                            <div class="d-flex align-items-center flex-wrap">
-                                <!--begin: Item-->
-                                <div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
-                                    <div class="d-flex flex-column text-dark-75">
-                                        <span class="font-weight-bolder font-size-sm">Estimated Monthly Payment</span>
-                                        <span class="font-weight-bolder font-size-h5">
-                                        <span class="text-dark-50 font-weight-bold">Php &nbsp;</span>550.00</span>
-                                    </div>
-                                </div>
-                                <!--end: Item-->
-                                <!--begin: Item-->
-                                <div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
-                                    <div class="d-flex flex-column text-dark-75">
-                                        <span class="font-weight-bolder font-size-sm">Loan Term</span>
-                                        <span class="font-weight-bolder font-size-h5">
-                                        <span class="text-dark-50 font-weight-bold"></span>24-84months</span>
-                                    </div>
-                                </div>
-                                <!--end: Item-->
-                                <!--begin: Item-->
-                                <div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
-                                    <div class="d-flex flex-column text-dark-75">
-                                        <span class="font-weight-bolder font-size-sm">Fixed Interest Rate</span>
-                                        <span class="font-weight-bolder font-size-h5">
-                                        <span class="text-dark-50 font-weight-bold"></span>12%</span>
-                                    </div>
-                                </div>
-                                <!--end: Item-->
-                                <!--begin: Item-->
-                                <div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
-                                    <div class="d-flex flex-column flex-lg-fill">
-                                        <!-- <span class="text-dark-75 font-weight-bolder font-size-sm">73 Projects</span> -->
-                                        <a href="#" class="text-primary font-weight-bolder">What do I need to apply?</a>
-                                    </div>
-                                </div>
-                                <!--end: Item-->
-                                <!--begin: Item-->
-                                <div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
-                                    <div class="d-flex flex-column">
-                                        <span class="text-dark-75 font-weight-bolder font-size-sm">Rates and Reviews</span>
-                                        <a href="#" class="text-primary font-weight-bolder">View</a>
-                                    </div>
-                                </div>
-                                <!--end: Item-->
-                            </div>
-                            <!--end::Bottom-->
-                        </div>
-                    </div>
-                    <!--end::Card-->
-    
-                    <!--begin::Card-->
-                    <div class="card card-custom gutter-b">
-                        <div class="card-body">
-                            <!--begin::Top-->
-                            <div class="d-flex">
-                                <!--begin::Pic-->
-                                <div class="flex-shrink-0 mr-7">
-                                    <div class="symbol symbol-50 symbol-lg-120 symbol-circle">
-                                        <img alt="Pic" src="assets/keen/media/logos/asteria_logo.png" />
-                                    </div>
-                                </div>
-                                <!--end::Pic-->
-                                <!--begin: Info-->
-                                <div class="flex-grow-1">
-                                    <!--begin::Title-->
-                                    <div class="d-flex align-items-center justify-content-between flex-wrap mt-2">
-                                        <!--begin::User-->
-                                        <div class="mr-3">
-                                            <!--begin::Name-->
-                                            <a href="#" class="d-flex align-items-center text-dark text-hover-primary font-size-h5 font-weight-bold mr-3">Asteria Lending Inc.</a>
-                                            <!--end::Name-->
-                                            <!--begin::Contacts-->
-                                            <div class="d-flex flex-wrap my-2">
-                                                <a href="#" class="text-muted text-hover-primary font-weight-bold mr-lg-8 mr-5 mb-lg-0 mb-2">
-                                                <span class="svg-icon svg-icon-md svg-icon-gray-500 mr-1">
-                                                </span>View site >></a>
-                                                <a href="#" class="text-muted text-hover-primary font-weight-bold mr-lg-8 mr-5 mb-lg-0 mb-2">
-                                            
-                                                <a href="#" class="text-muted text-hover-primary font-weight-bold">
-                                            
-                                            </div>
-                                            <!--end::Contacts-->
-                                        </div>
-                                        <!--begin::User-->
-                                        <!--begin::Actions-->
-                                        <div class="my-lg-0 my-1">
-                                            <a href="#" class="btn btn-sm btn-light-primary font-weight-bolder mr-2">View Details</a>
-                                            <a href="apply_loan.php" class="btn btn-sm btn-primary font-weight-bolder">Apply Now</a>
-                                        </div>
-                                        <!--end::Actions-->
-                                    </div>
-                                    <!--end::Title-->
-                                    <!--begin::Content-->
-                                    <div class="d-flex align-items-center flex-wrap justify-content-between">
-                                        <!--begin::Description-->
-                                        <div class="flex-grow-1 font-weight-bold text-dark-50 py-2 py-lg-2 mr-5">Asteria Lending offers the cheapest Online Lending rates in the Philippines..
-                                        <!-- <br />Quis autem vel eum iure reprehenderit qui in.--></div> 
-                                        <!--end::Description-->
-                                    </div>
-                                    <!--end::Content-->
-                                </div>
-                                <!--end::Info-->
-                            </div>
-                            <!--end::Top-->
-                            <!--begin::Separator-->
-                            <div class="separator separator-solid my-7"></div>
-                            <!--end::Separator-->
-                            <!--begin::Bottom-->
-                            <div class="d-flex align-items-center flex-wrap">
-                                <!--begin: Item-->
-                                <div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
-                                    <div class="d-flex flex-column text-dark-75">
-                                        <span class="font-weight-bolder font-size-sm">Estimated Monthly Payment</span>
-                                        <span class="font-weight-bolder font-size-h5">
-                                        <span class="text-dark-50 font-weight-bold">Php &nbsp;</span>550.00</span>
-                                    </div>
-                                </div>
-                                <!--end: Item-->
-                                <!--begin: Item-->
-                                <div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
-                                    <div class="d-flex flex-column text-dark-75">
-                                        <span class="font-weight-bolder font-size-sm">Loan Term</span>
-                                        <span class="font-weight-bolder font-size-h5">
-                                        <span class="text-dark-50 font-weight-bold"></span>24-84months</span>
-                                    </div>
-                                </div>
-                                <!--end: Item-->
-                                <!--begin: Item-->
-                                <div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
-                                    <div class="d-flex flex-column text-dark-75">
-                                        <span class="font-weight-bolder font-size-sm">Fixed Interest Rate</span>
-                                        <span class="font-weight-bolder font-size-h5">
-                                        <span class="text-dark-50 font-weight-bold"></span>12%</span>
-                                    </div>
-                                </div>
-                                <!--end: Item-->
-                                <!--begin: Item-->
-                                <div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
-                                    <div class="d-flex flex-column flex-lg-fill">
-                                        <!-- <span class="text-dark-75 font-weight-bolder font-size-sm">73 Projects</span> -->
-                                        <a href="#" class="text-primary font-weight-bolder">What do I need to apply?</a>
-                                    </div>
-                                </div>
-                                <!--end: Item-->
-                                <!--begin: Item-->
-                                <div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
-                                    <div class="d-flex flex-column">
-                                        <span class="text-dark-75 font-weight-bolder font-size-sm">Rates and Reviews</span>
-                                        <a href="#" class="text-primary font-weight-bolder">View</a>
-                                    </div>
-                                </div>
-                                <!--end: Item-->
-                            </div>
-                            <!--end::Bottom-->
-                        </div>
-                    </div>
-                    <!--end::Card-->
+                <?php
+                if (!isset($_GET['amount']) && !isset($_GET['type'])) {
 
-                     <!--begin::Card-->
-                     <div class="card card-custom gutter-b">
+                    $sql = $dbh->prepare("SELECT * FROM user INNER JOIN loan_features ON user.user_id = loan_features.lender_id INNER JOIN feedback ON feedback.lender_id = user.user_id WHERE (user_type = 3 OR user_type = 4) AND user.eligible = 'yes'");
+                    $sql->execute();
+                    $lenders = $sql->fetchAll();
+                } else {
+                    $amount = $_GET['amount'];
+                    $type = $_GET['type'];
+                    $month = $_GET['month'];
+                    $sql = $dbh->prepare("SELECT * FROM `user` INNER JOIN `loan_features` ON user.user_id = loan_features.lender_id INNER JOIN feedback ON feedback.lender_id = user.user_id WHERE loan_features.min_loan <= $amount AND $amount <= loan_features.max_loan AND user.user_type = $type AND loan_features.min_term <= $month AND loan_features.max_term >= $month AND user.eligible = 'yes'");
+                    $sql->execute();
+                    $lenders = $sql->fetchAll();
+                }
+                ?>
+
+                <?php if ($sql->rowCount() == 0) : ?>
+
+                    <div class="card card-custom gutter-b">
                         <div class="card-body">
-                            <!--begin::Top-->
+                            <h1 class="text-center">NO RECORDS FOUND</h1>
+                        </div>
+                    </div>
+                <?php endif; ?>
+                <?php
+                ?>
+                <?php foreach ($lenders as $lender) : ?>
+                    <div class="card card-custom gutter-b">
+                        <div class="card-body">
                             <div class="d-flex">
-                                <!--begin::Pic-->
                                 <div class="flex-shrink-0 mr-7">
                                     <div class="symbol symbol-50 symbol-lg-120 symbol-circle">
-                                        <img alt="Pic" src="assets/keen/media/logos/asteria_logo.png" />
+                                        <img alt="Pic" src="/hulam/assets/keen/hulam_media/<?= $lender['profile_pic'] ?>" />
                                     </div>
                                 </div>
-                                <!--end::Pic-->
-                                <!--begin: Info-->
                                 <div class="flex-grow-1">
-                                    <!--begin::Title-->
                                     <div class="d-flex align-items-center justify-content-between flex-wrap mt-2">
-                                        <!--begin::User-->
                                         <div class="mr-3">
-                                            <!--begin::Name-->
-                                            <a href="#" class="d-flex align-items-center text-dark text-hover-primary font-size-h5 font-weight-bold mr-3">Asteria Lending Inc.</a>
-                                            <!--end::Name-->
-                                            <!--begin::Contacts-->
-                                            <div class="d-flex flex-wrap my-2">
-                                                <a href="#" class="text-muted text-hover-primary font-weight-bold mr-lg-8 mr-5 mb-lg-0 mb-2">
-                                                <span class="svg-icon svg-icon-md svg-icon-gray-500 mr-1">
-                                                </span>View site >></a>
-                                                <a href="#" class="text-muted text-hover-primary font-weight-bold mr-lg-8 mr-5 mb-lg-0 mb-2">
-                                            
-                                                <a href="#" class="text-muted text-hover-primary font-weight-bold">
-                                            
-                                            </div>
-                                            <!--end::Contacts-->
+                                            <a href="#" class="d-flex align-items-center text-dark text-hover-primary font-size-h5 font-weight-bold mr-3"><?= $lender['company_name'] ?></a>
                                         </div>
-                                        <!--begin::User-->
-                                        <!--begin::Actions-->
                                         <div class="my-lg-0 my-1">
-                                            <a href="#" class="btn btn-sm btn-light-primary font-weight-bolder mr-2">View Details</a>
-                                            <a href="apply_loan.php" class="btn btn-sm btn-primary font-weight-bolder">Apply Now</a>
+                                            <a href="debtor/view_company.php?lender_id=<?= $lender['lender_id'] ?>" class="btn btn-sm btn-light-primary font-weight-bolder mr-2">View Details</a>
+                                            <?php if ($user['eligible'] == 'no') : ?>
+                                                <a href="" class="btn btn-sm btn-primary font-weight-bolder" data-target="#notice" data-toggle="modal">Apply Now</a>
+                                            <?php else : ?>
+                                                <a href="debtor/apply_loan.php?lender_id=<?= $lender['lender_id'] . '&amount=' . $_GET['amount'] . '&month=' . $_GET['month']  ?>" class="btn btn-sm btn-primary font-weight-bolder">Apply Now</a>
+                                            <?php endif; ?>
                                         </div>
-                                        <!--end::Actions-->
                                     </div>
-                                    <!--end::Title-->
-                                    <!--begin::Content-->
                                     <div class="d-flex align-items-center flex-wrap justify-content-between">
-                                        <!--begin::Description-->
-                                        <div class="flex-grow-1 font-weight-bold text-dark-50 py-2 py-lg-2 mr-5">Asteria Lending offers the cheapest Online Lending rates in the Philippines..
-                                        <!-- <br />Quis autem vel eum iure reprehenderit qui in.--></div> 
-                                        <!--end::Description-->
+                                        <div class="flex-grow-1 font-weight-bold text-dark-50 py-2 py-lg-2 mr-5">
+                                            <?= $lender['description'] ?>
+                                        </div>
                                     </div>
-                                    <!--end::Content-->
                                 </div>
-                                <!--end::Info-->
                             </div>
-                            <!--end::Top-->
-                            <!--begin::Separator-->
+                            <!-- Start Modal -->
+                            <div class="modal fade" id="notice" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered modal-m" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">Account Not Activated.</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <i aria-hidden="true" class="ki ki-close"></i>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <label class="font-weight-bolder font-size-lg" for="input-username">To activate your account you need to complete updating your profile information and wait for the activation to start applying loan.</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- End Modal -->
+                            <!-- Start Modal -->
+                            <div class="modal fade" id="notice2" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered modal-m" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">You have an existing loan associated with this account.</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <i aria-hidden="true" class="ki ki-close"></i>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <label class="font-weight-bolder font-size-lg" for="input-username"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- End Modal -->
                             <div class="separator separator-solid my-7"></div>
-                            <!--end::Separator-->
-                            <!--begin::Bottom-->
                             <div class="d-flex align-items-center flex-wrap">
-                                <!--begin: Item-->
                                 <div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
                                     <div class="d-flex flex-column text-dark-75">
-                                        <span class="font-weight-bolder font-size-sm">Estimated Monthly Payment</span>
+                                        <span class="font-weight-bolder font-size-sm">Monthly Payment</span>
                                         <span class="font-weight-bolder font-size-h5">
-                                        <span class="text-dark-50 font-weight-bold">Php &nbsp;</span>550.00</span>
+                                            <span class="text-dark-50 font-weight-bold">Php &nbsp;</span>
+                                            <?php
+
+                                            if (!isset($_GET['amount'])) {
+                                                echo '0.00';
+                                            } else {
+                                                if ($lender['user_type'] == 4) {
+                                                    $amount = $_GET['amount'];
+                                                    $month = $_GET['month'];
+                                                    $new_rate = $month * ($lender['fix_rate'] / 100);
+                                                    //1 * 10/100 = 0.1
+                                                    $initial_amount = $amount * $new_rate;
+                                                    //500 * 0.1 = 50
+                                                    $add_interest = $initial_amount + $amount;
+                                                    //50 + 500 = 550
+                                                    echo number_format($add_interest / $month, 2);
+                                                    //550 /1 = 550
+                                                } else {
+                                                    $amount = $_GET['amount'];
+                                                    $month = $_GET['month'];
+                                                    //30000
+                                                    $initial_amount =  $amount * ($lender['fix_rate'] / 100);
+                                                    //30000 * 0.03 = 900
+                                                    $add_interest = $amount / $month;
+                                                    //30000 / 12 =2500
+                                                    echo number_format($add_interest + $initial_amount, 2);
+                                                    //2500 + 900 = 3400
+                                                }
+                                            }
+                                            ?>
+                                        </span>
                                     </div>
                                 </div>
-                                <!--end: Item-->
-                                <!--begin: Item-->
                                 <div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
                                     <div class="d-flex flex-column text-dark-75">
                                         <span class="font-weight-bolder font-size-sm">Loan Term</span>
                                         <span class="font-weight-bolder font-size-h5">
-                                        <span class="text-dark-50 font-weight-bold"></span>24-84months</span>
+                                            <?= $_GET['month'] ?>&nbsp;<span class="text-dark-50 font-weight-bold">Months</span>
                                     </div>
                                 </div>
-                                <!--end: Item-->
-                                <!--begin: Item-->
                                 <div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
                                     <div class="d-flex flex-column text-dark-75">
                                         <span class="font-weight-bolder font-size-sm">Fixed Interest Rate</span>
                                         <span class="font-weight-bolder font-size-h5">
-                                        <span class="text-dark-50 font-weight-bold"></span>12%</span>
+                                            <span class="text-dark-50 font-weight-bold"></span><?= $lender['fix_rate'] ?>%</span>
                                     </div>
                                 </div>
-                                <!--end: Item-->
-                                <!--begin: Item-->
                                 <div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
-                                    <div class="d-flex flex-column flex-lg-fill">
-                                        <!-- <span class="text-dark-75 font-weight-bolder font-size-sm">73 Projects</span> -->
-                                        <a href="#" class="text-primary font-weight-bolder">What do I need to apply?</a>
+                                    <div class="d-flex flex-column text-dark-75">
+                                        <span class="font-weight-bolder font-size-sm">Total Interest</span>
+                                        <span class="font-weight-bolder font-size-h5">
+                                            <span class="text-dark-50 font-weight-bold">Php &nbsp;</span>
+                                            <?php
+                                            if (!isset($_GET['amount'])) {
+                                                echo '0.00';
+                                            } else {
+                                                if ($lender['user_type'] == 4) {
+                                                    $amount = $_GET['amount'];
+                                                    $month = $_GET['month'];
+                                                    $new_rate = $amount * ($lender['fix_rate'] / 100); //500 * 0.1 = 50
+                                                    $total = $new_rate * $month; //50 * 1
+                                                    echo number_format($total, 2);
+                                                } else {
+                                                    $amount = $_GET['amount'];
+                                                    $month = $_GET['month'];
+                                                    $new_rate = $amount * ($lender['fix_rate'] / 100); //30000* 0.3 = 900
+                                                    $total = $new_rate * $month; //900 * 12
+
+                                                    echo number_format($total, 2);
+                                                }
+                                            }
+
+                                            ?>
+                                        </span>
                                     </div>
                                 </div>
-                                <!--end: Item-->
-                                <!--begin: Item-->
                                 <div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
+                                    
                                     <div class="d-flex flex-column">
-                                        <span class="text-dark-75 font-weight-bolder font-size-sm">Rates and Reviews</span>
-                                        <a href="#" class="text-primary font-weight-bolder">View</a>
+                                        <span class="text-dark-75 font-weight-bolder font-size-sm">Average Rating</br>
+                                        <?php
+                                        function drawStars(int $starRating)
+                                        {
+                                            echo "<span style='color: yellow;'>";
+                                            for ($i = 0; $i < $starRating; $i++) {
+                                                echo "&#x2605;";
+                                            }
+                                            echo "</span>";
+                                            for ($i = 5 - $starRating; $i > 0; $i--) {
+                                                echo "&#x2605;";
+                                            }
+                                        }
+                                        ?>
+                                     <?php
+                                        $ratingTotal = $ratingCount = 0;
+                                        $ratingTotal += $lender['ratings'];
+                                        $ratingCount++;
+                                        echo "<p>" . number_format(($ratingTotal / $ratingCount), 2) . " " .
+                                            drawStars(round($ratingTotal / $ratingCount)) .
+                                            "</p>";
+                                        $ratingTotal = 0;
+                                        $ratingCount = 0;
+                                        ?>
                                     </div>
                                 </div>
-                                <!--end: Item-->
                             </div>
-                            <!--end::Bottom-->
                         </div>
                     </div>
+                    <?php endforeach; ?>
                     <!--end::Card-->
                 </div>
             </div>
@@ -503,71 +411,16 @@
                                 +63 945 490 9530 <br>
                                 Mactan, Lapu-Lapu City Cebu 6015
                             </p>
-                            <!-- <div class="socail_links">
-                                <ul>
-                                    <li>
-                                        <a href="#">
-                                            <i class="ti-facebook"></i>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            <i class="fa fa-google-plus"></i>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            <i class="fa fa-twitter"></i>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            <i class="fa fa-instagram"></i>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div> -->
-
                         </div>
                     </div>
                     <div class="col-xl-2 col-md-6 col-lg-3">
-                        <div class="footer_widget wow fadeInUp" data-wow-duration="1.1s" data-wow-delay=".4s">
-                            <h3 class="footer_title">
-                                Services
-                            </h3>
-                            <!-- <ul>
-                                <li><a href="#">SEO/SEM </a></li>
-                                <li><a href="#">Web design </a></li>
-                                <li><a href="#">Ecommerce</a></li>
-                                <li><a href="#">Digital marketing</a></li>
-                            </ul> -->
-
-                        </div>
+                        
                     </div>
                     <div class="col-xl-2 col-md-6 col-lg-2">
-                        <div class="footer_widget wow fadeInUp" data-wow-duration="1.2s" data-wow-delay=".5s">
-                            <h3 class="footer_title">
-                                Useful Links
-                            </h3>
-                            <ul>
-                                <li><a href="#about">About</a></li>
-                                <!-- <li><a href="#">Blog</a></li> -->
-                                <li><a href="#contact"> Contact</a></li>
-                                <!-- <li><a href="#">Support</a></li> -->
-                            </ul>
-                        </div>
+                        
                     </div>
                     <div class="col-xl-4 col-md-6 col-lg-4">
-                        <div class="footer_widget wow fadeInUp" data-wow-duration="1.3s" data-wow-delay=".6s">
-                            <h3 class="footer_title">
-                                Subscribe
-                            </h3>
-                            <form action="#" class="newsletter_form">
-                                <input type="text" placeholder="Enter your mail">
-                                <button type="submit">Subscribe</button>
-                            </form>
-                            <p class="newsletter_text">You may send us your email if you wish to receive a newsletter for the updates of loan rates.</p>
-                        </div>
+                        
                     </div>
                 </div>
             </div>

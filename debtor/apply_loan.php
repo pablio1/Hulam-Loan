@@ -454,11 +454,6 @@ $user = $query->fetch();
 							<span class="nav-title text-dark-75 font-weight-bold font-size-h4">LOAN INFORMATION</span>
 						</span>
 					</a>
-					<a href="debtor/payment_information.php" class="nav-item">
-						<span class="nav-label px-5">
-							<span class="nav-title text-dark-75 font-weight-bold font-size-h4">PAYMENT INFORMATION</span>
-						</span>
-					</a>
 				</div>
 			</div>
 

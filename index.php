@@ -101,6 +101,7 @@ if (isset($_SESSION['user_type'])) {
         </div>
     </header>
     <!-- header-end -->
+    
 
     <!-- slider_area_start -->
     <div class="slider_area">
@@ -110,43 +111,9 @@ if (isset($_SESSION['user_type'])) {
                     <div class="col-lg-7 col-md-6">
                         <div class="slider_text">
                             <h3 class="wow fadeInRight" data-wow-duration="1s" data-wow-delay=".1s">Get your Salary Loan here!</h3>
-                            <div class="sldier_btn wow fadeInLeft" data-wow-duration="1s" data-wow-delay=".2s">
-                                <a href="#how" class="boxed-btn3">How it Works</a>
+                                <div class="sldier_btn wow fadeInLeft" data-wow-duration="1s" data-wow-delay=".2s">
+                                <a href="loan.php" class="boxed-btn3">Click to Apply Now</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="loan.php" class="boxed-btn3">How it works?</a>
                                 </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-5 col-md-6">
-                        <div class="payment_form white-bg wow fadeInDown" data-wow-duration="1.2s" data-wow-delay=".2s">
-                            <div class="info text-center">
-                                <h4>How much do you want?</h4>
-                                <p>We provide various lending investors for you to choose from.</p>
-                            </div>
-								<div class="form">
-									<div class="row">
-										<div class="col-lg-12">
-											<div class="form-group">
-												<p class="pt-7 mb-1">Enter Loan Amount</p>
-												<input class="form-control form-control-solid h-auto p-6 rounded-lg" placeholder="" type="text" name="amount" value="<?= isset($_GET['amount']) ? $_GET['amount'] : '' ?>" autocomplete="off" />
-											</div>
-										</div>
-										<div class="col-lg-12">
-											<div class="single_input">
-												<select class="wide" name="month" value="<?= isset($_GET['month']) ? $_GET['month'] : '' ?>" required>
-													<option value="" hidden>Select loan term</option>
-													<option value="1">1 Month</option>
-													<option value="2">2 Month</option>
-													<option value="3">3 Month</option>
-													<option value="4">4 Month</option>
-												</select>
-											</div>
-										</div>
-									</div>
-                            	</div>
-                            <p>Click continue to display options.<span></span></p>
-                            <div class="submit_btn">
-                                <a href="loan.php">
-                                <button class="boxed-btn3" type="submit">Continue</button></a>
-                            </div>
                         </div>
                     </div>
                 </div>

@@ -1,20 +1,16 @@
 <?php
 session_start();
-error_reporting(0);
+error_reporting(-1);
 include('../db_connection/config.php');
 
 if ($_SESSION['user_type'] != 2) {
 	header('location: ../index.php');
 }?>
-
 <?php
-$user_id = $_SESSION['user_id'];
-$sql = "SELECT * FROM user WHERE user_id =$user_id";
-$query = $dbh->prepare($sql);
-$query->execute();
-$user = $query->fetch();
+$sql = $dbh->prepare('SELECT * FROM loan_application INNER JOIN loan_features ON loan_features.lender_id = loan_application.lender_id INNER JOIN user ON loan_application.lender_id = user.user_id WHERE loan_application.debtor_id = :user_id AND loan_application.loan_status ="Released"');
+$sql->execute(['user_id' => $_SESSION['user_id']]);
+$loan = $sql->fetch();
 ?>
-
 <!DOCTYPE html>
 
 <html lang="en">
@@ -91,11 +87,6 @@ $user = $query->fetch();
 					<a href="debtor/loan_information.php" class="nav-item active">
 						<span class="nav-label px-10">
 							<span class="nav-title text-dark-75 font-weight-bold font-size-h4">LOAN INFORMATION</span>
-						</span>
-					</a>
-					<a href="debtor/payment_information.php" class="nav-item">
-						<span class="nav-label px-5">
-							<span class="nav-title text-dark-75 font-weight-bold font-size-h4">PAYMENT INFORMATION</span>
 						</span>
 					</a>
 				</div>
@@ -187,15 +178,21 @@ $user = $query->fetch();
 									<div class="d-flex flex-column text-dark-75">
 										<span class="font-weight-bolder font-size-lg">Remaining Balance: &nbsp; PHP
 											<?php
-											$user_id = $_SESSION['user_id'];
-											$loan_app_id = $loan['loan_app_id'];
+												$user_id = $_SESSION['user_id'];
+												$loan_id = $loan['loan_app_id'];
 
-											$sql = "SELECT * FROM loan_payment WHERE loan_app_id = :loan_app_id";
-											$query = $dbh->prepare($sql);
-											$query->bindParam(':loan_app_id',$loan_app_id,PDO::PARAM_STR);
-											$query->execute();
-											$loan_pay = $query->fetch();
-											echo number_format($loan_pay['remaining_balance'], 2);
+												$sql = "SELECT * FROM `running_balance` WHERE loan_app_id = $loan_id";
+												$query = $dbh->prepare($sql);
+												$query->execute();
+												$loan_app = $query->fetch();
+
+												$sql = "SELECT SUM(payment) AS totalsum FROM `running_balance` WHERE loan_app_id = $loan_id";
+												$query = $dbh->prepare($sql);
+												$query->execute();
+												$loan_app2 = $query->fetch();
+
+												$totalsum = $loan_app2['totalsum'];
+												echo number_format(($loan_app['remaining_balance'] - $totalsum), 2);
 											?>
 										</span>
 									</div>
@@ -203,11 +200,8 @@ $user = $query->fetch();
 								<div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
 									<div class="d-flex flex-column text-dark-75">
 										<span class="font-weight-bolder font-size-lg">Previous Balance:
-											<?php
-											$late_charge = $loan_pay['late_charge'];
-											$overdue_charge = $loan_pay['overdue_charge'];
-											$total_overdue = $late_charge + $overdue_charge;
-											echo number_format($total_overdue, 2)
+											<?=
+												$previous= number_format(($loan_app['monthly_pay'] - $loan_app['payment']), 2);
 											?>
 										</span>
 									</div>
@@ -215,11 +209,8 @@ $user = $query->fetch();
 								<div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
 									<div class="d-flex flex-column text-dark-75">
 										<span class="font-weight-bolder font-size-lg">Current Balance:&nbsp; PHP
-										<?php
-											$monthly_payable = $loan_pay['monthly_payable'];
-											$monthly_interest = $loan_pay['monthly_interest'];
-											$total_current = $monthly_payable + $monthly_interest;
-											echo number_format($total_current, 2);
+										<?=
+											$current = number_format(($loan_app['monthly_pay'] - $loan_app['payment']), 2);
 											?>
 										</span>
 									</div>
@@ -228,22 +219,13 @@ $user = $query->fetch();
 									<div class="d-flex flex-column text-dark-75">
 										<span class="font-weight-bolder font-size-lg">Total Amount Due:&nbsp; PHP
 											<?php
-											$totalamount = $total_overdue + $total_current;
-											echo number_format($total_current, 2) 
+                                                
 											?>
 										</span>
 										<span class="font-weight-bolder text-primary">
 											<?php
-											if($query->rowCount()==0){
-												echo 0.00;
-											}else{
-												date_default_timezone_set('Asia/Manila');
-												$nextdate = strtotime($loan_pay['monthly_due_date']);
-												$det2 = date("F-m-Y", $nextdate);
-											
-											}
-											 ?>
-											Next due date: <?= $det2 ?></span>
+												
+											?></span>
 											</div>
 										</div>
 									</div>

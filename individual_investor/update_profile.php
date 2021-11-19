@@ -203,6 +203,16 @@ if (isset($_POST['upload_photo'])) {
 }
 ?>
 
+<?php
+$user_id = $_SESSION['user_id'];
+
+$sql = "SELECT * FROM user WHERE user_id =$user_id";
+$query = $dbh->prepare($sql);
+$query->execute();
+$user = $query->fetch();
+
+?>
+
 <!DOCTYPE html>
 <!--
 Template Name: Keen - The Ultimate Bootstrap 4 HTML Admin Dashboard Theme
@@ -1078,6 +1088,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 								<!--end::Dropdown-->
 							</div>
 							<!--end::Notifications-->
+<<<<<<< HEAD:individual_investor/update_profile.php
 							<!--begin::Quick panel-->
 							<div class="topbar-item mr-1">
 								<div class="btn btn-icon btn-clean btn-lg" id="kt_quick_panel_toggle">
@@ -1095,6 +1106,10 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 								</div>
 							</div>
 							<!--end::Quick panel-->
+=======
+
+							
+>>>>>>> e42937b0885e872be4ee431a15a529761ed93304:payment_center/upload_payment.php
 							<!--begin::Chat-->
 							<div class="topbar-item">
 								<div class="btn btn-icon btn-clean btn-lg mr-1" data-toggle="modal" data-target="#kt_chat_modal">
@@ -1533,7 +1548,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 			<!--begin::Header-->
 			<div class="d-flex align-items-center mt-5">
 				<div class="symbol symbol-100 mr-5">
-					<div class="symbol-label" style="background-image:url('assets/admin/media/users/icon-company.jpg')"></div>
+					<div class="symbol-label" style="background-image: url(/hulam/assets/keen/payment_center/<?= $user['profile_pic'] ?>"></div>
 					<i class="symbol-badge bg-success"></i>
 				</div>
 				<div class="d-flex flex-column">

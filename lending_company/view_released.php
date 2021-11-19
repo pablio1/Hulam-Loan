@@ -129,7 +129,6 @@ if (isset($_POST['declined_loan'])) {
 }
 ?>
 
-
 <!DOCTYPE html>
 
 <html lang="en">
@@ -373,79 +372,30 @@ if (isset($_POST['declined_loan'])) {
 								<h4 class="menu-text">Manage Payment</h4>
 								<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
 							</li>
-							<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-								<a href="javascript:;" class="menu-link menu-toggle">
+							<li class="menu-item menu-item-submenu" data-menu-toggle="hover">
+							<a href="lending_company/record_payment.php" class="menu-link menu-toggle">
 									<span class="svg-icon menu-icon">
 									</span>
-									<span class="menu-text">Payment Information</span>
-									<i class="menu-arrow"></i>
+									<span class="menu-text">Add Payment</span>
 								</a>
-								<div class="menu-submenu">
-									<i class="menu-arrow"></i>
-									<ul class="menu-subnav">
-										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-											<a href="lending_company/payment_mark_received.php" class="menu-link menu-toggle">
-												<i class="menu-bullet">
-													<span></span>
-												</i>
-												<span class="menu-text">Payment Records</span>
-												<span class="menu-label">
-												</span>
-												<i class="menu-arrow"></i>
-											</a>
-										</li>
-										<!-- <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-											<a href="lending_company/payment_records.php" class="menu-link menu-toggle">
-												<i class="menu-bullet">
-													<span></span>
-												</i>
-												<span class="menu-text">Payment Records</span>
-												<span class="menu-label">
-												</span>
-												<i class="menu-arrow"></i>
-											</a>
-										</li> -->
-									</ul>
-								</div>
 							</li>
-
+							<li class="menu-item menu-item-submenu" data-menu-toggle="hover">
+							<a href="lending_company/view_payment.php" class="menu-link menu-toggle">
+									<span class="svg-icon menu-icon">
+									</span>
+									<span class="menu-text">Payment Records</span>
+								</a>
+							</li>
 							<li class="menu-section">
 								<h4 class="menu-text">Manage Report</h4>
 								<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
 							</li>
-							<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-								<a href="javascript:;" class="menu-link menu-toggle">
+							<li class="menu-item menu-item-submenu" data-menu-toggle="hover">
+							<a href="lending_company/generate_report.php" class="menu-link menu-toggle">
 									<span class="svg-icon menu-icon">
 									</span>
 									<span class="menu-text">Generate Report</span>
-									<i class="menu-arrow"></i>
 								</a>
-								<div class="menu-submenu">
-									<i class="menu-arrow"></i>
-									<ul class="menu-subnav">
-										<li class="menu-item menu-item-parent" aria-haspopup="true">
-											<span class="menu-link">
-												<span class="menu-text">Themes</span>
-											</span>
-										</li>
-										<li class="menu-item" aria-haspopup="true">
-											<a href="layout/themes/aside-light.html" class="menu-link">
-												<i class="menu-bullet menu-bullet-dot">
-													<span></span>
-												</i>
-												<span class="menu-text">Light Aside</span>
-											</a>
-										</li>
-										<li class="menu-item" aria-haspopup="true">
-											<a href="layout/themes/header-dark.html" class="menu-link">
-												<i class="menu-bullet menu-bullet-dot">
-													<span></span>
-												</i>
-												<span class="menu-text">Dark Header</span>
-											</a>
-										</li>
-									</ul>
-								</div>
 							</li>
 							<!--end::Menu Nav-->
 					</div>
@@ -493,286 +443,6 @@ if (isset($_POST['declined_loan'])) {
 											<div class="tab-pane active show p-8" id="topbar_notifications_notifications" role="tabpanel">
 												<!--begin::Scroll-->
 												<div class="scroll pr-7 mr-n7" data-scroll="true" data-height="300" data-mobile-height="200">
-													<!--begin::Item-->
-													<div class="d-flex align-items-center mb-6">
-														<!--begin::Symbol-->
-														<div class="symbol symbol-35 flex-shrink-0 mr-3">
-															<img alt="Pic" src="assets/media/users/150-5.jpg" />
-														</div>
-														<!--end::Symbol-->
-														<!--begin::Content-->
-														<div class="d-flex flex-wrap flex-row-fluid">
-															<!--begin::Text-->
-															<div class="d-flex flex-column pr-5 flex-grow-1">
-																<a href="#" class="text-dark text-hover-primary mb-1 font-weight-bold font-size-lg">Marcus Smart</a>
-																<span class="text-muted font-weight-bold">UI/UX, Art Director</span>
-															</div>
-															<!--end::Text-->
-															<!--begin::Section-->
-															<div class="d-flex align-items-center py-2">
-																<!--begin::Label-->
-																<span class="text-success font-weight-bolder font-size-sm pr-6">+65%</span>
-																<!--end::Label-->
-																<!--begin::Btn-->
-																<a href="#" class="btn btn-icon btn-light btn-sm">
-																	<span class="svg-icon svg-icon-md svg-icon-success">
-																		<!--begin::Svg Icon | path:assets/media/svg/icons/Navigation/Angle-right.svg-->
-																		<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-																			<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-																				<polygon points="0 0 24 0 24 24 0 24" />
-																				<path d="M6.70710678,15.7071068 C6.31658249,16.0976311 5.68341751,16.0976311 5.29289322,15.7071068 C4.90236893,15.3165825 4.90236893,14.6834175 5.29289322,14.2928932 L11.2928932,8.29289322 C11.6714722,7.91431428 12.2810586,7.90106866 12.6757246,8.26284586 L18.6757246,13.7628459 C19.0828436,14.1360383 19.1103465,14.7686056 18.7371541,15.1757246 C18.3639617,15.5828436 17.7313944,15.6103465 17.3242754,15.2371541 L12.0300757,10.3841378 L6.70710678,15.7071068 Z" fill="#000000" fill-rule="nonzero" transform="translate(12.000003, 11.999999) rotate(-270.000000) translate(-12.000003, -11.999999)" />
-																			</g>
-																		</svg>
-																		<!--end::Svg Icon-->
-																	</span>
-																</a>
-																<!--end::Btn-->
-															</div>
-															<!--end::Section-->
-														</div>
-														<!--end::Content-->
-													</div>
-													<!--end::Item-->
-													<!--begin::Item-->
-													<div class="d-flex align-items-center mb-6">
-														<!--begin::Symbol-->
-														<div class="symbol symbol-35 symbol-light-info flex-shrink-0 mr-3">
-															<span class="symbol-label font-weight-bolder font-size-lg">AH</span>
-														</div>
-														<!--end::Symbol-->
-														<!--begin::Content-->
-														<div class="d-flex flex-wrap flex-row-fluid">
-															<!--begin::Text-->
-															<div class="d-flex flex-column pr-5 flex-grow-1">
-																<a href="#" class="text-dark text-hover-primary mb-1 font-weight-bold font-size-lg">Andreas Hawks</a>
-																<span class="text-muted font-weight-bold">Python Developer</span>
-															</div>
-															<!--end::Text-->
-															<!--begin::Section-->
-															<div class="d-flex align-items-center py-2">
-																<!--begin::Label-->
-																<span class="text-success font-weight-bolder font-size-sm pr-6">+23%</span>
-																<!--end::Label-->
-																<!--begin::Btn-->
-																<a href="#" class="btn btn-icon btn-light btn-sm">
-																	<span class="svg-icon svg-icon-md svg-icon-success">
-																		<!--begin::Svg Icon | path:assets/media/svg/icons/Navigation/Angle-right.svg-->
-																		<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-																			<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-																				<polygon points="0 0 24 0 24 24 0 24" />
-																				<path d="M6.70710678,15.7071068 C6.31658249,16.0976311 5.68341751,16.0976311 5.29289322,15.7071068 C4.90236893,15.3165825 4.90236893,14.6834175 5.29289322,14.2928932 L11.2928932,8.29289322 C11.6714722,7.91431428 12.2810586,7.90106866 12.6757246,8.26284586 L18.6757246,13.7628459 C19.0828436,14.1360383 19.1103465,14.7686056 18.7371541,15.1757246 C18.3639617,15.5828436 17.7313944,15.6103465 17.3242754,15.2371541 L12.0300757,10.3841378 L6.70710678,15.7071068 Z" fill="#000000" fill-rule="nonzero" transform="translate(12.000003, 11.999999) rotate(-270.000000) translate(-12.000003, -11.999999)" />
-																			</g>
-																		</svg>
-																		<!--end::Svg Icon-->
-																	</span>
-																</a>
-																<!--end::Btn-->
-															</div>
-															<!--end::Section-->
-														</div>
-														<!--end::Content-->
-													</div>
-													<!--end::Item-->
-													<!--begin::Item-->
-													<div class="d-flex align-items-center mb-6">
-														<!--begin::Symbol-->
-														<div class="symbol symbol-35 symbol-light-success flex-shrink-0 mr-3">
-															<span class="symbol-label font-weight-bolder font-size-lg">SC</span>
-														</div>
-														<!--end::Symbol-->
-														<!--begin::Content-->
-														<div class="d-flex flex-wrap flex-row-fluid">
-															<!--begin::Text-->
-															<div class="d-flex flex-column pr-5 flex-grow-1">
-																<a href="#" class="text-dark text-hover-primary mb-1 font-weight-bold font-size-lg">Sarah Connor</a>
-																<span class="text-muted font-weight-bold">HTML, CSS. jQuery</span>
-															</div>
-															<!--end::Text-->
-															<!--begin::Section-->
-															<div class="d-flex align-items-center py-2">
-																<!--begin::Label-->
-																<span class="text-danger font-weight-bolder font-size-sm pr-6">-34%</span>
-																<!--end::Label-->
-																<!--begin::Btn-->
-																<a href="#" class="btn btn-icon btn-light btn-sm">
-																	<span class="svg-icon svg-icon-md svg-icon-success">
-																		<!--begin::Svg Icon | path:assets/media/svg/icons/Navigation/Angle-right.svg-->
-																		<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-																			<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-																				<polygon points="0 0 24 0 24 24 0 24" />
-																				<path d="M6.70710678,15.7071068 C6.31658249,16.0976311 5.68341751,16.0976311 5.29289322,15.7071068 C4.90236893,15.3165825 4.90236893,14.6834175 5.29289322,14.2928932 L11.2928932,8.29289322 C11.6714722,7.91431428 12.2810586,7.90106866 12.6757246,8.26284586 L18.6757246,13.7628459 C19.0828436,14.1360383 19.1103465,14.7686056 18.7371541,15.1757246 C18.3639617,15.5828436 17.7313944,15.6103465 17.3242754,15.2371541 L12.0300757,10.3841378 L6.70710678,15.7071068 Z" fill="#000000" fill-rule="nonzero" transform="translate(12.000003, 11.999999) rotate(-270.000000) translate(-12.000003, -11.999999)" />
-																			</g>
-																		</svg>
-																		<!--end::Svg Icon-->
-																	</span>
-																</a>
-																<!--end::Btn-->
-															</div>
-															<!--end::Section-->
-														</div>
-														<!--end::Content-->
-													</div>
-													<!--end::Item-->
-													<!--begin::Item-->
-													<div class="d-flex align-items-center mb-6">
-														<!--begin::Symbol-->
-														<div class="symbol symbol-35 flex-shrink-0 mr-3">
-															<img alt="Pic" src="assets/media/users/150-7.jpg" />
-														</div>
-														<!--end::Symbol-->
-														<!--begin::Content-->
-														<div class="d-flex flex-wrap flex-row-fluid">
-															<!--begin::Text-->
-															<div class="d-flex flex-column pr-5 flex-grow-1">
-																<a href="#" class="text-dark text-hover-primary mb-1 font-weight-bold font-size-lg">Amanda Harden</a>
-																<span class="text-muted font-weight-bold">UI/UX, Art Director</span>
-															</div>
-															<!--end::Text-->
-															<!--begin::Section-->
-															<div class="d-flex align-items-center py-2">
-																<!--begin::Label-->
-																<span class="text-success font-weight-bolder font-size-sm pr-6">+72%</span>
-																<!--end::Label-->
-																<!--begin::Btn-->
-																<a href="#" class="btn btn-icon btn-light btn-sm">
-																	<span class="svg-icon svg-icon-md svg-icon-success">
-																		<!--begin::Svg Icon | path:assets/media/svg/icons/Navigation/Angle-right.svg-->
-																		<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-																			<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-																				<polygon points="0 0 24 0 24 24 0 24" />
-																				<path d="M6.70710678,15.7071068 C6.31658249,16.0976311 5.68341751,16.0976311 5.29289322,15.7071068 C4.90236893,15.3165825 4.90236893,14.6834175 5.29289322,14.2928932 L11.2928932,8.29289322 C11.6714722,7.91431428 12.2810586,7.90106866 12.6757246,8.26284586 L18.6757246,13.7628459 C19.0828436,14.1360383 19.1103465,14.7686056 18.7371541,15.1757246 C18.3639617,15.5828436 17.7313944,15.6103465 17.3242754,15.2371541 L12.0300757,10.3841378 L6.70710678,15.7071068 Z" fill="#000000" fill-rule="nonzero" transform="translate(12.000003, 11.999999) rotate(-270.000000) translate(-12.000003, -11.999999)" />
-																			</g>
-																		</svg>
-																		<!--end::Svg Icon-->
-																	</span>
-																</a>
-																<!--end::Btn-->
-															</div>
-															<!--end::Section-->
-														</div>
-														<!--end::Content-->
-													</div>
-													<!--end::Item-->
-													<!--begin::Item-->
-													<div class="d-flex align-items-center mb-6">
-														<!--begin::Symbol-->
-														<div class="symbol symbol-35 symbol-light-danger flex-shrink-0 mr-3">
-															<span class="symbol-label font-weight-bolder font-size-lg">SR</span>
-														</div>
-														<!--end::Symbol-->
-														<!--begin::Content-->
-														<div class="d-flex flex-wrap flex-row-fluid">
-															<!--begin::Text-->
-															<div class="d-flex flex-column pr-5 flex-grow-1">
-																<a href="#" class="text-dark text-hover-primary mb-1 font-weight-bold font-size-lg">Sean Robbins</a>
-																<span class="text-muted font-weight-bold">UI/UX, Art Director</span>
-															</div>
-															<!--end::Text-->
-															<!--begin::Section-->
-															<div class="d-flex align-items-center py-2">
-																<!--begin::Label-->
-																<span class="text-success font-weight-bolder font-size-sm pr-6">+65%</span>
-																<!--end::Label-->
-																<!--begin::Btn-->
-																<a href="#" class="btn btn-icon btn-light btn-sm">
-																	<span class="svg-icon svg-icon-md svg-icon-success">
-																		<!--begin::Svg Icon | path:assets/media/svg/icons/Navigation/Angle-right.svg-->
-																		<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-																			<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-																				<polygon points="0 0 24 0 24 24 0 24" />
-																				<path d="M6.70710678,15.7071068 C6.31658249,16.0976311 5.68341751,16.0976311 5.29289322,15.7071068 C4.90236893,15.3165825 4.90236893,14.6834175 5.29289322,14.2928932 L11.2928932,8.29289322 C11.6714722,7.91431428 12.2810586,7.90106866 12.6757246,8.26284586 L18.6757246,13.7628459 C19.0828436,14.1360383 19.1103465,14.7686056 18.7371541,15.1757246 C18.3639617,15.5828436 17.7313944,15.6103465 17.3242754,15.2371541 L12.0300757,10.3841378 L6.70710678,15.7071068 Z" fill="#000000" fill-rule="nonzero" transform="translate(12.000003, 11.999999) rotate(-270.000000) translate(-12.000003, -11.999999)" />
-																			</g>
-																		</svg>
-																		<!--end::Svg Icon-->
-																	</span>
-																</a>
-																<!--end::Btn-->
-															</div>
-															<!--end::Section-->
-														</div>
-														<!--end::Content-->
-													</div>
-													<!--end::Item-->
-													<!--begin::Item-->
-													<div class="d-flex align-items-center mb-6">
-														<!--begin::Symbol-->
-														<div class="symbol symbol-35 symbol-light-success flex-shrink-0 mr-3">
-															<span class="symbol-label font-weight-bolder font-size-lg">SC</span>
-														</div>
-														<!--end::Symbol-->
-														<!--begin::Content-->
-														<div class="d-flex flex-wrap flex-row-fluid">
-															<!--begin::Text-->
-															<div class="d-flex flex-column pr-5 flex-grow-1">
-																<a href="#" class="text-dark text-hover-primary mb-1 font-weight-bold font-size-lg">Ana Stone</a>
-																<span class="text-muted font-weight-bold">Figma, PSD</span>
-															</div>
-															<!--end::Text-->
-															<!--begin::Section-->
-															<div class="d-flex align-items-center py-2">
-																<!--begin::Label-->
-																<span class="text-info font-weight-bolder font-size-sm pr-6">+34%</span>
-																<!--end::Label-->
-																<!--begin::Btn-->
-																<a href="#" class="btn btn-icon btn-light btn-sm">
-																	<span class="svg-icon svg-icon-md svg-icon-success">
-																		<!--begin::Svg Icon | path:assets/media/svg/icons/Navigation/Angle-right.svg-->
-																		<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-																			<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-																				<polygon points="0 0 24 0 24 24 0 24" />
-																				<path d="M6.70710678,15.7071068 C6.31658249,16.0976311 5.68341751,16.0976311 5.29289322,15.7071068 C4.90236893,15.3165825 4.90236893,14.6834175 5.29289322,14.2928932 L11.2928932,8.29289322 C11.6714722,7.91431428 12.2810586,7.90106866 12.6757246,8.26284586 L18.6757246,13.7628459 C19.0828436,14.1360383 19.1103465,14.7686056 18.7371541,15.1757246 C18.3639617,15.5828436 17.7313944,15.6103465 17.3242754,15.2371541 L12.0300757,10.3841378 L6.70710678,15.7071068 Z" fill="#000000" fill-rule="nonzero" transform="translate(12.000003, 11.999999) rotate(-270.000000) translate(-12.000003, -11.999999)" />
-																			</g>
-																		</svg>
-																		<!--end::Svg Icon-->
-																	</span>
-																</a>
-																<!--end::Btn-->
-															</div>
-															<!--end::Section-->
-														</div>
-														<!--end::Content-->
-													</div>
-													<!--end::Item-->
-													<!--begin::Item-->
-													<div class="d-flex align-items-center">
-														<!--begin::Symbol-->
-														<div class="symbol symbol-35 symbol-light-primary flex-shrink-0 mr-3">
-															<span class="symbol-label font-weight-bolder font-size-lg">JT</span>
-														</div>
-														<!--end::Symbol-->
-														<!--begin::Content-->
-														<div class="d-flex flex-wrap flex-row-fluid">
-															<!--begin::Text-->
-															<div class="d-flex flex-column pr-5 flex-grow-1">
-																<a href="#" class="text-dark text-hover-primary mb-1 font-weight-bold font-size-lg">Jason Tatum</a>
-																<span class="text-muted font-weight-bold">ASP.NET Developer</span>
-															</div>
-															<!--end::Text-->
-															<!--begin::Section-->
-															<div class="d-flex align-items-center py-2">
-																<!--begin::Label-->
-																<span class="text-success font-weight-bolder font-size-sm pr-6">+139%</span>
-																<!--end::Label-->
-																<!--begin::Btn-->
-																<a href="#" class="btn btn-icon btn-light btn-sm">
-																	<span class="svg-icon svg-icon-md svg-icon-success">
-																		<!--begin::Svg Icon | path:assets/media/svg/icons/Navigation/Angle-right.svg-->
-																		<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-																			<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-																				<polygon points="0 0 24 0 24 24 0 24" />
-																				<path d="M6.70710678,15.7071068 C6.31658249,16.0976311 5.68341751,16.0976311 5.29289322,15.7071068 C4.90236893,15.3165825 4.90236893,14.6834175 5.29289322,14.2928932 L11.2928932,8.29289322 C11.6714722,7.91431428 12.2810586,7.90106866 12.6757246,8.26284586 L18.6757246,13.7628459 C19.0828436,14.1360383 19.1103465,14.7686056 18.7371541,15.1757246 C18.3639617,15.5828436 17.7313944,15.6103465 17.3242754,15.2371541 L12.0300757,10.3841378 L6.70710678,15.7071068 Z" fill="#000000" fill-rule="nonzero" transform="translate(12.000003, 11.999999) rotate(-270.000000) translate(-12.000003, -11.999999)" />
-																			</g>
-																		</svg>
-																		<!--end::Svg Icon-->
-																	</span>
-																</a>
-																<!--end::Btn-->
-															</div>
-															<!--end::Section-->
-														</div>
-														<!--end::Content-->
-													</div>
-													<!--end::Item-->
 												</div>
 												<!--end::Scroll-->
 												<!--begin::Action-->
@@ -1403,13 +1073,6 @@ if (isset($_POST['declined_loan'])) {
 																	<input type="date" name="release_schedule">
 															</div> -->
 																<?php
-
-																// $id = intval($_GET['loan_app_id']);
-
-																// $sql = "SELECT loan_application.*, user.* FROM loan_application INNER JOIN user on loan_application.debtor_id = user.user_id WHERE loan_application.loan_app_id = $id";
-																// $query = $dbh->prepare($sql);
-																// $query->execute();
-																// $user2 = $query->fetch();
 
 																date_default_timezone_set('Asia/Manila');
 																$todays_date = date("y-m-d h:i:sa");

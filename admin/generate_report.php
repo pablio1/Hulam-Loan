@@ -277,12 +277,31 @@ $user = $query->fetch();
 								<h4 class="menu-text">Manage Report</h4>
 								<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
 							</li>
-							<li class="menu-item menu-item-submenu" data-menu-toggle="hover">
-							<a href="lending_company/generate_report.php" class="menu-link menu-toggle">
+							<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+								<a href="javascript:;" class="menu-link menu-toggle">
 									<span class="svg-icon menu-icon">
 									</span>
 									<span class="menu-text">Generate Report</span>
+									<i class="menu-arrow"></i>
 								</a>
+								<div class="menu-submenu">
+									<ul class="menu-subnav">
+										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+											<a href="lending_company/generate_user.php" class="menu-link menu-toggle">
+												<span class="svg-icon menu-icon">
+												</span>
+												<span class="menu-text">Users</span>
+											</a>
+										</li>
+										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+											<a href="lending_company/generate_loan_accounts.php" class="menu-link menu-toggle">
+												<span class="svg-icon menu-icon">
+												</span>
+												<span class="menu-text">Loan Accounts</span>
+											</a>
+										</li>
+									</ul>
+								</div>
 							</li>
 							<!--end::Menu Nav-->
 					</div>
@@ -291,6 +310,7 @@ $user = $query->fetch();
 				<!--end::Aside Menu-->
 			</div>
 			<!--end::Aside-->
+
 				<!--begin::Wrapper-->
 				<div class="d-flex flex-column flex-row-fluid wrapper" id="kt_wrapper">
 					<!--begin::Header-->
@@ -398,52 +418,211 @@ $user = $query->fetch();
 						<div class="container">
 							<div class="card card-custom">
 								<div class="card-body">
-									<h5>Declined Loan Application</h5>
+									<h5>Generate Reports</h5>
+                                    <div class="separator separator-dashed mt-8 mb-5"></div>
+                                    <form action=" " method="post">
+                                    <div class="row">
+                                        <!-- <div class="col-lg-3">
+                                            <div class="form-group">
+                                                <select name="user_type_name" class="form-control" id="defaultSelect">
+                                                <option value="none">By User Type</option>
+                                                    <?php $sql = "SELECT * from user_type WHERE user_type.id='2' || user_type.id='3' || user_type.id ='4'";
+                                                    $query = $dbh->prepare($sql);
+                                                    $query->execute();
+                                                    $results=$query->fetchAll(PDO::FETCH_OBJ);
+                                                    if($query->rowCount() > 0)
+                                                    {
+                                                    foreach($results as $result)
+                                                    {   ?>
+                                                    <option value="<?php echo htmlentities($result->id); ?>"><?php echo htmlentities($result->user_name); ?></option>
+                                                    <?php }} ?>
+                                                    </select>
+                                            </div>
+                                        </div> -->
+                                        <div class="col-lg-3">
+                                        <div class="form-group">
+                                                <select name="user_status" class="form-control" id="defaultSelect" >
+                                                <option value="none">By Status</option>
+                                                <option value="yes">Activated</option>
+                                                <option value="no">Inactivated</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <div class="form-group">
+                                                <select name="period_time" class="form-control" id="defaultSelect">
+                                                <option value="none">Select Days</option>
+                                                <option value="today">Today</option>
+                                                <option value="yesterday">Yesterday</option>
+                                                <option value="sevenDays">Last 7 Days</option>
+                                                <option value="thisMonth">This Month</option>
+                                                <option value="lastMonth">Last Month</option>
+                                                <option value="thisYear">This Year</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                            <div class="form-group-row">
+                                                <button type="submit" name="btn-category" class="btn btn-primary btn-shadow font-weight-bold mr-2">SEARCH</button>
+                                        </div>
+                                    </div>
+									<form method="post" class="quick-search-form">
+										<div class="col-lg-4">
+											<input type="text" name="search_input" class="form-control" placeholder="Search..."/>
+										</div>
+									</form></br>
+                                  <?php
+                                    $lender_id = $_SESSION['user_id'];
+
+                                    // $sql ="SELECT loan_application.*, user.* FROM user INNER JOIN loan_application ON loan_application.debtor_id = user.user_id WHERE lender_id = $lender_id";
+                                    $sql = "SELECT loan_application.*, user.* FROM loan_application INNER JOIN user ON loan_application.debtor_id = user.user_id WHERE loan_application.lender_id = '$lender_id' AND loan_application.loan_status = 'Released'";
+                                    $query = $dbh->prepare($sql);
+                                    $query->execute();
+                                    $loan_app = $query->fetch();
+                                    ?>
+
+									
 									<table class="table table-bordered">
 										<thead>
 											<tr>
-												<th>Borrower</th>
-												<th>Loan Details</th>
-												<th>Action</th>
+												<th>Profile Image</th>
+												<th>Profile Information</th>
+												<th>Addresses</th>
+												<th>Employment Information</th>
+												<th>Relatives</th>
 											</tr>
 										</thead>
 										<tbody>
 											<?php
-											$lender_id = $_SESSION['user_id'];
+                                                if(isset($_POST['search_input'])){
+                                                error_reporting(E_ALL);
+        
+                                                $search_input = $_POST['search_input'];
+            
+                                                if(empty($search_input))
+                                                {
+                                                $loan_app_id = $loan_app['loan_app_id'];
 
-											$sql = "SELECT loan_application.*, user.* FROM loan_application INNER JOIN user ON loan_application.debtor_id = user.user_id WHERE loan_application.lender_id = '$lender_id' AND loan_application.loan_status = 'declined'";
-											$query = $dbh->prepare($sql);
-											$query->execute();
-											$res = $query->fetchAll(PDO::FETCH_OBJ);
-											if ($query->rowCount() > 0) {
-												foreach ($res as $rem) { ?>
+												$sql = "SELECT * FROM user INNER JOIN debtors_info ON user.user_id = debtors_info.user_id INNER JOIN loan_application ON loan_application.debtor_id = user.user_id WHERE user_type !='1' || user_type !='3' || user_type !='4'";
+												$query = $dbh->prepare($sql);
+												$query->execute();
+												$res = $query->fetchAll();
+												$cnt =1;
+												if ($query->rowCount() > 0) {
+													foreach ($res as $rem): ?>
+	
+													<tr>
+														<td>
+															<div class="brand-logo">
+																<img alt="Pic" src="/hulam/assets/keen/hulam_media/<?= $rem['profile_pic']?>" class="h-80px w-80px">
+															</div>
+														</td>
+                                                        <td>Name: <?= $rem['firstname'].' ' .$rem['middlename'].' '.$rem['lastname']?></br>
+															Gender: <?= $rem['gender']?></br>
+															Birthdate: <?= $rem['b_day']?></br>
+															Mobile: <?= $rem['mobile']?></br>
+															Landline: <?= $rem['landline']?></br>
+															Email: <?= $rem['email']?>
+														</td>
+                                                        <td>Current Address: <?= $rem['c_street'].' '.$rem['c_barangay'].' '.$rem['c_city'].' '.$rem['c_province'].' '.$rem['c_zipcode']?></br>
+															Permanent Address: <?= $rem['p_street'].' '.$rem['p_barangay'].' '.$rem['p_city'].' '.$rem['p_province'].' '.$rem['p_zipcode']?>
+														</td>
+														<td>Company Name: <?= $rem['company_name']?></br>
+															Mobile: <?= $rem['company_mobile']?></br>
+															Landline: <?= $rem['company_landline']?></br>
+															Email: <?= $rem['company_email']?></br>
+															Monthly Salary: <?= $rem['monthly_salary']?></br>
+															Permanent Address: <?= $rem['p_street'].' '.$rem['p_barangay'].' '.$rem['p_city'].' '.$rem['p_province'].' '.$rem['p_zipcode']?>
+														</td>
+														<td>Name: <?= $rem['rel_name']?></br>
+															Relation: <?= $rem['rel_type']?></br>
+															Mobile: <?= $rem['rel_mobile']?></br>
+														</td>
+                                                    </tr>
+                                             <?php endforeach; $cnt = $cnt+1; }}
+											else{
+                                                $loan_app_id = $loan_app['loan_app_id'];
 
-												<tr>
-													<th scope="row">
-														Name:&nbsp;<?= htmlentities($rem->firstname); ?>&nbsp;<?= htmlentities($rem->lastname); ?></br>
-														Current Address:&nbsp;<?= htmlentities($rem->c_street) . ' ' . htmlentities($rem->c_barangay); ?><?= htmlentities($rem->c_city) . ' ' . htmlentities($rem->c_province) . ' ' . htmlentities($rem->c_zipcode); ?></br>
-														Mobile No: <?= htmlentities($rem->mobile)?>
-													</th>
-													<td>
-														Loan Application No: <?= htmlentities($rem->loan_app_id)?></br>
-														Application Date: <?= htmlentities($rem->date); ?></br>
-														Loan Amount: <?= htmlentities($rem->loan_amount)?></br>
-														Total Payable Amount: <?= htmlentities($rem->total_amount)?></br>
-														Loan Term: <?= htmlentities($rem->loan_term)?></br>
-														Interest Rate: <?= htmlentities($rem->fix_rate)?>%</br>
-														Monthly Payable: <?= htmlentities($rem->monthly_payment)?>
-													</td>
-													<td>
-														<a href="lending_company/view_application.php?loan_app_id=<?= htmlentities($rem->loan_app_id) ?>" class="kt-nav__link">
-															<span class="kt-nav__link-text">View</span>
-														</a>
-													</td>
-												</tr>
+												$sql = "SELECT * FROM user INNER JOIN debtors_info ON user.user_id = debtors_info.user_id INNER JOIN loan_application ON loan_application.debtor_id = user.user_id WHERE user_type !='1' || user_type !='3' || user_type !='4'";
+												$query = $dbh->prepare($sql);
+												$query->execute();
+												$res = $query->fetchAll();
+												$cnt =1;
+												if ($query->rowCount() > 0) {
+													foreach ($res as $rem): ?>
+	
+													<tr>
+														<td>
+															<div class="brand-logo">
+																<img alt="Pic" src="/hulam/assets/keen/hulam_media/<?= $rem['profile_pic']?>" class="h-80px w-80px">
+															</div>
+														</td>
+                                                        <td>Name: <?= $rem['firstname'].' ' .$rem['middlename'].' '.$rem['lastname']?></br>
+															Gender: <?= $rem['gender']?></br>
+															Birthdate: <?= $rem['b_day']?></br>
+															Mobile: <?= $rem['mobile']?></br>
+															Landline: <?= $rem['landline']?></br>
+															Email: <?= $rem['email']?>
+														</td>
+                                                        <td>Current Address: <?= $rem['c_street'].' '.$rem['c_barangay'].' '.$rem['c_city'].' '.$rem['c_province'].' '.$rem['c_zipcode']?></br>
+															Permanent Address: <?= $rem['p_street'].' '.$rem['p_barangay'].' '.$rem['p_city'].' '.$rem['p_province'].' '.$rem['p_zipcode']?>
+														</td>
+														<td>Company Name: <?= $rem['company_name']?></br>
+															Mobile: <?= $rem['company_mobile']?></br>
+															Landline: <?= $rem['company_landline']?></br>
+															Email: <?= $rem['company_email']?></br>
+															Monthly Salary: <?= $rem['monthly_salary']?></br>
+															Permanent Address: <?= $rem['p_street'].' '.$rem['p_barangay'].' '.$rem['p_city'].' '.$rem['p_province'].' '.$rem['p_zipcode']?>
+														</td>
+														<td>Name: <?= $rem['rel_name']?></br>
+															Relation: <?= $rem['rel_type']?></br>
+															Mobile: <?= $rem['rel_mobile']?></br>
+														</td>
+                                                    </tr>
+                                             <?php endforeach; $cnt = $cnt+1; }} 
+                                            }else{
+                                            $loan_app_id = $loan_app['loan_app_id'];
 
+                                            $sql = "SELECT * FROM user INNER JOIN debtors_info ON user.user_id = debtors_info.user_id INNER JOIN loan_application ON loan_application.debtor_id = user.user_id WHERE user_type !='1' || user_type !='3' || user_type !='4'";
+                                            $query = $dbh->prepare($sql);
+                                            $query->execute();
+                                            $res = $query->fetchAll();
+                                            $cnt =1;
+                                            if ($query->rowCount() > 0) {
+                                                foreach ($res as $rem): ?>
+	
+													<tr>
+														<td>
+															<div class="brand-logo">
+																<img alt="Pic" src="/hulam/assets/keen/hulam_media/<?= $rem['profile_pic']?>" class="h-80px w-80px">
+															</div>
+														</td>
+                                                        <td>Name: <?= $rem['firstname'].' ' .$rem['middlename'].' '.$rem['lastname']?></br>
+															Gender: <?= $rem['gender']?></br>
+															Birthdate: <?= $rem['b_day']?></br>
+															Mobile: <?= $rem['mobile']?></br>
+															Landline: <?= $rem['landline']?></br>
+															Email: <?= $rem['email']?>
+														</td>
+                                                        <td>Current Address: <?= $rem['c_street'].' '.$rem['c_barangay'].' '.$rem['c_city'].' '.$rem['c_province'].' '.$rem['c_zipcode']?></br>
+															Permanent Address: <?= $rem['p_street'].' '.$rem['p_barangay'].' '.$rem['p_city'].' '.$rem['p_province'].' '.$rem['p_zipcode']?>
+														</td>
+														<td>Company Name: <?= $rem['company_name']?></br>
+															Mobile: <?= $rem['company_mobile']?></br>
+															Landline: <?= $rem['company_landline']?></br>
+															Email: <?= $rem['company_email']?></br>
+															Monthly Salary: <?= $rem['monthly_salary']?></br>
+															Permanent Address: <?= $rem['p_street'].' '.$rem['p_barangay'].' '.$rem['p_city'].' '.$rem['p_province'].' '.$rem['p_zipcode']?>
+														</td>
+														<td>Name: <?= $rem['rel_name']?></br>
+															Relation: <?= $rem['rel_type']?></br>
+															Mobile: <?= $rem['rel_mobile']?></br>
+														</td>
+                                                    </tr>
+                                             <?php endforeach; $cnt = $cnt+1;}} ?> 
+                                            
 										</tbody>
 									</table>
-							<?php }
-											} ?>
+							
 								</div>
 							</div>
 						</div>
