@@ -381,6 +381,72 @@ $user = $query->fetch();
 		}
 	}
 ?>
+<?php
+	if(isset($_POST['or_cr'])){
+		$debtor_id = $_SESSION['user_id'];
+		$lender_id = $_GET['lender_id'];
+
+		$images =$_FILES['or_cr']['name'];
+		$tmp_dir = $_FILES['or_cr']['tmp_name'];
+		$imageSize=$_FILES['or_cr']['size'];
+
+		$upload_dir2='../assets/keen/hulam_media/';
+		$imgExt=strtolower(pathinfo($images,PATHINFO_EXTENSION));
+		$valid_extensions=array('jpeg','jpg','gif','pdf','doc','docx');
+		$or_cr=rand(1000,10000000).".".$imgExt;
+		move_uploaded_file($tmp_dir,$upload_dir2.$or_cr);
+
+		$sql = "SELECT * FROM loan_application WHERE debtor_id= $debtor_id AND lender_id = $lender_id";
+		$query = $dbh->prepare($sql);
+		$query->execute();
+		if($query->rowCount()==0){
+			$insert = "INSERT INTO loan_application(debtor_id,lender_id,or_cr)VALUES(:debtor_id,:lender_id,:or_cr)";
+			$insert_query = $dbh->prepare($insert);
+			$insert_query->bindParam(':debtor_id',$debtor_id,PDO::PARAM_STR);
+			$insert_query->bindParam(':lender_id',$lender_id,PDO::PARAM_STR);
+			$insert_query->bindParam(':or_cr',$or_cr,PDO::PARAM_STR);
+			$insert_query->execute();
+		}else{
+			$update = "UPDATE loan_application SET or_cr = :or_cr WHERE debtor_id= $debtor_id AND lender_id = $lender_id";
+			$update_query = $dbh->prepare($update);
+			$update_query->bindParam(':or_cr',$or_cr,PDO::PARAM_STR);
+			$update_query->execute();
+		}
+	}
+?>
+<?php
+	if(isset($_POST['others'])){
+		$debtor_id = $_SESSION['user_id'];
+		$lender_id = $_GET['lender_id'];
+
+		$images =$_FILES['others']['name'];
+		$tmp_dir = $_FILES['others']['tmp_name'];
+		$imageSize=$_FILES['others']['size'];
+
+		$upload_dir2='../assets/keen/hulam_media/';
+		$imgExt=strtolower(pathinfo($images,PATHINFO_EXTENSION));
+		$valid_extensions=array('jpeg','jpg','gif','pdf','doc','docx');
+		$others=rand(1000,10000000).".".$imgExt;
+		move_uploaded_file($tmp_dir,$upload_dir2.$others);
+
+		$sql = "SELECT * FROM loan_application WHERE debtor_id= $debtor_id AND lender_id = $lender_id";
+		$query = $dbh->prepare($sql);
+		$query->execute();
+		if($query->rowCount()==0){
+			$insert = "INSERT INTO loan_application(debtor_id,lender_id,others)VALUES(:debtor_id,:lender_id,:others)";
+			$insert_query = $dbh->prepare($insert);
+			$insert_query->bindParam(':debtor_id',$debtor_id,PDO::PARAM_STR);
+			$insert_query->bindParam(':lender_id',$lender_id,PDO::PARAM_STR);
+			$insert_query->bindParam(':others',$others,PDO::PARAM_STR);
+			$insert_query->execute();
+		}else{
+			$update = "UPDATE loan_application SET others = :others WHERE debtor_id= $debtor_id AND lender_id = $lender_id";
+			$update_query = $dbh->prepare($update);
+			$update_query->bindParam(':others',$others,PDO::PARAM_STR);
+			$update_query->execute();
+		}
+	}
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -539,6 +605,7 @@ $user = $query->fetch();
 															</form>
 															
 														</div>
+														
 													</div>
 												</div>
 											</div>
@@ -571,22 +638,37 @@ $user = $query->fetch();
 												<div class="d-flex">
 													<div class="flex-shrink-0 mr-7">
 														<div class="symbol symbol-50 symbol-lg-120 symbol-circle">
-															<img alt="Pic" src="/hulam/assets/keen/hulam_media/<?= $lender['profile_pic'] ?>" />
+															<img alt="Pic" src="./assets/keen/hulam_media/<?= $lender['profile_pic'] ?>" />
 														</div>
 													</div>
 													<div class="flex-grow-1">
 														<div class="d-flex align-items-center justify-content-between flex-wrap mt-2">
 															<div class="mr-3">
-																<a href="#" class="d-flex align-items-center text-dark text-hover-primary font-size-h5 font-weight-bold mr-3"><?= $lender['company_name'] ?></a>
+																<h5><?= $lender['company_name'] ?></h5>
 															</div>
 															<div class="my-lg-0 my-1">
-																<a href="debtor/apply_now.php" class="btn btn-sm btn-light-primary font-weight-bolder mr-2">
-																	<< Back</a>
+																<a href="debtor/index.php" class="btn btn-sm btn-light-primary font-weight-bolder mr-2">
+																	<< B A C K</a>
 															</div>
 														</div>
 														<div class="d-flex align-items-center flex-wrap justify-content-between">
 															<div class="flex-grow-1 font-weight-bold text-dark-50 py-2 py-lg-2 mr-5">
 																<?= $lender['description'] ?>
+															</div>
+														</div>
+														<div class="d-flex align-items-center flex-wrap justify-content-between">
+															<div class="flex-grow-1 font-weight-bold text-dark-50 py-2 py-lg-2 mr-5">
+																<?= $lender['company_street']?> <?= $lender['company_barangay']?> <?= $lender['company_city']?> <?= $lender['company_province']?> <?= $lender['company_zipcode']?>
+															</div>
+														</div>
+														<div class="d-flex align-items-center flex-wrap justify-content-between">
+															<div class="flex-grow-1 font-weight-bold text-dark-50 py-2 py-lg-2 mr-5">
+																Mobile: <?= $lender['mobile']?>
+															</div>
+														</div>
+														<div class="d-flex align-items-center flex-wrap justify-content-between">
+															<div class="flex-grow-1 font-weight-bold text-dark-50 py-2 py-lg-2 mr-5">
+																Landline: <?= $lender['company_landline']?>
 															</div>
 														</div>
 													</div>
@@ -737,68 +819,153 @@ $user = $query->fetch();
 													</tbody>
 												</table>		
 												<div class="separator separator-solid my-7"></div>
-												<h5 class="text-info font-weight-bolder">Reminders</h5>
-												
-												<div class="form-group row">
-													<label class="col-xl-3 col-lg-3 col-form-label"></label>
-													<div class="col-lg-12 col-xl-12">
-														<p class="font-weight-bolder font-size-lg py-4">
-															▸ Loan application is subject for approval.</br>
-															▸ Please comply all the requirements provided below to complete the loan application.</br>
-															▸ Requirements uploaded will be validated by the <?= $lender['company_name'] ?>.
-														</p>Please read <a href="#" class="font-weight-boldk" data-toggle="modal" data-target="#view_terms">Terms and Conditions |&nbsp;&nbsp;</a><a href="#" class="font-weight-bold" data-toggle="modal" data-target="#view_privacy">Privacy Statement</a>
-													</div>
-												</div>
-												
-												<div class="separator separator-solid my-7"></div>
-												<h5 class="text-info font-weight-bolder">List of Required Documents</h5>
-                                                <table class="table table-bordered">
-                                                    <thead>
-                                                        <tr>
-                                                            <t >Requirements</th>
-                                                            <th>Remarks</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <?php
-														$id = intval($_GET['lender_id']);
+												<div class="card-body pt-4">
+													<div class="card card-custom">
+														<div class="card-body">
+															<h5 class="text-info font-weight-bolder"> Loan Features</h5>
+															<table class="table table-bordered">
+																<thead>
+																	<tr>
+																		<th>Minimimum Loan</th>
+																		<th>Maximum Loan</th>
+																		<th>Minimum Term</th>
+																		<th>Maximum Term</th>
+																		<th>Fix Interest Rate</th>
+																		<th>Late Charges</th>
+																	</tr>
+																</thead>
+																<tbody>
+																	<tr>
+																		<td><?= $lender['min_loan'] ?></td>
+																		<td><?= $lender['max_loan'] ?></td>
+																		<td><?= $lender['min_term'] ?>%</td>
+																		<td><?= $lender['max_term'] ?>%</td>
+																		<td><?= $lender['fix_rate'] ?>%</td>
+																		<td><?= $lender['late_charges'] ?>%</td>
+																	</tr>
+																</tbody>
 
-														$sql = "SELECT * FROM loan_requirements INNER JOIN loan_features ON loan_requirements.lender_id = loan_features.lender_id WHERE loan_features.lender_id = $id";
-														$query = $dbh->prepare($sql);
-														$query->execute();
-														$res2 = $query->fetchAll(PDO::FETCH_OBJ);
-                                                        $cnt = 1;
-                                                        if ($query->rowCount() > 0) {
-                                                            foreach ($res2 as $result) { ?>
-                                                                <tr>
-                                                                    <td><?= htmlentities($result->req_name) ?></td>
-                                                                    <td><?= htmlentities($result->remarks) ?></td>
-                                                                </tr>
-                                                        <?php $cnt = $cnt + 1;
-                                                            }
-                                                        } ?>
-                                                    </tbody>
-                                                </table>
-													</br></br>
-													<h5 class="text-info font-weight-bolder">Please upload Requeirements here:</h5>
-													<table class="table table-bordered">
-														<thead>
-															<tr>
-																<th>Type of Documents</th>
-																<th>Documents</th>
-																<th>Action</th>
-															</tr>
-														</thead>
-														<tbody>
-															<?php
-															$user_id = $_SESSION['user_id'];
-															$lender_id = $_GET['lender_id'];
-															$sql = "SELECT * FROM loan_application WHERE debtor_id = $user_id";
+															</table></br>
+														
+															<h5 class="text-info font-weight-bolder">Reminders</h5>
+															<div class="form-group row">
+																<div class="col-lg-12">
+																		▸ Loan application is subject for approval.</br>
+																		▸ Please comply all the requirements provided below to complete the loan application.</br>
+																		▸ Requirements uploaded will be validated by the <?= $lender['company_name'] ?>.</br>
+																		<label class="font-weight-bolder">Please read</label> 
+																		<a href="#" class="font-weight-boldk" data-toggle="modal" data-target="#view_terms">Terms and Conditions |&nbsp;&nbsp;</a>
+																		<a href="#" class="font-weight-bold" data-toggle="modal" data-target="#view_privacy">Privacy Statement</a>
+																</div>
+															</div>
+												
+															<div class="separator separator-solid my-7"></div>
+															<h5 class="text-info font-weight-bolder">List of Required Documents</h5>
+															<table class="table table-bordered">
+																<thead>
+																	<tr>
+																		<t >Requirements</th>
+																		<th>Remarks</th>
+																	</tr>
+																</thead>
+																<tbody>
+																	<?php
+																$id = intval($_GET['lender_id']);
+
+																$sql = "SELECT loan_requirements.*, requirements_type.* FROM loan_requirements INNER JOIN requirements_type ON requirements_type.req_type_id = loan_requirements.req_type_id WHERE loan_requirements.lender_id = $id";
+																$query = $dbh->prepare($sql);
+																$query->execute();
+																$res2 = $query->fetchAll(PDO::FETCH_OBJ);
+																$cnt = 1;
+																if ($query->rowCount() > 0) {
+																	foreach ($res2 as $result) { ?>
+																		<tr>
+																			<td><?= htmlentities($result->req_name) ?></td>
+																			<td><?= htmlentities($result->remarks) ?></td>
+																		</tr>
+																<?php $cnt = $cnt + 1;
+																	}
+																} ?>
+															</tbody>
+                                               				</table>
+															</br>
+															<div class="separator separator-dashed mt-8 mb-5"></div>
+															<h5 class="text-info font-weight-bolder">Payment Method</h5>
+															<table class="table table-bordered">
+																<thead>
+																	<tr>
+																		<th>Mode of Payment</th>
+																		<th>Remarks</th>
+																	</tr>
+																</thead>
+																<tbody>
+																	<?php
+																	$id = intval($_GET['lender_id']);
+																	$sql = "SELECT * FROM mode_payment WHERE lender_id = $id";
+																	$query = $dbh->prepare($sql);
+																	$query->execute();
+																	$res2 = $query->fetchAll(PDO::FETCH_OBJ);
+																	$cnt = 1;
+																	if ($query->rowCount() > 0) {
+																		foreach ($res2 as $result) { ?>
+																			<tr>
+																				<td><?= htmlentities($result->mode_name) ?></td>
+																				<td><?= htmlentities($result->remarks) ?></td>
+																			</tr>
+																	<?php $cnt = $cnt + 1;
+																		}
+																	} ?>
+																</tbody>
+															</table>
+															<div class="separator separator-dashed mt-8 mb-5"></div>
+															<?php 
+															$id = intval($_GET['lender_id']);
+															$sql = "SELECT * FROM notice WHERE lender_id = $id";
 															$query = $dbh->prepare($sql);
 															$query->execute();
-															$result = $query->fetch();
+															$res3 = $query->fetchAll();
+															foreach($res3 as $y):
 															?>
-																														
+															<h5 class="text-info font-weight-bolder"><?= $y['notice_title']?>: </h5>
+															<div class="pb-5" data-wizard-type="step-content" data-wizard-state="current">
+																<div class="row">
+																	<div class="col-lg-9">
+																		<div class="form-group">
+																			<!-- <textarea name="remarks[]" class="form-control" rows="4" cols="50" autocomplete="off" placeholder="Remarks"><?= $y['remarks']; ?></textarea> -->
+																			<label>▸<?= $y['remarks']; ?></label>
+																		</div>
+																	</div>
+																</div>
+															</div>
+                                               			 <?php endforeach; ?>
+															<h5 class="text-info font-weight-bolder">Reloan/Renewal of Loan</h5>
+															<div class="form-group row">
+																<div class="col-lg-12">
+																		▸ Loan Renewal is only applicable after <label class="text-primary font-weight-bolder"><?= $lender['reloan_period']?> Months </label> from the previous released date of loan.</br>
+																		▸ Remaining Balance should be less than <label class="text-primary font-weight-bolder"><?=number_format($lender['reloan_amount'], 2)?> pesos </label> </br>
+																</div>
+															</div>
+															
+
+															<h5 class="text-info font-weight-bolder">To Proceed Please Upload only the Required Documents here:</h5>
+															<table class="table table-bordered">
+																<thead>
+																	<tr>
+																		<th>Type of Documents</th>
+																		<th>Documents</th>
+																		<th>Action</th>
+																	</tr>
+																</thead>
+																<tbody>
+																	<?php
+																	$user_id = $_SESSION['user_id'];
+																	$lender_id = $_GET['lender_id'];
+																	$sql = "SELECT * FROM loan_application WHERE debtor_id = $user_id AND lender_id = $lender_id";
+																	$query = $dbh->prepare($sql);
+																	$query->execute();
+																	$result = $query->fetch();
+																	?>
+																																
 															<tr>
 																<td>Valid ID</td>
 																<td><a href="/hulam/assets/keen/hulam_media/<?= $result['valid_id']?>" target="_blank"><?= $result['valid_id']?></a></td>
@@ -854,27 +1021,37 @@ $user = $query->fetch();
 																<td><a href="/hulam/assets/keen/hulam_media/<?= $result['id_pic']?>" target="_blank"><?= $result['id_pic']?></a></td>
 																<td><a href="" class="btn btn-outline-primary" data-toggle="modal" data-target="#id_pic">Upload</a></td>
 															</tr>
+															<tr>
+																<td>Vehicle Official Receipt or Certificate of Registration</td>
+																<td><a href="/hulam/assets/keen/hulam_media/<?= $result['or_cr']?>" target="_blank"><?= $result['or_cr']?></a></td>
+																<td><a href="" class="btn btn-outline-primary" data-toggle="modal" data-target="#or_cr">Upload</a></td>
+															</tr>
+															<tr>
+																<td>Other Documents</td>
+																<td><a href="/hulam/assets/keen/hulam_media/<?= $result['others']?>" target="_blank"><?= $result['others']?></a></td>
+																<td><a href="" class="btn btn-outline-primary" data-toggle="modal" data-target="#others">Upload</a></td>
+															</tr>
 														</tbody>
 													</table>
-												<div class="separator separator-solid my-7"></div>
-												<div class="form-group row">
-													<label class="col-xl-3 col-lg-3 col-form-label"></label>
-													<div class="col-lg-12 col-xl-12">
-														<div class="checkbox-inline">
-															<label class="checkbox m-1">
-																<input type="checkbox" name="confirm" required value="Yes" />
-																<span></span>
-																<h5>I confirm that:<h5>
-															</label>
+													<div class="separator separator-solid my-7"></div>
+													<div class="form-group row">
+														<label class="col-xl-3 col-lg-3 col-form-label"></label>
+														<div class="col-lg-12 col-xl-12">
+															<div class="checkbox-inline">
+																<label class="checkbox m-1">
+																	<input type="checkbox" name="confirm" required value="Yes" />
+																	<span></span>
+																	<h5>I confirm that:<h5>
+																</label>
+															</div>
+															<p class="font-weight-bolder font-size-lg py-4">
+																▸ All the information I have provided on this application are mine, true and up-to-date;</br />
+																▸ I agree to the Terms and Conditions, and Fees and Charges of the loan I am applying for.</br>
+																▸ I agree that <?= $lender['company_name'] ?> may use my Personal Data and other information for automated processing and for automated decision.
+															</p>
 														</div>
-														<p class="font-weight-bolder font-size-lg py-4">
-															▸ All the information I have provided on this application are mine, true and up-to-date;</br />
-															▸ I agree to the Terms and Conditions, and Fees and Charges of the loan I am applying for.</br>
-															▸ I agree that <?= $lender['company_name'] ?> may use my Personal Data and other information for automated processing and for automated decision.
-														</p>
 													</div>
-												</div>
-												<div class="modal-footer">
+													<div class="modal-footer">
 													<input type="hidden" name="date" value="<?= date('Y-m-d H:i:s') ?>">
 													<input type="hidden" name="debtor_id" value="<?= $_SESSION['user_id'] ?>">
 													<input type="hidden" name="lender_id" value="<?= $_GET['lender_id'] ?>">
@@ -978,6 +1155,9 @@ $user = $query->fetch();
 															<!--end::Svg Icon-->
 														</span>
 													</button>
+													</div>
+														</div>
+													</div>
 											</form>
 											<?php endforeach; ?>
 											<!-- Start Modal -->
@@ -1295,6 +1475,56 @@ $user = $query->fetch();
 															<div class="modal-footer">
 																
 																<button type="submit" name="id_pic" class="btn btn-primary font-weight-bold">Save</button>
+															</div>
+														</div>
+													</div>
+												</div>
+											</form>
+											<!-- End Modal -->
+											<!-- Start Modal -->
+											<form action="" method="post" enctype="multipart/form-data">
+												<div class="modal fade" id="or_cr" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
+													<div class="modal-dialog modal-dialog-centered modal-md" role="document">
+														<div class="modal-content">
+															<div class="modal-header">
+																<h5 class="modal-title" id="exampleModalLabel">Upload Vehicles's Official Receipt or Certificate of Registration</h5>
+																<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+																	<i aria-hidden="true" class="ki ki-close"></i>
+																</button>
+															</div>
+															<div class="col-xl-4">
+																<div class="form-group">
+																	<input type="file" name="or_cr" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3" />
+																</div>
+															</div>
+															<div class="modal-footer">
+																
+																<button type="submit" name="or_cr" class="btn btn-primary font-weight-bold">Save</button>
+															</div>
+														</div>
+													</div>
+												</div>
+											</form>
+											<!-- End Modal -->
+											<!-- Start Modal -->
+											<form action="" method="post" enctype="multipart/form-data">
+												<div class="modal fade" id="others" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
+													<div class="modal-dialog modal-dialog-centered modal-md" role="document">
+														<div class="modal-content">
+															<div class="modal-header">
+																<h5 class="modal-title" id="exampleModalLabel">Upload Other Documents</h5>
+																<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+																	<i aria-hidden="true" class="ki ki-close"></i>
+																</button>
+															</div>
+															<div class="col-xl-4">
+																<div class="form-group">
+																	<input type="file" name="others" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3" />
+																</div>
+															</div>
+															<div class="modal-footer">
+																
+																<button type="submit" name="others" class="btn btn-primary font-weight-bold">Save</button>
 															</div>
 														</div>
 													</div>

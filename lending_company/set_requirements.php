@@ -6,40 +6,76 @@ if ($_SESSION['user_type'] != 3) {
 	header('location: ../index.php');
 }?>
 
+
 <?php
 
 if(isset($_POST['add_req'])){
 
-    $req_name = $_POST['req_name'];
+    $req_type_id = $_POST['req_type_id'];
     $remarks = $_POST['remarks'];
-    // $lender_id = $_SESSION['user_id']; 
+	$lender_id = $_SESSION['user_id']; 
 
-    foreach($req_name as $index => $names){
-        $s_req_name = $names;
-        $s_remarks = $remarks[$index];
-        $lender_id = $_SESSION['user_id']; 
+	$sql ="INSERT INTO loan_requirements(lender_id,req_type_id,remarks)VALUES('$lender_id','$req_type_id','$remarks')";
+	$query = $dbh->prepare($sql);
+	$query->execute();
 
-        $sql ="INSERT INTO loan_requirements(lender_id,req_name,remarks)VALUES('$lender_id','$s_req_name','$s_remarks')";
-        $query = $dbh->prepare($sql);
-        $query->execute();
-    }
     if($query){
-        $_SESSION['status_message'] = "Added successfully" ;
+        $_SESSION['status_req'] = "Added successfully" ;
         header("Location: set_requirements.php");
         exit();
     }else{
-        $_SESSION['status_message'] = "Error! Not Added" ;
+        $_SESSION['status_req'] = "Error! Not Added" ;
         header("Location: set_requirements.php");
         exit();
     }
 }
 
 ?>
+<?php
+
+// if(isset($_POST['add_req'])){
+
+//     $req_name = $_POST['req_name'];
+//     $remarks = $_POST['remarks'];
+//     // $lender_id = $_SESSION['user_id']; 
+
+//     foreach($req_name as $index => $names){
+//         $s_req_name = $names;
+//         $s_remarks = $remarks[$index];
+//         $lender_id = $_SESSION['user_id']; 
+
+//         $sql ="INSERT INTO loan_requirements(lender_id,req_name,remarks)VALUES('$lender_id','$s_req_name','$s_remarks')";
+//         $query = $dbh->prepare($sql);
+//         $query->execute();
+//     }
+//     if($query){
+//         $_SESSION['status_message'] = "Added successfully" ;
+//         header("Location: set_requirements.php");
+//         exit();
+//     }else{
+//         $_SESSION['status_message'] = "Error! Not Added" ;
+//         header("Location: set_requirements.php");
+//         exit();
+//     }
+// }
+
+?>
+
+
 
 <?php
 $lender_id = $_SESSION['user_id'];
 
 $sql ="SELECT loan_features.*, user.* FROM loan_features INNER JOIN user ON loan_features.lender_id = user.user_id WHERE lender_id = $lender_id";
+$query = $dbh->prepare($sql);
+$query->execute();
+$user = $query->fetch();
+?>
+
+<?php
+$lender_id = $_SESSION['user_id'];
+
+$sql ="SELECT * FROM user WHERE user_id = $lender_id";
 $query = $dbh->prepare($sql);
 $query->execute();
 $user = $query->fetch();
@@ -52,7 +88,7 @@ $user = $query->fetch();
 <head>
 	<base href="../">
 	<meta charset="utf-8" />
-	<title>Hulam | Admin | Lending Company</title>
+	<title>Hulam | Set Requirements</title>
 	<meta name="description" content="Updates and statistics" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 	<!--begin::Fonts-->
@@ -72,7 +108,7 @@ $user = $query->fetch();
 	<link href="assets/admin/css/themes/layout/brand/dark.css" rel="stylesheet" type="text/css" />
 	<link href="assets/admin/css/themes/layout/aside/dark.css" rel="stylesheet" type="text/css" />
 	<!--end::Layout Themes-->
-	<link rel="shortcut icon" href="assets/keen/hulam_media/<?= $user['profile_pic']?>" />
+	<link rel="shortcut icon" href="assets/keen/media/logos/h_small.png" />
 </head>
 <!--end::Head-->
 <!--begin::Body-->
@@ -333,8 +369,23 @@ $user = $query->fetch();
 								<div id="kt_header_menu" class="header-menu header-menu-mobile header-menu-layout-default">
 									<!--begin::Header Nav-->
 									<ul class="menu-nav">
-										<li class="menu-item menu-item-open menu-item-here menu-item-submenu menu-item-rel menu-item-open menu-item-here menu-item-active" data-menu-toggle="click" aria-haspopup="true">
-										    <h4 class="menu-text" style="color:blue">Welcome to Hulam! <h4>&nbsp;&nbsp;<h6><?php echo $_SESSION['firstname'];?></h6>
+									<li class="menu-item menu-item-open menu-item-here menu-item-submenu menu-item-rel menu-item-open menu-item-here menu-item-active" data-menu-toggle="click" aria-haspopup="true">
+                                        <h4 class="menu-text" style="color:blue">Welcome to Hulam! <h4>&nbsp;&nbsp;
+												<h6 class="text-danger">
+													<?php
+													$id = $_SESSION['user_id'];
+
+													$sql = "SELECT * FROM user WHERE user_id = $id";
+													$query = $dbh->prepare($sql);
+													$query->execute();
+													$result = $query->fetch();
+													$notice = $result['notice_message'];
+													if ($result['eligible'] == 'no') {
+
+														echo $notice;
+													}
+													?>
+												</h6>
 											<i class="menu-arrow"></i>
 										 </li>
 								    </ul>
@@ -404,17 +455,17 @@ $user = $query->fetch();
 										<!--begin::Page Title-->
 										<h4 class="text-white font-weight-bold my-1 mr-5">Dashboard |</h4>
 										<h5 class="text-white font-weight-bold my-1 mr-5"><?= $user['company_name']?></h5>
-									<div class="col-xl-12 col-xl-12">
+										<div class="col-xl-12 col-xl-12">
 										<?php
-										if(isset($_SESSION['status_message'])){
+										if(isset($_SESSION['status_req'])){
 										?>
 											<div class="alert alert-custom alert-notice alert-light-success fade show" role="alert">
 												<div class="alert-text">
-													<h4><?php echo $_SESSION['status'];?></h4>
+													<h4><?php echo $_SESSION['status_req'];?></h4>
 												</div>
 												<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
 											</div>
-										<?php unset($_SESSION['status_message']);
+										<?php unset($_SESSION['status_req']);
 										}?>
 									</div>
 								</div>
@@ -438,17 +489,27 @@ $user = $query->fetch();
 										<div class="wizard-body py-8 px-8 py-lg-20 px-lg-10">
 											<!--begin: Wizard Form-->
 											<div class="row">
-												<div class="offset-xxl-2 col-xxl-8">
+												<div class="offset-xxl-1 col-xxl-10">
 													<form action="" method="post" id="kt_form" >
                                                         <h4 class="mb-10 font-weight-bold text-dark">Set Requirements to Comply: </h4>
                                                         <div class="pb-5" data-wizard-type="step-content" data-wizard-state="current">
                                                             <div class="row">
-                                                                <div class="col-lg-6">
+                                                                <div class="col-lg-5">
                                                                     <div class="form-group">
-                                                                        <input type="text" class="form-control" name="req_name[]" required autocomplete="off" placeholder="Requirements Type">
+																		<select name="req_type_id" class="form-control" id="exampleSelectd" required >
+																			<option value=""hidden>Select Requirements</option>
+																			<?php 
+																			$sql = "SELECT * FROM requirements_type";
+																			$query =$dbh->prepare($sql);
+																			$query->execute();
+																			$result = $query->fetchAll();
+																			foreach($result as $results):?>
+																			<option value="<?= $results['req_type_id']?>"><?= $results['req_name']?></option>
+																			<?php endforeach;?>
+																		</select>
                                                                     </div>
                                                                 </div>
-                                                                <div class="col-lg-4">
+                                                                <div class="col-lg-5">
                                                                     <div class="form-group">
 																	<textarea name="remarks" class="form-control"  rows="4" cols="50" required autocomplete="off" placeholder="Remarks"><?= $res['remarks'];?></textarea>
                                                                         <!-- <input type="text" class="form-control" name="remarks[]" required autocomplete="off" placeholder="Remarks"> -->
@@ -472,7 +533,7 @@ $user = $query->fetch();
                                     </div>
                                         <div class="card card-custom">
                                             <div class="card-body">
-                                                <h5>Manage Requirements</h5>
+                                                <h5>Added Requirements to Comply</h5>
                                                 <table class="table table-bordered">
                                                     <thead>
                                                         <tr>
@@ -485,7 +546,7 @@ $user = $query->fetch();
                                                         <?php
                                                         $lender_id = $_SESSION['user_id'];
 
-                                                        $sql = "SELECT  * FROM loan_requirements WHERE lender_id = $lender_id";
+                                                        $sql = "SELECT loan_requirements.*, requirements_type.* FROM loan_requirements INNER JOIN requirements_type ON requirements_type.req_type_id = loan_requirements.req_type_id WHERE loan_requirements.lender_id = $lender_id";
                                                         $query = $dbh->prepare($sql);
                                                         $query->execute();
                                                         $res = $query->fetchAll(PDO::FETCH_OBJ);

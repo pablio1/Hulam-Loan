@@ -137,18 +137,9 @@ if (isset($_POST['upload_payment'])) {
 						</span>
 					</div>
 				</div>
-				<div class="topbar-item mr-3">
-					<div class="btn btn-icon btn-hover-transparent-black w-auto d-flex align-items-center btn-lg px-2" id="kt_quick_user_toggle">
-						<span class="svg-icon svg-icon-xl svg-icon-primary">
-							<!--begin::Svg Icon | path:assets/media/svg/icons/General/User.svg-->
-							<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="48px" height="48px" viewBox="0 0 24 24" version="1.1">
-								<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-									<polygon points="0 0 24 0 24 24 0 24" />
-									<path d="M12,11 C9.790861,11 8,9.209139 8,7 C8,4.790861 9.790861,3 12,3 C14.209139,3 16,4.790861 16,7 C16,9.209139 14.209139,11 12,11 Z" fill="#000000" fill-rule="nonzero" opacity="0.3" />
-									<path d="M3.00065168,20.1992055 C3.38825852,15.4265159 7.26191235,13 11.9833413,13 C16.7712164,13 20.7048837,15.2931929 20.9979143,20.2 C21.0095879,20.3954741 20.9979143,21 20.2466999,21 C16.541124,21 11.0347247,21 3.72750223,21 C3.47671215,21 2.97953825,20.45918 3.00065168,20.1992055 Z" fill="#000000" fill-rule="nonzero" />
-								</g>
-							</svg>
-						</span>
+				<div class="topbar-item mr-5">
+					<div class="btn btn-icon btn-light-primary h-40px w-40px p-0" id="kt_quick_user_toggle">
+					<img src="/hulam/assets/keen/hulam_media/<?= $user['profile_pic']?>" class="h-40px align-self-end" alt="">
 					</div>
 				</div>
 			</div>
@@ -241,38 +232,36 @@ if (isset($_POST['upload_payment'])) {
 							</div>
 						</div>
 					</div>
+					<?php
+					if (!isset($_GET['amount']) && !isset($_GET['type'])) {
 
+						$sql = $dbh->prepare("SELECT * FROM user INNER JOIN loan_features ON user.user_id = loan_features.lender_id WHERE (user_type = 3 OR user_type = 4) AND user.eligible = 'yes'");
+						$sql->execute();
+						$lenders = $sql->fetchAll();
+					} else {
+						$amount = $_GET['amount'];
+						$type = $_GET['type'];
+						$month = $_GET['month'];
+						$sql = $dbh->prepare("SELECT * FROM `user` INNER JOIN `loan_features` ON user.user_id = loan_features.lender_id  WHERE loan_features.min_loan <= $amount AND $amount <= loan_features.max_loan AND user.user_type = $type AND loan_features.min_term <= $month AND loan_features.max_term >= $month AND user.eligible = 'yes'");
+						$sql->execute();
+						$lenders = $sql->fetchAll();
+					}
+					?>
+					<?php if ($sql->rowCount() == 0) : ?>
+					<div class="container">
+						<div class="card card-custom gutter-b">
+							<div class="card-body">
+								<h1 class="text-center">NO RECORDS FOUND</h1>
+							</div>
+						</div>
+					</div>
+					<?php endif; ?>
+					<?php foreach ($lenders as $lender) : ?>
 					<div class="col-lg-12">
 						<div class="form-group">
 							<div class="card card-custom card-stretch card-stretch-half gutter-b">
 								<div class="d-flex flex-column-fluid">
 									<div class="container">
-										<?php
-										if (!isset($_GET['amount']) && !isset($_GET['type'])) {
-
-											$sql = $dbh->prepare("SELECT * FROM user INNER JOIN loan_features ON user.user_id = loan_features.lender_id INNER JOIN feedback ON user.user_id = feedback.lender_id WHERE (user_type = 3 OR user_type = 4) AND user.eligible = 'yes'");
-											$sql->execute();
-											$lenders = $sql->fetchAll();
-										} else {
-											$amount = $_GET['amount'];
-											$type = $_GET['type'];
-											$month = $_GET['month'];
-											$sql = $dbh->prepare("SELECT * FROM `user` INNER JOIN `loan_features` ON user.user_id = loan_features.lender_id INNER JOIN feedback ON user.user_id  = feedback.lender_id WHERE loan_features.min_loan <= $amount AND $amount <= loan_features.max_loan AND user.user_type = $type AND loan_features.min_term <= $month AND loan_features.max_term >= $month AND user.eligible = 'yes'");
-											$sql->execute();
-											$lenders = $sql->fetchAll();
-										}
-										?>
-
-										<?php if ($sql->rowCount() == 0) : ?>
-											<div class="card card-custom gutter-b">
-												<div class="card-body">
-													<h1 class="text-center">NO RECORDS FOUND</h1>
-												</div>
-											</div>
-										<?php endif; ?>
-										<?php
-										?>
-										<?php foreach ($lenders as $lender) : ?>
 											<div class="card card-custom gutter-b">
 												<div class="card-body">
 													<div class="d-flex">
@@ -287,13 +276,11 @@ if (isset($_POST['upload_payment'])) {
 																	<a href="#" class="d-flex align-items-center text-dark text-hover-primary font-size-h5 font-weight-bold mr-3"><?= $lender['company_name'] ?></a>
 																</div>
 																<div class="my-lg-0 my-1">
-																	<a href="debtor/view_company.php?lender_id=<?= $lender['lender_id'] ?>" class="btn btn-sm btn-light-primary font-weight-bolder mr-2">View Details</a>
+																	<!-- <a href="debtor/view_company2.php?lender_id=<?= $lender['lender_id'] ?>" class="btn btn-sm btn-light-primary font-weight-bolder mr-2">View Details</a> -->
 																	<?php if ($user['eligible'] == 'no') : ?>
-																		<a href="" class="btn btn-sm btn-primary font-weight-bolder" data-target="#notice" data-toggle="modal">Apply Now</a>
-																	<?php elseif ($result['loan_status'] == 'Pending' ||$result['loan_status'] == 'Approved'|| $result['loan_status'] == 'Released') : ?>
-																		<a href="" class="btn btn-sm btn-primary font-weight-bolder" data-target="#exist" data-toggle="modal">Apply Now</a>
+																		<a href="" class="btn btn-sm btn-primary font-weight-bolder" data-target="#notice" data-toggle="modal">View Details</a>
 																	<?php else: ?>	
-																		<a href="debtor/apply_loan.php?lender_id=<?= $lender['lender_id'] . '&amount=' . $_GET['amount'] . '&month=' . $_GET['month']  ?>" class="btn btn-sm btn-primary font-weight-bolder">Apply Now</a>
+																		<a href="debtor/apply_loan.php?lender_id=<?= $lender['lender_id'] . '&amount=' . $_GET['amount'] . '&month=' . $_GET['month']  ?>" class="btn btn-sm btn-primary font-weight-bolder">View Details</a>
 																	<?php endif; ?>
 																</div>
 															</div>
@@ -426,6 +413,23 @@ if (isset($_POST['upload_payment'])) {
 															</div>
 															<div class="d-flex flex-column">
 																<span class="text-dark-75 font-weight-bolder font-size-sm">Rates and Reviews  &nbsp;&nbsp;| <a href="debtor/view_rating.php?lender_id=<?= $lender['lender_id']?>" class="text-primary font-weight-bolder">View</a>
+																	
+																	<?php
+																	if (!isset($_GET['amount']) && !isset($_GET['type'])) {
+							
+																		$sql = $dbh->prepare("SELECT * FROM user INNER JOIN loan_features ON user.user_id = loan_features.lender_id INNER JOIN feedback ON user.user_id  = feedback.lender_id WHERE (user_type = 3 OR user_type = 4) AND user.eligible = 'yes'");
+																		$sql->execute();
+																		$lenders = $sql->fetchAll();
+																	} else {
+																		$amount = $_GET['amount'];
+																		$type = $_GET['type'];
+																		$month = $_GET['month'];
+																		$sql = $dbh->prepare("SELECT * FROM `user` INNER JOIN `loan_features` ON user.user_id = loan_features.lender_id INNER JOIN feedback ON user.user_id  = feedback.lender_id WHERE loan_features.min_loan <= $amount AND $amount <= loan_features.max_loan AND user.user_type = $type AND loan_features.min_term <= $month AND loan_features.max_term >= $month AND user.eligible = 'yes'");
+																		$sql->execute();
+																		$lenders = $sql->fetchAll();
+																	}
+																	?>
+																	<?php foreach($lenders as $rate):?>
 																	<?php
 																		function drawStars(int $starRating)
 																		{
@@ -441,7 +445,7 @@ if (isset($_POST['upload_payment'])) {
 																		?>
 																		<?php
 																		$ratingTotal = $ratingCount = 0;
-																		$ratingTotal += $lender['ratings'];
+																		$ratingTotal += $rate['ratings'];
 																		$ratingCount++;
 																		echo "<p>" . number_format(($ratingTotal / $ratingCount), 2) . " " .
 																			drawStars(round($ratingTotal / $ratingCount)) .
@@ -449,21 +453,22 @@ if (isset($_POST['upload_payment'])) {
 																		$ratingTotal = 0;
 																		$ratingCount = 0;
 																		?>
-																		
-																	
 																</span>
+																<?php endforeach;?>
 																
 															</div>
 														</div>
 													</div>
 												</div>
 											</div>
-										<?php endforeach; ?>
+										
+										
 									</div>
 								</div>
 							</div>
 						</div>
 					</div>
+					<?php endforeach; ?>
 				</div>
 
 			</div>
@@ -565,7 +570,7 @@ if (isset($_POST['upload_payment'])) {
 				</a>
 				<!--end:Item-->
 				<!--begin::Item-->
-				<a href="debtor/send_message.php" class="navi-item">
+				<a href="debtor/send_message.php" class="navi-item" data-toggle="modal" data-target="#s_message">
 					<div class="navi-link">
 						<div class="symbol symbol-40 bg-light mr-3">
 							<div class="symbol-label">
@@ -630,14 +635,16 @@ if (isset($_POST['upload_payment'])) {
 	<!-- end::User Panel-->
 
 
-
 	<!--begin::Quick Panel-->
 	<div id="kt_quick_panel" class="offcanvas offcanvas-right pt-5 pb-10">
 		<!--begin::Header-->
 		<div class="offcanvas-header offcanvas-header-navs d-flex align-items-center justify-content-between mb-5">
 			<ul class="nav nav-bold nav-tabs nav-tabs-line nav-tabs-line-3x nav-tabs-primary flex-grow-1 px-10" role="tablist">
 				<li class="nav-item">
-					<a class="nav-link active" data-toggle="tab" href="#kt_chat_modal">Messages</a>
+					<a class="nav-link active" data-toggle="tab" href="#kt_quick_panel_notifications">Notification</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" data-toggle="tab" href="#kt_quick_panel_logs">Contacts</a>
 				</li>
 			</ul>
 			<div class="offcanvas-close mt-n1 pr-5">
@@ -647,9 +654,11 @@ if (isset($_POST['upload_payment'])) {
 			</div>
 		</div>
 		<!--end::Header-->
+
 		<!--begin::Content-->
 		<div class="offcanvas-content px-10">
 			<div class="tab-content">
+				<div class="tab-pane show pt-2 pr-5 mr-n5 active" id="kt_quick_panel_notifications" role="tabpanel">
 				<div class="navi navi-icon-circle navi-spacer-x-0">
 					<?php
 					$user_id = $_SESSION['user_id'];
@@ -687,12 +696,65 @@ if (isset($_POST['upload_payment'])) {
 						</a>
 					<?php endforeach; ?>
 				</div>
+				</div>
+				<!-- END NOTIFICATION CONTENT -->
+
+				<!-- CONTACTS -->
+					<div class="tab-pane fade show pt-3 pr-5 mr-n5" id="kt_quick_panel_logs" role="tabpanel">
+						<div class="mb-5">
+							<h5 class="font-weight-bold mb-5">Your contacts</h5>
+							<div class="d-flex align-items-center mb-6">
+								<div class="symbol symbol-35 flex-shrink-0 mr-3">
+									<img alt="Pic" src="/hulam/assets/keen/hulam_media/<?= $lender['profile_pic']?>" />
+								</div>
+								<div class="d-flex flex-wrap flex-row-fluid">
+									<div class="d-flex flex-column pr-2 flex-grow-1">
+										<a href="debtor/send_message_investor.php?lender_id=<?= $lender['lender_id']?>" class="text-dark text-hover-primary mb-1 font-weight-bold font-size-lg"><?= $lender['company_name']?></a>
+									</div>
+										<a href="debtor/send_message_investor.php?lender_id=<?= $lender['lender_id']?>" class="btn btn-icon btn-light btn-sm">
+											<span class="svg-icon svg-icon-success">
+												<span class="svg-icon svg-icon-md">
+													<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+														<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+															<polygon points="0 0 24 0 24 24 0 24" />
+															<path d="M6.70710678,15.7071068 C6.31658249,16.0976311 5.68341751,16.0976311 5.29289322,15.7071068 C4.90236893,15.3165825 4.90236893,14.6834175 5.29289322,14.2928932 L11.2928932,8.29289322 C11.6714722,7.91431428 12.2810586,7.90106866 12.6757246,8.26284586 L18.6757246,13.7628459 C19.0828436,14.1360383 19.1103465,14.7686056 18.7371541,15.1757246 C18.3639617,15.5828436 17.7313944,15.6103465 17.3242754,15.2371541 L12.0300757,10.3841378 L6.70710678,15.7071068 Z" fill="#000000" fill-rule="nonzero" transform="translate(12.000003, 11.999999) rotate(-270.000000) translate(-12.000003, -11.999999)" />
+														</g>
+													</svg>
+												</span>
+											</span>
+										</a>
+									</div>
+								</div>
+							</div>
+							<div class="d-flex align-items-center mb-6">
+								<div class="symbol symbol-35 flex-shrink-0 mr-3">
+									<img alt="Pic" src="/hulam/assets/keen/media/logos/h_small.png" />
+								</div>
+								<div class="d-flex flex-wrap flex-row-fluid">
+									<div class="d-flex flex-column pr-2 flex-grow-1">
+										<a href="debtor/send_message.php" class="text-dark text-hover-primary mb-1 font-weight-bold font-size-lg">The Hulam Team</a>
+									</div>
+										<a href="debtor/send_message.php" class="btn btn-icon btn-light btn-sm">
+											<span class="svg-icon svg-icon-success">
+												<span class="svg-icon svg-icon-md">
+													<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+														<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+															<polygon points="0 0 24 0 24 24 0 24" />
+															<path d="M6.70710678,15.7071068 C6.31658249,16.0976311 5.68341751,16.0976311 5.29289322,15.7071068 C4.90236893,15.3165825 4.90236893,14.6834175 5.29289322,14.2928932 L11.2928932,8.29289322 C11.6714722,7.91431428 12.2810586,7.90106866 12.6757246,8.26284586 L18.6757246,13.7628459 C19.0828436,14.1360383 19.1103465,14.7686056 18.7371541,15.1757246 C18.3639617,15.5828436 17.7313944,15.6103465 17.3242754,15.2371541 L12.0300757,10.3841378 L6.70710678,15.7071068 Z" fill="#000000" fill-rule="nonzero" transform="translate(12.000003, 11.999999) rotate(-270.000000) translate(-12.000003, -11.999999)" />
+														</g>
+													</svg>
+												</span>
+											</span>
+										</a>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
 			</div>
-		</div>
-	</div>
-	<!--end::Content-->
-	</div>
 	<!--end::Quick Panel-->
+
 
 	<!--begin::Scrolltop-->
 	<div id="kt_scrolltop" class="scrolltop">

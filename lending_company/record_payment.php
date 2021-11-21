@@ -32,23 +32,13 @@ if (isset($_POST['pay'])) {
 	$end_date = $_POST['end_date'];
 	$message = 'Your payment for loan account number'.' '. $loan_app_id.' '. 'is now posted. Thank You!';
 
-	// $sql = "UPDATE running_balance SET remaining_balance='$remain' WHERE loan_app_id = $loan_app_id";
-	// $query = $dbh->prepare($sql);
-	// $query->execute();
+	
 
 	$sql = "INSERT INTO running_balance(loan_app_id,remaining_balance,monthly_pay,payment,paid_date)VALUES('$loan_app_id','$remain','$monthly_pay','$payment','$date_message')";
 	$query = $dbh->prepare($sql);
 	$query->execute();
 
-	// $sql = "INSERT INTO payment(loan_app_id,debtor_id,lender_id,amount_paid,date_paid)
-	// VALUES(:loan_app_id,:debtor_id,:lender_id,:amount_paid,:date_paid)";
-	// $query = $dbh->prepare($sql);
-	// $query->bindParam(':loan_app_id', $loan_app_id, PDO::PARAM_STR);
-	// $query->bindParam(':debtor_id', $debtor_id, PDO::PARAM_STR);
-	// $query->bindParam(':lender_id', $lender_id, PDO::PARAM_STR);
-	// $query->bindParam(':amount_paid', $amount_paid, PDO::PARAM_STR);
-	// $query->bindParam(':date_paid', $date_paid, PDO::PARAM_STR);
-
+	
 
 	$sql ="INSERT INTO message(sender_id,receiver_id,message,date_message)VALUES('$lender_id','$debtor_id','$message','$date_message')";
 	$query = $dbh->prepare($sql);
@@ -74,6 +64,15 @@ $query = $dbh->prepare($sql);
 $query->execute();
 $user = $query->fetch();
 ?>
+
+<?php
+$lender_id = $_SESSION['user_id'];
+
+$sql ="SELECT * FROM user WHERE user_id = $lender_id";
+$query = $dbh->prepare($sql);
+$query->execute();
+$user = $query->fetch();
+?>
 <!DOCTYPE html>
 
 <html lang="en">
@@ -82,7 +81,7 @@ $user = $query->fetch();
 <head>
 	<base href="../">
 	<meta charset="utf-8" />
-	<title>Hulam | Admin | Lending Company</title>
+	<title>Hulam | Record Payment</title>
 	<meta name="description" content="Updates and statistics" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 	<!--begin::Fonts-->
@@ -102,7 +101,7 @@ $user = $query->fetch();
 	<link href="assets/admin/css/themes/layout/brand/dark.css" rel="stylesheet" type="text/css" />
 	<link href="assets/admin/css/themes/layout/aside/dark.css" rel="stylesheet" type="text/css" />
 	<!--end::Layout Themes-->
-	<link rel="shortcut icon" href="assets/keen/hulam_media/<?= $user['profile_pic']?>" />
+	<link rel="shortcut icon" href="assets/keen/media/logos/h_small.png" />
 </head>
 <!--end::Head-->
 <!--begin::Body-->
@@ -362,8 +361,23 @@ $user = $query->fetch();
 								<div id="kt_header_menu" class="header-menu header-menu-mobile header-menu-layout-default">
 									<!--begin::Header Nav-->
 									<ul class="menu-nav">
-										<li class="menu-item menu-item-open menu-item-here menu-item-submenu menu-item-rel menu-item-open menu-item-here menu-item-active" data-menu-toggle="click" aria-haspopup="true">
-										    <h4 class="menu-text" style="color:blue">Welcome to Hulam! <h4>&nbsp;&nbsp;<h6><?php echo $_SESSION['firstname'];?></h6>
+									<li class="menu-item menu-item-open menu-item-here menu-item-submenu menu-item-rel menu-item-open menu-item-here menu-item-active" data-menu-toggle="click" aria-haspopup="true">
+                                        <h4 class="menu-text" style="color:blue">Welcome to Hulam! <h4>&nbsp;&nbsp;
+												<h6 class="text-danger">
+													<?php
+													$id = $_SESSION['user_id'];
+
+													$sql = "SELECT * FROM user WHERE user_id = $id";
+													$query = $dbh->prepare($sql);
+													$query->execute();
+													$result = $query->fetch();
+													$notice = $result['notice_message'];
+													if ($result['eligible'] == 'no') {
+
+														echo $notice;
+													}
+													?>
+												</h6>
 											<i class="menu-arrow"></i>
 										 </li>
 								    </ul>

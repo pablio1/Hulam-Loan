@@ -12,11 +12,6 @@ if(isset($_POST['add_mode'])){
 
     $mode_name = $_POST['mode_name'];
     $remarks = $_POST['remarks'];
-    // $lender_id = $_SESSION['user_id']; 
-
-    // foreach($req_name as $index => $names){
-    //     $s_req_name = $names;
-    //     $s_remarks = $remarks[$index];
     $lender_id = $_SESSION['user_id']; 
 
         $sql ="INSERT INTO mode_payment(lender_id,mode_name,remarks)VALUES('$lender_id','$mode_name','$remarks')";
@@ -24,11 +19,11 @@ if(isset($_POST['add_mode'])){
         $query->execute();
     
     if($query){
-        $_SESSION['status'] = "Added successfully" ;
+        $_SESSION['status_pay'] = "Added successfully" ;
         header("Location: setup_payment.php");
         exit();
     }else{
-        $_SESSION['status'] = "Error! Not Added" ;
+        $_SESSION['status_pay'] = "Error! Not Added" ;
         header("Location: setup_payment.php");
         exit();
     }
@@ -44,6 +39,15 @@ $query = $dbh->prepare($sql);
 $query->execute();
 $user = $query->fetch();
 ?>
+
+<?php
+$lender_id = $_SESSION['user_id'];
+
+$sql ="SELECT * FROM user WHERE user_id = $lender_id";
+$query = $dbh->prepare($sql);
+$query->execute();
+$user = $query->fetch();
+?>
 <!DOCTYPE html>
 
 <html lang="en">
@@ -52,7 +56,7 @@ $user = $query->fetch();
 <head>
 	<base href="../">
 	<meta charset="utf-8" />
-	<title>Hulam | Admin | Lending Company</title>
+	<title>Hulam | Set Up Payment</title>
 	<meta name="description" content="Updates and statistics" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 	<!--begin::Fonts-->
@@ -72,7 +76,7 @@ $user = $query->fetch();
 	<link href="assets/admin/css/themes/layout/brand/dark.css" rel="stylesheet" type="text/css" />
 	<link href="assets/admin/css/themes/layout/aside/dark.css" rel="stylesheet" type="text/css" />
 	<!--end::Layout Themes-->
-	<link rel="shortcut icon" href="assets/keen/hulam_media/<?= $user['profile_pic']?>" />
+	<link rel="shortcut icon" href="assets/keen/media/logos/h_small.png" />
 </head>
 <!--end::Head-->
 <!--begin::Body-->
@@ -333,8 +337,23 @@ $user = $query->fetch();
 								<div id="kt_header_menu" class="header-menu header-menu-mobile header-menu-layout-default">
 									<!--begin::Header Nav-->
 									<ul class="menu-nav">
-										<li class="menu-item menu-item-open menu-item-here menu-item-submenu menu-item-rel menu-item-open menu-item-here menu-item-active" data-menu-toggle="click" aria-haspopup="true">
-										    <h4 class="menu-text" style="color:blue">Welcome to Hulam! <h4>&nbsp;&nbsp;<h6><?php echo $_SESSION['firstname'];?></h6>
+									<li class="menu-item menu-item-open menu-item-here menu-item-submenu menu-item-rel menu-item-open menu-item-here menu-item-active" data-menu-toggle="click" aria-haspopup="true">
+                                        <h4 class="menu-text" style="color:blue">Welcome to Hulam! <h4>&nbsp;&nbsp;
+												<h6 class="text-danger">
+													<?php
+													$id = $_SESSION['user_id'];
+
+													$sql = "SELECT * FROM user WHERE user_id = $id";
+													$query = $dbh->prepare($sql);
+													$query->execute();
+													$result = $query->fetch();
+													$notice = $result['notice_message'];
+													if ($result['eligible'] == 'no') {
+
+														echo $notice;
+													}
+													?>
+												</h6>
 											<i class="menu-arrow"></i>
 										 </li>
 								    </ul>
@@ -404,16 +423,21 @@ $user = $query->fetch();
 										<!--begin::Page Title-->
 										<h4 class="text-white font-weight-bold my-1 mr-5">Dashboard |</h4>
 										<h5 class="text-white font-weight-bold my-1 mr-5"><?= $user['company_name']?></h5>
-										<!--end::Page Title-->
+										<div class="col-xl-12 col-xl-12">
+										<?php
+										if(isset($_SESSION['status_pay'])){
+										?>
+											<div class="alert alert-custom alert-notice alert-light-success fade show" role="alert">
+												<div class="alert-text">
+													<h4><?php echo $_SESSION['status_pay'];?></h4>
+												</div>
+												<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+											</div>
+										<?php unset($_SESSION['status_pay']);
+										}?>
 									</div>
-                                    <?php
-                                    if(isset($_SESSION['status'])){
-                                        ?>
-                                        <h4 class="alert alert-success"><?php echo $_SESSION['status'];?></h4>
-                                        <?php
-                                        unset($_SESSION['status']);
-                                    }?>
-									<!--end::Page Heading-->
+									</div>
+                                    
 								</div>
 								<!--end::Info-->
 							</div>
@@ -429,14 +453,13 @@ $user = $query->fetch();
 										<div class="wizard-body py-8 px-8 py-lg-20 px-lg-10">
 											<!--begin: Wizard Form-->
 											<div class="row">
-												<div class="offset-xxl-2 col-xxl-8">
+												<div class="offset-xxl-1 col-xxl-10">
 													<form action="" method="post" id="kt_form" >
                                                         <h4 class="mb-10 font-weight-bold text-dark">Set Mode of Payment: </h4>
                                                         <div class="pb-5" data-wizard-type="step-content" data-wizard-state="current">
                                                             <div class="row">
-                                                                <div class="col-lg-4">
+                                                                <div class="col-lg-5">
                                                                     <div class="form-group">
-																		<label>Select Mode of Payment</label>
 																		<?php
 																			$sql ="SELECT * FROM `user` WHERE user_type = 5";
 																			$q = $dbh->prepare($sql);
@@ -444,13 +467,14 @@ $user = $query->fetch();
 																			$r = $q->fetch();
 																			?>
 																		<select name="mode_name" required class="form-control" required>
-																			<option value="" hidden></option>
+																			<option value="" hidden>Select Mode of Payment</option>
 																			<option value="ATM Deduction">ATM Deduction</option>
+																			<option value="ATM Deduction">Others, please specify on the remarks.</option>
 																			<option value="<?= $r['user_id']?>"><?= $r['company_name']?></option>
 																		</select>
                                                                     </div>
                                                                 </div>
-                                                                <div class="col-lg-6">
+                                                                <div class="col-lg-5">
                                                                     <div class="form-group">
 																	<textarea name="remarks" class="form-control"  rows="4" cols="50" required autocomplete="off" placeholder="Remarks / Notes"><?= $res['remarks'];?></textarea>
                                                                     </div>
@@ -469,11 +493,11 @@ $user = $query->fetch();
                             				</div>
 											<div class="row">
 												<div class="offset-xxl-2 col-xxl-8">
-                                                        <div class="pb-5" data-wizard-type="step-content" data-wizard-state="current">
+                                                        <!-- <div class="pb-5" data-wizard-type="step-content" data-wizard-state="current">
                                                         <span class="font-weight-bolder font-size-sm">Note:</span>
 														<span class="font-size-sm">Excluding ATM deduction, all payment centers will uplaod an excel file direct to the lenders account.
 														Lending Investors will input payment details made by our debtors to generate balance update.</span>
-                                                        </div>
+                                                        </div> -->
                                    					 <!--end::Form-->
                                					</div>
                             				</div>

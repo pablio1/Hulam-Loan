@@ -1,6 +1,6 @@
 <?php
 session_start();
-error_reporting(-1);
+error_reporting(0);
 include('../db_connection/config.php');
 if ($_SESSION['user_type'] != 3) {
 	header('location: ../index.php');
@@ -28,8 +28,6 @@ if(isset($_POST['upload_logo'])){
 }?>
 
 
-
-
 <?php
 if (isset($_POST['submit'])) {
 
@@ -43,18 +41,6 @@ if (isset($_POST['submit'])) {
 	$company_zipcode = $_POST['company_zipcode'];
 	$mobile = $_POST['mobile'];
 	$company_landline = $_POST['company_landline'];
-	$notice_message = $_POST['notice_message'];
-	$status = 'Pending';
-
-	$images = $_FILES['logo']['name'];
-	$tmp_dir = $_FILES['logo']['tmp_name'];
-	$imageSize = $_FILES['logo']['size'];
-
-	$upload_dir = '../assets/keen/hulam_media/';
-	$imgExt = strtolower(pathinfo($images, PATHINFO_EXTENSION));
-	$valid_extensions = array('jpeg', 'jpg', 'gif', 'pdf', 'doc', 'docx');
-	$pic1 = rand(1000, 10000000) . "." . $imgExt;
-	move_uploaded_file($tmp_dir, $upload_dir . $pic1);
 
 	$updateuser = "UPDATE user SET company_name=:company_name,mobile=:mobile WHERE user_id = $lender_id";
     $que = $dbh->prepare($updateuser);
@@ -68,8 +54,8 @@ if (isset($_POST['submit'])) {
 	$q->execute();
 	if ($q->rowCount() == 0) {
 
-		$sql = "INSERT INTO loan_features(lender_id,description,company_street,company_barangay,company_city,company_province,company_zipcode,company_landline,company_logo)
-	VALUES(:lender_id,:description,:company_street,:company_barangay,:company_city,:company_province,:company_zipcode,:company_landline,:company_logo)";
+		$sql = "INSERT INTO loan_features(lender_id,description,company_street,company_barangay,company_city,company_province,company_zipcode,company_landline)
+	VALUES(:lender_id,:description,:company_street,:company_barangay,:company_city,:company_province,:company_zipcode,:company_landline)";
 		$query = $dbh->prepare($sql);
 		$query->bindParam(':lender_id', $lender_id, PDO::PARAM_STR);
 		$query->bindParam(':description', $description, PDO::PARAM_STR);
@@ -79,11 +65,10 @@ if (isset($_POST['submit'])) {
 		$query->bindParam(':company_province', $company_province, PDO::PARAM_STR);
 		$query->bindParam(':company_zipcode', $company_zipcode, PDO::PARAM_STR);
 		$query->bindParam(':company_landline', $company_landline, PDO::PARAM_STR);
-		$query->bindParam(':company_logo', $pic1, PDO::PARAM_STR);
 	} else {
 
 		$sql = "UPDATE loan_features SET description=:description,company_street=:company_street,company_barangay=:company_barangay,company_city=:company_city,
-        company_province=:company_province,company_zipcode=:company_zipcode,company_landline=:company_landline,company_logo=:company_logo WHERE lender_id = :lender_id";
+        company_province=:company_province,company_zipcode=:company_zipcode,company_landline=:company_landline WHERE lender_id = :lender_id";
 		$query = $dbh->prepare($sql);
 		$query->bindParam(':lender_id', $lender_id, PDO::PARAM_STR);
 		$query->bindParam(':description', $description, PDO::PARAM_STR);
@@ -93,28 +78,52 @@ if (isset($_POST['submit'])) {
 		$query->bindParam(':company_province', $company_province, PDO::PARAM_STR);
 		$query->bindParam(':company_zipcode', $company_zipcode, PDO::PARAM_STR);
 		$query->bindParam(':company_landline', $company_landline, PDO::PARAM_STR);
-		$query->bindParam(':company_logo', $pic1, PDO::PARAM_STR);
 	}
 
 	if ($query->execute()) {
-?>
-		<script>
-			alert("Updated successfully");
-			window.location.href = (index.php);
-		</script>
-	<?php
+		$_SESSION['status_profile'] = "Submitted Successfuly!";
+		header("location: update_profile.php");
+		exit();
 	} else {
-	?>
-		<script>
-			alert("error");
-			window.location.href = (index.php);
-		</script>
-<?php
-
+		$_SESSION['status_profile'] = "Error!";
+		header("location: update_profile.php");
+		exit();
 	}
 }
-
 ?>
+
+<?php
+if (isset($_POST['upload_photo'])) {
+	$user_id = $_SESSION['user_id'];
+
+	$images = $_FILES['profile_pic']['name'];
+	$tmp_dir = $_FILES['profile_pic']['tmp_name'];
+	$imageSize = $_FILES['profile_pic']['size'];
+
+	$upload_dir = '../assets/keen/hulam_media/';
+	$imgExt = strtolower(pathinfo($images, PATHINFO_EXTENSION));
+	$valid_extensions = array('jpeg', 'jpg', 'gif', 'pdf', 'doc', 'docx');
+	$profile_pic = rand(1000, 10000000) . "." . $imgExt;
+	move_uploaded_file($tmp_dir, $upload_dir . $profile_pic);
+
+	$update = "UPDATE user SET profile_pic = :profile_pic WHERE user_id = $user_id";
+	$update_query = $dbh->prepare($update);
+	$update_query->bindParam(':profile_pic', $profile_pic, PDO::PARAM_STR);
+	$update_query->execute();
+
+	if ($update_query) {
+		$_SESSION['status_profile'] = "Updated Company Logo!";
+		header("location: update_profile.php");
+		exit();
+	} else {
+		$_SESSION['status_profile'] = "Error!";
+		header("location: update_profile.php");
+		exit();
+	}
+}
+?>
+
+
 <?php
 if (isset($_POST['b_permit'])) {
 	$lender_id = $_SESSION['user_id'];
@@ -123,7 +132,7 @@ if (isset($_POST['b_permit'])) {
 	$tmp_dir3 = $_FILES['b_permit']['tmp_name'];
 	$imageSize3 = $_FILES['b_permit']['size'];
 
-	$upload_dir3 = '../assets/keen/company_credentials/';
+	$upload_dir3 = '../assets/keen/hulam_media/';
 	$imgExt3 = strtolower(pathinfo($images3, PATHINFO_EXTENSION));
 	$valid_extensions = array('jpeg', 'jpg', 'gif', 'pdf', 'doc', 'docx');
 	$pic3 = rand(1000, 10000000) . "." . $imgExt3;
@@ -146,11 +155,11 @@ if (isset($_POST['b_permit'])) {
 		$query->bindParam(':b_permit', $pic3, PDO::PARAM_STR);
 	}
 	if ($query->execute()) {
-		$_SESSION['status_message'] = "Business Permit Updated!";
+		$_SESSION['status_profile'] = "Business Permit Updated!";
 		header("location: update_profile.php");
 		exit();
 	} else {
-		$_SESSION['status_message'] = "Error!";
+		$_SESSION['status_profile'] = "Error!";
 		header("location: update_profile.php");
 		exit();
 	}
@@ -165,7 +174,7 @@ if (isset($_POST['dti_permit'])) {
 	$tmp_dir3 = $_FILES['dti_permit']['tmp_name'];
 	$imageSize3 = $_FILES['dti_permit']['size'];
 
-	$upload_dir3 = '../assets/keen/company_credentials/';
+	$upload_dir3 = '../assets/keen/hulam_media/';
 	$imgExt3 = strtolower(pathinfo($images3, PATHINFO_EXTENSION));
 	$valid_extensions = array('jpeg', 'jpg', 'gif', 'pdf', 'doc', 'docx');
 	$dti_permit = rand(1000, 10000000) . "." . $imgExt3;
@@ -188,11 +197,11 @@ if (isset($_POST['dti_permit'])) {
 		$query->bindParam(':dti_permit', $dti_permit, PDO::PARAM_STR);
 	}
 	if ($query->execute()) {
-		$_SESSION['status_message'] = "DTI Permit Updated!";
+		$_SESSION['status_profile'] = "DTI Permit Updated!";
 		header("location: update_profile.php");
 		exit();
 	} else {
-		$_SESSION['status_message'] = "Error!";
+		$_SESSION['status_profile'] = "Error!";
 		header("location: update_profile.php");
 		exit();
 	}
@@ -202,7 +211,16 @@ if (isset($_POST['dti_permit'])) {
 <?php
 $lender_id = $_SESSION['user_id'];
 
-$sql ="SELECT loan_features.*, user.* FROM loan_features INNER JOIN user ON loan_features.lender_id = user.user_id WHERE lender_id = $lender_id";
+$sql ="SELECT * FROM user WHERE user_id = $lender_id";
+$query = $dbh->prepare($sql);
+$query->execute();
+$user = $query->fetch();
+?>
+
+<?php
+$lender_id = $_SESSION['user_id'];
+
+$sql ="SELECT * FROM user WHERE user_id = $lender_id";
 $query = $dbh->prepare($sql);
 $query->execute();
 $user = $query->fetch();
@@ -215,7 +233,7 @@ $user = $query->fetch();
 <head>
 	<base href="../">
 	<meta charset="utf-8" />
-	<title>Hulam | Admin | Lending Company</title>
+	<title>Hulam | Update Profile</title>
 	<meta name="description" content="Updates and statistics" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 	<!--begin::Fonts-->
@@ -235,7 +253,7 @@ $user = $query->fetch();
 	<link href="assets/admin/css/themes/layout/brand/dark.css" rel="stylesheet" type="text/css" />
 	<link href="assets/admin/css/themes/layout/aside/dark.css" rel="stylesheet" type="text/css" />
 	<!--end::Layout Themes-->
-	<link rel="shortcut icon" href="assets/keen/hulam_media/<?= $user['profile_pic']?>" />
+	<link rel="shortcut icon" href="assets/keen/media/logos/h_small.png" />
 </head>
 <!--end::Head-->
 <!--begin::Body-->
@@ -292,6 +310,7 @@ $user = $query->fetch();
 						<img alt="Logo" src="/hulam/assets/keen/hulam_media/<?= $user['profile_pic']?>" class="h-100px w-90px" style="padding-top: 20%; padding: right 50%;" />
 					</a>
 					<!--end::Logo-->
+					
 					<!--begin::Toggle-->
 					<button class="brand-toggle btn btn-sm px-0" id="kt_aside_toggle">
 						<span class="svg-icon svg-icon svg-icon-xl">
@@ -496,8 +515,23 @@ $user = $query->fetch();
 								<div id="kt_header_menu" class="header-menu header-menu-mobile header-menu-layout-default">
 									<!--begin::Header Nav-->
 									<ul class="menu-nav">
-										<li class="menu-item menu-item-open menu-item-here menu-item-submenu menu-item-rel menu-item-open menu-item-here menu-item-active" data-menu-toggle="click" aria-haspopup="true">
-										    <h4 class="menu-text" style="color:blue">Welcome to Hulam! <h4>&nbsp;&nbsp;<h6><?php echo $_SESSION['firstname'];?></h6>
+									<li class="menu-item menu-item-open menu-item-here menu-item-submenu menu-item-rel menu-item-open menu-item-here menu-item-active" data-menu-toggle="click" aria-haspopup="true">
+                                        <h4 class="menu-text" style="color:blue">Welcome to Hulam! <h4>&nbsp;&nbsp;
+												<h6 class="text-danger">
+													<?php
+													$id = $_SESSION['user_id'];
+
+													$sql = "SELECT * FROM user WHERE user_id = $id";
+													$query = $dbh->prepare($sql);
+													$query->execute();
+													$result = $query->fetch();
+													$notice = $result['notice_message'];
+													if ($result['eligible'] == 'no') {
+
+														echo $notice;
+													}
+													?>
+												</h6>
 											<i class="menu-arrow"></i>
 										 </li>
 								    </ul>
@@ -567,23 +601,24 @@ $user = $query->fetch();
 										<!--begin::Page Title-->
 										<h4 class="text-white font-weight-bold my-1 mr-5">Dashboard |</h4>
 										<h5 class="text-white font-weight-bold my-1 mr-5"><?= $user['company_name']?></h5>
-									<!--end::Page Title-->
-									<?php
-										if (isset($_SESSION['status_message'])) {
-										?>
-											<div class="alert alert-success alert-dismissable" id="flash-msg">
-												<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
-												<h4><?= $_SESSION['status_message'] ?></h4>
+											<div class="col-xl-6 col-xl-6">
+											<?php
+												if (isset($_SESSION['status_profile'])) {
+												?>
+													<div class="alert alert-success alert-dismissable" id="flash-msg">
+														<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+														<h4><?= $_SESSION['status_profile'] ?></h4>
+													</div>
+												<?php
+													unset($_SESSION['status_profile']);
+												} ?>
 											</div>
-										<?php
-											unset($_SESSION['status_message']);
-										} ?>
-								</div>
+									</div>
 								<!--end::Page Heading-->
-							</div>
+								</div>
 							<!--end::Info-->
+							</div>
 						</div>
-					</div>
 					<!--end::Subheader-->
 					<!--begin::Entry-->
 					<div class="d-flex flex-column-fluid">
@@ -613,7 +648,7 @@ $user = $query->fetch();
 																<label class="col-xl-3 col-lg-3 col-form-label text-right"></label>
 																<div class="col-lg-9 col-xl-6">
 																	<div class="image-input image-input-outline" id="kt_image_1">
-																		<div class="image-input-wrapper" style="background-image: url(/hulam/assets/keen/hulam_media/<?= $res['profile_pic'] ?>"></div>
+																		<div class="image-input-wrapper" style="background-image: url(/hulam/assets/keen/hulam_media/<?= $user['profile_pic'] ?>"></div>
 																		<label class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow" data-action="change" data-toggle="tooltip" title="" data-original-title="upload photo">
 																			<i class="fa fa-pen icon-sm text-muted" style="margin-left: 27px;"></i>
 																			<!-- <input type="file" name="profile" accept=".png, .jpg, .jpeg" /> -->
@@ -631,13 +666,13 @@ $user = $query->fetch();
 														<div class="form-group row">
 															<label class="col-xl-3 col-lg-3 col-form-label text-right">Company Name</label>
 															<div class="col-lg-9 col-xl-6">
-																<input class="form-control" type="text" name="company_name" value="<?= $_SESSION['company_name']; ?>" />
+																<input class="form-control" type="text" name="company_name" value="<?= $_SESSION['company_name']; ?>" required />
 															</div>
 														</div>
 														<div class="form-group row">
 															<label class="col-xl-3 col-lg-3 col-form-label text-right">Description</label>
 															<div class="col-lg-9 col-xl-6">
-																<textarea rows="4" cols="50" name="description" class="form-control"><?= $res['description']; ?></textarea>
+																<textarea rows="4" cols="50" name="description" class="form-control" required ><?= $res['description']; ?></textarea>
 															</div>
 														</div>
 														<div class="separator separator-dashed mt-8 mb-5"></div>
@@ -651,7 +686,7 @@ $user = $query->fetch();
 																<!--begin::Input-->
 																<div class="form-group">
 																	<label>Mobile</label>
-																	<input type="text" minlength="11" maxlength="11" class="form-control" name="mobile" value="<?= $_SESSION['mobile']; ?>" />
+																	<input type="text" minlength="11" maxlength="11" class="form-control" name="mobile" value="<?= $_SESSION['mobile']; ?>" required />
 																	<label><span style="color:green">&#x2714;</span><span style="font-family: Courier New; font-size: 11px"> Atleast 11 digits</label></span>
 																</div>
 																<!--end::Input-->
@@ -660,7 +695,7 @@ $user = $query->fetch();
 																<!--begin::Input-->
 																<div class="form-group">
 																	<label>Landline</label>
-																	<input type="text" minlength="7" maxlength="7" class="form-control" name="company_landline" value="<?= $res['company_landline']; ?>" />
+																	<input type="text" minlength="7" maxlength="7" class="form-control" name="company_landline" value="<?= $res['company_landline']; ?>" required />
 																	<label><span style="color:green">&#x2714;</span><span style="font-family: Courier New; font-size: 11px"> Atleast 7 digits</label></span>
 																</div>
 																<!--end::Input-->
@@ -684,7 +719,7 @@ $user = $query->fetch();
 																<!--begin::Input-->
 																<div class="form-group">
 																	<label>Street</label>
-																	<input type="text" class="form-control" name="company_street" value="<?= $res['company_street']; ?>" />
+																	<input type="text" class="form-control" name="company_street" value="<?= $res['company_street']; ?>" required />
 																</div>
 																<!--end::Input-->
 															</div>
@@ -692,7 +727,7 @@ $user = $query->fetch();
 																<!--begin::Input-->
 																<div class="form-group">
 																	<label>Barangay</label>
-																	<input type="text" class="form-control" name="company_barangay" value="<?= $res['company_barangay']; ?>" />
+																	<input type="text" class="form-control" name="company_barangay" value="<?= $res['company_barangay']; ?>" required />
 																</div>
 																<!--end::Input-->
 															</div>
@@ -700,7 +735,7 @@ $user = $query->fetch();
 																<!--begin::Input-->
 																<div class="form-group">
 																	<label>City/Municipality</label>
-																	<input type="text" class="form-control" name="company_city" value="<?= $res['company_city']; ?>" />
+																	<input type="text" class="form-control" name="company_city" value="<?= $res['company_city']; ?>" required />
 																</div>
 																<!--end::Input-->
 															</div>
@@ -710,7 +745,7 @@ $user = $query->fetch();
 																<!--begin::Input-->
 																<div class="form-group">
 																	<label>Province</label>
-																	<input type="text" class="form-control" name="company_province" value="<?= $res['company_province']; ?>" />
+																	<input type="text" class="form-control" name="company_province" value="<?= $res['company_province']; ?>" required />
 																</div>
 																<!--end::Input-->
 															</div>
@@ -718,20 +753,19 @@ $user = $query->fetch();
 																<!--begin::Input-->
 																<div class="form-group">
 																	<label>Zip Code</label>
-																	<input type="text" class="form-control" name="company_zipcode" value="<?= $res['company_zipcode']; ?>" />
-																	<input type="hidden" class="form-control" name="notice_message" value="For potential debtors to view your loan features, we request you to come to the office for the signing of Memorandum of Agreement." />
-
+																	<input type="text" class="form-control" name="company_zipcode" value="<?= $res['company_zipcode']; ?>" required />
 																</div>
 																<!--end::Input-->
 															</div>
+														</div>
 															<div class="d-flex justify-content-between border-top mt-5 pt-10">
-															<div class="mr-2"></div>
-															<div>
-																<button type="submit" name="submit" class="btn btn-primary font-weight-bolder px-10 py-3" data-wizard-type="action-next">Submit</button>
+																<div></div>
+																<div>
+																	<button type="submit" name="submit" class="btn btn-success font-weight-bolder px-10 py-3">Submit</button>
+																</div>
 															</div>
 														</div>
-
-														</div>
+														</form>
 														<div class="row">
 															<div class="col-lg-9 col-xl-6">
 																<h5 class="font-weight-bold mt-10 mb-6">Upload Company Credentials</h5>
@@ -768,14 +802,9 @@ $user = $query->fetch();
 																</tbody>
 															</table>
 														</div>
-														
-														<!--end: Wizard Actions-->
 													</div>
-													<!--end::Body-->
-												</form>
-												<!--end::Form-->
-											</div>
-										</div>
+												</div>
+										
 										<!--end::Content-->
 									</div>
 								</div>

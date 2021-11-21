@@ -10,9 +10,9 @@ if ($_SESSION['user_type'] != 3) {
 
 if(isset($_POST['edit_notice'])){
 
-    $notice_title = $_POST['notice_title'];
+    // $notice_title = $_POST['notice_title'];
     $remarks = $_POST['remarks'];
-	$lender_id = $_SESSION['user_id'];
+	// $lender_id = $_SESSION['user_id'];
     $notice_id = intval($_GET['notice_id']);
 
 	$sql ="UPDATE notice SET remarks = '$remarks' WHERE notice_id = $notice_id";
@@ -20,11 +20,11 @@ if(isset($_POST['edit_notice'])){
         $query->execute();
 	
     if($query){
-        $_SESSION['status_message'] = "Updated successfully" ;
+        $_SESSION['status_notice'] = "Updated successfully" ;
         header("Location: set_notice.php");
         exit();
     }else{
-        $_SESSION['status_message'] = "Error! Not Added" ;
+        $_SESSION['status_notice'] = "Error! Not Added" ;
         header("Location: set_notice.php");
         exit();
     }
@@ -40,6 +40,15 @@ $query = $dbh->prepare($sql);
 $query->execute();
 $user = $query->fetch();
 ?>
+
+<?php
+$lender_id = $_SESSION['user_id'];
+
+$sql ="SELECT * FROM user WHERE user_id = $lender_id";
+$query = $dbh->prepare($sql);
+$query->execute();
+$user = $query->fetch();
+?>
 <!DOCTYPE html>
 
 <html lang="en">
@@ -48,7 +57,7 @@ $user = $query->fetch();
 <head>
 	<base href="../">
 	<meta charset="utf-8" />
-	<title>Hulam | Admin | Lending Company</title>
+	<title>Hulam | Edit Notice</title>
 	<meta name="description" content="Updates and statistics" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 	<!--begin::Fonts-->
@@ -68,7 +77,7 @@ $user = $query->fetch();
 	<link href="assets/admin/css/themes/layout/brand/dark.css" rel="stylesheet" type="text/css" />
 	<link href="assets/admin/css/themes/layout/aside/dark.css" rel="stylesheet" type="text/css" />
 	<!--end::Layout Themes-->
-	<link rel="shortcut icon" href="assets/keen/hulam_media/<?= $user['profile_pic']?>" />
+	<link rel="shortcut icon" href="assets/keen/media/logos/h_small.png" />
 </head>
 <!--end::Head-->
 <!--begin::Body-->
@@ -330,8 +339,23 @@ $user = $query->fetch();
 								<div id="kt_header_menu" class="header-menu header-menu-mobile header-menu-layout-default">
 									<!--begin::Header Nav-->
 									<ul class="menu-nav">
-										<li class="menu-item menu-item-open menu-item-here menu-item-submenu menu-item-rel menu-item-open menu-item-here menu-item-active" data-menu-toggle="click" aria-haspopup="true">
-										    <h4 class="menu-text" style="color:blue">Welcome to Hulam! <h4>&nbsp;&nbsp;<h6><?php echo $_SESSION['firstname'];?></h6>
+									<li class="menu-item menu-item-open menu-item-here menu-item-submenu menu-item-rel menu-item-open menu-item-here menu-item-active" data-menu-toggle="click" aria-haspopup="true">
+                                        <h4 class="menu-text" style="color:blue">Welcome to Hulam! <h4>&nbsp;&nbsp;
+												<h6 class="text-danger">
+													<?php
+													$id = $_SESSION['user_id'];
+
+													$sql = "SELECT * FROM user WHERE user_id = $id";
+													$query = $dbh->prepare($sql);
+													$query->execute();
+													$result = $query->fetch();
+													$notice = $result['notice_message'];
+													if ($result['eligible'] == 'no') {
+
+														echo $notice;
+													}
+													?>
+												</h6>
 											<i class="menu-arrow"></i>
 										 </li>
 								    </ul>
@@ -401,18 +425,20 @@ $user = $query->fetch();
 										<!--begin::Page Title-->
 										<h4 class="text-white font-weight-bold my-1 mr-5">Dashboard |</h4>
 										<h5 class="text-white font-weight-bold my-1 mr-5"><?= $user['company_name']?></h5>
-										<!--end::Page Title-->
+										<div class="col-xl-12 col-xl-12">
+										<?php
+										if(isset($_SESSION['status_edit_notice'])){
+										?>
+											<div class="alert alert-custom alert-notice alert-light-success fade show" role="alert">
+												<div class="alert-text">
+													<h4><?php echo $_SESSION['status_edit_notice'];?></h4>
+												</div>
+												<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+											</div>
+										<?php unset($_SESSION['status_edit_notice']);
+										}?>
 									</div>
-									<?php
-									if (isset($_SESSION['status_message'])) {
-									?>
-										<div class="alert alert-success alert-dismissable" id="flash-msg">
-											<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
-											<h4><?= $_SESSION['status_message'] ?></h4>
-										</div>
-									<?php
-										unset($_SESSION['status_message']);
-									} ?>
+									</div>
 									<!--end::Page Heading-->
 								</div>
 								<!--end::Info-->
@@ -444,8 +470,8 @@ $user = $query->fetch();
                                                             <div class="row">
                                                                 <div class="col-lg-9">
                                                                     <div class="form-group">
-																	<input type="hidden" name="notice_title[]" value="Notice Upon Submission of Loan Requirements">
-																	<textarea name="remarks[]" class="form-control"  rows="4" cols="50"  autocomplete="off" placeholder="Remarks"><?= $res['remarks'];?></textarea>
+																	<!-- <input type="hidden" name="notice_title[]" value="Notice Upon Submission of Loan Requirements"> -->
+																	<textarea name="remarks" class="form-control"  rows="4" cols="50"  autocomplete="off" placeholder="Remarks"><?= $res['remarks'];?></textarea>
                                                                     </div>
                                                                 </div>
                                                             </div>

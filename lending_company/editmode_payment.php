@@ -41,6 +41,14 @@ $query = $dbh->prepare($sql);
 $query->execute();
 $user = $query->fetch();
 ?>
+<?php
+$lender_id = $_SESSION['user_id'];
+
+$sql ="SELECT * FROM user WHERE user_id = $lender_id";
+$query = $dbh->prepare($sql);
+$query->execute();
+$user = $query->fetch();
+?>
 <!DOCTYPE html>
 
 <html lang="en">
@@ -49,7 +57,7 @@ $user = $query->fetch();
 <head>
 	<base href="../">
 	<meta charset="utf-8" />
-	<title>Hulam | Admin | Lending Company</title>
+	<title>Hulam | Edit Mode Payment</title>
 	<meta name="description" content="Updates and statistics" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 	<!--begin::Fonts-->
@@ -69,7 +77,7 @@ $user = $query->fetch();
 	<link href="assets/admin/css/themes/layout/brand/dark.css" rel="stylesheet" type="text/css" />
 	<link href="assets/admin/css/themes/layout/aside/dark.css" rel="stylesheet" type="text/css" />
 	<!--end::Layout Themes-->
-	<link rel="shortcut icon" href="assets/keen/hulam_media/<?= $user['profile_pic']?>" />
+	<link rel="shortcut icon" href="assets/keen/media/logos/h_small.png" />
 </head>
 <!--end::Head-->
 <!--begin::Body-->
@@ -329,8 +337,23 @@ $user = $query->fetch();
 								<div id="kt_header_menu" class="header-menu header-menu-mobile header-menu-layout-default">
 									<!--begin::Header Nav-->
 									<ul class="menu-nav">
-										<li class="menu-item menu-item-open menu-item-here menu-item-submenu menu-item-rel menu-item-open menu-item-here menu-item-active" data-menu-toggle="click" aria-haspopup="true">
-										    <h4 class="menu-text" style="color:blue">Welcome to Hulam! <h4>&nbsp;&nbsp;<h6><?php echo $_SESSION['firstname'];?></h6>
+									<li class="menu-item menu-item-open menu-item-here menu-item-submenu menu-item-rel menu-item-open menu-item-here menu-item-active" data-menu-toggle="click" aria-haspopup="true">
+                                        <h4 class="menu-text" style="color:blue">Welcome to Hulam! <h4>&nbsp;&nbsp;
+												<h6 class="text-danger">
+													<?php
+													$id = $_SESSION['user_id'];
+
+													$sql = "SELECT * FROM user WHERE user_id = $id";
+													$query = $dbh->prepare($sql);
+													$query->execute();
+													$result = $query->fetch();
+													$notice = $result['notice_message'];
+													if ($result['eligible'] == 'no') {
+
+														echo $notice;
+													}
+													?>
+												</h6>
 											<i class="menu-arrow"></i>
 										 </li>
 								    </ul>
@@ -421,7 +444,13 @@ $user = $query->fetch();
 							<div class="container" >
 								<div class="card card-custom">
 									<div class="card-body p-0">
-										<!--begin: Wizard Body-->
+									<div class="d-flex align-items-center justify-content-between flex-wrap mt-2">
+										<div class="mr-3"></div>
+											<div class="my-lg-0 my-1">
+												<a href="lending_company/setup_payment.php" class="btn btn-sm btn-light-primary font-weight-bolder mr-2">
+													<< Back</a>
+											</div>
+										</div>
 										<div class="wizard-body py-8 px-8 py-lg-20 px-lg-10">
 											<!--begin: Wizard Form-->
 											<div class="row">
@@ -439,7 +468,11 @@ $user = $query->fetch();
                                                                 ?>
                                                                 <div class="col-lg-6">
                                                                     <div class="form-group">
-                                                                        <input type="text" class="form-control" name="mode_name" required autocomplete="off" placeholder="Mode of Payment" value="<?= $res['mode_name'];?>">
+																	<select name="mode_name" required class="form-control" required>
+																			<option value="<?= $res['mode_name']?>"><?= $res['mode_name']?></option>
+																			<option value="ATM Deduction">Others, please specify on the remarks.</option>
+																			<option value="<?= $r['user_id']?>"><?= $r['company_name']?></option>
+																		</select>
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-lg-4">

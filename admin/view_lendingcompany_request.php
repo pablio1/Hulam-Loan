@@ -1077,7 +1077,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 										<!--begin::Pic-->
 										<div class="flex-shrink-0 mr-7">
 											<div class="image-input image-input-outline" id="kt_image_1">
-												<div class="image-input-wrapper" style="background-image: url(/hulam/assets/keen/company_logo/<?= $user['company_logo'] ?>"></div>
+												<div class="image-input-wrapper" style="background-image: url(/hulam/assets/keen/hulam_media/<?= $user['profile_pic'] ?>"></div>
 											</div>
 										</div>
 										<!--end::Pic-->
@@ -1269,7 +1269,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 														<tbody>
 															<tr>
 																<td>DTI PERMIT</td>
-																<td><a href="/hulam/assets/keen/company_credentials/<?= $res['dti_permit'] ?>" target="_blank"><?= $res['dti_permit'] ?></a></td>
+																<td><a href="/hulam/assets/keen/hulam_media/<?= $res['dti_permit'] ?>" target="_blank"><?= $res['dti_permit'] ?></a></td>
 																<td><?= $res['status_dti'] ?></td>
 																<td>
 																	<div class="dropdown dropdown-inline">
@@ -1291,7 +1291,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 															</tr>
 															<tr>
 																<td>BUSINESS PERMIT</td>
-																<td><a href="/hulam/assets/keen/company_credentials/<?= $res['b_permit'] ?>" target="_blank"><?= $res['b_permit'] ?></a></td>
+																<td><a href="/hulam/assets/keen/hulam_media/<?= $res['b_permit'] ?>" target="_blank"><?= $res['b_permit'] ?></a></td>
 																<td><?= $res['status_b_permit'] ?></td>
 																<td>
 																	<div class="dropdown dropdown-inline">
@@ -1368,7 +1368,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 															<?php
 															$id = intval($_GET['user_id']);
 															
-															$sql = "SELECT * FROM loan_requirements WHERE lender_id = $id";
+															$sql = "SELECT loan_requirements.*, requirements_type.* FROM loan_requirements INNER JOIN requirements_type ON requirements_type.req_type_id = loan_requirements.req_type_id WHERE loan_requirements.lender_id = $id";
 															$query = $dbh->prepare($sql);
 															$query->execute();
 															$user2 = $query->fetchAll();

@@ -10,25 +10,25 @@ if ($_SESSION['user_type'] != 3) {
 
 if(isset($_POST['update_req'])){
 
-    $req_name = $_POST['req_name'];
+    $req_type_id = $_POST['req_type_id'];
     $remarks = $_POST['remarks'];
     $lender_id = $_SESSION['user_id'];
     $req_id = intval($_GET['req_id']);
 
-    $sql ="UPDATE loan_requirements SET req_name=:req_name,remarks=:remarks WHERE req_id=:req_id";
+    $sql ="UPDATE loan_requirements SET req_type_id=:req_type_id,remarks=:remarks WHERE req_id=:req_id";
     $query = $dbh->prepare($sql);
-    $query->bindParam(':req_name',$req_name,PDO::PARAM_STR);
+    $query->bindParam(':req_type_id',$req_type_id,PDO::PARAM_STR);
     $query->bindParam(':remarks',$remarks,PDO::PARAM_STR);
     $query->bindParam(':req_id',$req_id,PDO::PARAM_STR);
     $query->execute();
     
     if($query){
-        $_SESSION['status'] = "Updated Successfully" ;
-        header("Location: edit_requirements.php");
+        $_SESSION['status_edit_req'] = "Updated Successfully" ;
+        header("Location: set_requirements.php");
         exit();
     }else{
-        $_SESSION['status'] = "Error! Not Updated" ;
-        header("Location: edit_requirements.php");
+        $_SESSION['status_edit_req'] = "Error! Not Updated" ;
+        header("Location: set_requirements.php");
         exit();
     }
 }
@@ -42,6 +42,15 @@ $query = $dbh->prepare($sql);
 $query->execute();
 $user = $query->fetch();
 ?>
+
+<?php
+$lender_id = $_SESSION['user_id'];
+
+$sql ="SELECT * FROM user WHERE user_id = $lender_id";
+$query = $dbh->prepare($sql);
+$query->execute();
+$user = $query->fetch();
+?>
 <!DOCTYPE html>
 
 <html lang="en">
@@ -50,7 +59,7 @@ $user = $query->fetch();
 <head>
 	<base href="../">
 	<meta charset="utf-8" />
-	<title>Hulam | Admin | Lending Company</title>
+	<title>Hulam | Edit Requirements</title>
 	<meta name="description" content="Updates and statistics" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 	<!--begin::Fonts-->
@@ -70,7 +79,7 @@ $user = $query->fetch();
 	<link href="assets/admin/css/themes/layout/brand/dark.css" rel="stylesheet" type="text/css" />
 	<link href="assets/admin/css/themes/layout/aside/dark.css" rel="stylesheet" type="text/css" />
 	<!--end::Layout Themes-->
-	<link rel="shortcut icon" href="assets/keen/hulam_media/<?= $user['profile_pic']?>" />
+	<link rel="shortcut icon" href="assets/keen/media/logos/h_small.png" />
 </head>
 <!--end::Head-->
 <!--begin::Body-->
@@ -330,8 +339,23 @@ $user = $query->fetch();
 								<div id="kt_header_menu" class="header-menu header-menu-mobile header-menu-layout-default">
 									<!--begin::Header Nav-->
 									<ul class="menu-nav">
-										<li class="menu-item menu-item-open menu-item-here menu-item-submenu menu-item-rel menu-item-open menu-item-here menu-item-active" data-menu-toggle="click" aria-haspopup="true">
-										    <h4 class="menu-text" style="color:blue">Welcome to Hulam! <h4>&nbsp;&nbsp;<h6><?php echo $_SESSION['firstname'];?></h6>
+									<li class="menu-item menu-item-open menu-item-here menu-item-submenu menu-item-rel menu-item-open menu-item-here menu-item-active" data-menu-toggle="click" aria-haspopup="true">
+                                        <h4 class="menu-text" style="color:blue">Welcome to Hulam! <h4>&nbsp;&nbsp;
+												<h6 class="text-danger">
+													<?php
+													$id = $_SESSION['user_id'];
+
+													$sql = "SELECT * FROM user WHERE user_id = $id";
+													$query = $dbh->prepare($sql);
+													$query->execute();
+													$result = $query->fetch();
+													$notice = $result['notice_message'];
+													if ($result['eligible'] == 'no') {
+
+														echo $notice;
+													}
+													?>
+												</h6>
 											<i class="menu-arrow"></i>
 										 </li>
 								    </ul>
@@ -401,15 +425,21 @@ $user = $query->fetch();
 										<!--begin::Page Title-->
 										<h4 class="text-white font-weight-bold my-1 mr-5">Dashboard |</h4>
 										<h5 class="text-white font-weight-bold my-1 mr-5"><?= $user['company_name']?></h5>
+										<div class="col-xl-12 col-xl-12">
+										<?php
+										if(isset($_SESSION['status_edit_req'])){
+										?>
+											<div class="alert alert-custom alert-notice alert-light-success fade show" role="alert">
+												<div class="alert-text">
+													<h4><?php echo $_SESSION['status_edit_req'];?></h4>
+												</div>
+												<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+											</div>
+										<?php unset($_SESSION['status_edit_req']);
+										}?>
+									</div>
 										<!--end::Page Title-->
 									</div>
-                                    <?php
-                                    if(isset($_SESSION['status'])){
-                                        ?>
-                                        <h4 class="alert alert-success"><?php echo $_SESSION['status'];?></h4>
-                                        <?php
-                                        unset($_SESSION['status']);
-                                    }?>
 									<!--end::Page Heading-->
 								</div>
 								<!--end::Info-->
@@ -422,31 +452,47 @@ $user = $query->fetch();
 							<div class="container" >
 								<div class="card card-custom">
 									<div class="card-body p-0">
+									<div class="d-flex align-items-center justify-content-between flex-wrap mt-2">
+										<div class="mr-3"></div>
+											<div class="my-lg-0 my-1">
+												<a href="lending_company/set_requirements.php" class="btn btn-sm btn-light-primary font-weight-bolder mr-2">
+													<< Back</a>
+											</div>
+										</div>
 										<!--begin: Wizard Body-->
 										<div class="wizard-body py-8 px-8 py-lg-20 px-lg-10">
 											<!--begin: Wizard Form-->
 											<div class="row">
-												<div class="offset-xxl-2 col-xxl-8">
+												<div class="offset-xxl-1 col-xxl-10">
 													<form action="" method="post" id="kt_form" >
                                                         <h4 class="mb-10 font-weight-bold text-dark">Set Requirements to Comply: </h4>
                                                         <div class="pb-5" data-wizard-type="step-content" data-wizard-state="current">
                                                             <div class="row">
                                                                 <?php
                                                                 $id = intval($_GET['req_id']);
-                                                                $sql = "SELECT * FROM `loan_requirements` WHERE req_id = $id";
+																$sql = "SELECT loan_requirements.*, requirements_type.* FROM loan_requirements INNER JOIN requirements_type ON requirements_type.req_type_id = loan_requirements.req_type_id WHERE loan_requirements.req_id = $id";
                                                                 $query = $dbh->prepare($sql);
                                                                 $query->execute();
                                                                 $res = $query->fetch();
                                                                 ?>
-                                                                <div class="col-lg-6">
+                                                                <div class="col-lg-5">
                                                                     <div class="form-group">
-                                                                        <input type="text" class="form-control" name="req_name" required autocomplete="off" placeholder="Requirements Type" value="<?= $res['req_name'];?>">
+																	<select name="req_type_id" class="form-control" id="exampleSelectd" required >
+																			<option value="<?= $res['req_type_id']?>"hidden><?= $res['req_name']?></option>
+																			<?php 
+																			$sql = "SELECT * FROM requirements_type";
+																			$query =$dbh->prepare($sql);
+																			$query->execute();
+																			$result = $query->fetchAll();
+																			foreach($result as $results):?>
+																			<option value="<?= $results['req_type_id']?>"><?= $results['req_name']?></option>
+																			<?php endforeach;?>
+																		</select>
                                                                     </div>
                                                                 </div>
-                                                                <div class="col-lg-4">
+                                                                <div class="col-lg-5">
                                                                     <div class="form-group">
 																	<textarea name="remarks"class="form-control"  rows="4" cols="50" required autocomplete="off" placeholder="Remarks"><?= $res['remarks'];?></textarea>
-                                                                        <!-- <input type="text" class="form-control" name="remarks" required autocomplete="off" placeholder="Remarks" value="<?= $res['remarks'];?>"> -->
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-lg-2">
@@ -479,7 +525,7 @@ $user = $query->fetch();
                                                         <?php
                                                         $lender_id = $_SESSION['user_id'];
 
-                                                        $sql = "SELECT  * FROM loan_requirements WHERE lender_id = $lender_id";
+                                                        $sql = "SELECT loan_requirements.*, requirements_type.* FROM loan_requirements INNER JOIN requirements_type ON requirements_type.req_type_id = loan_requirements.req_type_id WHERE loan_requirements.lender_id = $lender_id";
                                                         $query = $dbh->prepare($sql);
                                                         $query->execute();
                                                         $res = $query->fetchAll(PDO::FETCH_OBJ);

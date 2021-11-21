@@ -24,11 +24,11 @@ if(isset($_POST['add_notice'])){
         $query->execute();
 	}
     if($query){
-        $_SESSION['status_message'] = "Added successfully" ;
+        $_SESSION['status_notice'] = "Added successfully" ;
         header("Location: set_notice.php");
         exit();
     }else{
-        $_SESSION['status_message'] = "Error! Not Added" ;
+        $_SESSION['status_notice'] = "Error! Not Added" ;
         header("Location: set_notice.php");
         exit();
     }
@@ -45,6 +45,15 @@ $query = $dbh->prepare($sql);
 $query->execute();
 $user = $query->fetch();
 ?>
+
+<?php
+$lender_id = $_SESSION['user_id'];
+
+$sql ="SELECT * FROM user WHERE user_id = $lender_id";
+$query = $dbh->prepare($sql);
+$query->execute();
+$user = $query->fetch();
+?>
 <!DOCTYPE html>
 
 <html lang="en">
@@ -53,7 +62,7 @@ $user = $query->fetch();
 <head>
 	<base href="../">
 	<meta charset="utf-8" />
-	<title>Hulam | Admin | Lending Company</title>
+	<title>Hulam | Set Notice</title>
 	<meta name="description" content="Updates and statistics" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 	<!--begin::Fonts-->
@@ -73,7 +82,7 @@ $user = $query->fetch();
 	<link href="assets/admin/css/themes/layout/brand/dark.css" rel="stylesheet" type="text/css" />
 	<link href="assets/admin/css/themes/layout/aside/dark.css" rel="stylesheet" type="text/css" />
 	<!--end::Layout Themes-->
-	<link rel="shortcut icon" href="assets/keen/hulam_media/<?= $user['profile_pic']?>" />
+	<link rel="shortcut icon" href="assets/keen/media/logos/h_small.png" />
 </head>
 <!--end::Head-->
 <!--begin::Body-->
@@ -334,8 +343,23 @@ $user = $query->fetch();
 								<div id="kt_header_menu" class="header-menu header-menu-mobile header-menu-layout-default">
 									<!--begin::Header Nav-->
 									<ul class="menu-nav">
-										<li class="menu-item menu-item-open menu-item-here menu-item-submenu menu-item-rel menu-item-open menu-item-here menu-item-active" data-menu-toggle="click" aria-haspopup="true">
-										    <h4 class="menu-text" style="color:blue">Welcome to Hulam! <h4>&nbsp;&nbsp;<h6><?php echo $_SESSION['firstname'];?></h6>
+									<li class="menu-item menu-item-open menu-item-here menu-item-submenu menu-item-rel menu-item-open menu-item-here menu-item-active" data-menu-toggle="click" aria-haspopup="true">
+                                        <h4 class="menu-text" style="color:blue">Welcome to Hulam! <h4>&nbsp;&nbsp;
+												<h6 class="text-danger">
+													<?php
+													$id = $_SESSION['user_id'];
+
+													$sql = "SELECT * FROM user WHERE user_id = $id";
+													$query = $dbh->prepare($sql);
+													$query->execute();
+													$result = $query->fetch();
+													$notice = $result['notice_message'];
+													if ($result['eligible'] == 'no') {
+
+														echo $notice;
+													}
+													?>
+												</h6>
 											<i class="menu-arrow"></i>
 										 </li>
 								    </ul>
@@ -405,19 +429,20 @@ $user = $query->fetch();
 										<!--begin::Page Title-->
 										<h4 class="text-white font-weight-bold my-1 mr-5">Dashboard |</h4>
 										<h5 class="text-white font-weight-bold my-1 mr-5"><?= $user['company_name']?></h5>
-										<!--end::Page Title-->
+										<div class="col-xl-12 col-xl-12">
+										<?php
+										if(isset($_SESSION['status_notice'])){
+										?>
+											<div class="alert alert-custom alert-notice alert-light-success fade show" role="alert">
+												<div class="alert-text">
+													<h4><?php echo $_SESSION['status_notice'];?></h4>
+												</div>
+												<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+											</div>
+										<?php unset($_SESSION['status_notice']);
+										}?>
 									</div>
-                                    <?php
-									if (isset($_SESSION['status_message'])) {
-									?>
-										<div class="alert alert-success alert-dismissable" id="flash-msg">
-											<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
-											<h4><?= $_SESSION['status_message'] ?></h4>
-										</div>
-									<?php
-										unset($_SESSION['status_message']);
-									} ?>
-									<!--end::Page Heading-->
+									</div>
 								</div>
 								<!--end::Info-->
 							</div>
@@ -441,9 +466,21 @@ $user = $query->fetch();
                                                                 <div class="col-lg-9">
                                                                     <div class="form-group">
 																	<input type="hidden" name="notice_title[]" value="Notice Upon Submission of Loan Requirements">
-																	<textarea name="remarks[]" class="form-control"  rows="4" cols="50"  autocomplete="off" placeholder="Remarks"><?= $res['remarks'];?></textarea>
+																	<textarea name="remarks[]" class="form-control form-control-lg"  rows="4" cols="50" required autocomplete="off" placeholder="Remarks"><?= $res['remarks'];?></textarea>
                                                                     </div>
                                                                 </div>
+                                                            </div>
+                                                        </div>
+														<h4 class="mb-10 font-weight-bold text-dark">Set Notice Upon Approval of Loan: </h4>
+                                                        <div class="pb-5" data-wizard-type="step-content" data-wizard-state="current">
+                                                            <div class="row">
+                                                                <div class="col-lg-9">
+                                                                    <div class="form-group">
+																	<input type="hidden" name="notice_title[]" value="Notice Upon Approval of Loan">
+																	<textarea name="remarks[]" class="form-control form-control-lg"  rows="4" cols="50" required autocomplete="off" placeholder="Remarks"><?= $res['remarks'];?></textarea>
+                                                                    </div>
+                                                                </div>
+                                                                
                                                             </div>
                                                         </div>
 														<h4 class="mb-10 font-weight-bold text-dark">Set Notice Upon Releasing of Loan: </h4>
@@ -452,7 +489,31 @@ $user = $query->fetch();
                                                                 <div class="col-lg-9">
                                                                     <div class="form-group">
 																	<input type="hidden" name="notice_title[]" value="Notice Upon Releasing of Loan">
-																	<textarea name="remarks[]" class="form-control"  rows="4" cols="50" required autocomplete="off" placeholder="Remarks"><?= $res['remarks'];?></textarea>
+																	<textarea name="remarks[]" class="form-control form-control-lg"  rows="4" cols="50" required autocomplete="off" placeholder="Remarks"><?= $res['remarks'];?></textarea>
+                                                                    </div>
+                                                                </div>
+                                                                
+                                                            </div>
+                                                        </div>
+														<h4 class="mb-10 font-weight-bold text-dark">Set Notice Upon Releasing of Loan Time Frame: </h4>
+                                                        <div class="pb-5" data-wizard-type="step-content" data-wizard-state="current">
+                                                            <div class="row">
+                                                                <div class="col-lg-9">
+                                                                    <div class="form-group">
+																	<input type="hidden" name="notice_title[]" value="Notice Upon Releasing of Loan Time Frame">
+																	<textarea name="remarks[]" class="form-control form-control-lg"  rows="4" cols="50" required autocomplete="off" placeholder="Remarks"><?= $res['remarks'];?></textarea>
+                                                                    </div>
+                                                                </div>
+                                                                
+                                                            </div>
+                                                        </div>
+														<h4 class="mb-10 font-weight-bold text-dark">Others Please Specify (Or type N/A if none): </h4>
+                                                        <div class="pb-5" data-wizard-type="step-content" data-wizard-state="current">
+                                                            <div class="row">
+                                                                <div class="col-lg-9">
+                                                                    <div class="form-group">
+																	<input type="hidden" name="notice_title[]" value="Other Notice">
+																	<textarea name="remarks[]" class="form-control form-control-lg"  rows="4" cols="50" required autocomplete="off" placeholder="Remarks"><?= $res['remarks'];?></textarea>
                                                                     </div>
                                                                 </div>
                                                                 
@@ -461,7 +522,6 @@ $user = $query->fetch();
 														<div class="col-lg-2">
 															<div class="form-group">
 																<button type="submit" name="add_notice"  class="btn btn-primary font-weight-bolder px-10 py-2" data-wizard-type="action-next">Save</button>
-																<!-- <a href="lending_company/view_requirements.php" type="button" class="btn btn-success font-weight-bolder px-10 py-3" data-wizard-type="action-next">Edit Requirements</a> -->
 															</div>
 														</div>
                                     				</form>

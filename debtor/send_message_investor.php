@@ -15,28 +15,34 @@ $query->execute();
 $user = $query->fetch();
 ?>
 
+
+<?php
+$lender_id = intval($_GET['lender_id']);
+$sql = "SELECT * FROM user WHERE user_id =$lender_id";
+$query = $dbh->prepare($sql);
+$query->execute();
+$lender = $query->fetch();
+?>
+
+
+
 <?php
 if(isset($_POST['submit'])){
-    $sql = "SELECT * FROM user WHERE user_type = '1'";
-    $query = $dbh->prepare($sql);
-    $query->execute();
-    $id = $query->fetch();
-    
-    $admin_id = $id['user_id'];
+    $lender_id = intval($_GET['lender_id']);
     $debtor_id = $_SESSION['user_id'];
     $message = $_POST['message'];
     $date_message = $_POST['date_message'];
 
-    $sql = "INSERT INTO message(sender_id,receiver_id,message,date_message)VALUES('$debtor_id','$admin_id','$message','$date_message')";
+    $sql = "INSERT INTO message(sender_id,receiver_id,message,date_message)VALUES('$debtor_id','$lender_id','$message','$date_message')";
     $query = $dbh->prepare($sql);
     $query->execute();
     if($query){
         $_SESSION['send'] = "Message Sent";
-        header("location: send_message.php");
+        header("location: send_message_investor.php?lender_id=$lender_id");
         exit();
     }else{
         $_SESSION['send'] = "Error! ";
-        header("location: send_message.php");
+        header("location: send_message_investor.php?lender_id=$lender_id");
         exit();
     }
 }
@@ -171,7 +177,7 @@ if(isset($_POST['submit'])){
                 <div class="container d-flex align-items-center justify-content-between flex-wrap flex-sm-nowrap">
                     <div class="d-flex align-items-center flex-wrap mr-1">
                         <div class="d-flex align-items-baseline flex-wrap mr-5">
-                            <h2 class="text-white font-weight-bold my-1 mr-5">Write Message to The Hulam Team</h2>
+                            <h2 class="text-white font-weight-bold my-1 mr-5">Write Message to <?= $lender['company_name']?></h2>
                             <div class="col-xl-6 col-xl-6">
                             <?php
                             if(isset($_SESSION['send'])){

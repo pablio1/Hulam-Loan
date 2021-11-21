@@ -25,24 +25,22 @@ if($query->execute()){
 
 ?>
 
+<?php
+$lender_id = $_SESSION['user_id'];
+
+$sql ="SELECT * FROM user WHERE user_id = $lender_id";
+$query = $dbh->prepare($sql);
+$query->execute();
+$user = $query->fetch();
+?>
+
 <!DOCTYPE html>
-<!--
-Template Name: Keen - The Ultimate Bootstrap 4 HTML Admin Dashboard Theme
-Author: KeenThemes
-Website: http://www.keenthemes.com/
-Contact: support@keenthemes.com
-Follow: www.twitter.com/keenthemes
-Dribbble: www.dribbble.com/keenthemes
-Like: www.facebook.com/keenthemes
-Purchase: https://themes.getbootstrap.com/product/keen-the-ultimate-bootstrap-admin-theme/
-Support: https://keenthemes.com/theme-support
-License: You must have a valid license purchased only from themes.getbootstrap.com(the above link) in order to legally use the theme for your project.
--->
+
 <html lang="en">
 	<!--begin::Head-->
 	<head><base href="../">
 		<meta charset="utf-8" />
-		<title>Hulam | Admin | Lending Company</title>
+		<title>Hulam | Payment Received</title>
 		<meta name="description" content="Updates and statistics" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 		<!--begin::Fonts-->
@@ -62,7 +60,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 		<link href="assets/admin/css/themes/layout/brand/dark.css" rel="stylesheet" type="text/css" />
 		<link href="assets/admin/css/themes/layout/aside/dark.css" rel="stylesheet" type="text/css" />
 		<!--end::Layout Themes-->
-		<link rel="shortcut icon" href="assets/admin/media/logos/Hulam_Logo.png" />
+		<link rel="shortcut icon" href="assets/keen/media/logos/h_small.png" />
 	</head>
 	<!--end::Head-->
 	<!--begin::Body-->
@@ -369,8 +367,23 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 								<div id="kt_header_menu" class="header-menu header-menu-mobile header-menu-layout-default">
 									<!--begin::Header Nav-->
 									<ul class="menu-nav">
-										<li class="menu-item menu-item-open menu-item-here menu-item-submenu menu-item-rel menu-item-open menu-item-here menu-item-active" data-menu-toggle="click" aria-haspopup="true">
-										    <h4 class="menu-text" style="color:blue">Welcome to Hulam! <h4>&nbsp;&nbsp;<h6><?php echo $_SESSION['firstname'];?></h6>
+									<li class="menu-item menu-item-open menu-item-here menu-item-submenu menu-item-rel menu-item-open menu-item-here menu-item-active" data-menu-toggle="click" aria-haspopup="true">
+                                        <h4 class="menu-text" style="color:blue">Welcome to Hulam! <h4>&nbsp;&nbsp;
+												<h6 class="text-danger">
+													<?php
+													$id = $_SESSION['user_id'];
+
+													$sql = "SELECT * FROM user WHERE user_id = $id";
+													$query = $dbh->prepare($sql);
+													$query->execute();
+													$result = $query->fetch();
+													$notice = $result['notice_message'];
+													if ($result['eligible'] == 'no') {
+
+														echo $notice;
+													}
+													?>
+												</h6>
 											<i class="menu-arrow"></i>
 										 </li>
 								    </ul>

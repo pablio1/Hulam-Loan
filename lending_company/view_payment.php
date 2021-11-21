@@ -15,6 +15,15 @@ $query = $dbh->prepare($sql);
 $query->execute();
 $user = $query->fetch();
 ?>
+
+<?php
+$lender_id = $_SESSION['user_id'];
+
+$sql ="SELECT * FROM user WHERE user_id = $lender_id";
+$query = $dbh->prepare($sql);
+$query->execute();
+$user = $query->fetch();
+?>
 <!DOCTYPE html>
 
 <html lang="en">
@@ -23,7 +32,7 @@ $user = $query->fetch();
 <head>
 	<base href="../">
 	<meta charset="utf-8" />
-	<title>Hulam | Admin | Lending Company</title>
+	<title>Hulam | View Payment</title>
 	<meta name="description" content="Updates and statistics" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 	<!--begin::Fonts-->
@@ -43,7 +52,7 @@ $user = $query->fetch();
 	<link href="assets/admin/css/themes/layout/brand/dark.css" rel="stylesheet" type="text/css" />
 	<link href="assets/admin/css/themes/layout/aside/dark.css" rel="stylesheet" type="text/css" />
 	<!--end::Layout Themes-->
-	<link rel="shortcut icon" href="assets/keen/hulam_media/<?= $user['profile_pic']?>" />
+	<link rel="shortcut icon" href="assets/keen/media/logos/h_small.png" />
 </head>
 <!--end::Head-->
 <!--begin::Body-->
@@ -304,8 +313,23 @@ $user = $query->fetch();
 								<div id="kt_header_menu" class="header-menu header-menu-mobile header-menu-layout-default">
 									<!--begin::Header Nav-->
 									<ul class="menu-nav">
-										<li class="menu-item menu-item-open menu-item-here menu-item-submenu menu-item-rel menu-item-open menu-item-here menu-item-active" data-menu-toggle="click" aria-haspopup="true">
-										    <h4 class="menu-text" style="color:blue">Welcome to Hulam! <h4>&nbsp;&nbsp;<h6><?php echo $_SESSION['firstname'];?></h6>
+									<li class="menu-item menu-item-open menu-item-here menu-item-submenu menu-item-rel menu-item-open menu-item-here menu-item-active" data-menu-toggle="click" aria-haspopup="true">
+                                        <h4 class="menu-text" style="color:blue">Welcome to Hulam! <h4>&nbsp;&nbsp;
+												<h6 class="text-danger">
+													<?php
+													$id = $_SESSION['user_id'];
+
+													$sql = "SELECT * FROM user WHERE user_id = $id";
+													$query = $dbh->prepare($sql);
+													$query->execute();
+													$result = $query->fetch();
+													$notice = $result['notice_message'];
+													if ($result['eligible'] == 'no') {
+
+														echo $notice;
+													}
+													?>
+												</h6>
 											<i class="menu-arrow"></i>
 										 </li>
 								    </ul>
@@ -406,13 +430,13 @@ $user = $query->fetch();
 										</div>
 									</form></br>
                                     <?php 
-                                    $lender_id = $_SESSION['user_id'];
+                                    // $lender_id = $_SESSION['user_id'];
 
                                     // $sql ="SELECT loan_application.*, user.* FROM user INNER JOIN loan_application ON loan_application.debtor_id = user.user_id WHERE lender_id = $lender_id";
-                                    $sql = "SELECT loan_application.*, user.* FROM loan_application INNER JOIN user ON loan_application.debtor_id = user.user_id WHERE loan_application.lender_id = '$lender_id' AND loan_application.loan_status = 'Released'";
-                                    $query = $dbh->prepare($sql);
-                                    $query->execute();
-                                    $loan_app = $query->fetch();
+                                    // $sql = "SELECT loan_application.*, user.* FROM loan_application INNER JOIN user ON loan_application.debtor_id = user.user_id WHERE loan_application.lender_id = $lender_id AND loan_application.loan_status = 'Released'";
+                                    // $query = $dbh->prepare($sql);
+                                    // $query->execute();
+                                    // $loan_app = $query->fetch();
                                     ?>
 									<table class="table table-bordered">
 										<thead>
@@ -430,7 +454,7 @@ $user = $query->fetch();
                                             $search_input = $_POST['search_input'];
         
                                             if(empty($search_input)){
-											$loan_app_id = $loan_app['loan_app_id'];
+											// $loan_app_id = $loan_app['loan_app_id'];
 
 											$sql = "SELECT * FROM running_balance WHERE loan_app_id = loan_app_id";
 											$query = $dbh->prepare($sql);
@@ -447,7 +471,7 @@ $user = $query->fetch();
 												</tr>
                                             <?php $cnt = $cnt+1; }}}
 											else{
-                                            $loan_app_id = $loan_app['loan_app_id'];
+                                            // $loan_app_id = $loan_app['loan_app_id'];
 											$sql = "SELECT * FROM running_balance WHERE loan_app_id LIKE '$search_input' OR paid_date LIKE '$search_input' AND loan_app_id = loan_app_id";
 											$query = $dbh->prepare($sql);
 											$query->execute();
@@ -463,9 +487,10 @@ $user = $query->fetch();
 												</tr>
                                             <?php $cnt = $cnt+1; }}}
 											}else{
-                                                $loan_app_id = $loan_app['loan_app_id'];
+                                                // $loan_app_id = $loan_app['loan_app_id'];
+												$lender_id = $_SESSION['user_id'];
     
-                                                $sql = "SELECT * FROM running_balance WHERE loan_app_id = loan_app_id";
+                                                $sql = "SELECT * FROM loan_application INNER JOIN running_balance ON loan_application.loan_app_id = running_balance.loan_app_id WHERE loan_application.lender_id = $lender_id ";
                                                 $query = $dbh->prepare($sql);
                                                 $query->execute();
                                                 $res = $query->fetchAll(PDO::FETCH_OBJ);
@@ -514,99 +539,100 @@ $user = $query->fetch();
 	</div>
 
 
-	<!-- begin::User Panel-->
-	<div id="kt_quick_user" class="offcanvas offcanvas-right p-10">
-		<!--begin::Header-->
-		<div class="offcanvas-header d-flex align-items-center justify-content-between pb-5">
-			<h3 class="font-weight-bold m-0">Profile</h3>
-			<a href="#" class="btn btn-xs btn-icon btn-light btn-hover-primary" id="kt_quick_user_close">
-				<i class="ki ki-close icon-xs text-muted"></i>
-			</a>
-		</div>
-		<!--end::Header-->
-		<!--begin::Content-->
-		<div class="offcanvas-content pr-5 mr-n5">
+		<!-- begin::User Panel-->
+		<div id="kt_quick_user" class="offcanvas offcanvas-right p-10">
 			<!--begin::Header-->
-			<div class="d-flex align-items-center mt-5">
-				<div class="symbol symbol-100 mr-5">
-					<div class="symbol-label" style="background-image:url('assets/admin/media/users/icon-company.jpg')"></div>
-					<i class="symbol-badge bg-success"></i>
+			<div class="offcanvas-header d-flex align-items-center justify-content-between pb-5">
+				<h3 class="font-weight-bold m-0">Profile
+				
+				<a href="#" class="btn btn-xs btn-icon btn-light btn-hover-primary" id="kt_quick_user_close">
+					<i class="ki ki-close icon-xs text-muted"></i>
+				</a>
+			</div>
+			<!--end::Header-->
+			<!--begin::Content-->
+			<div class="offcanvas-content pr-5 mr-n5">
+				<!--begin::Header-->
+				<div class="d-flex align-items-center mt-5">
+					<div class="symbol symbol-100 mr-5">
+					<div class="symbol-label" style="background-image:url('/hulam/assets/keen/hulam_media/<?= $user['profile_pic'] ?>')"></div>
+						<i class="symbol-badge bg-success"></i>
+					</div>
+					<div class="d-flex flex-column">
+						<a href="#" class="font-weight-bold font-size-h5 text-dark-75 text-hover-primary"><?= $user['company_name']?></a>
+						<div class="text-muted mt-1"></div>
+						<div class="navi mt-1">
+							<a href="#" class="navi-item">
+								<span class="navi-link p-0 pb-2">
+									<span class="navi-icon mr-1">
+										<span class="svg-icon svg-icon-lg svg-icon-primary">
+											<!--begin::Svg Icon | path:assets/media/svg/icons/Communication/Mail-notification.svg-->
+											<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+												<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+													<rect x="0" y="0" width="24" height="24" />
+													<path d="M21,12.0829584 C20.6747915,12.0283988 20.3407122,12 20,12 C16.6862915,12 14,14.6862915 14,18 C14,18.3407122 14.0283988,18.6747915 14.0829584,19 L5,19 C3.8954305,19 3,18.1045695 3,17 L3,8 C3,6.8954305 3.8954305,6 5,6 L19,6 C20.1045695,6 21,6.8954305 21,8 L21,12.0829584 Z M18.1444251,7.83964668 L12,11.1481833 L5.85557487,7.83964668 C5.4908718,7.6432681 5.03602525,7.77972206 4.83964668,8.14442513 C4.6432681,8.5091282 4.77972206,8.96397475 5.14442513,9.16035332 L11.6444251,12.6603533 C11.8664074,12.7798822 12.1335926,12.7798822 12.3555749,12.6603533 L18.8555749,9.16035332 C19.2202779,8.96397475 19.3567319,8.5091282 19.1603533,8.14442513 C18.9639747,7.77972206 18.5091282,7.6432681 18.1444251,7.83964668 Z" fill="#000000" />
+													<circle fill="#000000" opacity="0.3" cx="19.5" cy="17.5" r="2.5" />
+												</g>
+											</svg>
+											<!--end::Svg Icon-->
+										</span>
+									</span>
+									<span class="navi-text text-muted text-hover-primary"><?= $_SESSION['email'] ?></span>
+								</span>
+							</a>
+						</div>
+					</div>
 				</div>
-				<div class="d-flex flex-column">
-					<a href="#" class="font-weight-bold font-size-h5 text-dark-75 text-hover-primary">Lending Company</a>
-					<div class="text-muted mt-1"></div>
-					<div class="navi mt-1">
-						<a href="#" class="navi-item">
-							<span class="navi-link p-0 pb-2">
-								<span class="navi-icon mr-1">
-									<span class="svg-icon svg-icon-lg svg-icon-primary">
-										<!--begin::Svg Icon | path:assets/media/svg/icons/Communication/Mail-notification.svg-->
+				<!--end::Header-->
+				<!--begin::Separator-->
+				<div class="separator separator-dashed mt-8 mb-5"></div>
+				<!--end::Separator-->
+				<!--begin::Nav-->
+				<div class="navi navi-spacer-x-0 p-0">
+					<!--begin::Item-->
+					<a href="lending_company/update_profile.php" class="navi-item">
+						<div class="navi-link">
+							<div class="symbol symbol-40 bg-light mr-3">
+								<div class="symbol-label">
+									<span class="svg-icon svg-icon-md svg-icon-danger">
+										<!--begin::Svg Icon | path:assets/media/svg/icons/Communication/Adress-book2.svg-->
 										<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
 											<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
 												<rect x="0" y="0" width="24" height="24" />
-												<path d="M21,12.0829584 C20.6747915,12.0283988 20.3407122,12 20,12 C16.6862915,12 14,14.6862915 14,18 C14,18.3407122 14.0283988,18.6747915 14.0829584,19 L5,19 C3.8954305,19 3,18.1045695 3,17 L3,8 C3,6.8954305 3.8954305,6 5,6 L19,6 C20.1045695,6 21,6.8954305 21,8 L21,12.0829584 Z M18.1444251,7.83964668 L12,11.1481833 L5.85557487,7.83964668 C5.4908718,7.6432681 5.03602525,7.77972206 4.83964668,8.14442513 C4.6432681,8.5091282 4.77972206,8.96397475 5.14442513,9.16035332 L11.6444251,12.6603533 C11.8664074,12.7798822 12.1335926,12.7798822 12.3555749,12.6603533 L18.8555749,9.16035332 C19.2202779,8.96397475 19.3567319,8.5091282 19.1603533,8.14442513 C18.9639747,7.77972206 18.5091282,7.6432681 18.1444251,7.83964668 Z" fill="#000000" />
-												<circle fill="#000000" opacity="0.3" cx="19.5" cy="17.5" r="2.5" />
+												<path d="M18,2 L20,2 C21.6568542,2 23,3.34314575 23,5 L23,19 C23,20.6568542 21.6568542,22 20,22 L18,22 L18,2 Z" fill="#000000" opacity="0.3" />
+												<path d="M5,2 L17,2 C18.6568542,2 20,3.34314575 20,5 L20,19 C20,20.6568542 18.6568542,22 17,22 L5,22 C4.44771525,22 4,21.5522847 4,21 L4,3 C4,2.44771525 4.44771525,2 5,2 Z M12,11 C13.1045695,11 14,10.1045695 14,9 C14,7.8954305 13.1045695,7 12,7 C10.8954305,7 10,7.8954305 10,9 C10,10.1045695 10.8954305,11 12,11 Z M7.00036205,16.4995035 C6.98863236,16.6619875 7.26484009,17 7.4041679,17 C11.463736,17 14.5228466,17 16.5815,17 C16.9988413,17 17.0053266,16.6221713 16.9988413,16.5 C16.8360465,13.4332455 14.6506758,12 11.9907452,12 C9.36772908,12 7.21569918,13.5165724 7.00036205,16.4995035 Z" fill="#000000" />
 											</g>
 										</svg>
 										<!--end::Svg Icon-->
 									</span>
-								</span>
-								<span class="navi-text text-muted text-hover-primary">hulamloan@gmail.com</span>
-							</span>
-						</a>
-					</div>
-				</div>
-			</div>
-			<!--end::Header-->
-			<!--begin::Separator-->
-			<div class="separator separator-dashed mt-8 mb-5"></div>
-			<!--end::Separator-->
-			<!--begin::Nav-->
-			<div class="navi navi-spacer-x-0 p-0">
-				<!--begin::Item-->
-				<a href="lending_company/update_profile.php" class="navi-item">
-					<div class="navi-link">
-						<div class="symbol symbol-40 bg-light mr-3">
-							<div class="symbol-label">
-								<span class="svg-icon svg-icon-md svg-icon-danger">
-									<!--begin::Svg Icon | path:assets/media/svg/icons/Communication/Adress-book2.svg-->
-									<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-										<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-											<rect x="0" y="0" width="24" height="24" />
-											<path d="M18,2 L20,2 C21.6568542,2 23,3.34314575 23,5 L23,19 C23,20.6568542 21.6568542,22 20,22 L18,22 L18,2 Z" fill="#000000" opacity="0.3" />
-											<path d="M5,2 L17,2 C18.6568542,2 20,3.34314575 20,5 L20,19 C20,20.6568542 18.6568542,22 17,22 L5,22 C4.44771525,22 4,21.5522847 4,21 L4,3 C4,2.44771525 4.44771525,2 5,2 Z M12,11 C13.1045695,11 14,10.1045695 14,9 C14,7.8954305 13.1045695,7 12,7 C10.8954305,7 10,7.8954305 10,9 C10,10.1045695 10.8954305,11 12,11 Z M7.00036205,16.4995035 C6.98863236,16.6619875 7.26484009,17 7.4041679,17 C11.463736,17 14.5228466,17 16.5815,17 C16.9988413,17 17.0053266,16.6221713 16.9988413,16.5 C16.8360465,13.4332455 14.6506758,12 11.9907452,12 C9.36772908,12 7.21569918,13.5165724 7.00036205,16.4995035 Z" fill="#000000" />
-										</g>
-									</svg>
-									<!--end::Svg Icon-->
-								</span>
+								</div>
+							</div>
+							<div class="navi-text">
+								<div class="font-weight-bold">My Account</div>
 							</div>
 						</div>
-						<div class="navi-text">
-							<div class="font-weight-bold">My Account</div>
-							<div class="text-muted">Profile info
-								<span class="label label-light-danger label-inline font-weight-bold">update</span>
-							</div>
-						</div>
-					</div>
-				</a>
-				<!--begin::Item-->
-				<span class="navi-item mt-2">
-					<span class="navi-link">
-						<a href="logout.php" class="btn btn-sm btn-light-primary font-weight-bolder py-3 px-6">Sign Out</a>
+					</a>
+					<!--end:Item-->
+					
+					<!--begin::Item-->
+					<span class="navi-item mt-2">
+						<span class="navi-link">
+							<a href="logout.php" class="btn btn-sm btn-light-primary font-weight-bolder py-3 px-6">Sign Out</a>
+						</span>
 					</span>
-				</span>
-				<!--end:Item-->
+					<!--end:Item-->
+				</div>
+				<!--end::Nav-->
+				<!--begin::Separator-->
+				<div class="separator separator-dashed my-7"></div>
+				<!--end::Separator-->
+
+
 			</div>
-			<!--end::Nav-->
-			<!--begin::Separator-->
-			<div class="separator separator-dashed my-7"></div>
-			<!--end::Separator-->
-
-
+			<!--end::Content-->
 		</div>
-		<!--end::Content-->
-	</div>
-	<!-- end::User Panel-->
+		<!-- end::User Panel-->
+
 
 	<!--begin::Quick Panel-->
 	<div id="kt_quick_panel" class="offcanvas offcanvas-right pt-5 pb-10">

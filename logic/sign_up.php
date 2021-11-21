@@ -90,7 +90,7 @@ if (isset($_POST['sign_up'])) {
     $password = password_hash($password, PASSWORD_DEFAULT);
 
     //insert new user to our database
-    $sql = $dbh->prepare("INSERT INTO user (user_type,company_name,email,mobile,password,status,eligible,notice_message,token) VALUES (:user_type,:company_name,:email,:mobile,:password,'unverified','no','To activate your account you need to complete updating your profile information and required to visit Hulam office for the signing of Memorandum of Agreement',:token)");
+    $sql = $dbh->prepare("INSERT INTO user (user_type,company_name,email,mobile,password,status,eligible,notice_message,token) VALUES (:user_type,:company_name,:email,:mobile,:password,'unverified','no','To activate your account you need to complete updating your profile information and required to visit Hulam office for the signing of Memorandum of Agreement.',:token)");
 
     try {
         $sql->execute(['user_type' => $usertype, 'company_name' => $company_name, 'email' => $email, 'mobile' => $mobile,'password' => $password, 'token' => $token]);

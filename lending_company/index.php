@@ -15,7 +15,14 @@ $query = $dbh->prepare($sql);
 $query->execute();
 $user = $query->fetch();
 ?>
+<?php
+$lender_id = $_SESSION['user_id'];
 
+$sql ="SELECT * FROM user WHERE user_id = $lender_id";
+$query = $dbh->prepare($sql);
+$query->execute();
+$user = $query->fetch();
+?>
 
 
 <!DOCTYPE html>
@@ -26,7 +33,7 @@ $user = $query->fetch();
 <head>
 	<base href="../">
 	<meta charset="utf-8" />
-	<title>Hulam | Admin | Lending Company</title>
+	<title>Hulam | Dashboard</title>
 	<meta name="description" content="Updates and statistics" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 	<!--begin::Fonts-->
@@ -46,7 +53,7 @@ $user = $query->fetch();
 	<link href="assets/admin/css/themes/layout/brand/dark.css" rel="stylesheet" type="text/css" />
 	<link href="assets/admin/css/themes/layout/aside/dark.css" rel="stylesheet" type="text/css" />
 	<!--end::Layout Themes-->
-	<link rel="shortcut icon" href="assets/keen/hulam_media/<?= $user['profile_pic']?>" />
+	<link rel="shortcut icon" href="assets/keen/media/logos/h_small.png" />
 </head>
 <!--end::Head-->
 <!--begin::Body-->
@@ -97,7 +104,7 @@ $user = $query->fetch();
 			<!--begin::Aside-->
 			<div class="aside aside-left aside-fixed d-flex flex-column flex-row-auto" id="kt_aside">
 				<!--begin::Brand-->
-				<div class="brand flex-column-auto" id="kt_brand">
+				<div class="brand flex-column-auto " id="kt_brand">
 					<!--begin::Logo-->
 					<a href="lending_company/index.php" class="brand-logo">
 						<img alt="Logo" src="/hulam/assets/keen/hulam_media/<?= $user['profile_pic']?>" class="h-100px w-90px" style="padding-top: 20%; padding: right 50%;" />

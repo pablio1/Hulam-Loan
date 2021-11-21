@@ -18,6 +18,7 @@
 	    $fix_rate = $_POST['fix_rate'];
 	    $late_charges = $_POST['late_charges'];
 		$reloan_period = $_POST['reloan_period'];
+		$reloan_amount = $_POST['reloan_amount'];
 
 		$lender_id = $_SESSION['user_id'];
 
@@ -26,8 +27,8 @@
 		$q->execute();
 	   	if($q->rowCount()== 0){
 
-	        $sql="INSERT INTO loan_features(lender_id,min_loan,max_loan,min_term,max_term,fix_rate,late_charges,reloan_period)
-	        VALUES(:lender_id,:min_loan,:max_loan,:min_term,:max_term,:fix_rate,:late_charges,:reloan_period)";
+	        $sql="INSERT INTO loan_features(lender_id,min_loan,max_loan,min_term,max_term,fix_rate,late_charges,reloan_period,reloan_amount)
+	        VALUES(:lender_id,:min_loan,:max_loan,:min_term,:max_term,:fix_rate,:late_charges,:reloan_period,:reloan_amount)";
 		    $query =$dbh->prepare($sql);
 	        $query->bindParam(':lender_id',$lender_id,PDO::PARAM_STR);
 	        $query->bindParam(':min_loan',$min_loan,PDO::PARAM_STR);
@@ -37,10 +38,11 @@
 	        $query->bindParam(':fix_rate',$fix_rate,PDO::PARAM_STR);
 	        $query->bindParam(':late_charges',$late_charges,PDO::PARAM_STR);
 			$query->bindParam(':reloan_period',$reloan_period,PDO::PARAM_STR);
+			$query->bindParam(':reloan_amount',$reloan_amount,PDO::PARAM_STR);
 	        $query->execute();
 	    }else{
 	        
-	        $sql="UPDATE loan_features SET min_loan=:min_loan,max_loan=:max_loan,min_term=:min_term,max_term=:max_term,fix_rate=:fix_rate,late_charges=:late_charges,reloan_period=:reloan_period WHERE lender_id = :lender_id";
+	        $sql="UPDATE loan_features SET min_loan=:min_loan,max_loan=:max_loan,min_term=:min_term,max_term=:max_term,fix_rate=:fix_rate,late_charges=:late_charges,reloan_period=:reloan_period,reloan_amount=:reloan_amount WHERE lender_id = :lender_id";
 	        $query =$dbh->prepare($sql);
 	        $query->bindParam(':lender_id',$lender_id,PDO::PARAM_STR);
 	        $query->bindParam(':min_loan',$min_loan,PDO::PARAM_STR);
@@ -50,9 +52,10 @@
 	        $query->bindParam(':fix_rate',$fix_rate,PDO::PARAM_STR);
 	        $query->bindParam(':late_charges',$late_charges,PDO::PARAM_STR);
 			$query->bindParam(':reloan_period',$reloan_period,PDO::PARAM_STR);
+			$query->bindParam(':reloan_amount',$reloan_amount,PDO::PARAM_STR);
 
 		if($query->execute()){
-			$_SESSION['setup'] = "Suceess!";
+			$_SESSION['setup'] = "Submitted successfully!";
 			header("Location: setup_loan.php");
 			exit();
 		} else {
@@ -73,6 +76,15 @@ $query = $dbh->prepare($sql);
 $query->execute();
 $user = $query->fetch();
 ?>
+
+<?php
+$lender_id = $_SESSION['user_id'];
+
+$sql ="SELECT * FROM user WHERE user_id = $lender_id";
+$query = $dbh->prepare($sql);
+$query->execute();
+$user = $query->fetch();
+?>
 <!DOCTYPE html>
 
 <html lang="en">
@@ -81,7 +93,7 @@ $user = $query->fetch();
 <head>
 	<base href="../">
 	<meta charset="utf-8" />
-	<title>Hulam | Admin | Lending Company</title>
+	<title>Hulam | Set Up Loan</title>
 	<meta name="description" content="Updates and statistics" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 	<!--begin::Fonts-->
@@ -101,7 +113,7 @@ $user = $query->fetch();
 	<link href="assets/admin/css/themes/layout/brand/dark.css" rel="stylesheet" type="text/css" />
 	<link href="assets/admin/css/themes/layout/aside/dark.css" rel="stylesheet" type="text/css" />
 	<!--end::Layout Themes-->
-	<link rel="shortcut icon" href="assets/keen/hulam_media/<?= $user['profile_pic']?>" />
+	<link rel="shortcut icon" href="assets/keen/media/logos/h_small.png" />
 </head>
 <!--end::Head-->
 <!--begin::Body-->
@@ -362,8 +374,23 @@ $user = $query->fetch();
 								<div id="kt_header_menu" class="header-menu header-menu-mobile header-menu-layout-default">
 									<!--begin::Header Nav-->
 									<ul class="menu-nav">
-										<li class="menu-item menu-item-open menu-item-here menu-item-submenu menu-item-rel menu-item-open menu-item-here menu-item-active" data-menu-toggle="click" aria-haspopup="true">
-										    <h4 class="menu-text" style="color:blue">Welcome to Hulam! <h4>&nbsp;&nbsp;<h6><?php echo $_SESSION['firstname'];?></h6>
+									<li class="menu-item menu-item-open menu-item-here menu-item-submenu menu-item-rel menu-item-open menu-item-here menu-item-active" data-menu-toggle="click" aria-haspopup="true">
+                                        <h4 class="menu-text" style="color:blue">Welcome to Hulam! <h4>&nbsp;&nbsp;
+												<h6 class="text-danger">
+													<?php
+													$id = $_SESSION['user_id'];
+
+													$sql = "SELECT * FROM user WHERE user_id = $id";
+													$query = $dbh->prepare($sql);
+													$query->execute();
+													$result = $query->fetch();
+													$notice = $result['notice_message'];
+													if ($result['eligible'] == 'no') {
+
+														echo $notice;
+													}
+													?>
+												</h6>
 											<i class="menu-arrow"></i>
 										 </li>
 								    </ul>
@@ -534,8 +561,16 @@ $user = $query->fetch();
 																	<div class="col-xl-4">
 																		<!--begin::Input-->
 																		<div class="form-group">
-																			<label>How many months of payment from releasing date?</label>
-																			<input type="number" class="form-control" name="reloan_period" value="<?= $res['reloan_period']?>" />
+																			<label>How many months after the releasing date?</label>
+																			<input type="number" placeholder="Set how many months" class="form-control" name="reloan_period" value="<?= $res['reloan_period']?>" />
+																		</div>
+																		<!--end::Input-->
+																	</div>
+																	<div class="col-xl-4">
+																		<!--begin::Input-->
+																		<div class="form-group">
+																			<label>Remaining balance should be less than: </label>
+																			<input type="number" placeholder="Set amount" class="form-control" name="reloan_amount" value="<?= $res['reloan_amount']?>" />
 																		</div>
 																		<!--end::Input-->
 																	</div>
