@@ -580,184 +580,8 @@ $user = $query->fetch();
 			</div>
 			<!--end: display modal of upload payment -->
 
-			<!--begin::Tab Pane-->
-			<div class="tab-pane fade" id="kt_tab_mixed_2_2" role="tabpanel" aria-labelledby="kt_tab_mixed_2_2">
-				<!--begin::Item-->
-				<div class="d-flex align-items-center justify-content-between mb-6">
-					<!--begin::Text-->
-					<div class="d-flex flex-column">
-						<a href="#" class="text-dark-75 text-hover-primary mb-1 font-weight-bolder font-size-lg">Popular Authors</a>
-						<span class="text-muted font-weight-bold">Most Successful</span>
-					</div>
-					<!--end::Text-->
-					<!--begin::Progress-->
-					<div class="d-flex align-items-center">
-						<span class="text-muted mr-3 font-size-sm font-weight-bolder">83%</span>
-						<div class="progress progress-xs min-w-65px h-5px">
-							<div class="progress-bar bg-success" role="progressbar" style="width: 83%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
-						</div>
-					</div>
-					<!--end::Progress-->
-				</div>
-				<!--end::Item-->
-				<!--begin::Item-->
-				<div class="d-flex align-items-center justify-content-between mb-6">
-					<!--begin::Text-->
-					<div class="d-flex flex-column">
-						<a href="#" class="text-dark-75 text-hover-primary mb-1 font-weight-bolder font-size-lg">New Users</a>
-						<span class="text-muted font-weight-bold">Awesome Users</span>
-					</div>
-					<!--end::Text-->
-					<!--begin::Progress-->
-					<div class="d-flex align-items-center">
-						<span class="text-muted mr-3 font-size-sm font-weight-bolder">47%</span>
-						<div class="progress progress-xs min-w-65px h-5px">
-							<div class="progress-bar bg-info" role="progressbar" style="width: 47%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
-						</div>
-					</div>
-					<!--end::Progress-->
-				</div>
-				<!--end::Item-->
-				<!--begin::Item-->
-				<div class="d-flex align-items-center justify-content-between mb-6">
-					<!--begin::Text-->
-					<div class="d-flex flex-column">
-						<a href="#" class="text-dark-75 text-hover-primary mb-1 font-weight-bolder font-size-lg">Top Authors</a>
-						<span class="text-muted font-weight-bold">Successful Fellas</span>
-					</div>
-					<!--end::Text-->
-					<!--begin::Progress-->
-					<div class="d-flex align-items-center">
-						<span class="text-muted mr-3 font-size-sm font-weight-bolder">65%</span>
-						<div class="progress progress-xs min-w-65px h-5px">
-							<div class="progress-bar bg-warning" role="progressbar" style="width: 65%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
-						</div>
-					</div>
-					<!--end::Progress-->
-				</div>
-				<!--end::Item-->
-				<!--begin::Item-->
-				<div class="d-flex align-items-center justify-content-between">
-					<!--begin::Text-->
-					<div class="d-flex flex-column">
-						<a href="#" class="text-dark-75 text-hover-primary mb-1 font-weight-bolder font-size-lg">Active Customers</a>
-						<span class="text-muted font-weight-bold">Best Customers</span>
-					</div>
-					<!--end::Text-->
-					<!--begin::Progress-->
-					<div class="d-flex align-items-center">
-						<span class="text-muted mr-3 font-size-sm font-weight-bolder">71%</span>
-						<div class="progress progress-xs min-w-65px h-5px">
-							<div class="progress-bar bg-danger" role="progressbar" style="width: 71%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
-						</div>
-					</div>
-					<!--end::Progress-->
-				</div>
-				<!--end::Item-->
-			</div>
-			<!--end::Tab Pane-->
-			<!--begin::Tab Pane-->
-			<div class="tab-pane fade" id="kt_tab_mixed_2_3" role="tabpanel" aria-labelledby="kt_tab_mixed_2_3">
-				<!--begin::Item-->
-				<div class="d-flex align-items-center justify-content-between mb-6">
-					<!--begin::Text-->
-					<div class="d-flex flex-column">
-						<a href="#" class="text-dark-75 text-hover-primary mb-1 font-weight-bolder font-size-lg">New Users</a>
-						<span class="text-muted font-weight-bold">Awesome Users</span>
-					</div>
-					<!--end::Text-->
-					<!--begin::Progress-->
-					<div class="d-flex align-items-center">
-						<span class="text-muted mr-3 font-size-sm font-weight-bolder">47%</span>
-						<div class="progress progress-xs min-w-65px h-5px">
-							<div class="progress-bar bg-info" role="progressbar" style="width: 47%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
-						</div>
-					</div>
-					<!--end::Progress-->
-				</div>
-				<!--end::Item-->
-				<!--begin::Item-->
-				<div class="d-flex align-items-center justify-content-between mb-6">
-					<!--begin::Text-->
-					<div class="d-flex flex-column">
-						<a href="#" class="text-dark-75 text-hover-primary mb-1 font-weight-bolder font-size-lg">Active Customers</a>
-						<span class="text-muted font-weight-bold">Best Customers</span>
-					</div>
-					<!--end::Text-->
-					<!--begin::Progress-->
-					<div class="d-flex align-items-center">
-						<span class="text-muted mr-3 font-size-sm font-weight-bolder">71%</span>
-						<div class="progress progress-xs min-w-65px h-5px">
-							<div class="progress-bar bg-danger" role="progressbar" style="width: 71%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
-						</div>
-					</div>
-					<!--end::Progress-->
-				</div>
-				<!--end::Item-->
-				<!--begin::Item-->
-				<div class="d-flex align-items-center justify-content-between mb-6">
-					<!--begin::Text-->
-					<div class="d-flex flex-column">
-						<a href="#" class="text-dark-75 text-hover-primary mb-1 font-weight-bolder font-size-lg">Top Authors</a>
-						<span class="text-muted font-weight-bold">Successful Fellas</span>
-					</div>
-					<!--end::Text-->
-					<!--begin::Progress-->
-					<div class="d-flex align-items-center">
-						<span class="text-muted mr-3 font-size-sm font-weight-bolder">65%</span>
-						<div class="progress progress-xs min-w-65px h-5px">
-							<div class="progress-bar bg-warning" role="progressbar" style="width: 65%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
-						</div>
-					</div>
-					<!--end::Progress-->
-				</div>
-				<!--end::Item-->
-				<!--begin::Item-->
-				<div class="d-flex align-items-center justify-content-between">
-					<!--begin::Text-->
-					<div class="d-flex flex-column">
-						<a href="#" class="text-dark-75 text-hover-primary mb-1 font-weight-bolder font-size-lg">Popular Authors</a>
-						<span class="text-muted font-weight-bold">Most Successful</span>
-					</div>
-					<!--end::Text-->
-					<!--begin::Progress-->
-					<div class="d-flex align-items-center">
-						<span class="text-muted mr-3 font-size-sm font-weight-bolder">83%</span>
-						<div class="progress progress-xs min-w-65px h-5px">
-							<div class="progress-bar bg-success" role="progressbar" style="width: 83%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
-						</div>
-					</div>
-					<!--end::Progress-->
-				</div>
-				<!--end::Item-->
-			</div>
-			<!--end::Tab Pane-->
-		</div>
-		<!--end::Tab Content-->
-	</div>
-	<!--end::Body-->
-	</div>
-	<!--end::Mixed Widget 2-->
-	</div>
-	</div>
-
-
-
-
-	</div>
-	<!--end::Entry-->
-	</div>
-	<!--end::Content-->
-	<!--begin::Footer-->
-	<div class="footer bg-white py-4 d-flex flex-lg-column" id="kt_footer">
-
-	</div>
-	</div>
-	<!--end::Entry-->
-	</div>
-	<!--end::Content-->
-	<!--begin::Footer-->
-	<div class="footer bg-white py-4 d-flex flex-lg-column" id="kt_footer">
+<!--begin::Footer-->
+<div class="footer bg-white py-4 d-flex flex-lg-column" id="kt_footer">
 		<!--begin::Container-->
 		<div class="container d-flex flex-column flex-md-row align-items-center justify-content-between">
 			<!--begin::Copyright-->
@@ -772,17 +596,11 @@ $user = $query->fetch();
 				<a href="http://keenthemes.com/keen" target="_blank" class="nav-link px-3">Team</a>
 				<a href="http://keenthemes.com/keen" target="_blank" class="nav-link pl-3 pr-0">Contact</a>
 			</div>
-			<!--end::Nav-->
+
 		</div>
-		<!--end::Container-->
 	</div>
-	<!--end::Footer-->
 	</div>
-	<!--end::Wrapper-->
-	</div>
-	<!--end::Page-->
-	</div>
-	<!--end::Main-->
+
 	<!-- begin::User Panel-->
 	<div id="kt_quick_user" class="offcanvas offcanvas-right p-10">
 		<!--begin::Header-->
@@ -793,13 +611,13 @@ $user = $query->fetch();
 					<i class="ki ki-close icon-xs text-muted"></i>
 				</a>
 		</div>
-				<!--end::Header-->
+		<!--end::Header-->
 		<!--begin::Content-->
 		<div class="offcanvas-content pr-5 mr-n5">
 			<!--begin::Header-->
 			<div class="d-flex align-items-center mt-5">
 				<div class="symbol symbol-100 mr-5">
-				<div class="symbol-label" style="background-image:url('assets/keen/hulam_media/<?= $user['profile_pic']?>')"></div>
+					<div class="symbol-label" style="background-image:url('assets/keen/hulam_media/<?= $user['profile_pic'] ?>')"></div>
 					<i class="symbol-badge bg-success"></i>
 				</div>
 				<div class="d-flex flex-column">
@@ -821,7 +639,7 @@ $user = $query->fetch();
 										<!--end::Svg Icon-->
 									</span>
 								</span>
-								<span class="navi-text text-muted text-hover-primary"><?= $_SESSION['email']?>/span>
+								<span class="navi-text text-muted text-hover-primary"><?= $_SESSION['email'] ?></span>
 							</span>
 						</a>
 					</div>
@@ -858,7 +676,7 @@ $user = $query->fetch();
 				</a>
 				<!--end:Item-->
 				<!--begin::Item-->
-				<a href="debtor/send_message.php" class="navi-item">
+				<a href="debtor/send_feedback.php" class="navi-item">
 					<div class="navi-link">
 						<div class="symbol symbol-40 bg-light mr-3">
 							<div class="symbol-label">
@@ -898,6 +716,7 @@ $user = $query->fetch();
 	</div>
 	<!-- end::User Panel-->
 
+
 	<!--begin::Quick Panel-->
 	<div id="kt_quick_panel" class="offcanvas offcanvas-right pt-5 pb-10">
 		<!--begin::Header-->
@@ -908,6 +727,7 @@ $user = $query->fetch();
 				</li>
 				<li class="nav-item">
 					<a class="nav-link" data-toggle="tab" href="#kt_quick_panel_logs">Contacts</a>
+				</li>
 				</li>
 			</ul>
 			<div class="offcanvas-close mt-n1 pr-5">
@@ -967,7 +787,9 @@ $user = $query->fetch();
 						<div class="mb-5">
 							<h5 class="font-weight-bold mb-5">Your contacts</h5>
 							<?php
-							$sql = "SELECT * FROM message INNER JOIN user ON message.sender_id = user.user_id WHERE user.user_type!='2' AND user.user_type!='1' GROUP BY message.sender_id";
+
+							$user_id = $_SESSION['user_id'];
+							$sql = "SELECT * FROM message INNER JOIN user ON message.sender_id = user.user_id WHERE (user.user_type!='2' AND user.user_type!='1') AND (message.receiver_id = $user_id OR message.sender_id = $user_id) GROUP BY message.sender_id";
 							$query = $dbh->prepare($sql);
 							$query->execute();
 							$user_name = $query->fetchAll();
@@ -980,9 +802,9 @@ $user = $query->fetch();
 								</div>
 								<div class="d-flex flex-wrap flex-row-fluid">
 									<div class="d-flex flex-column pr-2 flex-grow-1">
-										<a href="debtor/send_message_investor.php?lender_id=<?= $contacts['sender_id']?>" class="text-dark text-hover-primary mb-1 font-weight-bold font-size-lg"><?= $contacts['company_name']?></a>
+										<a href="debtor/messages.php?sender_id=<?= $contacts['sender_id']?>" class="text-dark text-hover-primary mb-1 font-weight-bold font-size-lg"><?= $contacts['company_name']?></a>
 									</div>
-										<a href="debtor/send_message_investor.php?lender_id=<?= $contacts['sender_id']?>" class="btn btn-icon btn-light btn-sm">
+										<a href="debtor/messages.php?sender_id=<?= $contacts['sender_id']?>" class="btn btn-icon btn-light btn-sm">
 											<span class="svg-icon svg-icon-success">
 												<span class="svg-icon svg-icon-md">
 													<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
@@ -997,15 +819,21 @@ $user = $query->fetch();
 									</div>
 								</div>
 							<?php endforeach; ?>
-							<!-- <div class="d-flex align-items-center mb-6">
+							<div class="d-flex align-items-center mb-6">
 								<div class="symbol symbol-35 flex-shrink-0 mr-3">
 									<img alt="Pic" src="/hulam/assets/keen/media/logos/h_small.png" />
 								</div>
+								<?php
+								$sql = "SELECT * FROM user WHERE user_type = '1'";
+								$query = $dbh->prepare($sql);
+								$query->execute();
+								$admin = $query->fetch();
+								?>
 								<div class="d-flex flex-wrap flex-row-fluid">
 									<div class="d-flex flex-column pr-2 flex-grow-1">
-										<a href="debtor/send_message.php" class="text-dark text-hover-primary mb-1 font-weight-bold font-size-lg">The Hulam Team</a>
+										<a href="debtor/messages.php?sender_id=<?= $admin['user_id']?>" class="text-dark text-hover-primary mb-1 font-weight-bold font-size-lg">The Hulam Team</a>
 									</div>
-										<a href="debtor/send_message.php" class="btn btn-icon btn-light btn-sm">
+									<a href="debtor/messages.php?sender_id=<?= $admin['user_id']?>" class="btn btn-icon btn-light btn-sm">
 											<span class="svg-icon svg-icon-success">
 												<span class="svg-icon svg-icon-md">
 													<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
@@ -1019,7 +847,7 @@ $user = $query->fetch();
 										</a>
 									</div>
 								</div>
-							</div> -->
+							</div>
 						</div>
 					</div>
 				</div>
@@ -1042,8 +870,17 @@ $user = $query->fetch();
 		</span>
 	</div>
 	<!--end::Scrolltop-->
+	<!--end::Sticky Toolbar-->
 	<!--begin::Demo Panel-->
 	<div id="kt_demo_panel" class="offcanvas offcanvas-right p-10">
+		<!--begin::Header-->
+		<div class="offcanvas-header d-flex align-items-center justify-content-between pb-7">
+			<h4 class="font-weight-bold m-0">Select A Demo</h4>
+			<a href="#" class="btn btn-xs btn-icon btn-light btn-hover-primary" id="kt_demo_panel_close">
+				<i class="ki ki-close icon-xs text-muted"></i>
+			</a>
+		</div>
+		<!--end::Header-->
 
 	</div>
 	<!--end::Demo Panel-->
@@ -1112,21 +949,18 @@ $user = $query->fetch();
 		};
 	</script>
 	<!--end::Global Config-->
-
 	<!--begin::Global Theme Bundle(used by all pages)-->
 	<script src="assets/keen/plugins/global/plugins.bundle.js"></script>
 	<script src="assets/keen/plugins/custom/prismjs/prismjs.bundle.js"></script>
 	<script src="assets/keen/js/scripts.bundle.js"></script>
 	<!--end::Global Theme Bundle-->
+	<!--begin::Page Vendors(used by this page)-->
+	<script src="assets/keen/plugins/custom/fullcalendar/fullcalendar.bundle.js"></script>
+	<!--end::Page Vendors-->
 	<!--begin::Page Scripts(used by this page)-->
-	<script src="assets/keen/js/pages/custom/wizard/wizard-2.js"></script>
-	<!--begin::Page Scripts(used by this page)-->
-	<script src="assets/keen/js/pages/features/file-upload/image-input.js"></script>
-	<script src="assets/keen/js/pages/features/file-upload/dropzonejs.js"></script>
-	<!--begin::Page Scripts(used by this page)-->
-	<script src="assets/keen/js/pages/features/ktdatatable/base/data-local.js"></script>
+	<script src="assets/keen/js/pages/widgets.js"></script>
 	<!--end::Page Scripts-->
 </body>
 <!--end::Body-->
 
-</html>
+</html>	

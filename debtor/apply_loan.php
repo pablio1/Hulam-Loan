@@ -1655,6 +1655,7 @@ $user = $query->fetch();
 	</div>
 	<!-- end::User Panel-->
 
+
 	<!--begin::Quick Panel-->
 	<div id="kt_quick_panel" class="offcanvas offcanvas-right pt-5 pb-10">
 		<!--begin::Header-->
@@ -1665,6 +1666,7 @@ $user = $query->fetch();
 				</li>
 				<li class="nav-item">
 					<a class="nav-link" data-toggle="tab" href="#kt_quick_panel_logs">Contacts</a>
+				</li>
 				</li>
 			</ul>
 			<div class="offcanvas-close mt-n1 pr-5">
@@ -1724,7 +1726,9 @@ $user = $query->fetch();
 						<div class="mb-5">
 							<h5 class="font-weight-bold mb-5">Your contacts</h5>
 							<?php
-							$sql = "SELECT * FROM message INNER JOIN user ON message.sender_id = user.user_id WHERE user.user_type!='2' AND user.user_type!='1' GROUP BY message.sender_id";
+
+							$user_id = $_SESSION['user_id'];
+							$sql = "SELECT * FROM message INNER JOIN user ON message.sender_id = user.user_id WHERE (user.user_type!='2' AND user.user_type!='1') AND (message.receiver_id = $user_id OR message.sender_id = $user_id) GROUP BY message.sender_id";
 							$query = $dbh->prepare($sql);
 							$query->execute();
 							$user_name = $query->fetchAll();
@@ -1737,9 +1741,9 @@ $user = $query->fetch();
 								</div>
 								<div class="d-flex flex-wrap flex-row-fluid">
 									<div class="d-flex flex-column pr-2 flex-grow-1">
-										<a href="debtor/send_message_investor.php?lender_id=<?= $contacts['sender_id']?>" class="text-dark text-hover-primary mb-1 font-weight-bold font-size-lg"><?= $contacts['company_name']?></a>
+										<a href="debtor/messages.php?sender_id=<?= $contacts['sender_id']?>" class="text-dark text-hover-primary mb-1 font-weight-bold font-size-lg"><?= $contacts['company_name']?></a>
 									</div>
-										<a href="debtor/send_message_investor.php?lender_id=<?= $contacts['sender_id']?>" class="btn btn-icon btn-light btn-sm">
+										<a href="debtor/messages.php?sender_id=<?= $contacts['sender_id']?>" class="btn btn-icon btn-light btn-sm">
 											<span class="svg-icon svg-icon-success">
 												<span class="svg-icon svg-icon-md">
 													<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
@@ -1754,15 +1758,21 @@ $user = $query->fetch();
 									</div>
 								</div>
 							<?php endforeach; ?>
-							<!-- <div class="d-flex align-items-center mb-6">
+							<div class="d-flex align-items-center mb-6">
 								<div class="symbol symbol-35 flex-shrink-0 mr-3">
 									<img alt="Pic" src="/hulam/assets/keen/media/logos/h_small.png" />
 								</div>
+								<?php
+								$sql = "SELECT * FROM user WHERE user_type = '1'";
+								$query = $dbh->prepare($sql);
+								$query->execute();
+								$admin = $query->fetch();
+								?>
 								<div class="d-flex flex-wrap flex-row-fluid">
 									<div class="d-flex flex-column pr-2 flex-grow-1">
-										<a href="debtor/send_message.php" class="text-dark text-hover-primary mb-1 font-weight-bold font-size-lg">The Hulam Team</a>
+										<a href="debtor/messages.php?sender_id=<?= $admin['user_id']?>" class="text-dark text-hover-primary mb-1 font-weight-bold font-size-lg">The Hulam Team</a>
 									</div>
-										<a href="debtor/send_message.php" class="btn btn-icon btn-light btn-sm">
+									<a href="debtor/messages.php?sender_id=<?= $admin['user_id']?>" class="btn btn-icon btn-light btn-sm">
 											<span class="svg-icon svg-icon-success">
 												<span class="svg-icon svg-icon-md">
 													<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
@@ -1776,7 +1786,7 @@ $user = $query->fetch();
 										</a>
 									</div>
 								</div>
-							</div> -->
+							</div>
 						</div>
 					</div>
 				</div>

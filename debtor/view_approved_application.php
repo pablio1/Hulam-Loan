@@ -1229,20 +1229,24 @@ $user = $query->fetch();
 		</div>
                             
 
-	<div class="footer bg-white py-4 d-flex flex-lg-column" id="kt_footer">
+<!--begin::Footer-->
+<div class="footer bg-white py-4 d-flex flex-lg-column" id="kt_footer">
+		<!--begin::Container-->
 		<div class="container d-flex flex-column flex-md-row align-items-center justify-content-between">
+			<!--begin::Copyright-->
 			<div class="text-dark order-2 order-md-1">
 				<span class="text-muted font-weight-bold mr-2">2021©</span>
-				<a href="http://keenthemes.com/keen" target="_blank" class="text-dark-75 text-hover-primary">Hulam</a>
+				<a href="http://keenthemes.com/keen" target="_blank" class="text-dark-75 text-hover-primary">The Hulam Team</a>
 			</div>
+			<!--end::Copyright-->
+			<!--begin::Nav-->
 			<div class="nav nav-dark order-1 order-md-2">
 				<a href="http://keenthemes.com/keen" target="_blank" class="nav-link pr-3 pl-0">About</a>
 				<a href="http://keenthemes.com/keen" target="_blank" class="nav-link px-3">Team</a>
 				<a href="http://keenthemes.com/keen" target="_blank" class="nav-link pl-3 pr-0">Contact</a>
 			</div>
+
 		</div>
-	</div>
-	</div>
 	</div>
 	</div>
 
@@ -1256,13 +1260,13 @@ $user = $query->fetch();
 					<i class="ki ki-close icon-xs text-muted"></i>
 				</a>
 		</div>
-				<!--end::Header-->
+		<!--end::Header-->
 		<!--begin::Content-->
 		<div class="offcanvas-content pr-5 mr-n5">
 			<!--begin::Header-->
 			<div class="d-flex align-items-center mt-5">
 				<div class="symbol symbol-100 mr-5">
-				<div class="symbol-label" style="background-image:url('assets/keen/hulam_media/<?= $user['profile_pic']?>')"></div>
+					<div class="symbol-label" style="background-image:url('assets/keen/hulam_media/<?= $user['profile_pic'] ?>')"></div>
 					<i class="symbol-badge bg-success"></i>
 				</div>
 				<div class="d-flex flex-column">
@@ -1284,7 +1288,7 @@ $user = $query->fetch();
 										<!--end::Svg Icon-->
 									</span>
 								</span>
-								<span class="navi-text text-muted text-hover-primary"><?= $_SESSION['email']?></span>
+								<span class="navi-text text-muted text-hover-primary"><?= $_SESSION['email'] ?></span>
 							</span>
 						</a>
 					</div>
@@ -1320,8 +1324,8 @@ $user = $query->fetch();
 					</div>
 				</a>
 				<!--end:Item-->
-					<!--begin::Item-->
-					<a href="debtor/send_message.php" class="navi-item">
+				<!--begin::Item-->
+				<a href="debtor/send_feedback.php" class="navi-item">
 					<div class="navi-link">
 						<div class="symbol symbol-40 bg-light mr-3">
 							<div class="symbol-label">
@@ -1360,7 +1364,7 @@ $user = $query->fetch();
 		<!--end::Content-->
 	</div>
 	<!-- end::User Panel-->
-	
+
 
 	<!--begin::Quick Panel-->
 	<div id="kt_quick_panel" class="offcanvas offcanvas-right pt-5 pb-10">
@@ -1372,6 +1376,7 @@ $user = $query->fetch();
 				</li>
 				<li class="nav-item">
 					<a class="nav-link" data-toggle="tab" href="#kt_quick_panel_logs">Contacts</a>
+				</li>
 				</li>
 			</ul>
 			<div class="offcanvas-close mt-n1 pr-5">
@@ -1431,7 +1436,9 @@ $user = $query->fetch();
 						<div class="mb-5">
 							<h5 class="font-weight-bold mb-5">Your contacts</h5>
 							<?php
-							$sql = "SELECT * FROM message INNER JOIN user ON message.sender_id = user.user_id WHERE user.user_type!='2' AND user.user_type!='1' GROUP BY message.sender_id";
+
+							$user_id = $_SESSION['user_id'];
+							$sql = "SELECT * FROM message INNER JOIN user ON message.sender_id = user.user_id WHERE (user.user_type!='2' AND user.user_type!='1') AND (message.receiver_id = $user_id OR message.sender_id = $user_id) GROUP BY message.sender_id";
 							$query = $dbh->prepare($sql);
 							$query->execute();
 							$user_name = $query->fetchAll();
@@ -1444,9 +1451,9 @@ $user = $query->fetch();
 								</div>
 								<div class="d-flex flex-wrap flex-row-fluid">
 									<div class="d-flex flex-column pr-2 flex-grow-1">
-										<a href="debtor/send_message_investor.php?lender_id=<?= $contacts['sender_id']?>" class="text-dark text-hover-primary mb-1 font-weight-bold font-size-lg"><?= $contacts['company_name']?></a>
+										<a href="debtor/messages.php?sender_id=<?= $contacts['sender_id']?>" class="text-dark text-hover-primary mb-1 font-weight-bold font-size-lg"><?= $contacts['company_name']?></a>
 									</div>
-										<a href="debtor/send_message_investor.php?lender_id=<?= $contacts['sender_id']?>" class="btn btn-icon btn-light btn-sm">
+										<a href="debtor/messages.php?sender_id=<?= $contacts['sender_id']?>" class="btn btn-icon btn-light btn-sm">
 											<span class="svg-icon svg-icon-success">
 												<span class="svg-icon svg-icon-md">
 													<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
@@ -1461,15 +1468,21 @@ $user = $query->fetch();
 									</div>
 								</div>
 							<?php endforeach; ?>
-							<!-- <div class="d-flex align-items-center mb-6">
+							<div class="d-flex align-items-center mb-6">
 								<div class="symbol symbol-35 flex-shrink-0 mr-3">
 									<img alt="Pic" src="/hulam/assets/keen/media/logos/h_small.png" />
 								</div>
+								<?php
+								$sql = "SELECT * FROM user WHERE user_type = '1'";
+								$query = $dbh->prepare($sql);
+								$query->execute();
+								$admin = $query->fetch();
+								?>
 								<div class="d-flex flex-wrap flex-row-fluid">
 									<div class="d-flex flex-column pr-2 flex-grow-1">
-										<a href="debtor/send_message.php" class="text-dark text-hover-primary mb-1 font-weight-bold font-size-lg">The Hulam Team</a>
+										<a href="debtor/messages.php?sender_id=<?= $admin['user_id']?>" class="text-dark text-hover-primary mb-1 font-weight-bold font-size-lg">The Hulam Team</a>
 									</div>
-										<a href="debtor/send_message.php" class="btn btn-icon btn-light btn-sm">
+									<a href="debtor/messages.php?sender_id=<?= $admin['user_id']?>" class="btn btn-icon btn-light btn-sm">
 											<span class="svg-icon svg-icon-success">
 												<span class="svg-icon svg-icon-md">
 													<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
@@ -1483,12 +1496,13 @@ $user = $query->fetch();
 										</a>
 									</div>
 								</div>
-							</div> -->
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-		<!--end::Quick Panel-->
+	<!--end::Quick Panel-->
+
 
 	<!--begin::Scrolltop-->
 	<div id="kt_scrolltop" class="scrolltop">
@@ -1506,7 +1520,19 @@ $user = $query->fetch();
 	</div>
 	<!--end::Scrolltop-->
 	<!--end::Sticky Toolbar-->
+	<!--begin::Demo Panel-->
+	<div id="kt_demo_panel" class="offcanvas offcanvas-right p-10">
+		<!--begin::Header-->
+		<div class="offcanvas-header d-flex align-items-center justify-content-between pb-7">
+			<h4 class="font-weight-bold m-0">Select A Demo</h4>
+			<a href="#" class="btn btn-xs btn-icon btn-light btn-hover-primary" id="kt_demo_panel_close">
+				<i class="ki ki-close icon-xs text-muted"></i>
+			</a>
+		</div>
+		<!--end::Header-->
 
+	</div>
+	<!--end::Demo Panel-->
 	<script>
 		var HOST_URL = "https://preview.keenthemes.com/keen/theme/tools/preview";
 	</script>
@@ -1582,18 +1608,6 @@ $user = $query->fetch();
 	<!--end::Page Vendors-->
 	<!--begin::Page Scripts(used by this page)-->
 	<script src="assets/keen/js/pages/widgets.js"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-	<script src="assets/keen/js/pages/features/file-upload/dropzonejs.js"></script>
-	<script src="assets/keen/js/pages/features/file-upload/image-input.js"></script>
-	<script src="assets/keen/js/pages/features/file-upload/dropzonejs.js"></script>
-	<script src="https://unpkg.com/dropzone@6.0.0-beta.1/dist/dropzone-min.js"></script>
-	<link href="https://unpkg.com/dropzone@6.0.0-beta.1/dist/dropzone.css" rel="stylesheet" type="text/css" />
-	<script>
-	(document).ready(function () {
-    $("#flash-msg").delay(3000).fadeOut("slow");
-	});
-	</script>
-
 	<!--end::Page Scripts-->
 </body>
 <!--end::Body-->

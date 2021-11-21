@@ -279,23 +279,26 @@ $user = $query->fetch();
 		</div>
 		</div>
 		</div>							
+		<!--begin::Footer-->
 		<div class="footer bg-white py-4 d-flex flex-lg-column" id="kt_footer">
-			<div class="container d-flex flex-column flex-md-row align-items-center justify-content-between">
-				<div class="text-dark order-2 order-md-1">
-					<span class="text-muted font-weight-bold mr-2">2021©</span>
-					<a href="http://keenthemes.com/keen" target="_blank" class="text-dark-75 text-hover-primary">Hulam</a>
-				</div>
-				<div class="nav nav-dark order-1 order-md-2">
-					<a href="http://keenthemes.com/keen" target="_blank" class="nav-link pr-3 pl-0">About</a>
-					<a href="http://keenthemes.com/keen" target="_blank" class="nav-link px-3">Team</a>
-					<a href="http://keenthemes.com/keen" target="_blank" class="nav-link pl-3 pr-0">Contact</a>
-				</div>
+		<!--begin::Container-->
+		<div class="container d-flex flex-column flex-md-row align-items-center justify-content-between">
+			<!--begin::Copyright-->
+			<div class="text-dark order-2 order-md-1">
+				<span class="text-muted font-weight-bold mr-2">2021©</span>
+				<a href="http://keenthemes.com/keen" target="_blank" class="text-dark-75 text-hover-primary">The Hulam Team</a>
 			</div>
+			<!--end::Copyright-->
+			<!--begin::Nav-->
+			<div class="nav nav-dark order-1 order-md-2">
+				<a href="http://keenthemes.com/keen" target="_blank" class="nav-link pr-3 pl-0">About</a>
+				<a href="http://keenthemes.com/keen" target="_blank" class="nav-link px-3">Team</a>
+				<a href="http://keenthemes.com/keen" target="_blank" class="nav-link pl-3 pr-0">Contact</a>
+			</div>
+
 		</div>
 	</div>
 	</div>
-	</div>
-
 
 	<!-- begin::User Panel-->
 	<div id="kt_quick_user" class="offcanvas offcanvas-right p-10">
@@ -307,13 +310,13 @@ $user = $query->fetch();
 					<i class="ki ki-close icon-xs text-muted"></i>
 				</a>
 		</div>
-				<!--end::Header-->
+		<!--end::Header-->
 		<!--begin::Content-->
 		<div class="offcanvas-content pr-5 mr-n5">
 			<!--begin::Header-->
 			<div class="d-flex align-items-center mt-5">
 				<div class="symbol symbol-100 mr-5">
-				<div class="symbol-label" style="background-image:url('assets/keen/hulam_media/<?= $user['profile_pic']?>')"></div>
+					<div class="symbol-label" style="background-image:url('assets/keen/hulam_media/<?= $user['profile_pic'] ?>')"></div>
 					<i class="symbol-badge bg-success"></i>
 				</div>
 				<div class="d-flex flex-column">
@@ -335,7 +338,7 @@ $user = $query->fetch();
 										<!--end::Svg Icon-->
 									</span>
 								</span>
-								<span class="navi-text text-muted text-hover-primary"><?= $_SESSION['email']?>/span>
+								<span class="navi-text text-muted text-hover-primary"><?= $_SESSION['email'] ?></span>
 							</span>
 						</a>
 					</div>
@@ -371,8 +374,8 @@ $user = $query->fetch();
 					</div>
 				</a>
 				<!--end:Item-->
-                <!--begin::Item-->
-				<a href="debtor/send_message.php" class="navi-item">
+				<!--begin::Item-->
+				<a href="debtor/send_feedback.php" class="navi-item">
 					<div class="navi-link">
 						<div class="symbol symbol-40 bg-light mr-3">
 							<div class="symbol-label">
@@ -412,7 +415,8 @@ $user = $query->fetch();
 	</div>
 	<!-- end::User Panel-->
 
-  	<!--begin::Quick Panel-->
+
+	<!--begin::Quick Panel-->
 	<div id="kt_quick_panel" class="offcanvas offcanvas-right pt-5 pb-10">
 		<!--begin::Header-->
 		<div class="offcanvas-header offcanvas-header-navs d-flex align-items-center justify-content-between mb-5">
@@ -422,6 +426,7 @@ $user = $query->fetch();
 				</li>
 				<li class="nav-item">
 					<a class="nav-link" data-toggle="tab" href="#kt_quick_panel_logs">Contacts</a>
+				</li>
 				</li>
 			</ul>
 			<div class="offcanvas-close mt-n1 pr-5">
@@ -481,7 +486,9 @@ $user = $query->fetch();
 						<div class="mb-5">
 							<h5 class="font-weight-bold mb-5">Your contacts</h5>
 							<?php
-							$sql = "SELECT * FROM message INNER JOIN user ON message.sender_id = user.user_id WHERE user.user_type!='2' AND user.user_type!='1' GROUP BY message.sender_id";
+
+							$user_id = $_SESSION['user_id'];
+							$sql = "SELECT * FROM message INNER JOIN user ON message.sender_id = user.user_id WHERE (user.user_type!='2' AND user.user_type!='1') AND (message.receiver_id = $user_id OR message.sender_id = $user_id) GROUP BY message.sender_id";
 							$query = $dbh->prepare($sql);
 							$query->execute();
 							$user_name = $query->fetchAll();
@@ -494,9 +501,9 @@ $user = $query->fetch();
 								</div>
 								<div class="d-flex flex-wrap flex-row-fluid">
 									<div class="d-flex flex-column pr-2 flex-grow-1">
-										<a href="debtor/send_message_investor.php?lender_id=<?= $contacts['sender_id']?>" class="text-dark text-hover-primary mb-1 font-weight-bold font-size-lg"><?= $contacts['company_name']?></a>
+										<a href="debtor/messages.php?sender_id=<?= $contacts['sender_id']?>" class="text-dark text-hover-primary mb-1 font-weight-bold font-size-lg"><?= $contacts['company_name']?></a>
 									</div>
-										<a href="debtor/send_message_investor.php?lender_id=<?= $contacts['sender_id']?>" class="btn btn-icon btn-light btn-sm">
+										<a href="debtor/messages.php?sender_id=<?= $contacts['sender_id']?>" class="btn btn-icon btn-light btn-sm">
 											<span class="svg-icon svg-icon-success">
 												<span class="svg-icon svg-icon-md">
 													<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
@@ -511,15 +518,21 @@ $user = $query->fetch();
 									</div>
 								</div>
 							<?php endforeach; ?>
-							<!-- <div class="d-flex align-items-center mb-6">
+							<div class="d-flex align-items-center mb-6">
 								<div class="symbol symbol-35 flex-shrink-0 mr-3">
 									<img alt="Pic" src="/hulam/assets/keen/media/logos/h_small.png" />
 								</div>
+								<?php
+								$sql = "SELECT * FROM user WHERE user_type = '1'";
+								$query = $dbh->prepare($sql);
+								$query->execute();
+								$admin = $query->fetch();
+								?>
 								<div class="d-flex flex-wrap flex-row-fluid">
 									<div class="d-flex flex-column pr-2 flex-grow-1">
-										<a href="debtor/send_message.php" class="text-dark text-hover-primary mb-1 font-weight-bold font-size-lg">The Hulam Team</a>
+										<a href="debtor/messages.php?sender_id=<?= $admin['user_id']?>" class="text-dark text-hover-primary mb-1 font-weight-bold font-size-lg">The Hulam Team</a>
 									</div>
-										<a href="debtor/send_message.php" class="btn btn-icon btn-light btn-sm">
+									<a href="debtor/messages.php?sender_id=<?= $admin['user_id']?>" class="btn btn-icon btn-light btn-sm">
 											<span class="svg-icon svg-icon-success">
 												<span class="svg-icon svg-icon-md">
 													<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
@@ -533,14 +546,14 @@ $user = $query->fetch();
 										</a>
 									</div>
 								</div>
-							</div> -->
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 	<!--end::Quick Panel-->
 
-	
+
 	<!--begin::Scrolltop-->
 	<div id="kt_scrolltop" class="scrolltop">
 		<span class="svg-icon">
@@ -567,107 +580,7 @@ $user = $query->fetch();
 			</a>
 		</div>
 		<!--end::Header-->
-		<!--begin::Content-->
-		<div class="offcanvas-content">
-			<!--begin::Wrapper-->
-			<div class="offcanvas-wrapper mb-5 scroll-pull">
-				<h5 class="font-weight-bold mb-4 text-center">Demo 1</h5>
-				<div class="overlay rounded-lg mb-8 offcanvas-demo">
-					<div class="overlay-wrapper rounded-lg">
-						<img src="assets/media/demos/demo1.png" alt="" class="w-100" />
-					</div>
-					<div class="overlay-layer">
-						<a href="../../demo1/dist" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">HTML</a>
-						<a href="https://preview.keenthemes.com/keen/demo1/rtl/index.html" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">RTL</a>
-					</div>
-				</div>
-				<h5 class="font-weight-bold mb-4 text-center">Demo 2</h5>
-				<div class="overlay rounded-lg mb-8 offcanvas-demo">
-					<div class="overlay-wrapper rounded-lg">
-						<img src="assets/media/demos/demo2.png" alt="" class="w-100" />
-					</div>
-					<div class="overlay-layer">
-						<a href="../../demo2/dist" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">HTML</a>
-						<a href="https://preview.keenthemes.com/keen/demo2/rtl/index.html" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">RTL</a>
-					</div>
-				</div>
-				<h5 class="font-weight-bold mb-4 text-center">Demo 3</h5>
-				<div class="overlay rounded-lg mb-8 offcanvas-demo offcanvas-demo-active">
-					<div class="overlay-wrapper rounded-lg">
-						<img src="assets/media/demos/demo3.png" alt="" class="w-100" />
-					</div>
-					<div class="overlay-layer">
-						<a href="../../demo3/dist" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">HTML</a>
-						<a href="https://preview.keenthemes.com/keen/demo3/rtl/index.html" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">RTL</a>
-					</div>
-				</div>
-				<h5 class="font-weight-bold mb-4 text-center">Demo 4</h5>
-				<div class="overlay rounded-lg mb-8 offcanvas-demo">
-					<div class="overlay-wrapper rounded-lg">
-						<img src="assets/media/demos/demo4.png" alt="" class="w-100" />
-					</div>
-					<div class="overlay-layer">
-						<a href="../../demo4/dist" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">HTML</a>
-						<a href="https://preview.keenthemes.com/keen/demo4/rtl/index.html" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">RTL</a>
-					</div>
-				</div>
-				<h5 class="font-weight-bold mb-4 text-center">Demo 5</h5>
-				<div class="overlay rounded-lg mb-8 offcanvas-demo">
-					<div class="overlay-wrapper rounded-lg">
-						<img src="assets/media/demos/demo5.png" alt="" class="w-100" />
-					</div>
-					<div class="overlay-layer">
-						<a href="../../demo5/dist" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">HTML</a>
-						<a href="https://preview.keenthemes.com/keen/demo5/rtl/index.html" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">RTL</a>
-					</div>
-				</div>
-				<h5 class="font-weight-bold mb-4 text-center">Demo 6</h5>
-				<div class="overlay rounded-lg mb-8 offcanvas-demo">
-					<div class="overlay-wrapper rounded-lg">
-						<img src="assets/media/demos/demo6.png" alt="" class="w-100" />
-					</div>
-					<div class="overlay-layer">
-						<a href="../../demo6/dist" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">HTML</a>
-						<a href="https://preview.keenthemes.com/keen/demo6/rtl/index.html" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">RTL</a>
-					</div>
-				</div>
-				<h5 class="font-weight-bold mb-4 text-center">Demo 7</h5>
-				<div class="overlay rounded-lg mb-8 offcanvas-demo">
-					<div class="overlay-wrapper rounded-lg">
-						<img src="assets/media/demos/demo7.png" alt="" class="w-100" />
-					</div>
-					<div class="overlay-layer">
-						<a href="../../demo7/dist" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">HTML</a>
-						<a href="https://preview.keenthemes.com/keen/demo7/rtl/index.html" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">RTL</a>
-					</div>
-				</div>
-				<h5 class="font-weight-bold mb-4 text-center">Demo 8</h5>
-				<div class="overlay rounded-lg mb-8 offcanvas-demo">
-					<div class="overlay-wrapper rounded-lg">
-						<img src="assets/media/demos/demo8.png" alt="" class="w-100" />
-					</div>
-					<div class="overlay-layer">
-						<a href="#" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow disabled opacity-90">Coming soon</a>
-					</div>
-				</div>
-				<h5 class="font-weight-bold mb-4 text-center">Demo 9</h5>
-				<div class="overlay rounded-lg mb-8 offcanvas-demo">
-					<div class="overlay-wrapper rounded-lg">
-						<img src="assets/media/demos/demo9.png" alt="" class="w-100" />
-					</div>
-					<div class="overlay-layer">
-						<a href="#" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow disabled opacity-90">Coming soon</a>
-					</div>
-				</div>
-			</div>
-			<!--end::Wrapper-->
-			<!--begin::Purchase-->
-			<div class="offcanvas-footer">
-				<a href="https://themes.getbootstrap.com/product/keen-the-ultimate-bootstrap-admin-theme/" target="_blank" class="btn btn-block btn-danger btn-shadow font-weight-bolder text-uppercase">Buy Keen Now!</a>
-			</div>
-			<!--end::Purchase-->
-		</div>
-		<!--end::Content-->
+
 	</div>
 	<!--end::Demo Panel-->
 	<script>
