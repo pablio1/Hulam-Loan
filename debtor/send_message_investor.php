@@ -347,7 +347,7 @@ if(isset($_POST['submit'])){
                 </a>
                 <!--end:Item-->
                 <!--begin::Item-->
-                <a href="debtor/send_feedback.php" class="navi-item">
+                <a href="debtor/send_message.php" class="navi-item">
                     <div class="navi-link">
                         <div class="symbol symbol-40 bg-light mr-3">
                             <div class="symbol-label">
@@ -388,252 +388,134 @@ if(isset($_POST['submit'])){
     <!-- end::User Panel-->
 
 
-    <!--begin::Quick Panel-->
-    <div id="kt_quick_panel" class="offcanvas offcanvas-right pt-5 pb-10">
-        <!--begin::Header-->
-        <div class="offcanvas-header offcanvas-header-navs d-flex align-items-center justify-content-between mb-5">
-            <ul class="nav nav-bold nav-tabs nav-tabs-line nav-tabs-line-3x nav-tabs-primary flex-grow-1 px-10" role="tablist">
-                <li class="nav-item">
-                    <a class="nav-link active" data-toggle="tab" href="#kt_chat_modal">Messages</a>
-                </li>
-            </ul>
-            <div class="offcanvas-close mt-n1 pr-5">
-                <a href="#" class="btn btn-xs btn-icon btn-light btn-hover-primary" id="kt_quick_panel_close">
-                    <i class="ki ki-close icon-xs text-muted"></i>
-                </a>
-            </div>
-        </div>
-        <!--end::Header-->
-        <!--begin::Content-->
-        <div class="offcanvas-content px-10">
-            <div class="tab-content">
-                <div class="navi navi-icon-circle navi-spacer-x-0">
-                    <?php
-                    $user_id = $_SESSION['user_id'];
+	<!--begin::Quick Panel-->
+	<div id="kt_quick_panel" class="offcanvas offcanvas-right pt-5 pb-10">
+		<!--begin::Header-->
+		<div class="offcanvas-header offcanvas-header-navs d-flex align-items-center justify-content-between mb-5">
+			<ul class="nav nav-bold nav-tabs nav-tabs-line nav-tabs-line-3x nav-tabs-primary flex-grow-1 px-10" role="tablist">
+				<li class="nav-item">
+					<a class="nav-link active" data-toggle="tab" href="#kt_quick_panel_notifications">Notification</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" data-toggle="tab" href="#kt_quick_panel_logs">Contacts</a>
+				</li>
+			</ul>
+			<div class="offcanvas-close mt-n1 pr-5">
+				<a href="#" class="btn btn-xs btn-icon btn-light btn-hover-primary" id="kt_quick_panel_close">
+					<i class="ki ki-close icon-xs text-muted"></i>
+				</a>
+			</div>
+		</div>
+		<!--end::Header-->
 
-                    $sql = "SELECT * FROM message INNER JOIN user ON message.sender_id = user.user_id WHERE message.receiver_id = $user_id ORDER BY date_message desc";
-                    $query = $dbh->prepare($sql);
-                    $query->execute();
-                    $results = $query->fetchAll(PDO::FETCH_OBJ);
+		<!--begin::Content-->
+		<div class="offcanvas-content px-10">
+			<div class="tab-content">
+				<div class="tab-pane show pt-2 pr-5 mr-n5 active" id="kt_quick_panel_notifications" role="tabpanel">
+				<div class="navi navi-icon-circle navi-spacer-x-0">
+					<?php
+					$user_id = $_SESSION['user_id'];
+					$sql = "SELECT * FROM message INNER JOIN user ON message.sender_id = user.user_id WHERE message.receiver_id = $user_id ORDER BY date_message desc";
+					$query = $dbh->prepare($sql);
+					$query->execute();
+					$results = $query->fetchAll(PDO::FETCH_OBJ);
 
-                    foreach ($results as $res) :
+					foreach ($results as $res) :
 
-                    ?> <a href="debtor/messages.php?sender_id=<?= htmlentities($res->sender_id) ?>">
-                            <div class="navi-link rounded">
-                                <div class="symbol symbol-50 mr-3">
-                                </div>
-                                <div class="navi-text">
-                                    <div class="font-weight-bold font-size-lg">
-                                        <?php
-                                        $red = htmlentities($res->user_type);
+					?> <a href="debtor/messages.php?sender_id=<?= htmlentities($res->sender_id) ?>">
+							<div class="navi-link rounded">
+								<div class="symbol symbol-50 mr-3">
+								</div>
+								<div class="navi-text">
+									<div class="font-weight-bold font-size-lg">
+										<?php
+										$red = htmlentities($res->user_type);
 
-                                        if ($red == 1) : ?>
-                                            <?= htmlentities($res->firstname) . '' . htmlentities($res->middlename) . ' ' . htmlentities($res->lastname); ?>
-                                        <?php elseif ($red == 2) : ?>
-                                            <?= htmlentities($res->firstname) . '' . htmlentities($res->middlename) . ' ' . htmlentities($res->lastname); ?>
-                                        <?php elseif ($red == 3) : ?>
-                                            <?= htmlentities($res->company_name); ?>
-                                        <?php elseif ($red == 4) : ?>
-                                            <?= htmlentities($res->firstname) . '' . htmlentities($res->middlename) . ' ' . htmlentities($res->lastname); ?>
-                                        <?php else : ?>
-                                            <?= htmlentities($res->company_name); ?>
-                                        <?php endif; ?>
-                                    </div><span class="font-size-sm"><?= htmlentities($res->date_message); ?></span>
-                                    <div class="text-muted"><?= htmlentities($res->message) ?></div>
-                                </div>
-                            </div>
-                        </a>
-                    <?php endforeach; ?>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!--end::Content-->
-    </div>
-    <!--end::Quick Panel-->
+										if ($red == 1) : ?>
+											<?= htmlentities($res->firstname) . '' . htmlentities($res->middlename) . ' ' . htmlentities($res->lastname); ?>
+										<?php elseif ($red == 2) : ?>
+											<?= htmlentities($res->firstname) . '' . htmlentities($res->middlename) . ' ' . htmlentities($res->lastname); ?>
+										<?php elseif ($red == 3) : ?>
+											<?= htmlentities($res->company_name); ?>
+										<?php elseif ($red == 4) : ?>
+											<?= htmlentities($res->firstname) . '' . htmlentities($res->middlename) . ' ' . htmlentities($res->lastname); ?>
+										<?php else : ?>
+											<?= htmlentities($res->company_name); ?>
+										<?php endif; ?>
+									</div><span class="font-size-sm"><?= htmlentities($res->date_message); ?></span>
+									<div class="text-muted"><?= htmlentities($res->message) ?></div>
+								</div>
+							</div>
+						</a>
+					<?php endforeach; ?>
+				</div>
+				</div>
+				<!-- END NOTIFICATION CONTENT -->
 
-    <!--begin::Chat Panel-->
-    <div class="modal modal-sticky modal-sticky-bottom-right" id="kt_chat_modal" role="dialog" data-backdrop="false">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <!--begin::Card-->
-                <div class="card card-custom">
-                    <!--begin::Header-->
-                    <div class="card-header align-items-center px-4 py-3">
-                        <div class="text-left flex-grow-1">
+				<!-- CONTACTS -->
+					<div class="tab-pane fade show pt-3 pr-5 mr-n5" id="kt_quick_panel_logs" role="tabpanel">
+						<div class="mb-5">
+							<h5 class="font-weight-bold mb-5">Your contacts</h5>
+							<?php
+							$sql = "SELECT * FROM message INNER JOIN user ON message.sender_id = user.user_id WHERE user.user_type!='2' AND user.user_type!='1' GROUP BY message.sender_id";
+							$query = $dbh->prepare($sql);
+							$query->execute();
+							$user_name = $query->fetchAll();
 
-                        </div>
-                        <div class="text-center flex-grow-1">
-                            <div class="text-dark-75 font-weight-bold font-size-h5">Matt Pears</div>
-                            <div>
-                                <span class="label label-dot label-success"></span>
-                                <span class="font-weight-bold text-muted font-size-sm">Active</span>
-                            </div>
-                        </div>
-                        <div class="text-right flex-grow-1">
-                            <button type="button" class="btn btn-clean btn-sm btn-icon btn-icon-md" data-dismiss="modal">
-                                <i class="ki ki-close icon-1x"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <!--end::Header-->
+							?>
+							<?php foreach ($user_name as $contacts) : ?>
+							<div class="d-flex align-items-center mb-">
+								<div class="symbol symbol-35 flex-shrink-0 mr-3">
+									<img alt="Pic" src="/hulam/assets/keen/hulam_media/<?= $contacts['profile_pic']?>" />
+								</div>
+								<div class="d-flex flex-wrap flex-row-fluid">
+									<div class="d-flex flex-column pr-2 flex-grow-1">
+										<a href="debtor/send_message_investor.php?lender_id=<?= $contacts['sender_id']?>" class="text-dark text-hover-primary mb-1 font-weight-bold font-size-lg"><?= $contacts['company_name']?></a>
+									</div>
+										<a href="debtor/send_message_investor.php?lender_id=<?= $contacts['sender_id']?>" class="btn btn-icon btn-light btn-sm">
+											<span class="svg-icon svg-icon-success">
+												<span class="svg-icon svg-icon-md">
+													<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+														<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+															<polygon points="0 0 24 0 24 24 0 24" />
+															<path d="M6.70710678,15.7071068 C6.31658249,16.0976311 5.68341751,16.0976311 5.29289322,15.7071068 C4.90236893,15.3165825 4.90236893,14.6834175 5.29289322,14.2928932 L11.2928932,8.29289322 C11.6714722,7.91431428 12.2810586,7.90106866 12.6757246,8.26284586 L18.6757246,13.7628459 C19.0828436,14.1360383 19.1103465,14.7686056 18.7371541,15.1757246 C18.3639617,15.5828436 17.7313944,15.6103465 17.3242754,15.2371541 L12.0300757,10.3841378 L6.70710678,15.7071068 Z" fill="#000000" fill-rule="nonzero" transform="translate(12.000003, 11.999999) rotate(-270.000000) translate(-12.000003, -11.999999)" />
+														</g>
+													</svg>
+												</span>
+											</span>
+										</a>
+									</div>
+								</div>
+							<?php endforeach; ?>
+							<!-- <div class="d-flex align-items-center mb-6">
+								<div class="symbol symbol-35 flex-shrink-0 mr-3">
+									<img alt="Pic" src="/hulam/assets/keen/media/logos/h_small.png" />
+								</div>
+								<div class="d-flex flex-wrap flex-row-fluid">
+									<div class="d-flex flex-column pr-2 flex-grow-1">
+										<a href="debtor/send_message.php" class="text-dark text-hover-primary mb-1 font-weight-bold font-size-lg">The Hulam Team</a>
+									</div>
+										<a href="debtor/send_message.php" class="btn btn-icon btn-light btn-sm">
+											<span class="svg-icon svg-icon-success">
+												<span class="svg-icon svg-icon-md">
+													<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+														<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+															<polygon points="0 0 24 0 24 24 0 24" />
+															<path d="M6.70710678,15.7071068 C6.31658249,16.0976311 5.68341751,16.0976311 5.29289322,15.7071068 C4.90236893,15.3165825 4.90236893,14.6834175 5.29289322,14.2928932 L11.2928932,8.29289322 C11.6714722,7.91431428 12.2810586,7.90106866 12.6757246,8.26284586 L18.6757246,13.7628459 C19.0828436,14.1360383 19.1103465,14.7686056 18.7371541,15.1757246 C18.3639617,15.5828436 17.7313944,15.6103465 17.3242754,15.2371541 L12.0300757,10.3841378 L6.70710678,15.7071068 Z" fill="#000000" fill-rule="nonzero" transform="translate(12.000003, 11.999999) rotate(-270.000000) translate(-12.000003, -11.999999)" />
+														</g>
+													</svg>
+												</span>
+											</span>
+										</a>
+									</div>
+								</div>
+							</div> -->
+						</div>
+					</div>
+				</div>
+			</div>
+    	<!--end::Quick Panel-->
 
-
-                    <!--begin::Body-->
-                    <div class="card-body">
-                        <!--begin::Scroll-->
-                        <div class="scroll scroll-pull" data-height="375" data-mobile-height="300">
-                            <!--begin::Messages-->
-                            <div class="messages">
-                                <!--begin::Message In-->
-                                <div class="d-flex flex-column mb-5 align-items-start">
-                                    <div class="d-flex align-items-center">
-                                        <div class="symbol symbol-circle symbol-40 mr-3">
-                                            <img alt="Pic" src="assets/keen/media/users/150-11.jpg" />
-                                        </div>
-                                        <div>
-                                            <a href="#" class="text-dark-75 text-hover-primary font-weight-bold font-size-h6">Matt Pears</a>
-                                            <span class="text-muted font-size-sm">2 Hours</span>
-                                        </div>
-                                    </div>
-                                    <div class="mt-2 rounded p-5 bg-light-success text-dark-50 font-weight-bold font-size-lg text-left max-w-400px">How likely are you to recommend our company to your friends and family?</div>
-                                </div>
-                                <!--end::Message In-->
-                                <!--begin::Message Out-->
-                                <div class="d-flex flex-column mb-5 align-items-end">
-                                    <div class="d-flex align-items-center">
-                                        <div>
-                                            <span class="text-muted font-size-sm">3 minutes</span>
-                                            <a href="#" class="text-dark-75 text-hover-primary font-weight-bold font-size-h6">You</a>
-                                        </div>
-                                        <div class="symbol symbol-circle symbol-40 ml-3">
-                                            <img alt="Pic" src="assets/keen/media/users/150-9.jpg" />
-                                        </div>
-                                    </div>
-                                    <div class="mt-2 rounded p-5 bg-light-primary text-dark-50 font-weight-bold font-size-lg text-right max-w-400px">Hey there, we’re just writing to let you know that you’ve been subscribed to a repository on GitHub.</div>
-                                </div>
-                                <!--end::Message Out-->
-                                <!--begin::Message In-->
-                                <div class="d-flex flex-column mb-5 align-items-start">
-                                    <div class="d-flex align-items-center">
-                                        <div class="symbol symbol-circle symbol-40 mr-3">
-                                            <img alt="Pic" src="assets/keen/media/users/150-11.jpg" />
-                                        </div>
-                                        <div>
-                                            <a href="#" class="text-dark-75 text-hover-primary font-weight-bold font-size-h6">Matt Pears</a>
-                                            <span class="text-muted font-size-sm">40 seconds</span>
-                                        </div>
-                                    </div>
-                                    <div class="mt-2 rounded p-5 bg-light-success text-dark-50 font-weight-bold font-size-lg text-left max-w-400px">Ok, Understood!</div>
-                                </div>
-                                <!--end::Message In-->
-                                <!--begin::Message Out-->
-                                <div class="d-flex flex-column mb-5 align-items-end">
-                                    <div class="d-flex align-items-center">
-                                        <div>
-                                            <span class="text-muted font-size-sm">Just now</span>
-                                            <a href="#" class="text-dark-75 text-hover-primary font-weight-bold font-size-h6">You</a>
-                                        </div>
-                                        <div class="symbol symbol-circle symbol-40 ml-3">
-                                            <img alt="Pic" src="assets/keen/media/users/150-9.jpg" />
-                                        </div>
-                                    </div>
-                                    <div class="mt-2 rounded p-5 bg-light-primary text-dark-50 font-weight-bold font-size-lg text-right max-w-400px">You’ll receive notifications for all issues, pull requests!</div>
-                                </div>
-                                <!--end::Message Out-->
-                                <!--begin::Message In-->
-                                <div class="d-flex flex-column mb-5 align-items-start">
-                                    <div class="d-flex align-items-center">
-                                        <div class="symbol symbol-circle symbol-40 mr-3">
-                                            <img alt="Pic" src="assets/keen/media/users/150-2.jpg" />
-                                        </div>
-                                        <div>
-                                            <a href="#" class="text-dark-75 text-hover-primary font-weight-bold font-size-h6">Matt Pears</a>
-                                            <span class="text-muted font-size-sm">40 seconds</span>
-                                        </div>
-                                    </div>
-                                    <div class="mt-2 rounded p-5 bg-light-success text-dark-50 font-weight-bold font-size-lg text-left max-w-400px">You can unwatch this repository immediately by clicking here:
-                                        <a href="#">https://github.com</a>
-                                    </div>
-                                </div>
-                                <!--end::Message In-->
-                                <!--begin::Message Out-->
-                                <div class="d-flex flex-column mb-5 align-items-end">
-                                    <div class="d-flex align-items-center">
-                                        <div>
-                                            <span class="text-muted font-size-sm">Just now</span>
-                                            <a href="#" class="text-dark-75 text-hover-primary font-weight-bold font-size-h6">You</a>
-                                        </div>
-                                        <div class="symbol symbol-circle symbol-40 ml-3">
-                                            <img alt="Pic" src="assets/keen/media/users/150-9.jpg" />
-                                        </div>
-                                    </div>
-                                    <div class="mt-2 rounded p-5 bg-light-primary text-dark-50 font-weight-bold font-size-lg text-right max-w-400px">Discover what students who viewed Learn Figma - UI/UX Design. Essential Training also viewed</div>
-                                </div>
-                                <!--end::Message Out-->
-                                <!--begin::Message In-->
-                                <div class="d-flex flex-column mb-5 align-items-start">
-                                    <div class="d-flex align-items-center">
-                                        <div class="symbol symbol-circle symbol-40 mr-3">
-                                            <img alt="Pic" src="assets/keen/media/users/150-2.jpg" />
-                                        </div>
-                                        <div>
-                                            <a href="#" class="text-dark-75 text-hover-primary font-weight-bold font-size-h6">Matt Pears</a>
-                                            <span class="text-muted font-size-sm">40 seconds</span>
-                                        </div>
-                                    </div>
-                                    <div class="mt-2 rounded p-5 bg-light-success text-dark-50 font-weight-bold font-size-lg text-left max-w-400px">Most purchased Business courses during this sale!</div>
-                                </div>
-                                <!--end::Message In-->
-                                <!--begin::Message Out-->
-                                <div class="d-flex flex-column mb-5 align-items-end">
-                                    <div class="d-flex align-items-center">
-                                        <div>
-                                            <span class="text-muted font-size-sm">Just now</span>
-                                            <a href="#" class="text-dark-75 text-hover-primary font-weight-bold font-size-h6">You</a>
-                                        </div>
-                                        <div class="symbol symbol-circle symbol-40 ml-3">
-                                            <img alt="Pic" src="assets/keen/media/users/150-9.jpg" />
-                                        </div>
-                                    </div>
-                                    <div class="mt-2 rounded p-5 bg-light-primary text-dark-50 font-weight-bold font-size-lg text-right max-w-400px">Company BBQ to celebrate the last quater achievements and goals. Food and drinks provided</div>
-                                </div>
-                                <!--end::Message Out-->
-                            </div>
-                            <!--end::Messages-->
-                        </div>
-                        <!--end::Scroll-->
-                    </div>
-                    <!--end::Body-->
-
-
-
-                    <!--begin::Footer-->
-                    <div class="card-footer align-items-center">
-                        <!--begin::Compose-->
-                        <textarea class="form-control border-0 p-0" rows="2" placeholder="Type a message"></textarea>
-                        <div class="d-flex align-items-center justify-content-between mt-5">
-                            <div class="mr-3">
-                                <a href="#" class="btn btn-clean btn-icon btn-md mr-1">
-                                    <i class="flaticon2-photograph icon-lg"></i>
-                                </a>
-                                <a href="#" class="btn btn-clean btn-icon btn-md">
-                                    <i class="flaticon2-photo-camera icon-lg"></i>
-                                </a>
-                            </div>
-                            <div>
-                                <button type="button" class="btn btn-primary btn-md text-uppercase font-weight-bold chat-send py-2 px-6">Send</button>
-                            </div>
-                        </div>
-                        <!--begin::Compose-->
-                    </div>
-                    <!--end::Footer-->
-                </div>
-                <!--end::Card-->
-            </div>
-        </div>
-    </div>
-    <!--end::Chat Panel-->
     <!--begin::Scrolltop-->
     <div id="kt_scrolltop" class="scrolltop">
         <span class="svg-icon">
