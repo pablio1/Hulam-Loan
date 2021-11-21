@@ -6,8 +6,6 @@ if ($_SESSION['user_type'] != 3) {
 	header('location: ../index.php');
 }?>
 
-
-
 <?php
 $id = intval($_GET['loan_app_id']);
 
@@ -15,7 +13,6 @@ $sql = "SELECT loan_application.*, user.* FROM loan_application INNER JOIN user 
 $query = $dbh->prepare($sql);
 $query->execute();
 $debtor = $query->fetch();
-
 ?>
 
 <?php
@@ -34,44 +31,11 @@ if (isset($_POST['send_message'])) {
 	$query->bindParam(':message', $message, PDO::PARAM_STR);
 	$query->bindParam(':date_message', $date_message, PDO::PARAM_STR);
 	if ($query->execute()) {
-		$_SESSION['status_application'] = "Message Sent";
-		header("Location: view_application.php?loan_app_id=$id");
-		exit();
-	} else {
-		$_SESSION['status_application'] = "Message Not Sent";
-		header('Location: view_application.php?loan_app_id=$id');
-		exit();
-	}
-}
-?>
-<?php
-if (isset($_POST['approved_loan'])) {
-	$id = intval($_GET['loan_app_id']);
-	$sender_id = $_POST['sender_id'];
-	$receiver_id = $_POST['receiver_id'];
-	$approval_date = $_POST['approval_date'];
-	$release_schedule =$_POST['release_schedule'];
-	$message = "Your loan is approved. Please visit our office for the releasing of loan dated on your releasing schedule. Thank you.";
-
-	$update = "UPDATE loan_application SET loan_status = 'Approved', approval_date = :approval_date, release_schedule = :release_schedule WHERE loan_app_id = $id";
-	$query2 = $dbh->prepare($update);
-	$query2->bindParam(':approval_date',$approval_date,PDO::PARAM_STR);
-	$query2->bindParam(':release_schedule',$release_schedule,PDO::PARAM_STR);
-
-	$insert = "INSERT INTO message(sender_id,receiver_id,message,date_message)VALUES(:sender_id,:receiver_id,:message,:date_message)";
-	$query = $dbh->prepare($insert);
-	$query->bindParam(':sender_id', $sender_id, PDO::PARAM_STR);
-	$query->bindParam(':receiver_id', $receiver_id, PDO::PARAM_STR);
-    $query->bindParam(':message', $message, PDO::PARAM_STR);
-	$query->bindParam(':date_message', $approval_date, PDO::PARAM_STR);
-	$query->execute();
-
-	if($query2->execute()){
-		$_SESSION['status_approved'] = "Loan Approved!";
+		$_SESSION['status_approved'] = "Message Sent";
 		header("Location: view_approved.php?loan_app_id=$id");
 		exit();
 	} else {
-		$_SESSION['status_approved'] = "Error!";
+		$_SESSION['status_approved'] = "Message Not Sent";
 		header('Location: view_approved.php?loan_app_id=$id');
 		exit();
 	}
@@ -79,25 +43,51 @@ if (isset($_POST['approved_loan'])) {
 ?>
 
 <?php
-if (isset($_POST['declined_loan'])) {
+if (isset($_POST['released_loan'])) {
 	$id = intval($_GET['loan_app_id']);
-	$sender_id = $_POST['sender_id'];
+
+	$released_date = $_POST['released_date'];
+    $sender_id = $_POST['sender_id'];
 	$receiver_id = $_POST['receiver_id'];
-	$declined_date = $_POST['declined_date'];
-	$message = "We regret to inform you that your loan application has been declined!";
+    $loan_message = $_POST['loan_message'];
+	$remaining_balance = $_POST['remaining_balance'];
+	$monthly_pay = $_POST['monthly_payment'];
+	
+	$update = "UPDATE loan_application SET loan_status = 'Released', released_date = :released_date WHERE loan_app_id = $id";
+	$query = $dbh->prepare($update);
+	$query->bindParam(':released_date',$released_date,PDO::PARAM_STR);
+    $query->execute();
+	
 
-	$update = "UPDATE loan_application SET loan_status = 'Declined' WHERE loan_app_id = $id";
-	$query2 = $dbh->prepare($update);
-	$query2->execute();
 
-	$insert = "INSERT INTO message(sender_id,receiver_id,message,date_message)VALUES(:sender_id,:receiver_id,:message,:declined_date)";
+    $insert = "INSERT INTO message(sender_id,receiver_id,message,date_message)VALUES(:sender_id,:receiver_id,:message,:date_message)";
 	$query = $dbh->prepare($insert);
 	$query->bindParam(':sender_id', $sender_id, PDO::PARAM_STR);
 	$query->bindParam(':receiver_id', $receiver_id, PDO::PARAM_STR);
-    $query->bindParam(':message', $message, PDO::PARAM_STR);
-	$query->bindParam(':declined_date', $declined_date, PDO::PARAM_STR);
+    $query->bindParam(':message', $loan_message, PDO::PARAM_STR);
+	$query->bindParam(':date_message', $released_date, PDO::PARAM_STR);
 
 	if($query->execute()){
+		$_SESSION['status_released'] = "Loan Released!";
+		header("Location: view_released.php?loan_app_id=$id");
+		exit();
+	} else {
+		$_SESSION['status_released'] = "Error!";
+		header('Location: view_released.php?loan_app_id=$id');
+		exit();
+	}
+}
+
+?>
+
+<?php
+if (isset($_POST['declined_loan'])) {
+	$id = intval($_GET['loan_app_id']);
+
+	$update = "UPDATE loan_application SET loan_status = 'Declined' WHERE loan_app_id = $id";
+	$query2 = $dbh->prepare($update);
+
+	if($query2->execute()){
 		$_SESSION['status_declined'] = "Loan Declined!";
 		header("Location: view_declined.php?loan_app_id=$id");
 		exit();
@@ -135,7 +125,7 @@ $user = $query->fetch();
 <head>
 	<base href="../">
 	<meta charset="utf-8" />
-	<title>Hulam | View Application</title>
+	<title>Hulam | View Approved Application</title>
 	<meta name="description" content="Updates and statistics" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 	<!--begin::Fonts-->
@@ -403,7 +393,6 @@ $user = $query->fetch();
 				<!--end::Aside Menu-->
 			</div>
 			<!--end::Aside-->
-
 				<!--begin::Wrapper-->
 				<div class="d-flex flex-column flex-row-fluid wrapper" id="kt_wrapper">
 					<!--begin::Header-->
@@ -504,15 +493,15 @@ $user = $query->fetch();
 										<h5 class="text-white font-weight-bold my-1 mr-5"><?= $user['company_name']?></h5>
 									<div class="col-xl-12 col-xl-12">
 										<?php
-										if(isset($_SESSION['status_application'])){
+										if(isset($_SESSION['status_approved'])){
 										?>
 											<div class="alert alert-custom alert-notice alert-light-success fade show" role="alert">
 												<div class="alert-text">
-													<h4><?php echo $_SESSION['status_application'];?></h4>
+													<h4><?php echo $_SESSION['status_approved'];?></h4>
 												</div>
 												<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
 											</div>
-										<?php unset($_SESSION['status_application']);
+										<?php unset($_SESSION['status_approved']);
 										}?>
 									</div>
 								</div>
@@ -531,392 +520,8 @@ $user = $query->fetch();
 						<!--begin::Container-->
 						<div class="container">
 							<div class="card card-custom gutter-b">
-								<div class="card-body">
-									<!--begin::Top-->
-									<div class="d-flex">
-										<!--begin::Pic-->
-										<div class="flex-shrink-0 mr-7">
-											<div class="symbol symbol-50 symbol-lg-120">
-												<img alt="Pic" src="/hulam/assets/keen/hulam_media/<?=$debtor ['profile_pic'] ?>">
-											</div>
-										</div>
-										<!--end::Pic-->
-										<!--begin: Info-->
-										<div class="flex-grow-1">
-											<!--begin::Title-->
-											<div class="d-flex align-items-center justify-content-between flex-wrap mt-2">
-												<!--begin::User-->
-												<div class="mr-3">
-													<!--begin::Name-->
-													<h4 class="d-flex align-items-center text-dark text-hover-primary font-size-h5 font-weight-bold mr-3"><?= $debtor ['firstname'] . ' ' . $debtor ['middlename'] . ' ' . $debtor ['lastname'] ?></h4>
-													<?php
-													if($debtor ['loan_status']=='Pending'):?>
-														<span class="text-warning font-weight-bolder mr-2">&nbsp;<?= $debtor ['loan_status']?></span>
-													<?php elseif($debtor ['loan_status']=='Approved'):?>
-														<span class="text-primary font-weight-bolder mr-2">&nbsp;<?= $debtor ['loan_status']?></span>
-													<?php elseif($debtor ['loan_status']=='Released'):?>
-														<span class="text-info font-weight-bolder mr-2">&nbsp;<?= $debtor ['loan_status']?></span>
-													<?php else:?>
-														<span class="text-danger font-weight-bolder mr-2">&nbsp;<?= $debtor ['loan_status']?></span>
-													<?php endif; ?>
-													<!--end::Name-->
-													<!--begin::Contacts-->
-													<div class="d-flex flex-wrap my-2">
-														<span class="svg-icon svg-icon-md svg-icon-gray-500 mr-1">
-															<!--begin::Svg Icon | path:assets/media/svg/icons/Communication/Mail-notification.svg-->
-															<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-																<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-																	<rect x="0" y="0" width="24" height="24"></rect>
-																	<path d="M21,12.0829584 C20.6747915,12.0283988 20.3407122,12 20,12 C16.6862915,12 14,14.6862915 14,18 C14,18.3407122 14.0283988,18.6747915 14.0829584,19 L5,19 C3.8954305,19 3,18.1045695 3,17 L3,8 C3,6.8954305 3.8954305,6 5,6 L19,6 C20.1045695,6 21,6.8954305 21,8 L21,12.0829584 Z M18.1444251,7.83964668 L12,11.1481833 L5.85557487,7.83964668 C5.4908718,7.6432681 5.03602525,7.77972206 4.83964668,8.14442513 C4.6432681,8.5091282 4.77972206,8.96397475 5.14442513,9.16035332 L11.6444251,12.6603533 C11.8664074,12.7798822 12.1335926,12.7798822 12.3555749,12.6603533 L18.8555749,9.16035332 C19.2202779,8.96397475 19.3567319,8.5091282 19.1603533,8.14442513 C18.9639747,7.77972206 18.5091282,7.6432681 18.1444251,7.83964668 Z" fill="#000000"></path>
-																	<circle fill="#000000" opacity="0.3" cx="19.5" cy="17.5" r="2.5"></circle>
-																</g>
-															</svg>
-															<!--end::Svg Icon-->
-														</span>
-														<span class="mr-2"><?= $debtor ['email'] ?></span>
-													</div>
-													<div class="d-flex flex-wrap my-2">
-														<span class="svg-icon svg-icon-md svg-icon-gray-500 mr-1">
-															<!--begin::Svg Icon | path:assets/media/svg/icons/Map/Marker2.svg-->
-															<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-																<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-																	<rect x="0" y="0" width="24" height="24"></rect>
-																	<path d="M9.82829464,16.6565893 C7.02541569,15.7427556 5,13.1079084 5,10 C5,6.13400675 8.13400675,3 12,3 C15.8659932,3 19,6.13400675 19,10 C19,13.1079084 16.9745843,15.7427556 14.1717054,16.6565893 L12,21 L9.82829464,16.6565893 Z M12,12 C13.1045695,12 14,11.1045695 14,10 C14,8.8954305 13.1045695,8 12,8 C10.8954305,8 10,8.8954305 10,10 C10,11.1045695 10.8954305,12 12,12 Z" fill="#000000"></path>
-																</g>
-															</svg>
-															<!--end::Svg Icon-->
-														</span><?= $debtor ['p_street'] . ' ' . $debtor ['p_barangay'] . ' ' . $debtor ['p_city'] . ' ' . $debtor ['p_province'] . ' ' . $debtor ['p_zipcode'] ?>
-													</div>
-													<div class="d-flex flex-wrap my-2">
-														<span class="font-weight-bolder font-size-sm">Contact No:
-														</span><?= $debtor ['mobile'] ?>
-													</div>
-													<!--end::Contacts-->
-												</div>
-												<!--begin::User-->
-
-												<!--begin::Actions-->
-												<div class="my-lg-0 my-1">
-													<a href="#" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#approved_loan">Approved Loan</a>
-													<a href="#" class="btn btn-sm btn-light-success font-weight-bolder mr-2" data-toggle="modal" data-target="#message">Send Message</a>
-													<a href="#" class="btn btn-sm btn-light-danger font-weight-bolder mr-2" data-toggle="modal" data-target="#declined_loan">Declined Loan</a>
-												</div>
-												<!--end::Actions-->
-											</div>
-											<!--end::Title-->
-										</div>
-										<!--end::Info-->
-									</div>
-									<!--end::Top-->
-									<!--begin::Separator-->
-									<div class="separator separator-solid my-7"></div>
-									<!--end::Separator-->
-									<!--begin::Bottom-->
-									<div class="d-flex align-items-center flex-wrap">
-										<?php
-										$id = intval($_GET['loan_app_id']);
-
-										$sql = "SELECT loan_application.*, user.* FROM loan_application INNER JOIN user on loan_application.debtor_id = user.user_id WHERE loan_application.loan_app_id = $id";
-										$query = $dbh->prepare($sql);
-										$query->execute();
-										$user = $query->fetch();
-
-										$id = $user['debtor_id'];
-
-										$sql = "SELECT * FROM debtors_info WHERE user_id = $id";
-										$que = $dbh->prepare($sql);
-										$que->execute();
-										$res = $que->fetch();
-										?>
-										<!--begin: Item-->
-										<div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
-											<div class="d-flex flex-column text-dark-75">
-												<span class="font-weight-bolder font-size-m">Source of Income</span>
-												<span class="font-size-sm">Company Name: &nbsp;<?= $res['company_name'] ?></span>
-												<span class="font-size-sm">Monthly Salary: &nbsp;<?= $res['monthly_salary'] ?></span>
-												<span class="font-size-sm">Monthly Salary: &nbsp;<?= $res['company_street'] . ' ' . $res['company_barangay'] . ' ' . $res['company_city']
-																										. ' ' . $res['company_province'] . ' ' . $res['company_zipcode'] ?></span>
-											</div>
-										</div>
-										<!--end: Item-->
-										<!--begin: Item-->
-										<div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
-											<div class="d-flex flex-column text-dark-75">
-												<span class="font-weight-bolder font-size-m">Relative Contact:</span>
-												<span class="font-size-sm">Relative Name: &nbsp;<?= $res['rel_name'] ?></span>
-												<span class="font-size-sm">Relative Mobile No: &nbsp;<?= $res['rel_mobile'] ?></span>
-												<span class="font-size-sm">Relation: &nbsp;<?= $res['rel_type'] ?></span>
-											</div>
-										</div>
-										<!--end: Item-->
-									</div>
-									<!--end::Bottom-->
-								</div>
 							</div>
 							<div class="row">
-								<div class="col-lg-6">
-									<!--begin::Charts Widget 4-->
-									<div class="card card-custom card-stretch gutter-b">
-										<!--begin::Header-->
-										<div class="card-header h-auto border-0">
-											<div class="card-title py-5">
-												<h3 class="card-label">
-													<span class="d-block text-dark font-weight-bolder">Loan Application Details</span>
-													<!-- <span class="d-block text-muted mt-2 font-size-sm">More than 500+ new orders</span> -->
-												</h3>
-											</div>
-											<table class="table table-bordered">
-												<thead>
-													<!-- <tr>
-															<th>Application Date</th>
-
-														</tr> -->
-												</thead>
-												<tbody>
-													<?php
-													$loan_app_id = intval($_GET['loan_app_id']);
-
-													$sql = "SELECT * FROM loan_application WHERE loan_app_id = $loan_app_id";
-													$query = $dbh->prepare($sql);
-													$query->execute();
-													$results = $query->fetchAll(PDO::FETCH_OBJ);
-													if ($query->rowCount() > 0) {
-														foreach ($results as $res) {
-													?>
-															<tr>
-																<td>Application Date</td>
-																<td><?= htmlentities($res->date); ?></td>
-															</tr>
-															<tr>
-																<td>Loan Amount</td>
-																<td><?= number_format(htmlentities($res->loan_amount), 2); ?></td>
-															</tr>
-															<tr>
-																<td>Loan Term</td>
-																<td><?= htmlentities($res->loan_term); ?></td>
-															</tr>
-															<tr>
-																<td>Fix Rate</td>
-																<td><?= htmlentities($res->fix_rate); ?>%</td>
-															</tr>
-															<tr>
-																<td>Total Interest</td>
-																<td><?= number_format(htmlentities($res->total_interest), 2); ?></td>
-															</tr>
-															<tr>
-																<td>Late Charge</td>
-																<td><?= htmlentities($res->late_charges); ?>%</td>
-															</tr>
-															<tr>
-																<td>Total Amoun to Pay</td>
-																<td><?= number_format(htmlentities($res->total_amount), 2); ?></td>
-															</tr>
-															<tr>
-																<td>Monthly Payment</td>
-																<td><?= number_format(htmlentities($res->monthly_payment), 2); ?></td>
-															</tr>
-
-												</tbody>
-										<?php }
-													} ?>
-											</table>
-										</div>
-										<!--end::Header-->
-									</div>
-									<!--end::Charts Widget 4-->
-								</div>
-								<div class="col-lg-6">
-									<!--begin::List Widget 11-->
-									<div class="card card-custom card-stretch gutter-b">
-										<!--begin::Header-->
-										<div class="card-header border-0">
-											<h3 class="card-title font-weight-bolder text-dark">Submitted Requirements</h3>
-											<div class="card-toolbar">
-												<div class="dropdown dropdown-inline" data-toggle="tooltip" title="" data-placement="left" data-original-title="Quick actions">
-												</div>
-											</div>
-										</div>
-										<!--end::Header-->
-										<!--begin::Body-->
-										<div class="card-body pt-0">
-											<table class="table table-bordered">
-												<thead>
-													<tr>
-														<th>Type of Documents</th>
-														<th>Uploaded Documents</th>
-														<!-- <th>Action</th> -->
-													</tr>
-												</thead>
-												<tbody>
-													<?php
-													$loan_app_id = intval($_GET['loan_app_id']);
-
-													$sql = "SELECT * FROM loan_application WHERE loan_app_id = $loan_app_id";
-													$query = $dbh->prepare($sql);
-													$query->execute();
-													$results = $query->fetchAll(PDO::FETCH_OBJ);
-													if ($query->rowCount() > 0) {
-														foreach ($results as $res) {
-													?>
-															<tr>
-																<td>Valid ID</td>
-																<td><a href="/hulam/assets/keen/hulam_media/<?= htmlentities($res->barangay_clearance) ?>" target="_blank"><?= htmlentities($res->barangay_clearance); ?></a></td>
-															</tr>
-															<tr>
-																<td>Barangay Clearanace</td>
-																<td><a href="/hulam/assets/keen/hulam_media/<?= htmlentities($res->barangay_clearance) ?>" target="_blank"><?= htmlentities($res->barangay_clearance); ?></a></td>
-															</tr>
-															<tr>
-																<td>Payslip</td>
-																<td><a href="/hulam/assets/keen/hulam_media/<?= htmlentities($res->payslip) ?>" target="_blank"><?= htmlentities($res->payslip); ?></a></td>
-															</tr>
-															<tr>
-																<td>Cedula</td>
-																<td><a href="/hulam/assets/keen/hulam_media/<?= htmlentities($res->cedula) ?>" target="_blank"><?= htmlentities($res->cedula); ?></a></td>
-															</tr>
-															<tr>
-																<td>ATM Latest Transaction Receipt</td>
-																<td><a href="/hulam/assets/keen/hulam_media/<?= htmlentities($res->atm_transaction) ?>" target="_blank"><?= htmlentities($res->atm_transaction); ?></a></td>
-															</tr>
-															<tr>
-																<td>Certificate of Employment</td>
-																<td><a href="/hulam/assets/keen/hulam_media/<?= htmlentities($res->coe) ?>" target="_blank"><?= htmlentities($res->coe); ?></a></td>
-															</tr>
-															<tr>
-																<td>Bank Statement</td>
-																<td><a href="/hulam/assets/keen/hulam_media/<?= htmlentities($res->bank_statement) ?>" target="_blank"><?= htmlentities($res->bank_statement); ?></a></td>
-															</tr>
-															<tr>
-																<td>Proof of Billing</td>
-																<td><a href="/hulam/assets/keen/hulam_media/<?= htmlentities($res->proof_billing) ?>" target="_blank"><?= htmlentities($res->proof_billing); ?></a></td>
-															</tr>
-															<tr>
-																<td>Co-Maker ID</td>
-																<td><a href="/hulam/assets/keen/hulam_media/<?= htmlentities($res->co_maker_id) ?>" target="_blank"><?= htmlentities($res->co_maker_id); ?></a></td>
-															</tr>
-															<tr>
-																<td>Co-Maker Cedula</td>
-																<td><a href="/hulam/assets/keen/hulam_media/<?= htmlentities($res->co_maker_cedula) ?>" target="_blank"><?= htmlentities($res->co_maker_cedula); ?></a></td>
-															</tr>
-															<tr>
-																<td>2x2 ID</td>
-																<td><a href="/hulam/assets/keen/hulam_media/<?= htmlentities($res->id_pic) ?>" target="_blank"><?= htmlentities($res->id_pic); ?></a></td>
-															</tr>
-															<tr>
-																<td>Official Receipt or Certificate of Registration</td>
-																<td><a href="/hulam/assets/keen/hulam_media/<?= htmlentities($res->or_cr) ?>" target="_blank"><?= htmlentities($res->or_cr); ?></a></td>
-															</tr>
-															<tr>
-																<td>Other Document</td>
-																<td><a href="/hulam/assets/keen/hulam_media/<?= htmlentities($res->others) ?>" target="_blank"><?= htmlentities($res->others); ?></a></td>
-															</tr>
-												</tbody>
-										<?php }
-													} ?>
-											</table>
-											<!-- Start Modal Approved Loan -->
-											<form action="" method="post" enctype="multipart/form-data">
-												<div class="modal fade" id="approved_loan" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
-													<div class="modal-dialog modal-dialog-centered modal-md" role="document">
-														<div class="modal-content">
-															<div class="modal-header">
-																<h5 class="modal-title" id="exampleModalLabel">Approve Loan</h5>
-																<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-																	<i aria-hidden="true" class="ki ki-close"></i>
-																</button>
-															</div>
-															<div class="modal-body">
-																<label>Set Releasing Date:</label>
-																<input type="date" name="release_schedule">
-																<input type="hidden" name="receiver_id" value="<?= htmlentities($res->debtor_id) ?>">
-																<input type="hidden" name="sender_id" value="<?= $_SESSION['user_id'] ?>">
-															</div>
-																<?php
-																date_default_timezone_set('Asia/Manila');
-																$todays_date = date("y-m-d h:i:sa");
-																$today = strtotime($todays_date);
-																$det = date("Y-m-d h:i:sa", $today);
-
-																?>
-																<input type="hidden" name="approval_date" value="<?= $det; ?>">
-															<div class="modal-footer">
-																<!-- <button type="button" class="btn btn-light-primary font-weight-bold" data-dismiss="modal">No</button> -->
-																<button type="submit" name="approved_loan" class="btn btn-primary font-weight-bold">Submit</button>
-															</div>
-														</div>
-													</div>
-												</div>
-											</form>
-											<!-- End Modal -->
-											<!-- Start Modal Approved Loan -->
-											<form action="" method="post" enctype="multipart/form-data">
-												<div class="modal fade" id="declined_loan" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
-													<div class="modal-dialog modal-dialog-centered modal-sm" role="document">
-														<div class="modal-content">
-															<div class="modal-header">
-																<h5 class="modal-title" id="exampleModalLabel">Decline Loan?</h5>
-																<input type="hidden" name="receiver_id" value="<?= htmlentities($res->debtor_id) ?>">
-																<input type="hidden" name="sender_id" value="<?= $_SESSION['user_id'] ?>">
-																<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-																	<i aria-hidden="true" class="ki ki-close"></i>
-																</button>
-																<?php
-																	date_default_timezone_set('Asia/Manila');
-																	$todays_date = date("y-m-d h:i:sa");
-																	$today = strtotime($todays_date);
-																	$det = date("Y-m-d h:i:sa", $today);
-																?>
-																<input type="hidden" name="declined_date" value="<?= $det; ?>">
-															</div>
-															<div class="modal-footer">
-																<!-- <button type="button" class="btn btn-light-primary font-weight-bold" data-dismiss="modal">No</button> -->
-																<button type="submit" name="declined_loan" class="btn btn-primary font-weight-bold">Yes</button>
-															</div>
-														</div>
-													</div>
-												</div>
-											</form>
-											<!-- End Modal -->
-											<!-- Start Modal Approved Loan -->
-											<form action="" method="post">
-												<div class="modal fade" id="message" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
-													<div class="modal-dialog modal-dialog-centered modal-m" role="document">
-														<div class="modal-content">
-															<div class="modal-header">
-																<h5 class="modal-title" id="exampleModalLabel">Send Message</h5>
-																<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-																	<i aria-hidden="true" class="ki ki-close"></i>
-																</button>
-															</div>
-															<div class="modal-body">
-																<input type="hidden" name="receiver_id" value="<?= htmlentities($res->debtor_id) ?>">
-																<input type="hidden" name="sender_id" value="<?= $_SESSION['user_id'] ?>">
-																<?php
-																date_default_timezone_set('Asia/Manila');
-																$todays_date = date("y-m-d h:i:sa");
-																$today = strtotime($todays_date);
-																$det = date("Y-m-d h:i:sa", $today);
-
-																?>
-																<input type="hidden" name="date_message" value="<?= $det; ?>">
-																<div class="col-lg-12">
-																	<textarea rows="4" cols="50" name="message" class="form-control" placeholder="Type here....."></textarea>
-																</div>
-															</div>
-															<div class="modal-footer">
-																<!-- <button type="button" class="btn btn-light-danger" data-dismiss="modal">Cancel</button> -->
-																<button type="submit" name="send_message" class="btn btn-light-primary font-weight-bold">Send</button>
-															</div>
-														</div>
-													</div>
-												</div>
-											</form>
-											<!-- End Modal -->
-										</div>
-										<!--end::Body-->
-									</div>
-									<!--end::List Widget 11-->
-								</div>
 								<div class="col-lg-12">
 									<!--begin::Charts Widget 4-->
 									<div class="card card-custom card-stretch gutter-b">
@@ -924,98 +529,34 @@ $user = $query->fetch();
 										<div class="card-header h-auto border-0">
 											<div class="card-title py-5">
 												<h3 class="card-label">
-													<span class="d-block text-dark font-weight-bolder">Running Balance</span>
-													<!-- <span class="d-block text-muted mt-2 font-size-sm">More than 500+ new orders</span> -->
+													<span class="d-block text-dark font-weight-bolder">Loan Application Details</span>
 												</h3>
 											</div>
-											<table class="table table-bordered">
-												<thead>
-													<tr>
-														<th>Payment Month Date</th>
-														<th>Principal Payment</th>
-														<th>Interest Payment</th>
-														<th>Total Monthly Payment</th>
-														<th>Remaining Balance</th>
-													</tr>
-												</thead>
-												<tbody>
-													<?php
-													$loan_app_id = intval($_GET['loan_app_id']);
-
-													$sql = "SELECT * FROM loan_application WHERE loan_app_id = $loan_app_id AND loan_status = 'Approved'";
-													$query = $dbh->prepare($sql);
-													$query->execute();
-													$results = $query->fetchAll(PDO::FETCH_OBJ);
-													if ($query->rowCount() > 0) {
-														foreach ($results as $res) {
-															$d = date("d F Y",strtotime('+1 month',strtotime($res->approval_date)));
-														
-													?>
-													<tr>
-														<td>
-														<?= $d;
-
-															// echo "<b>Today's Date:</b>".$Currentdate=date("d F Y");//current date
-															// $user_date = date("d F Y",strtotime($res->approval_date));//date you get from database
-															// if($Currentdate<=$user_date){
-															// 	$loan_term = htmlentities($res->loan_term);
-															// $d = date("d F Y",strtotime('+1 month',strtotime($res->approval_date)));
-															// echo $d;
-															// $d2 = date("d F Y",strtotime('+1 month',strtotime($d)));
-															// echo $d2;
-															// $d3 = date("d F Y",strtotime('+1 month',strtotime($d)));
-															// echo $d3;
-															//only if current date is less than user's date
-															// }
-															// else{
-															// echo '<br><b>Second Date :</b>'.$second_date = date("d F Y",strtotime ( '+11 month' , strtotime ( $user_date ) )) ;//only if current date is more than user's date
-															// }	
-
-
-														?>
-														<?php
-														// foreach ($months as $num => $name) {
-														// 	printf('<option value="%u">%s</option>', $num, $name);
-														// }
-													?>
-														<?php
-														// $months = array();
-														// for ($i = 0; $i < 8; $i++) {
-														// 	$timestamp = mktime(0, 0, 0, date('n') - $i, 1);
-														// 	echo $months[date('n', $timestamp)] = date('F', $timestamp);
-														// }
-															// for($m=1; $m<=12; $m++){
-															// echo '<option value="'.$m.'">'.date('F', mktime(0, 0, 0, $m)).'</option>';
-															// }
-														?>
-														<?php
-															// for($m=1; $m<=12; ++$m){
-															// 	echo date('F', mktime(0, 0, 0, $m, 1)).'<br>';
-															// }?>
-														<?php
-														//  $month = strtotime(date('Y').'-'.date('m').'-'.date('j').' - 11 months');
-														//  $end = strtotime(date('Y').'-'.date('m').'-'.date('j').' + 8 months');
-														//  while($month < $end){
-														// 	 $selected = (date('F', $month)==date('F'))? ' selected' :'';
-														// 	 echo '<option'.$selected.' value="'.date('F', $month).'">'.date('F', $month).'</option>'."\n";
-														// 	 $month = strtotime("+1 month", $month);
-														// 	 }
-														?>
-														</td>
-														<td><?= htmlentities($res->date); ?></td>
-														<td>Application Date</td>
-														<td><?= htmlentities($res->date); ?></td>
-														<td>Application Date</td>
-														<td><?= htmlentities($res->date); ?></td>
-													</tr>
-													
-												</tbody>
-										<?php }} ?>
-											</table>
+                                            <div class="mr-3">
+                                            <div class="my-lg-5 my-5">
+													<a href="#" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#announce">Add Announcements</a>
+												</div>
+                                            </div>
+                                        </div>
+                                        <div class="card card-custom">
+                                            <div class="card-header card-header-right ribbon ribbon-clip ribbon-left">
+                                            <div class="ribbon-target" style="top: 12px;">
+                                            <span class="ribbon-inner bg-success"></span><h4>Ribbondsjkfkdljhgklfdjhgklfdhglkfjhkl  dghlkdjhgklj;ldgkg kdn;lkjhlkjf</h4>
+                                            </div>
+                                            <h3 class="card-title">
+                                            Clip Style
+                                            </h3>
+                                            </div>
+                                            <div class="card-body">
+                                            ...aasad
+                                            </div>
+                                            </div>
+                                            
 										</div>
 										<!--end::Header-->
 									</div>
 									<!--end::Charts Widget 4-->
+                                    
 								</div>
 							</div>
 						</div>
@@ -1026,6 +567,37 @@ $user = $query->fetch();
 			<!--end::Entry-->
 		</div>
 		<!--end::Content-->
+        <!-- Start Modal Approved Loan -->
+        <form action="" method="post">
+                <div class="modal fade" id="announce" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Add Announcement</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <i aria-hidden="true" class="ki ki-close"></i>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <input type="hidden" name="user_id" value="<?= $_SESSION['user_id'] ?>">
+                                <input type="hidden" name="date_announce" value="<?= date('Y-m-d')?>">
+
+                                <div class="col-lg-12">
+                                    <textarea rows="3" cols="50" name="title" class="form-control form-control-lg" required style="font-size: medium;" placeholder="Type announcement title...."></textarea>
+                                </div></br>
+                                <div class="col-lg-12">
+                                    <textarea rows="10" cols="50" name="content" class="form-control form-control-lg" required style="font-size: medium;" placeholder="Type content....."></textarea>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <!-- <button type="button" class="btn btn-light-danger" data-dismiss="modal">Cancel</button> -->
+                                <button type="submit" name="send_message" class="btn btn-light-primary font-weight-bold">Submit</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <!-- End Modal -->
 		<!--begin::Footer-->
 		<div class="footer bg-white py-4 d-flex flex-lg-column" id="kt_footer">
 			<!--begin::Container-->
@@ -1053,7 +625,6 @@ $user = $query->fetch();
 	<!--end::Page-->
 	</div>
 	<!--end::Main-->
-
 		<!-- begin::User Panel-->
 		<div id="kt_quick_user" class="offcanvas offcanvas-right p-10">
 			<!--begin::Header-->
@@ -1277,7 +848,6 @@ $user = $query->fetch();
 		</span>
 	</div>
 	<!--end::Scrolltop-->
-
 
 
 	<script>

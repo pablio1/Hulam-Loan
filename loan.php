@@ -10,6 +10,19 @@ $query = $dbh->prepare($sql);
 $query->execute();
 $user = $query->fetch();
 ?>
+<?php
+function drawStars(int $starRating)
+{
+echo "<h3 style='color: yellow;'>";
+for ($i = 0; $i < $starRating; $i++) {
+	echo "&#x2605;";
+}
+echo "</h3>";
+for ($i = 5 - $starRating; $i > 0; $i--) {
+	echo "&#x2605;";
+}
+}
+?>
 
 <!doctype html>
 <html class="no-js" lang="zxx">
@@ -17,7 +30,7 @@ $user = $query->fetch();
 <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>Finloans</title>
+    <title>Hulam</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -184,21 +197,20 @@ $user = $query->fetch();
             <div class="row">
                 <di v class="container">
                 <?php
-                if (!isset($_GET['amount']) && !isset($_GET['type'])) {
+					if (!isset($_GET['amount']) && !isset($_GET['type'])) {
 
-                    $sql = $dbh->prepare("SELECT * FROM user INNER JOIN loan_features ON user.user_id = loan_features.lender_id INNER JOIN feedback ON feedback.lender_id = user.user_id WHERE (user_type = 3 OR user_type = 4) AND user.eligible = 'yes'");
-                    $sql->execute();
-                    $lenders = $sql->fetchAll();
-                } else {
-                    $amount = $_GET['amount'];
-                    $type = $_GET['type'];
-                    $month = $_GET['month'];
-                    $sql = $dbh->prepare("SELECT * FROM `user` INNER JOIN `loan_features` ON user.user_id = loan_features.lender_id INNER JOIN feedback ON feedback.lender_id = user.user_id WHERE loan_features.min_loan <= $amount AND $amount <= loan_features.max_loan AND user.user_type = $type AND loan_features.min_term <= $month AND loan_features.max_term >= $month AND user.eligible = 'yes'");
-                    $sql->execute();
-                    $lenders = $sql->fetchAll();
-                }
-                ?>
-
+						$sql = $dbh->prepare("SELECT * FROM user INNER JOIN loan_features ON user.user_id = loan_features.lender_id WHERE (user_type = 3 OR user_type = 4) AND user.eligible = 'yes'");
+						$sql->execute();
+						$lenders = $sql->fetchAll();
+					} else {
+						$amount = $_GET['amount'];
+						$type = $_GET['type'];
+						$month = $_GET['month'];
+						$sql = $dbh->prepare("SELECT * FROM `user` INNER JOIN `loan_features` ON user.user_id = loan_features.lender_id WHERE loan_features.min_loan <= $amount AND $amount <= loan_features.max_loan AND user.user_type = $type AND loan_features.min_term <= $month AND loan_features.max_term >= $month AND user.eligible = 'yes'");
+						$sql->execute();
+						$lenders = $sql->fetchAll();
+					}
+					?>
                 <?php if ($sql->rowCount() == 0) : ?>
 
                     <div class="card card-custom gutter-b">
@@ -224,7 +236,8 @@ $user = $query->fetch();
                                             <a href="#" class="d-flex align-items-center text-dark text-hover-primary font-size-h5 font-weight-bold mr-3"><?= $lender['company_name'] ?></a>
                                         </div>
                                         <div class="my-lg-0 my-1">
-                                            <a href="debtor/view_company.php?lender_id=<?= $lender['lender_id'] ?>" class="btn btn-sm btn-light-primary font-weight-bolder mr-2">View Details</a>
+                                            <a href="view_lending_details.php?lender_id=<?= $lender['lender_id']. '&amount=' . $_GET['amount'] . '&month=' . $_GET['month']  ?>" 
+                                            class="btn btn-sm btn-primary font-weight-bolder mr-2" >View Details</a>
                                             <a href="login.php" class="btn btn-sm btn-primary font-weight-bolder">Apply Now</a>
                                            
                                         </div>
@@ -353,34 +366,48 @@ $user = $query->fetch();
                                     </div>
                                 </div>
                                 <div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
-                                    
-                                    <div class="d-flex flex-column">
-                                        <span class="text-dark-75 font-weight-bolder font-size-sm">Average Rating</br>
-                                        <?php
-                                        function drawStars(int $starRating)
-                                        {
-                                            echo "<span style='color: yellow;'>";
-                                            for ($i = 0; $i < $starRating; $i++) {
-                                                echo "&#x2605;";
-                                            }
-                                            echo "</span>";
-                                            for ($i = 5 - $starRating; $i > 0; $i--) {
-                                                echo "&#x2605;";
-                                            }
-                                        }
+                                        <div class="d-flex flex-column">
+                                            
+                                        </div>
+                                        <div class="d-flex flex-column">
+                                            <span class="text-dark-75 font-weight-bolder font-size-sm">Rates and Reviews  &nbsp;&nbsp;| <a href="debtor/view_rating.php?lender_id=<?= $lender['lender_id']?>" class="text-primary font-weight-bolder">View</a>
+                                                
+                                                <?php
+                                                if (!isset($_GET['amount']) && !isset($_GET['type'])) {
+                                                    $lender_id = $lender['lender_id'];
+                                                    $sql = $dbh->prepare("SELECT * FROM user INNER JOIN loan_features ON user.user_id = loan_features.lender_id INNER JOIN feedback ON user.user_id  = feedback.lender_id WHERE (user_type = 3 OR user_type = 4) AND user.eligible = 'yes' AND feedback.lender_id = $lender_id");
+                                                    $sql->execute();
+                                                    $len= $sql->fetchAll();
+                                                } else {
+                                                    $amount = $_GET['amount'];
+                                                    $type = $_GET['type'];
+                                                    $month = $_GET['month'];
+                                                    $sql = $dbh->prepare("SELECT * FROM `user` INNER JOIN `loan_features` ON user.user_id = loan_features.lender_id  INNER JOIN feedback ON user.user_id  = feedback.lender_id WHERE loan_features.min_loan <= $amount AND $amount <= loan_features.max_loan AND user.user_type = $type AND loan_features.min_term <= $month AND loan_features.max_term >= $month AND user.eligible = 'yes'");
+                                                    $sql->execute();
+                                                    $len = $sql->fetchAll();
+                                                }
+                                                ?>
+                                                <?php 
+                                                foreach($len as $rate):
+                                                ?>
+                                            
+                                                    <?php
+                                                    $ratingTotal = $ratingCount = 0;
+                                                    $ratingTotal += $rate['ratings'];
+                                                    $ratingCount++;
+                                                    echo "<p>" . number_format(($ratingTotal / $ratingCount), 2) . " " .
+                                                        drawStars(round($ratingTotal / $ratingCount)) .
+                                                        "</p>";
+                                                    $ratingTotal = 0;
+                                                    $ratingCount = 0;
+                                                    ?>
+                                            </span>
+                                            <?php 
+                                        endforeach;
                                         ?>
-                                     <?php
-                                        $ratingTotal = $ratingCount = 0;
-                                        $ratingTotal += $lender['ratings'];
-                                        $ratingCount++;
-                                        echo "<p>" . number_format(($ratingTotal / $ratingCount), 2) . " " .
-                                            drawStars(round($ratingTotal / $ratingCount)) .
-                                            "</p>";
-                                        $ratingTotal = 0;
-                                        $ratingCount = 0;
-                                        ?>
+                                            
+                                        </div>
                                     </div>
-                                </div>
                             </div>
                         </div>
                     </div>

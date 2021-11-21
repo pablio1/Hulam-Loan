@@ -1,37 +1,72 @@
 <?php
-session_start();
-error_reporting(0);
-include('../db_connection/config.php');
-if ($_SESSION['user_type'] != 3) {
-	header('location: ../index.php');
-}?>
+	session_start();
+	error_reporting(0);
+	include('../db_connection/config.php');
+	if ($_SESSION['user_type'] != 3) {
+		header('location: ../index.php');
+	}?>
+	
+	<?php
 
-<?php
+	if(isset($_POST['update'])){
 
-if(isset($_POST['add_mode'])){
+	    $lender_id = $_SESSION['user_id'];
+	    $min_loan= $_POST['min_loan'];
+	    $max_loan= $_POST['max_loan'];
+	    $min_term= $_POST['min_term'];
+	    $max_term= $_POST['max_term'];
+	    $fix_rate = $_POST['fix_rate'];
+	    $late_charges = $_POST['late_charges'];
+		$reloan_period = $_POST['reloan_period'];
+		$reloan_amount = $_POST['reloan_amount'];
 
-    $mode_name = $_POST['mode_name'];
-    $remarks = $_POST['remarks'];
-    $lender_id = $_SESSION['user_id']; 
+		$lender_id = $_SESSION['user_id'];
 
-        $sql ="UPDATE mode_payment SET mode_name=:mode_name, remarks=:remarks WHERE lender_id = $lender_id";
-        $query = $dbh->prepare($sql);
-        $query->bindParam(':mode_name',$mode_name,PDO::PARAM_STR);
-        $query->bindParam(':remarks',$remarks,PDO::PARAM_STR);
-        $query->execute();
-    
-    if($query){
-        $_SESSION['status'] = "Updated Successfully" ;
-        header("Location: editmode_payment.php");
-        exit();
-    }else{
-        $_SESSION['status'] = "Error! Not Added" ;
-        header("Location: editmode_payment.php");
-        exit();
-    }
+	    $sql = "SELECT * FROM loan_features WHERE lender_id = $lender_id";
+		$q= $dbh->prepare($sql);
+		$q->execute();
+	   	if($q->rowCount()== 0){
+
+	        $sql="INSERT INTO loan_features(lender_id,min_loan,max_loan,min_term,max_term,fix_rate,late_charges,reloan_period,reloan_amount)
+	        VALUES(:lender_id,:min_loan,:max_loan,:min_term,:max_term,:fix_rate,:late_charges,:reloan_period,:reloan_amount)";
+		    $query =$dbh->prepare($sql);
+	        $query->bindParam(':lender_id',$lender_id,PDO::PARAM_STR);
+	        $query->bindParam(':min_loan',$min_loan,PDO::PARAM_STR);
+	        $query->bindParam(':max_loan',$max_loan,PDO::PARAM_STR);
+	        $query->bindParam(':min_term',$min_term,PDO::PARAM_STR);
+	        $query->bindParam(':max_term',$max_term,PDO::PARAM_STR);
+	        $query->bindParam(':fix_rate',$fix_rate,PDO::PARAM_STR);
+	        $query->bindParam(':late_charges',$late_charges,PDO::PARAM_STR);
+			$query->bindParam(':reloan_period',$reloan_period,PDO::PARAM_STR);
+			$query->bindParam(':reloan_amount',$reloan_amount,PDO::PARAM_STR);
+	        $query->execute();
+	    }else{
+	        
+	        $sql="UPDATE loan_features SET min_loan=:min_loan,max_loan=:max_loan,min_term=:min_term,max_term=:max_term,fix_rate=:fix_rate,late_charges=:late_charges,reloan_period=:reloan_period,reloan_amount=:reloan_amount WHERE lender_id = :lender_id";
+	        $query =$dbh->prepare($sql);
+	        $query->bindParam(':lender_id',$lender_id,PDO::PARAM_STR);
+	        $query->bindParam(':min_loan',$min_loan,PDO::PARAM_STR);
+	        $query->bindParam(':max_loan',$max_loan,PDO::PARAM_STR);
+	        $query->bindParam(':min_term',$min_term,PDO::PARAM_STR);
+	        $query->bindParam(':max_term',$max_term,PDO::PARAM_STR);
+	        $query->bindParam(':fix_rate',$fix_rate,PDO::PARAM_STR);
+	        $query->bindParam(':late_charges',$late_charges,PDO::PARAM_STR);
+			$query->bindParam(':reloan_period',$reloan_period,PDO::PARAM_STR);
+			$query->bindParam(':reloan_amount',$reloan_amount,PDO::PARAM_STR);
+
+		if($query->execute()){
+			$_SESSION['setup'] = "Submitted successfully!";
+			header("Location: setup_loan.php");
+			exit();
+		} else {
+			$_SESSION['setup'] = "Error!";
+			header("Location: setup_loan.php");
+			exit();
+		}
+	}
 }
+	?>
 
-?>
 
 <?php
 $lender_id = $_SESSION['user_id'];
@@ -41,6 +76,7 @@ $query = $dbh->prepare($sql);
 $query->execute();
 $user = $query->fetch();
 ?>
+
 <?php
 $lender_id = $_SESSION['user_id'];
 
@@ -57,7 +93,7 @@ $user = $query->fetch();
 <head>
 	<base href="../">
 	<meta charset="utf-8" />
-	<title>Hulam | Edit Mode Payment</title>
+	<title>Hulam | Set Up Loan</title>
 	<meta name="description" content="Updates and statistics" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 	<!--begin::Fonts-->
@@ -325,6 +361,7 @@ $user = $query->fetch();
 				<!--end::Aside Menu-->
 			</div>
 			<!--end::Aside-->
+
 				<!--begin::Wrapper-->
 				<div class="d-flex flex-column flex-row-fluid wrapper" id="kt_wrapper">
 					<!--begin::Header-->
@@ -423,149 +460,170 @@ $user = $query->fetch();
 										<!--begin::Page Title-->
 										<h4 class="text-white font-weight-bold my-1 mr-5">Dashboard |</h4>
 										<h5 class="text-white font-weight-bold my-1 mr-5"><?= $user['company_name']?></h5>
-										<!--end::Page Title-->
-									</div>
-                                    <?php
-                                    if(isset($_SESSION['status'])){
-                                        ?>
-                                        <h4 class="alert alert-success"><?php echo $_SESSION['status'];?></h4>
-                                        <?php
-                                        unset($_SESSION['status']);
-                                    }?>
-									<!--end::Page Heading-->
-								</div>
-								<!--end::Info-->
-							</div>
-						</div>
-						<!--end::Subheader-->
-							<!--begin::Entry-->
-                            <div class="d-flex flex-column-fluid" >
-							<!--begin::Container-->
-							<div class="container" >
-								<div class="card card-custom">
-									<div class="card-body p-0">
-									<div class="d-flex align-items-center justify-content-between flex-wrap mt-2">
-										<div class="mr-3"></div>
-											<div class="my-lg-0 my-1">
-												<a href="lending_company/setup_payment.php" class="btn btn-sm btn-light-primary font-weight-bolder mr-2">
-													<< Back</a>
+											<div class="col-xl-12 col-xl-12">
+												<?php
+												if(isset($_SESSION['setup'])){
+												?>
+													<div class="alert alert-custom alert-notice alert-light-success fade show" role="alert">
+														<div class="alert-text">
+															<h4><?php echo $_SESSION['setup'];?></h4>
+														</div>
+														<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+													</div>
+												<?php unset($_SESSION['setup']);
+												}?>
 											</div>
 										</div>
-										<div class="wizard-body py-8 px-8 py-lg-20 px-lg-10">
-											<!--begin: Wizard Form-->
-											<div class="row">
-												<div class="offset-xxl-2 col-xxl-8">
-													<form action="" method="post" id="kt_form" >
-                                                        <h4 class="mb-10 font-weight-bold text-dark">Set Mode of Payment: </h4>
-                                                        <div class="pb-5" data-wizard-type="step-content" data-wizard-state="current">
-                                                            <div class="row">
-                                                            <?php
-                                                                $id = intval($_GET['mode_id']);
-                                                                $sql = "SELECT * FROM `mode_payment` WHERE mode_id = $id";
-                                                                $query = $dbh->prepare($sql);
-                                                                $query->execute();
-                                                                $res = $query->fetch();
-                                                                ?>
-                                                                <div class="col-lg-6">
-                                                                    <div class="form-group">
-																	<select name="mode_name" required class="form-control" required>
-																			<option value="<?= $res['mode_name']?>"><?= $res['mode_name']?></option>
-																			<option value="ATM Deduction">Others, please specify on the remarks.</option>
-																			<option value="<?= $r['user_id']?>"><?= $r['company_name']?></option>
-																		</select>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-lg-4">
-                                                                    <div class="form-group">
-																	<textarea name="remarks" class="form-control"  rows="4" cols="50" required autocomplete="off" placeholder="Remarks"><?= $res['remarks'];?></textarea>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-lg-2">
-                                                                    <div class="form-group">
-                                                                        <button type="submit" name="add_mode"  class="btn btn-primary font-weight-bolder px-10 py-2" data-wizard-type="action-next">Update</button>
-                                                                        <!-- <a href="lending_company/view_requirements.php" type="button" class="btn btn-success font-weight-bolder px-10 py-3" data-wizard-type="action-next">Edit Requirements</a> -->
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        
-                                    				</form>
-                                   					 <!--end::Form-->
-                               					</div>
-                            				</div>
-                            				<!--end::Content-->
-                                        </div>
-                                    </div>
-                                        <div class="card card-custom">
-                                            <div class="card-body">
-                                                <h5>Manage Mode of Payment</h5>
-                                                <table class="table table-bordered">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>Mode of Payment</th>
-                                                            <th>Remarks</th>
-                                                            <th>Action</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <?php
-                                                        $lender_id = $_SESSION['user_id'];
+										<!--end::Page Heading-->
+									</div>
+									<!--end::Info-->
+								</div>
+							</div>
+							<!--end::Subheader-->
+								<!--begin::Entry-->
+	                            <div class="d-flex flex-column-fluid" >
+								<!--begin::Container-->
+								<div class="container" >
+									<div class="card card-custom">
+										<div class="card-body p-0">
+											<!--begin: Wizard Body-->
+											<div class="wizard-body py-8 px-8 py-lg-20 px-lg-10">
+												<!--begin: Wizard Form-->
+												<div class="row">
+													<div class="offset-xxl-2 col-xxl-8">
+														<form action="" method="post" id="kt_form" enctype="multipart/form-data">
+	                                                        <?php
+	                                                        $lender_id = $_SESSION['user_id'];
 
-                                                        $sql = "SELECT  * FROM mode_payment WHERE lender_id = $lender_id";
-                                                        $query = $dbh->prepare($sql);
-                                                        $query->execute();
-                                                        $res = $query->fetchAll(PDO::FETCH_OBJ);
-                                                        if ($query->rowCount() > 0) {
-                                                            foreach ($res as $rem) { ?>
-                                                        <tr>
-                                                            <td><?= htmlentities($rem->mode_name); ?></td>
-                                                            <td><?= htmlentities($rem->remarks); ?></td>
-                                                            <td>
-                                                                <a href="lending_company/editmode_payment.php?mode_id=<?= htmlentities($rem->mode_id)?>" class="kt-nav__link">
-                                                                    <span class="kt-nav__link-text">Edit</span>
-                                                                </a>
-                                                            </td>
-                                                        </tr>
-                                                        <?php }} ?>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-					</div>
-					<!--end::Content-->
-					<!--begin::Footer-->
-					<div class="footer bg-white py-4 d-flex flex-lg-column" id="kt_footer">
-						<!--begin::Container-->
-						<div class="container d-flex flex-column flex-md-row align-items-center justify-content-between">
-							<!--begin::Copyright-->
-							<div class="text-dark order-2 order-md-1">
-								<span class="text-muted font-weight-bold mr-2">2021©</span>
-								<a href="https://keenthemes.com/keen" target="_blank" class="text-dark-75 text-hover-primary">The Hulam Team</a>
+	                                                        $sql = "SELECT * FROM loan_features INNER JOIN user ON loan_features.lender_id = user.user_id WHERE lender_id = $lender_id";
+	                                                        $query = $dbh->prepare($sql);
+	                                                        $query->execute();
+	                                                        $res = $query->fetch();
+	                                                        ?>
+															<!--begin: Wizard Step 1-->
+															<div class="pb-5" data-wizard-type="step-content" data-wizard-state="current">
+																<h4 class="mb-10 font-weight-bold text-dark">Set Up Your Loan Features</h4>
+	                                                            <div class="row">
+																	<div class="col-xl-4">
+																		<!--begin::Input-->
+																		<div class="form-group">
+																			<label>Minimum Loan</label>
+																			<input type="text" class="form-control" name="min_loan" value="<?= $res['min_loan']?>" />
+																		</div>
+																		<!--end::Input-->
+																	</div>
+																	<div class="col-xl-4">
+																		<!--begin::Input-->
+																		<div class="form-group">
+																			<label>Maximum Loan</label>
+																			<input type="text" class="form-control" name="max_loan" value="<?= $res['max_loan']?>" />
+																		</div>
+																		<!--end::Input-->
+																	</div>
+																	<div class="col-xl-4">
+																		<!--begin::Input-->
+																		<div class="form-group">
+																			<label>Minimum Loan Term</label>
+																			<input type="text" class="form-control" name="min_term"  value="<?= $res['min_term']?>" />
+																		</div>
+																		<!--end::Input-->
+																	</div>
+	                                            				</div>
+																<div class="row">
+																	<div class="col-xl-4">
+																		<!--begin::Input-->
+																		<div class="form-group">
+																			<label>Maximum Loan Term</label>
+																			<input type="text" class="form-control" name="max_term" value="<?= $res['max_term']?>" />
+																		</div>
+																		<!--end::Input-->
+																	</div>
+																	<div class="col-xl-4">
+																		<!--begin::Input-->
+																		<div class="form-group">
+																			<label>Fix Interest Rate</label>
+																			<input type="text" class="form-control" name="fix_rate" value="<?= $res['fix_rate']?>" />
+																		</div>
+																		<!--end::Input-->
+																	</div>
+	                                                                <div class="col-xl-4">
+																		<!--begin::Input-->
+																		<div class="form-group">
+																			<label>Late Charges</label>
+																			<input type="text" class="form-control" name="late_charges" value="<?= $res['late_charges']?>" />
+																		</div>
+																		<!--end::Input-->
+																	</div>
+																</div>
+															</div>
+																<h4 class="mb-10 font-weight-bold text-dark">Set Up Reloan Period</h4>
+																<div class="row">
+																	<div class="col-xl-4">
+																		<!--begin::Input-->
+																		<div class="form-group">
+																			<label>How many months after the releasing date?</label>
+																			<input type="number" placeholder="Set how many months" class="form-control" name="reloan_period" value="<?= $res['reloan_period']?>" />
+																		</div>
+																		<!--end::Input-->
+																	</div>
+																	<div class="col-xl-4">
+																		<!--begin::Input-->
+																		<div class="form-group">
+																			<label>Remaining balance should be less than: </label>
+																			<input type="number" placeholder="Set amount" class="form-control" name="reloan_amount" value="<?= $res['reloan_amount']?>" />
+																		</div>
+																		<!--end::Input-->
+																	</div>
+																	
+																	</div>
+																	<div class="mr-2"></div>
+																	<div>
+																		<button type="submit" name="update"  class="btn btn-primary font-weight-bolder px-10 py-3" data-wizard-type="action-next">Submit</button>
+																	</div>
+																</div>
+																<!--end: Wizard Actions-->
+															 </div>
+	                                        				<!--end::Body-->
+	                                    				</form>
+	                                   					 <!--end::Form-->
+	                               					</div>
+	                            				</div>
+	                            				<!--end::Content-->
+	                                        </div>
+	                                    </div>
+	                                </div>
+	                            </div>
 							</div>
-							<!--end::Copyright-->
-							<!--begin::Nav-->
-							<div class="nav nav-dark">
-								<a href="https://keenthemes.com/keen" target="_blank" class="nav-link pl-0 pr-2">About</a>
-								<a href="https://keenthemes.com/keen" target="_blank" class="nav-link pr-2">Team</a>
-								<a href="https://keenthemes.com/keen" target="_blank" class="nav-link pr-0">Contact</a>
-							</div>
-							<!--end::Nav-->
+							<!--end::Entry-->
 						</div>
-						<!--end::Container-->
+						<!--end::Content-->
+						<!--begin::Footer-->
+						<div class="footer bg-white py-4 d-flex flex-lg-column" id="kt_footer">
+							<!--begin::Container-->
+							<div class="container d-flex flex-column flex-md-row align-items-center justify-content-between">
+								<!--begin::Copyright-->
+								<div class="text-dark order-2 order-md-1">
+									<span class="text-muted font-weight-bold mr-2">2021©</span>
+									<a href="https://keenthemes.com/keen" target="_blank" class="text-dark-75 text-hover-primary">The Hulam Team</a>
+								</div>
+								<!--end::Copyright-->
+								<!--begin::Nav-->
+								<div class="nav nav-dark">
+									<a href="https://keenthemes.com/keen" target="_blank" class="nav-link pl-0 pr-2">About</a>
+									<a href="https://keenthemes.com/keen" target="_blank" class="nav-link pr-2">Team</a>
+									<a href="https://keenthemes.com/keen" target="_blank" class="nav-link pr-0">Contact</a>
+								</div>
+								<!--end::Nav-->
+							</div>
+							<!--end::Container-->
+						</div>
+						<!--end::Footer-->
 					</div>
-					<!--end::Footer-->
+					<!--end::Wrapper-->
 				</div>
-				<!--end::Wrapper-->
+				<!--end::Page-->
 			</div>
-			<!--end::Page-->
-		</div>
-		<!--end::Main-->
-	
+			<!--end::Main-->
 		<!-- begin::User Panel-->
 		<div id="kt_quick_user" class="offcanvas offcanvas-right p-10">
 			<!--begin::Header-->
@@ -774,86 +832,55 @@ $user = $query->fetch();
 
 
 
-
-		<!--begin::Scrolltop-->
-		<div id="kt_scrolltop" class="scrolltop">
-			<span class="svg-icon">
-				<!--begin::Svg Icon | path:assets/media/svg/icons/Navigation/Up-2.svg-->
-				<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-					<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-						<polygon points="0 0 24 0 24 24 0 24" />
-						<rect fill="#000000" opacity="0.3" x="11" y="10" width="2" height="10" rx="1" />
-						<path d="M6.70710678,12.7071068 C6.31658249,13.0976311 5.68341751,13.0976311 5.29289322,12.7071068 C4.90236893,12.3165825 4.90236893,11.6834175 5.29289322,11.2928932 L11.2928932,5.29289322 C11.6714722,4.91431428 12.2810586,4.90106866 12.6757246,5.26284586 L18.6757246,10.7628459 C19.0828436,11.1360383 19.1103465,11.7686056 18.7371541,12.1757246 C18.3639617,12.5828436 17.7313944,12.6103465 17.3242754,12.2371541 L12.0300757,7.38413782 L6.70710678,12.7071068 Z" fill="#000000" fill-rule="nonzero" />
-					</g>
-				</svg>
-				<!--end::Svg Icon-->
-			</span>
-		</div>
-		<!--end::Scrolltop-->
-
-
-
-		<!--begin::Sticky Toolbar-->
-
-		<!--end::Sticky Toolbar-->
-		<!--begin::Demo Panel-->
-		<div id="kt_demo_panel" class="offcanvas offcanvas-right p-10">
-			<!--begin::Header-->
-			<div class="offcanvas-header d-flex align-items-center justify-content-between pb-7">
-				<h4 class="font-weight-bold m-0">Select A Demo</h4>
-				<a href="#" class="btn btn-xs btn-icon btn-light btn-hover-primary" id="kt_demo_panel_close">
-					<i class="ki ki-close icon-xs text-muted"></i>
-				</a>
+			<!--begin::Scrolltop-->
+			<div id="kt_scrolltop" class="scrolltop">
+				<span class="svg-icon">
+					<!--begin::Svg Icon | path:assets/media/svg/icons/Navigation/Up-2.svg-->
+					<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+						<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+							<polygon points="0 0 24 0 24 24 0 24" />
+							<rect fill="#000000" opacity="0.3" x="11" y="10" width="2" height="10" rx="1" />
+							<path d="M6.70710678,12.7071068 C6.31658249,13.0976311 5.68341751,13.0976311 5.29289322,12.7071068 C4.90236893,12.3165825 4.90236893,11.6834175 5.29289322,11.2928932 L11.2928932,5.29289322 C11.6714722,4.91431428 12.2810586,4.90106866 12.6757246,5.26284586 L18.6757246,10.7628459 C19.0828436,11.1360383 19.1103465,11.7686056 18.7371541,12.1757246 C18.3639617,12.5828436 17.7313944,12.6103465 17.3242754,12.2371541 L12.0300757,7.38413782 L6.70710678,12.7071068 Z" fill="#000000" fill-rule="nonzero" />
+						</g>
+					</svg>
+					<!--end::Svg Icon-->
+				</span>
 			</div>
-			<!--end::Header-->
-		</div>
-		<!--end::Demo Panel-->
-		<script>var HOST_URL = "https://preview.keenthemes.com/keen/theme/tools/preview";</script>
-		<!--begin::Global Config(global config for global JS scripts)-->
-		<script>var KTAppSettings = { "breakpoints": { "sm": 576, "md": 768, "lg": 992, "xl": 1200, "xxl": 1400 }, "colors": { "theme": { "base": { "white": "#ffffff", "primary": "#3E97FF", "secondary": "#E5EAEE", "success": "#08D1AD", "info": "#844AFF", "warning": "#F5CE01", "danger": "#FF3D60", "light": "#E4E6EF", "dark": "#181C32" }, "light": { "white": "#ffffff", "primary": "#DEEDFF", "secondary": "#EBEDF3", "success": "#D6FBF4", "info": "#6125E1", "warning": "#FFF4DE", "danger": "#FFE2E5", "light": "#F3F6F9", "dark": "#D6D6E0" }, "inverse": { "white": "#ffffff", "primary": "#ffffff", "secondary": "#3F4254", "success": "#ffffff", "info": "#ffffff", "warning": "#ffffff", "danger": "#ffffff", "light": "#464E5F", "dark": "#ffffff" } }, "gray": { "gray-100": "#F3F6F9", "gray-200": "#EBEDF3", "gray-300": "#E4E6EF", "gray-400": "#D1D3E0", "gray-500": "#B5B5C3", "gray-600": "#7E8299", "gray-700": "#5E6278", "gray-800": "#3F4254", "gray-900": "#181C32" } }, "font-family": "Poppins" };</script>
-		<!--end::Global Config-->
-		<!--begin::Global Theme Bundle(used by all pages)-->
-		<script src="assets/admin/plugins/global/plugins.bundle.js"></script>
-		<script src="assets/admin/plugins/custom/prismjs/prismjs.bundle.js"></script>
-		<script src="assets/admin/js/scripts.bundle.js"></script>
-		<!--end::Global Theme Bundle-->
-		<!--begin::Page Vendors(used by this page)-->
-		<script src="assets/admin/plugins/custom/fullcalendar/fullcalendar.bundle.js"></script>
-		<!--end::Page Vendors-->
-		<!--begin::Page Scripts(used by this page)-->
-		<script src="assets/admin/js/pages/widgets.js"></script>
-        <script src="assets/keen/js/pages/features/file-upload/image-input.js"></script>
-        <script scr="https://code.jquery.com/jquery-3.6.0.js"></script>
-        <script>
-            $(document).ready(function(){
-                $(document).on('click','.remove-btn', function(){
-                    $(this).closest('.pb-5').remove();
-                });
-                $(document).on('click','.add-more-form', function(){
-                    $('.paste-new-forms').append('<div class="pb-5" data-wizard-type="step-content" data-wizard-state="current">\
-                                <div class="row">\
-                                    <div class="col-lg-6">\
-                                        <div class="form-group">\
-                                            <input type="text" class="form-control" name="req_name[]" autocomplete="off">\
-                                        </div>\
-                                    </div>\
-                                    <div class="col-lg-4">\
-                                        <div class="form-group">\
-                                            <input type="text" class="form-control" name="remarks[]" autocomplete="off">\
-                                        </div>\
-                                    </div>\
-                                    <div class="col-lg-2">\
-                                        <div class="form-group">\
-                                            <button type="button" class="remove-btn btn btn-danger">Remove</button>\
-                                        </div>\
-                                    </div>\
-                                </div>\
-                            </div>');
-                            
-                });
-             });
-        </script>
-		<!--end::Page Scripts-->
-	</body>
-	<!--end::Body-->
-</html>
+			<!--end::Scrolltop-->
+
+
+
+			<!--begin::Sticky Toolbar-->
+
+			<!--end::Sticky Toolbar-->
+			<!--begin::Demo Panel-->
+			<div id="kt_demo_panel" class="offcanvas offcanvas-right p-10">
+				<!--begin::Header-->
+				<div class="offcanvas-header d-flex align-items-center justify-content-between pb-7">
+					<h4 class="font-weight-bold m-0">Select A Demo</h4>
+					<a href="#" class="btn btn-xs btn-icon btn-light btn-hover-primary" id="kt_demo_panel_close">
+						<i class="ki ki-close icon-xs text-muted"></i>
+					</a>
+				</div>
+				<!--end::Header-->
+			</div>
+			<!--end::Demo Panel-->
+			<script>var HOST_URL = "https://preview.keenthemes.com/keen/theme/tools/preview";</script>
+			<!--begin::Global Config(global config for global JS scripts)-->
+			<script>var KTAppSettings = { "breakpoints": { "sm": 576, "md": 768, "lg": 992, "xl": 1200, "xxl": 1400 }, "colors": { "theme": { "base": { "white": "#ffffff", "primary": "#3E97FF", "secondary": "#E5EAEE", "success": "#08D1AD", "info": "#844AFF", "warning": "#F5CE01", "danger": "#FF3D60", "light": "#E4E6EF", "dark": "#181C32" }, "light": { "white": "#ffffff", "primary": "#DEEDFF", "secondary": "#EBEDF3", "success": "#D6FBF4", "info": "#6125E1", "warning": "#FFF4DE", "danger": "#FFE2E5", "light": "#F3F6F9", "dark": "#D6D6E0" }, "inverse": { "white": "#ffffff", "primary": "#ffffff", "secondary": "#3F4254", "success": "#ffffff", "info": "#ffffff", "warning": "#ffffff", "danger": "#ffffff", "light": "#464E5F", "dark": "#ffffff" } }, "gray": { "gray-100": "#F3F6F9", "gray-200": "#EBEDF3", "gray-300": "#E4E6EF", "gray-400": "#D1D3E0", "gray-500": "#B5B5C3", "gray-600": "#7E8299", "gray-700": "#5E6278", "gray-800": "#3F4254", "gray-900": "#181C32" } }, "font-family": "Poppins" };</script>
+			<!--end::Global Config-->
+			<!--begin::Global Theme Bundle(used by all pages)-->
+			<script src="assets/admin/plugins/global/plugins.bundle.js"></script>
+			<script src="assets/admin/plugins/custom/prismjs/prismjs.bundle.js"></script>
+			<script src="assets/admin/js/scripts.bundle.js"></script>
+			<!--end::Global Theme Bundle-->
+			<!--begin::Page Vendors(used by this page)-->
+			<script src="assets/admin/plugins/custom/fullcalendar/fullcalendar.bundle.js"></script>
+			<!--end::Page Vendors-->
+			<!--begin::Page Scripts(used by this page)-->
+			<script src="assets/admin/js/pages/widgets.js"></script>
+	        <script src="assets/keen/js/pages/features/file-upload/image-input.js"></script>
+			<!--end::Page Scripts-->
+		</body>
+		<!--end::Body-->
+	</html>
