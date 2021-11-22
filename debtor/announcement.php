@@ -5,13 +5,7 @@ include('../db_connection/config.php');
 
 if ($_SESSION['user_type'] != 2) {
 	header('location: ../index.php');
-}
-
-$sql = $dbh->prepare('SELECT * FROM loan_application INNER JOIN loan_features ON loan_features.lender_id = loan_application.lender_id INNER JOIN user ON loan_application.lender_id = user.user_id WHERE loan_application.debtor_id = :user_id AND loan_application.loan_status ="Released"');
-$sql->execute(['user_id' => $_SESSION['user_id']]);
-$loan = $sql->fetch();
-?>
-
+} ?>
 
 <?php
 $user_id = $_SESSION['user_id'];
@@ -22,97 +16,76 @@ $user = $query->fetch();
 ?>
 
 <?php
-if (isset($_POST['upload_payment'])) {
-	$loan_app_id = $_POST['loan_app_id'];
-	$lender_id = $_POST['lender_id'];
-	$debtor_id = $_SESSION['user_id'];
-	$upload_date = $_POST['upload_date'];
-	$message = "Uploaded proof of payment.";
+$loan_app_id = intval($_GET['loan_app_id']);
 
-	$images = $_FILES['receipt']['name'];
-	$tmp_dir = $_FILES['receipt']['tmp_name'];
-	$imageSize = $_FILES['receipt']['size'];
-
-	$upload_dir = '../assets/keen/receipts/';
-	$imgExt = strtolower(pathinfo($images, PATHINFO_EXTENSION));
-	$valid_extensions = array('jpeg', 'jpg', 'gif', 'pdf', 'doc', 'docx');
-	$receipt = rand(1000, 10000000) . "." . $imgExt;
-	move_uploaded_file($tmp_dir, $upload_dir . $receipt);
-
-	$insert = "INSERT INTO message(sender_id,receiver_id,message,date_message)VALUES(:sender_id,:receiver_id,:message,:date_message)";
-	$query = $dbh->prepare($insert);
-	$query->bindParam(':sender_id', $debtor_id, PDO::PARAM_STR);
-	$query->bindParam(':receiver_id', $lender_id, PDO::PARAM_STR);
-	$query->bindParam(':message', $message, PDO::PARAM_STR);
-	$query->bindParam(':date_message', $upload_date, PDO::PARAM_STR);
-	$query->execute();
-
-	$insert = "INSERT INTO loan_receipt(loan_app_id,receipt,upload_date)VALUES(:loan_app_id,:receipt,:upload_date)";
-	$query = $dbh->prepare($insert);
-	$query->bindParam(':loan_app_id', $loan_app_id, PDO::PARAM_STR);
-	$query->bindParam(':receipt', $receipt, PDO::PARAM_STR);
-	$query->bindParam(':upload_date', $upload_date, PDO::PARAM_STR);
-
-	if ($query->execute()) {
-		$_SESSION['status'] = "Message Sent";
-		header("Location: view_payment.php");
-		exit();
-	} else {
-		$_SESSION['status'] = "Message Not Sent";
-		header('Location: view_payment.php');
-		exit();
-	}
-}
+$sql = "SELECT loan_application.*, user.* FROM loan_application INNER JOIN user ON loan_application.lender_id = user.user_id WHERE loan_application.loan_app_id = $loan_app_id AND loan_application.loan_status= 'released'";
+$query = $dbh->prepare($sql);
+$query->execute();
+$run = $query->fetch();
 ?>
-<?php
-function drawStars(int $starRating)
-{
-echo "<h3 style='color: yellow;'>";
-for ($i = 0; $i < $starRating; $i++) {
-	echo "&#x2605;";
-}
-echo "</h3>";
-for ($i = 5 - $starRating; $i > 0; $i--) {
-	echo "&#x2605;";
-}
-}
-?>
-
 
 <!DOCTYPE html>
 
 <html lang="en">
+<!--begin::Head-->
 
 <head>
 	<base href="../">
 	<meta charset="utf-8" />
-	<title>Home</title>
+	<title>Loan Information: Running Balance</title>
 	<meta name="description" content="Updates and statistics" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+	<!--begin::Fonts-->
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" />
+	<!--end::Fonts-->
+	<!--begin::Page Custom Styles(used by this page)-->
+	<link href="assets/keen/css/pages/wizard/wizard-2.css" rel="stylesheet" type="text/css" />
+	<!--begin::Page Vendors Styles(used by this page)-->
 	<link href="assets/keen/plugins/custom/fullcalendar/fullcalendar.bundle.css" rel="stylesheet" type="text/css" />
+	<!--end::Page Vendors Styles-->
+	<!--begin::Global Theme Styles(used by all pages)-->
 	<link href="assets/keen/plugins/global/plugins.bundle.css" rel="stylesheet" type="text/css" />
 	<link href="assets/keen/plugins/custom/prismjs/prismjs.bundle.css" rel="stylesheet" type="text/css" />
 	<link href="assets/keen/css/style.bundle.css" rel="stylesheet" type="text/css" />
+	<!--end::Global Theme Styles-->
+	<!--begin::Layout Themes(used by all pages)-->
+	<!--end::Layout Themes-->
 	<link rel="shortcut icon" href="assets/keen/media/logos/Hulam_Logo.png" />
 </head>
+<!--end::Head-->
+<!--begin::Body-->
 
-<body id="kt_body" class="header-fixed header-mobile-fixed subheader-enabled page-loading opacity:0.2" style="background-image: url('assets/keen/media/logos/banner.png');">
-
+<body id="kt_body" class="header-fixed header-mobile-fixed subheader-enabled page-loading">
+	<!--begin::Main-->
+	<!--begin::Header Mobile-->
 	<div id="kt_header_mobile" class="header-mobile header-mobile-fixed">
-		<a href="index.php">
-			<img alt="Logo" src="assets/keen/media/logos/h_logo2.png" class="max-h-45px" />
+		<!--begin::Logo-->
+		<a href="debtor/index.php">
+			<img alt="Logo" src="assets/keen/media/logos/h_logo2.png" class="max-h-30px" />
 		</a>
+		<!--end::Logo-->
+
+		<!-- TOOL BAR -->
+
 	</div>
+	<!--end::Header Mobile-->
+
 
 	<div class="d-flex flex-column flex-root">
+		<!--begin::Page-->
+
+		<!--begin::Subheader-->
 		<div class="subheader bg-white h-100px" id="kt_subheader">
 			<div class="container flex-wrap flex-sm-nowrap">
+				<!--begin::Logo-->
 				<div class="d-none d-lg-flex align-items-center flex-wrap w-250px">
+					<!--begin::Logo-->
 					<a href="debtor/index.php">
 						<img alt="Logo" src="assets/keen/media/logos/h_logo2.png" class="max-h-50px" />
 					</a>
+					<!--end::Logo-->
 				</div>
+				<!--end::Logo-->
 				<div class="subheader-nav nav flex-grow-1">
 					<a href="debtor/index.php" class="nav-item active">
 						<span class="nav-label px-10">
@@ -129,357 +102,90 @@ for ($i = 5 - $starRating; $i > 0; $i--) {
 							<span class="nav-title text-dark-75 font-weight-bold font-size-h4">LOAN INFORMATION</span>
 						</span>
 					</a>
-
 				</div>
+				<!--end::Nav-->
 			</div>
 
-			<div class="topbar">
-				<div class="topbar-item mr-1">
-					<div class="btn btn-icon btn-hover-transparent-black btn-clean btn-lg" data-toggle="modal" id="kt_quick_panel_toggle">
-						<span class="svg-icon svg-icon-xl svg-icon-primary">
-							<!--begin::Svg Icon | path:assets/media/svg/icons/Communication/Chat6.svg-->
-							<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-								<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-									<rect x="0" y="0" width="24" height="24" />
-									<path opacity="0.3" fill-rule="evenodd" clip-rule="evenodd" d="M14.4862 18L12.7975 21.0566C12.5304 21.54 11.922 21.7153 11.4386 21.4483C11.2977 21.3704 11.1777 21.2597 11.0887 21.1255L9.01653 18H5C3.34315 18 2 16.6569 2 15V6C2 4.34315 3.34315 3 5 3H19C20.6569 3 22 4.34315 22 6V15C22 16.6569 20.6569 18 19 18H14.4862Z" fill="black" />
-									<path fill-rule="evenodd" clip-rule="evenodd" d="M6 7H15C15.5523 7 16 7.44772 16 8C16 8.55228 15.5523 9 15 9H6C5.44772 9 5 8.55228 5 8C5 7.44772 5.44772 7 6 7ZM6 11H11C11.5523 11 12 11.4477 12 12C12 12.5523 11.5523 13 11 13H6C5.44772 13 5 12.5523 5 12C5 11.4477 5.44772 11 6 11Z" fill="black" />
-								</g>
-							</svg>
-							<!--end::Svg Icon-->
-						</span>
-					</div>
-				</div>
-				<div class="topbar-item mr-5">
-					<div class="btn btn-icon btn-light-primary h-40px w-40px p-0" id="kt_quick_user_toggle">
-					<img src="/hulam/assets/keen/hulam_media/<?= $user['profile_pic']?>" class="h-40px align-self-end" alt="">
-					</div>
-				</div>
-			</div>
-		</div>
-
-
-		<!--begin::Content-->
-		<div class="content d-flex flex-column flex-column-fluid" id="kt_content" style="background-image:url('assets/keen/media/logos/banner.png')">
-			<div class="gutter-b" id="kt_breadcrumbs">
-                <div class="container d-flex align-items-center justify-content-between flex-wrap flex-sm-nowrap">
-                    <div class="d-flex align-items-center flex-wrap mr-1">
-                        <div class="d-flex align-items-baseline flex-wrap mr-5">
-                            <h2 class="text-white font-weight-bold my-1 mr-5">Hi, <?= $_SESSION['firstname']; ?>! Welcome to Hulam.</h2> 
-							<a href="debtor/announcement.php" style="font-size: 20px; font-style:italic">View Announcements</a>
-							<div class="info text-center">
-								<h6 class="text-danger">
-									<?php
-									$id = $_SESSION['user_id'];
-
-									$sql = "SELECT * FROM user WHERE user_id = $id";
-									$query = $dbh->prepare($sql);
-									$query->execute();
-									$result = $query->fetch();
-									$notice = $result['notice_message'];
-									if ($result['eligible'] == 'no') {
-
-										echo $notice;
-									}
-									?></h6>
+					<div class="topbar">
+						<div class="topbar-item mr-1">
+							<div class="btn btn-icon btn-hover-transparent-black btn-clean btn-lg" data-toggle="modal" id="kt_quick_panel_toggle">
+								<span class="svg-icon svg-icon-xl svg-icon-primary">
+									<!--begin::Svg Icon | path:assets/media/svg/icons/Communication/Chat6.svg-->
+									<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+										<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+											<rect x="0" y="0" width="24" height="24" />
+											<path opacity="0.3" fill-rule="evenodd" clip-rule="evenodd" d="M14.4862 18L12.7975 21.0566C12.5304 21.54 11.922 21.7153 11.4386 21.4483C11.2977 21.3704 11.1777 21.2597 11.0887 21.1255L9.01653 18H5C3.34315 18 2 16.6569 2 15V6C2 4.34315 3.34315 3 5 3H19C20.6569 3 22 4.34315 22 6V15C22 16.6569 20.6569 18 19 18H14.4862Z" fill="black" />
+											<path fill-rule="evenodd" clip-rule="evenodd" d="M6 7H15C15.5523 7 16 7.44772 16 8C16 8.55228 15.5523 9 15 9H6C5.44772 9 5 8.55228 5 8C5 7.44772 5.44772 7 6 7ZM6 11H11C11.5523 11 12 11.4477 12 12C12 12.5523 11.5523 13 11 13H6C5.44772 13 5 12.5523 5 12C5 11.4477 5.44772 11 6 11Z" fill="black" />
+										</g>
+									</svg>
+									<!--end::Svg Icon-->
+								</span>
 							</div>
-                        </div>
-                    </div>
-                    <div class="d-flex align-items-center">
+						</div>
+						<div class="topbar-item mr-5">
+							<div class="btn btn-icon btn-light-primary h-40px w-40px p-0" id="kt_quick_user_toggle">
+							<img src="/hulam/assets/keen/hulam_media/<?= $user['profile_pic']?>" class="h-40px align-self-end" alt="">
+							</div>
+						</div>
+					</div>
+				</div>
+					<!--begin::Content-->
+					<div class="content d-flex flex-column flex-column-fluid" id="kt_content" style="background-image:url('assets/keen/media/logos/banner.png')">
 
+					<div class="d-flex flex-column-fluid">
+						<div class="container">
+							<div class="card card-custom gutter-b card-stretch">
+								<!--begin::Body-->  
+								<div class="d-flex flex-column-fluid">
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <!--begin::Charts Widget 4-->
+                                            <div class="card card-custom card-stretch gutter-b">
+                                                <div class="card card-custom">
+                                                <?php
+                                                $sql = "SELECT * FROM announcement INNER JOIN user ON announcement.user_id = user.user_id ORDER BY date_announce DESC";
+                                                $query = $dbh->prepare($sql);
+                                                $query->execute();
+                                                $ann = $query->fetchAll();
+                                                foreach($ann as $result):?>
+                                                    <div class="card-header card-header-right ribbon ribbon-clip ribbon-left">
+                                                        <div class="ribbon-target" style="top: 12px;">
+                                                            <span class="ribbon-inner bg-success"></span>
+                                                            <div class="symbol symbol-circle symbol-40 mr-3">
+                                                                <img alt="Pic" src="/hulam/assets/keen/hulam_media/<?= $result['profile_pic'] ?>" />
+                                                            </div><?= $result['company_name']?>
+                                                        </div>
+                                                        <h3 class="card-title" style="font-size: 20px;">
+                                                        <?= $result['title']?>
+                                                       </h3>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <div class="d-flex align-items-center">
+                                                            <label class="card-title" style="font-size: 15px;">
+                                                                <?= $result['content']?>
+                                                        </label>
+                                                        </div>
+                                                    </div>
+                                                    <?php endforeach;?>
+                                                </div>
+                                       
+										<!--end::Header-->
+									</div>
+									<!--end::Charts Widget 4-->
+									</div>
+								</div>
+							</div>
+					   </div>
+					</div>
                     </div>
                 </div>
             </div>
-
-
-			<div class="d-flex flex-column-fluid">
-				<div class="container">
-					
-					<div class="col-lg-12">
-						<div class="form-group">
-							<div class="card card-custom card-stretch card-stretch-half gutter-b">
-								<div class="card-body d-flex flex-column">
-									<div class="d-flex align-items-center">
-										<div class="d-flex flex-column">
-											<h4>Filter Amount</h4>
-										</div>
-									</div>
-									<form method="get" autocomplete="off">
-										<div class="row">
-											<div class="col-lg-3">
-												<div class="form-group">
-													<select name="type" class="form-control form-control-lg" required>
-														<option value="" hidden>Type of Lenders</option>
-														<option value="3" <?php if (isset($_GET['type'])) {
-																				if ($_GET['type'] == 3) {
-																					echo 'selected';
-																				} else {
-																					echo '';
-																				}
-																			} ?>>Lending Company</option>
-														<option value="4" <?php if (isset($_GET['type'])) {
-																				if ($_GET['type'] == 4) {
-																					echo 'selected';
-																				} else {
-																					echo '';
-																				}
-																			} ?>>Individual Investor</option>
-													</select>
-												</div>
-											</div>
-											<div class="col-lg-3">
-												<div class="input-group mb-3">
-													<input class="form-control form-control-lg" type="number" name="amount" value="<?= isset($_GET['amount']) ? $_GET['amount'] : '' ?>" placeholder="Enter Loan Amount" required />
-												</div>
-											</div>
-											<div class="col-lg-3">
-												<div class="input-group mb-3">
-													<input class="form-control form-control-lg" type="number" name="month" value="<?= isset($_GET['month']) ? $_GET['month'] : '' ?>" placeholder="Months To Pay" required />
-												</div>
-											</div>
-											<div class="col-lg-3">
-												<button type="submit" class="btn btn-primary btn-block font-weight-bolder btn-lg">SHOW</button>
-											</div>
-										</div>
-									</form>
-								</div>
-							</div>
-						</div>
-					</div>
-					<?php
-					if (!isset($_GET['amount']) && !isset($_GET['type'])) {
-
-						$sql = $dbh->prepare("SELECT * FROM user INNER JOIN loan_features ON user.user_id = loan_features.lender_id WHERE (user_type = 3 OR user_type = 4) AND user.eligible = 'yes'");
-						$sql->execute();
-						$lenders = $sql->fetchAll();
-					} else {
-						$amount = $_GET['amount'];
-						$type = $_GET['type'];
-						$month = $_GET['month'];
-						$sql = $dbh->prepare("SELECT * FROM `user` INNER JOIN `loan_features` ON user.user_id = loan_features.lender_id WHERE loan_features.min_loan <= $amount AND $amount <= loan_features.max_loan AND user.user_type = $type AND loan_features.min_term <= $month AND loan_features.max_term >= $month AND user.eligible = 'yes'");
-						$sql->execute();
-						$lenders = $sql->fetchAll();
-					}
-					?>
-					<?php if ($sql->rowCount() == 0) : ?>
-					<div class="container">
-						<div class="card card-custom gutter-b">
-							<div class="card-body">
-								<h1 class="text-center">NO RECORDS FOUND</h1>
-							</div>
-						</div>
-					</div>
-					<?php endif; ?>
-					<?php foreach ($lenders as $lender) : ?>
-					<div class="col-lg-12">
-						<div class="form-group">
-							<div class="card card-custom card-stretch card-stretch-half gutter-b">
-								<div class="d-flex flex-column-fluid">
-									<div class="container">
-											<div class="card card-custom gutter-b">
-												<div class="card-body">
-													<div class="d-flex">
-														<div class="flex-shrink-0 mr-7">
-															<div class="symbol symbol-50 symbol-lg-120 symbol-circle">
-																<img alt="Pic" src="/hulam/assets/keen/hulam_media/<?= $lender['profile_pic'] ?>" />
-															</div>
-														</div>
-														<div class="flex-grow-1">
-															<div class="d-flex align-items-center justify-content-between flex-wrap mt-2">
-																<div class="mr-3">
-																	<a href="#" class="d-flex align-items-center text-dark text-hover-primary font-size-h5 font-weight-bold mr-3"><?= $lender['company_name'] ?></a>
-																</div>
-																<div class="my-lg-0 my-1">
-																	<!-- <a href="debtor/view_company2.php?lender_id=<?= $lender['lender_id'] ?>" class="btn btn-sm btn-light-primary font-weight-bolder mr-2">View Details</a> -->
-																	<?php if ($user['eligible'] == 'no') : ?>
-																		<a href="" class="btn btn-sm btn-primary font-weight-bolder" data-target="#notice" data-toggle="modal">View Details</a>
-																	<?php else: ?>	
-																		<a href="debtor/apply_loan.php?lender_id=<?= $lender['lender_id'] . '&amount=' . $_GET['amount'] . '&month=' . $_GET['month']  ?>" class="btn btn-sm btn-primary font-weight-bolder">View Details</a>
-																	<?php endif; ?>
-																</div>
-															</div>
-															<div class="d-flex align-items-center flex-wrap justify-content-between">
-																<div class="flex-grow-1 font-weight-bold text-dark-50 py-2 py-lg-2 mr-5">
-																	<?= $lender['description'] ?>
-																</div>
-															</div>
-														</div>
-													</div>
-													<!-- Start Modal -->
-													<div class="modal fade" id="notice" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
-														<div class="modal-dialog modal-dialog-centered modal-m" role="document">
-															<div class="modal-content">
-																<div class="modal-header">
-																	<h5 class="modal-title" id="exampleModalLabel">Account Not Activated.</h5>
-																	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-																		<i aria-hidden="true" class="ki ki-close"></i>
-																	</button>
-																</div>
-																<div class="modal-body">
-																	<label class="font-weight-bolder font-size-lg" for="input-username">To activate your account you need to complete updating your profile information and wait for the activation to start applying loan.</label>
-																</div>
-															</div>
-														</div>
-													</div>
-													<!-- End Modal -->
-													<!-- Start Modal -->
-													<div class="modal fade" id="exist" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
-														<div class="modal-dialog modal-dialog-centered modal-m" role="document">
-															<div class="modal-content">
-																<div class="modal-header">
-																	<h5 class="modal-title" id="exampleModalLabel">You have an existing loan associated with this account.</h5>
-																	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-																		<i aria-hidden="true" class="ki ki-close"></i>
-																	</button>
-																</div>
-																<div class="modal-body">
-																	<label class="font-weight-bolder font-size-lg" for="input-username"></label>
-																</div>
-															</div>
-														</div>
-													</div>
-													<!-- End Modal -->
-													<div class="separator separator-solid my-7"></div>
-													<div class="d-flex align-items-center flex-wrap">
-														<div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
-															<div class="d-flex flex-column text-dark-75">
-																<span class="font-weight-bolder font-size-sm">Monthly Payment</span>
-																<span class="font-weight-bolder font-size-h5">
-																	<span class="text-dark-50 font-weight-bold">Php &nbsp;</span>
-																	<?php
-
-																	if (!isset($_GET['amount'])) {
-																		echo '0.00';
-																	} else {
-																		if ($lender['user_type'] == 4) {
-																			$amount = $_GET['amount'];
-																			$month = $_GET['month'];
-																			$new_rate = $month * ($lender['fix_rate'] / 100);
-																			//1 * 10/100 = 0.1
-																			$initial_amount = $amount * $new_rate;
-																			//500 * 0.1 = 50
-																			$add_interest = $initial_amount + $amount;
-																			//50 + 500 = 550
-																			echo number_format($add_interest / $month, 2);
-																			//550 /1 = 550
-																		} else {
-																			$amount = $_GET['amount'];
-																			$month = $_GET['month'];
-																			//30000
-																			$initial_amount =  $amount * ($lender['fix_rate'] / 100);
-																			//30000 * 0.03 = 900
-																			$add_interest = $amount / $month;
-																			//30000 / 12 =2500
-																			echo number_format($add_interest + $initial_amount, 2);
-																			//2500 + 900 = 3400
-																		}
-																	}
-																	?>
-																</span>
-															</div>
-														</div>
-														<div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
-															<div class="d-flex flex-column text-dark-75">
-																<span class="font-weight-bolder font-size-sm">Loan Term</span>
-																<span class="font-weight-bolder font-size-h5">
-																	<?= $_GET['month'] ?>&nbsp;<span class="text-dark-50 font-weight-bold">Months</span>
-															</div>
-														</div>
-														<div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
-															<div class="d-flex flex-column text-dark-75">
-																<span class="font-weight-bolder font-size-sm">Fixed Interest Rate</span>
-																<span class="font-weight-bolder font-size-h5">
-																	<span class="text-dark-50 font-weight-bold"></span><?= $lender['fix_rate'] ?>%</span>
-															</div>
-														</div>
-														<div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
-															<div class="d-flex flex-column text-dark-75">
-																<span class="font-weight-bolder font-size-sm">Total Interest</span>
-																<span class="font-weight-bolder font-size-h5">
-																	<span class="text-dark-50 font-weight-bold">Php &nbsp;</span>
-																	<?php
-																	if (!isset($_GET['amount'])) {
-																		echo '0.00';
-																	} else {
-																		if ($lender['user_type'] == 4) {
-																			$amount = $_GET['amount'];
-																			$month = $_GET['month'];
-																			$new_rate = $amount * ($lender['fix_rate'] / 100); //500 * 0.1 = 50
-																			$total = $new_rate * $month; //50 * 1
-																			echo number_format($total, 2);
-																		} else {
-																			$amount = $_GET['amount'];
-																			$month = $_GET['month'];
-																			$new_rate = $amount * ($lender['fix_rate'] / 100); //30000* 0.3 = 900
-																			$total = $new_rate * $month; //900 * 12
-
-																			echo number_format($total, 2);
-																		}
-																	}
-
-																	?>
-																</span>
-															</div>
-														</div>
-														<div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
-															<div class="d-flex flex-column">
-																
-															</div>
-															<div class="d-flex flex-column">
-																<span class="text-dark-75 font-weight-bolder font-size-sm">Rates and Reviews  &nbsp;&nbsp;| <a href="debtor/view_rating.php?lender_id=<?= $lender['lender_id']?>" class="text-primary font-weight-bolder">View</a>
-																	
-																	<?php
-																	if (!isset($_GET['amount']) && !isset($_GET['type'])) {
-																		$lender_id = $lender['lender_id'];
-																		$sql = $dbh->prepare("SELECT * FROM user INNER JOIN loan_features ON user.user_id = loan_features.lender_id INNER JOIN feedback ON user.user_id  = feedback.lender_id WHERE (user_type = 3 OR user_type = 4) AND user.eligible = 'yes' AND feedback.lender_id = $lender_id");
-																		$sql->execute();
-																		$len= $sql->fetchAll();
-																	} else {
-																		$amount = $_GET['amount'];
-																		$type = $_GET['type'];
-																		$month = $_GET['month'];
-																		$sql = $dbh->prepare("SELECT * FROM `user` INNER JOIN `loan_features` ON user.user_id = loan_features.lender_id  INNER JOIN feedback ON user.user_id  = feedback.lender_id WHERE loan_features.min_loan <= $amount AND $amount <= loan_features.max_loan AND user.user_type = $type AND loan_features.min_term <= $month AND loan_features.max_term >= $month AND user.eligible = 'yes'");
-																		$sql->execute();
-																		$len = $sql->fetchAll();
-																	}
-																	?>
-																	<?php 
-																	foreach($len as $rate):
-																	?>
-																
-																		<?php
-																		$ratingTotal = $ratingCount = 0;
-																		$ratingTotal += $rate['ratings'];
-																		$ratingCount++;
-																		echo "<p>" . number_format(($ratingTotal / $ratingCount), 2) . " " .
-																			drawStars(round($ratingTotal / $ratingCount)) .
-																			"</p>";
-																		$ratingTotal = 0;
-																		$ratingCount = 0;
-																		?>
-																</span>
-																<?php 
-															endforeach;
-															?>
-																
-															</div>
-														</div>
-													</div>
-												</div>
-											</div>
-										
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<?php endforeach; ?>
-				</div>
-
-			</div>
-		</div>
-	</div>
-	<!--begin::Footer-->
-	<div class="footer bg-white py-4 d-flex flex-lg-column" id="kt_footer">
+            </div>
+						
+								<!--end::Content-->
+<!--begin::Footer-->
+<div class="footer bg-white py-4 d-flex flex-lg-column" id="kt_footer">
 		<!--begin::Container-->
 		<div class="container d-flex flex-column flex-md-row align-items-center justify-content-between">
 			<!--begin::Copyright-->

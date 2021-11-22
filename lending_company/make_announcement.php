@@ -16,84 +16,22 @@ $debtor = $query->fetch();
 ?>
 
 <?php
-if (isset($_POST['send_message'])) {
-	$id = intval($_GET['loan_app_id']);
+if (isset($_POST['submit_announce'])) {
 
-	$sender_id = $_POST['sender_id'];
-	$receiver_id = $_POST['receiver_id'];
-	$date_message = $_POST['date_message'];
-	$message = $_POST['message'];
+	$user_id = $_SESSION['user_id'];
+	$date_announce = $_POST['date_announce'];
+	$title = $_POST['title'];
+    $content = $_POST['content'];
 
-	$insert = "INSERT INTO message(sender_id,receiver_id,message,date_message)VALUES(:sender_id,:receiver_id,:message,:date_message)";
+	$insert = "INSERT INTO announcement(user_id,date_announce,title,content)VALUES('$user_id','$date_announce','$title','$content')";
 	$query = $dbh->prepare($insert);
-	$query->bindParam(':sender_id', $sender_id, PDO::PARAM_STR);
-	$query->bindParam(':receiver_id', $receiver_id, PDO::PARAM_STR);
-	$query->bindParam(':message', $message, PDO::PARAM_STR);
-	$query->bindParam(':date_message', $date_message, PDO::PARAM_STR);
 	if ($query->execute()) {
-		$_SESSION['status_approved'] = "Message Sent";
-		header("Location: view_approved.php?loan_app_id=$id");
+		$_SESSION['status_ann'] = "Announcement added sucessfully!";
+		header("Location: make_announcement.php");
 		exit();
 	} else {
-		$_SESSION['status_approved'] = "Message Not Sent";
-		header('Location: view_approved.php?loan_app_id=$id');
-		exit();
-	}
-}
-?>
-
-<?php
-if (isset($_POST['released_loan'])) {
-	$id = intval($_GET['loan_app_id']);
-
-	$released_date = $_POST['released_date'];
-    $sender_id = $_POST['sender_id'];
-	$receiver_id = $_POST['receiver_id'];
-    $loan_message = $_POST['loan_message'];
-	$remaining_balance = $_POST['remaining_balance'];
-	$monthly_pay = $_POST['monthly_payment'];
-	
-	$update = "UPDATE loan_application SET loan_status = 'Released', released_date = :released_date WHERE loan_app_id = $id";
-	$query = $dbh->prepare($update);
-	$query->bindParam(':released_date',$released_date,PDO::PARAM_STR);
-    $query->execute();
-	
-
-
-    $insert = "INSERT INTO message(sender_id,receiver_id,message,date_message)VALUES(:sender_id,:receiver_id,:message,:date_message)";
-	$query = $dbh->prepare($insert);
-	$query->bindParam(':sender_id', $sender_id, PDO::PARAM_STR);
-	$query->bindParam(':receiver_id', $receiver_id, PDO::PARAM_STR);
-    $query->bindParam(':message', $loan_message, PDO::PARAM_STR);
-	$query->bindParam(':date_message', $released_date, PDO::PARAM_STR);
-
-	if($query->execute()){
-		$_SESSION['status_released'] = "Loan Released!";
-		header("Location: view_released.php?loan_app_id=$id");
-		exit();
-	} else {
-		$_SESSION['status_released'] = "Error!";
-		header('Location: view_released.php?loan_app_id=$id');
-		exit();
-	}
-}
-
-?>
-
-<?php
-if (isset($_POST['declined_loan'])) {
-	$id = intval($_GET['loan_app_id']);
-
-	$update = "UPDATE loan_application SET loan_status = 'Declined' WHERE loan_app_id = $id";
-	$query2 = $dbh->prepare($update);
-
-	if($query2->execute()){
-		$_SESSION['status_declined'] = "Loan Declined!";
-		header("Location: view_declined.php?loan_app_id=$id");
-		exit();
-	} else {
-		$_SESSION['status_declined'] = "Error!";
-		header('Location: view_declined.php?loan_app_id=$id');
+		$_SESSION['status_ann'] = "Message Not Sent";
+		header('Location: make_announcement.php');
 		exit();
 	}
 }
@@ -493,15 +431,15 @@ $user = $query->fetch();
 										<h5 class="text-white font-weight-bold my-1 mr-5"><?= $user['company_name']?></h5>
 									<div class="col-xl-12 col-xl-12">
 										<?php
-										if(isset($_SESSION['status_approved'])){
+										if(isset($_SESSION['status_ann'])){
 										?>
 											<div class="alert alert-custom alert-notice alert-light-success fade show" role="alert">
 												<div class="alert-text">
-													<h4><?php echo $_SESSION['status_approved'];?></h4>
+													<h4><?php echo $_SESSION['status_ann'];?></h4>
 												</div>
 												<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
 											</div>
-										<?php unset($_SESSION['status_approved']);
+										<?php unset($_SESSION['status_ann']);
 										}?>
 									</div>
 								</div>
@@ -529,7 +467,7 @@ $user = $query->fetch();
 										<div class="card-header h-auto border-0">
 											<div class="card-title py-5">
 												<h3 class="card-label">
-													<span class="d-block text-dark font-weight-bolder">Loan Application Details</span>
+													<span class="d-block text-dark font-weight-bolder">Announcements</span>
 												</h3>
 											</div>
                                             <div class="mr-3">
@@ -539,20 +477,28 @@ $user = $query->fetch();
                                             </div>
                                         </div>
                                         <div class="card card-custom">
+                                        <?php
+                                        $user_id = $_SESSION['user_id'];
+                                        $sql = "SELECT * FROM announcement WHERE user_id = $user_id";
+                                        $query = $dbh->prepare($sql);
+                                        $query->execute();
+                                        $ann = $query->fetchAll();
+                                        foreach($ann as $result):?>
                                             <div class="card-header card-header-right ribbon ribbon-clip ribbon-left">
-                                            <div class="ribbon-target" style="top: 12px;">
-                                            <span class="ribbon-inner bg-success"></span><h4>Ribbondsjkfkdljhgklfdjhgklfdhglkfjhkl  dghlkdjhgklj;ldgkg kdn;lkjhlkjf</h4>
+                                                <div class="ribbon-target" style="top: 12px;">
+                                                     <span class="ribbon-inner bg-success"></span><h6><?= $result['title']?></h6>
+                                                </div>
+                                                <label class="card-title">
+                                                <?= $result['date_announce']?>
+                                                </label>
                                             </div>
-                                            <h3 class="card-title">
-                                            Clip Style
-                                            </h3>
+                                                <div class="card-body">
+                                                <h6><?= $result['content']?></h6>
+                                                </div>
                                             </div>
-                                            <div class="card-body">
-                                            ...aasad
-                                            </div>
-                                            </div>
-                                            
+                                            <?php endforeach;?>
 										</div>
+                                       
 										<!--end::Header-->
 									</div>
 									<!--end::Charts Widget 4-->
@@ -579,7 +525,6 @@ $user = $query->fetch();
                                 </button>
                             </div>
                             <div class="modal-body">
-                                <input type="hidden" name="user_id" value="<?= $_SESSION['user_id'] ?>">
                                 <input type="hidden" name="date_announce" value="<?= date('Y-m-d')?>">
 
                                 <div class="col-lg-12">
@@ -591,7 +536,7 @@ $user = $query->fetch();
                             </div>
                             <div class="modal-footer">
                                 <!-- <button type="button" class="btn btn-light-danger" data-dismiss="modal">Cancel</button> -->
-                                <button type="submit" name="send_message" class="btn btn-light-primary font-weight-bold">Submit</button>
+                                <button type="submit" name="submit_announce" class="btn btn-light-primary font-weight-bold">Submit</button>
                             </div>
                         </div>
                     </div>

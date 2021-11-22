@@ -561,7 +561,55 @@ $user = $query->fetch();
 							</div>
 							<!--end::Container-->
 						</div>
-						<!--end::Entry-->
+						<div class="d-flex flex-column-fluid">
+						<div class="container">
+							<div class="row">
+								<div class="col-lg-12">
+									<!--begin::Charts Widget 4-->
+									<div class="card card-custom card-stretch gutter-b">
+										<!--begin::Header-->
+										<div class="card-header h-auto border-0">
+											<div class="card-title py-5">
+												<h3 class="card-label">
+													<span class="d-block text-dark font-weight-bolder">Announcements</span>
+												</h3>
+											</div>
+                                            <div class="mr-3">
+                                            <div class="my-lg-5 my-5">
+													<a href="#" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#announce">Add Announcements</a>
+												</div>
+                                            </div>
+                                        </div>
+                                        <div class="card card-custom">
+                                        <?php
+                                        $user_id = $_SESSION['user_id'];
+                                        $sql = "SELECT * FROM announcement WHERE user_id = $user_id ORDER BY date_announce DESC";
+                                        $query = $dbh->prepare($sql);
+                                        $query->execute();
+                                        $ann = $query->fetchAll();
+                                        foreach($ann as $result):?>
+                                            <div class="card-header card-header-right ribbon ribbon-clip ribbon-left">
+                                                <div class="ribbon-target" style="top: 12px;">
+                                                     <span class="ribbon-inner bg-success"></span><h6><?= $result['title']?></h6>
+                                                </div>
+                                                <label class="card-title">
+                                                <?= $result['date_announce']?>
+                                                </label>
+                                            </div>
+                                                <div class="card-body">
+                                                <h6><?= $result['content']?></h6>
+                                                </div>
+                                            </div>
+                                            <?php endforeach;?>
+										</div>
+                                       
+										<!--end::Header-->
+									</div>
+									<!--end::Charts Widget 4-->
+									</div>
+								</div>
+							</div>
+					   </div>
 					</div>
 					<!--end::Content-->
 					<!--begin::Footer-->
