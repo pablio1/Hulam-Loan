@@ -25,7 +25,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 	<!--begin::Head-->
 	<head><base href="../index.php">
 		<meta charset="utf-8" />
-		<title>Hulam | Admin | Dashboard</title>
+		<title>Admin Dashboard</title>
 		<meta name="description" content="Updates and statistics" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 		<!--begin::Fonts-->
@@ -182,14 +182,6 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 														<span></span>
 													</i>
 													<span class="menu-text">Individual Investors</span>
-												</a>
-											</li>
-											<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-												<a href="admin/activated_payment_center.php" class="menu-link menu-toggle">
-													<i class="menu-bullet menu-bullet-dot">
-														<span></span>
-													</i>
-													<span class="menu-text">Payment Centre</span>
 												</a>
 											</li>
 											<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">

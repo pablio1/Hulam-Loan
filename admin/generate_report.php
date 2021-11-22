@@ -23,7 +23,7 @@ $user = $query->fetch();
 <head>
 	<base href="../">
 	<meta charset="utf-8" />
-	<title>Hulam | Admin | Lending Company</title>
+	<title>Generate Reports</title>
 	<meta name="description" content="Updates and statistics" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 	<!--begin::Fonts-->
@@ -124,7 +124,7 @@ $user = $query->fetch();
 						<!--begin::Menu Nav-->
 						<ul class="menu-nav">
 							<li class="menu-item menu-item-active" aria-haspopup="true">
-								<a href="lending_company/index.php" class="menu-link">
+								<a href="admin/index.php" class="menu-link">
 									<span class="svg-icon menu-icon">
 										<!--begin::Svg Icon | path:assets/media/svg/icons/Design/Layers.svg-->
 										<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
@@ -673,7 +673,7 @@ $user = $query->fetch();
 					<i class="symbol-badge bg-success"></i>
 				</div>
 				<div class="d-flex flex-column">
-					<a href="#" class="font-weight-bold font-size-h5 text-dark-75 text-hover-primary">Lending Company</a>
+					<a href="#" class="font-weight-bold font-size-h5 text-dark-75 text-hover-primary">Admin</a>
 					<div class="text-muted mt-1"></div>
 					<div class="navi mt-1">
 						<a href="#" class="navi-item">
@@ -691,7 +691,7 @@ $user = $query->fetch();
 										<!--end::Svg Icon-->
 									</span>
 								</span>
-								<span class="navi-text text-muted text-hover-primary">hulamloan@gmail.com</span>
+								<span class="navi-text text-muted text-hover-primary"><?= $_SESSION['email'] ?></span>
 							</span>
 						</a>
 					</div>

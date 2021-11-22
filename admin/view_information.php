@@ -164,7 +164,7 @@ if (isset($_POST['declined_loan'])) {
 	<!--begin::Head-->
 	<head><base href="../index.php">
 		<meta charset="utf-8" />
-		<title>Hulam | Admin | Dashboard</title>
+		<title>View Information</title>
 		<meta name="description" content="Updates and statistics" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 		<!--begin::Fonts-->
@@ -321,14 +321,6 @@ if (isset($_POST['declined_loan'])) {
 														<span></span>
 													</i>
 													<span class="menu-text">Individual Investors</span>
-												</a>
-											</li>
-											<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-												<a href="admin/activated_payment_center.php" class="menu-link menu-toggle">
-													<i class="menu-bullet menu-bullet-dot">
-														<span></span>
-													</i>
-													<span class="menu-text">Payment Centre</span>
 												</a>
 											</li>
 											<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
@@ -1446,7 +1438,7 @@ if (isset($_POST['declined_loan'])) {
 					<i class="symbol-badge bg-success"></i>
 				</div>
 				<div class="d-flex flex-column">
-					<a href="#" class="font-weight-bold font-size-h5 text-dark-75 text-hover-primary">Lending Company</a>
+					<a href="#" class="font-weight-bold font-size-h5 text-dark-75 text-hover-primary">Admin</a>
 					<div class="text-muted mt-1"></div>
 					<div class="navi mt-1">
 						<a href="#" class="navi-item">
@@ -1464,7 +1456,7 @@ if (isset($_POST['declined_loan'])) {
 										<!--end::Svg Icon-->
 									</span>
 								</span>
-								<span class="navi-text text-muted text-hover-primary">hulamloan@gmail.com</span>
+								<span class="navi-text text-muted text-hover-primary"><?= $_SESSION['email'] ?></span>
 							</span>
 						</a>
 					</div>

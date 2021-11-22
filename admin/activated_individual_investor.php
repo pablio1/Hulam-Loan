@@ -25,7 +25,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 	<!--begin::Head-->
 	<head><base href="../index.php">
 		<meta charset="utf-8" />
-		<title>Hulam | Admin | Dashboard</title>
+		<title>Activated Individual Investors</title>
 		<meta name="description" content="Updates and statistics" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 		<!--begin::Fonts-->
@@ -126,7 +126,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 							<!--begin::Menu Nav-->
 							<ul class="menu-nav">
 								<li class="menu-item menu-item-active" aria-haspopup="true">
-									<a href="admin/index.html" class="menu-link">
+									<a href="admin/index.php" class="menu-link">
 										<span class="svg-icon menu-icon">
 											<!--begin::Svg Icon | path:assets/media/svg/icons/Design/Layers.svg-->
 											<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
@@ -182,14 +182,6 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 														<span></span>
 													</i>
 													<span class="menu-text">Individual Investors</span>
-												</a>
-											</li>
-											<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-												<a href="admin/activated_payment_center.php" class="menu-link menu-toggle">
-													<i class="menu-bullet menu-bullet-dot">
-														<span></span>
-													</i>
-													<span class="menu-text">Payment Centre</span>
 												</a>
 											</li>
 											<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
@@ -977,7 +969,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 					<i class="symbol-badge bg-success"></i>
 				</div>
 				<div class="d-flex flex-column">
-					<a href="#" class="font-weight-bold font-size-h5 text-dark-75 text-hover-primary">Lending Company</a>
+					<a href="#" class="font-weight-bold font-size-h5 text-dark-75 text-hover-primary">Admin</a>
 					<div class="text-muted mt-1"></div>
 					<div class="navi mt-1">
 						<a href="#" class="navi-item">
@@ -995,7 +987,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 										<!--end::Svg Icon-->
 									</span>
 								</span>
-								<span class="navi-text text-muted text-hover-primary">hulamloan@gmail.com</span>
+								<span class="navi-text text-muted text-hover-primary"><?= $_SESSION['email'] ?></span>
 							</span>
 						</a>
 					</div>
