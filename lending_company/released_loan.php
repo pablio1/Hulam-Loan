@@ -486,7 +486,7 @@ $user = $query->fetch();
 															Mobile No: <?= htmlentities($rem->mobile)?>
 														</td>
 														<td>
-															<a href="lending_company/view_released.php?loan_app_id=<?= htmlentities($rem->loan_app_id) ?>" class="kt-nav__link">
+															<a href="lending_company/record_payment.php?loan_app_id=<?= htmlentities($rem->loan_app_id) ?>" class="kt-nav__link">
 																<span class="kt-nav__link-text">Record Payment</span>
 															</a>
 														</td>
