@@ -1000,7 +1000,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 			<!--begin::Nav-->
 			<div class="navi navi-spacer-x-0 p-0">
 				<!--begin::Item-->
-				<a href="admin/update_profile.php" class="navi-item">
+				<a href="lending_company/update_profile.php" class="navi-item">
 					<div class="navi-link">
 						<div class="symbol symbol-40 bg-light mr-3">
 							<div class="symbol-label">

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 22, 2021 at 01:53 PM
+-- Generation Time: Nov 23, 2021 at 04:55 PM
 -- Server version: 10.4.19-MariaDB
 -- PHP Version: 8.0.7
 
@@ -41,7 +41,10 @@ CREATE TABLE `announcement` (
 
 INSERT INTO `announcement` (`announce_id`, `user_id`, `date_announce`, `title`, `content`) VALUES
 (1, 80, '2021-11-22 00:00:00', 'Announcement Sample', 'We are giving a Christmas bonus next week.'),
-(2, 80, '2021-11-22 00:00:00', 'Interest rate will be lower than 1%.', 'We have decided to lower the interest rate effective next week. ');
+(2, 80, '2021-11-22 00:00:00', 'Interest rate will be lower than 1%.', 'We have decided to lower the interest rate effective next week. '),
+(3, 80, '2021-11-22 00:00:00', 'This announcement is only a test.', 'Do you want a better rate to solve your financial problem.'),
+(7, 80, '2021-11-22 02:44:13', 'fffffffff', 'ffffffffff'),
+(10, 83, '2021-11-22 03:10:24', 'ppppppppppppppp', 'pppppppppppppppp');
 
 -- --------------------------------------------------------
 
@@ -75,7 +78,7 @@ CREATE TABLE `debtors_info` (
 --
 
 INSERT INTO `debtors_info` (`user_id`, `monthly_salary`, `company_name`, `company_mobile`, `company_landline`, `company_email`, `company_street`, `company_barangay`, `company_city`, `company_province`, `company_zipcode`, `rel_name`, `rel_mobile`, `rel_type`, `valid_id`, `selfie_id`, `status_valid_id`, `status_selfie_id`) VALUES
-(81, '20000.00', 'The Results Companies ', '09454909530', '4563698', 'aname522@gmail.com', 'Mactan', 'Mactan', 'Lapu-Lapu City', 'Cebu', '6015', 'Rosel Perdiguez', '09454909530', 'Sister', '4811708.jpg', '268906.jpg', '', '');
+(81, '20000.00', 'The Results Companies ', '09454909530', '4563698', 'aname522@gmail.com', 'Mactan', 'Mactan', 'Lapu-Lapu City', 'Cebu', '6015', 'Rosel', '09454909530', 'Sister', '4811708.jpg', '268906.jpg', '', '');
 
 -- --------------------------------------------------------
 
@@ -97,15 +100,7 @@ CREATE TABLE `feedback` (
 --
 
 INSERT INTO `feedback` (`id`, `lender_id`, `debtor_id`, `comments`, `ratings`, `dateOfRate`) VALUES
-(8, 80, 81, 'Excellent Service.', '5', '2021-11-19'),
-(11, 11, 81, 'Great', '5', '2021-11-20'),
-(12, 11, 81, 'Great', '5', '2021-11-20'),
-(13, 11, 81, 'Great\r\n', '5', '2021-11-20'),
-(14, 11, 81, 'ssss', '5', '2021-11-20'),
-(16, 11, 81, 'sdfghjkjhgfdss', '5', '2021-11-21'),
-(17, 11, 81, 'sdfghjkjhgfdss', '5', '2021-11-21'),
-(18, 11, 81, 'sdfghjkjhgfdss', '5', '2021-11-21'),
-(19, 11, 81, 'sdfghjkjhgfdss', '5', '2021-11-21');
+(8, 80, 81, 'Excellent Service.', '5', '2021-11-19');
 
 -- --------------------------------------------------------
 
@@ -136,8 +131,6 @@ CREATE TABLE `loan_application` (
   `co_maker_id` varchar(250) NOT NULL,
   `co_maker_cedula` varchar(250) NOT NULL,
   `id_pic` varchar(250) NOT NULL,
-  `or_cr` varchar(250) NOT NULL,
-  `others` varchar(250) NOT NULL,
   `confirm` varchar(250) NOT NULL,
   `approval_date` datetime NOT NULL,
   `release_schedule` datetime DEFAULT NULL,
@@ -149,8 +142,8 @@ CREATE TABLE `loan_application` (
 -- Dumping data for table `loan_application`
 --
 
-INSERT INTO `loan_application` (`loan_app_id`, `debtor_id`, `lender_id`, `loan_amount`, `loan_term`, `fix_rate`, `total_amount`, `monthly_payment`, `total_interest`, `late_charges`, `date`, `valid_id`, `barangay_clearance`, `payslip`, `cedula`, `atm_transaction`, `coe`, `bank_statement`, `proof_billing`, `co_maker_id`, `co_maker_cedula`, `id_pic`, `or_cr`, `others`, `confirm`, `approval_date`, `release_schedule`, `released_date`, `loan_status`) VALUES
-(115, 81, 80, '30000.00', 12, '3.00', 40800.00, '3400.00', '10800.00', '5.00', '2021-11-17 23:03:05', '5157660.jpg', '5993903.jpg', '8973586.jpg', '1400815.jpg', '189981.jpg', '1333279.jpg', '8091477.jpg', '4306853.jpg', '8357911.jpg', '4681295.jpg', '436782.png', '1736451.jpg', '6699144.jpg', 'Yes', '2021-11-21 11:38:12', '2021-11-25 00:00:00', '2021-11-22 12:06:08', 'Released');
+INSERT INTO `loan_application` (`loan_app_id`, `debtor_id`, `lender_id`, `loan_amount`, `loan_term`, `fix_rate`, `total_amount`, `monthly_payment`, `total_interest`, `late_charges`, `date`, `valid_id`, `barangay_clearance`, `payslip`, `cedula`, `atm_transaction`, `coe`, `bank_statement`, `proof_billing`, `co_maker_id`, `co_maker_cedula`, `id_pic`, `confirm`, `approval_date`, `release_schedule`, `released_date`, `loan_status`) VALUES
+(118, 81, 80, '30000.00', 12, '3.00', 40800.00, '3400.00', '10800.00', '5.00', '2021-11-23 16:04:35', '5336912.jpg', '', '', '', '', '', '', '', '', '', '', 'Yes', '2021-11-23 04:04:51', '2021-11-23 00:00:00', '2021-11-23 04:05:01', 'Released');
 
 -- --------------------------------------------------------
 
@@ -193,6 +186,44 @@ CREATE TABLE `loan_features` (
 INSERT INTO `loan_features` (`id`, `lender_id`, `min_loan`, `max_loan`, `min_term`, `max_term`, `fix_rate`, `late_charges`, `reloan_period`, `reloan_amount`, `description`, `company_street`, `company_barangay`, `company_city`, `company_province`, `company_zipcode`, `company_landline`, `dti_permit`, `b_permit`, `valid_id`, `selfie_id`, `status_dti`, `status_b_permit`, `status_valid_id`, `status_selfie_id`) VALUES
 (51, 80, '30000.00', '40000.00', 12, 12, '3.00', '5.00', '8', '15000.00', 'We provide the best loan deals.', 'Behik Building', 'Quezon Highway', 'lapu-Lapu', 'Cebu', '6015', '4235689', '9035379.jpg', '8058830.jpg', '', '', '', '', '', ''),
 (53, 83, '20000.00', '30000.00', 8, 10, '3.00', '5.00', '8', '10000.00', 'We offer salary loan with the lowest interest rate.', 'A & W Building', 'Looc Basak Rd', 'Lapu-Lapu City', 'Cebu', '6015', '4235689', '6165335.jpg', '8470903.jpg', '', '', '', '', '', '');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `loan_payment_detail`
+--
+
+CREATE TABLE `loan_payment_detail` (
+  `lp_Id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `loan_app_id` int(11) NOT NULL,
+  `monthly_pay` decimal(10,0) NOT NULL,
+  `payment` decimal(10,0) NOT NULL,
+  `semi_payment1` decimal(10,0) NOT NULL,
+  `semi_payment2` decimal(10,0) NOT NULL,
+  `late_charge` decimal(10,0) NOT NULL,
+  `paid_date` datetime NOT NULL,
+  `due_date` datetime NOT NULL,
+  `status` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `loan_payment_detail`
+--
+
+INSERT INTO `loan_payment_detail` (`lp_Id`, `user_id`, `loan_app_id`, `monthly_pay`, `payment`, `semi_payment1`, `semi_payment2`, `late_charge`, `paid_date`, `due_date`, `status`) VALUES
+(149, 81, 118, '3400', '3400', '0', '0', '170', '2022-01-23 04:06:00', '2021-12-23 00:00:00', 1),
+(150, 81, 118, '3400', '3400', '0', '0', '0', '2022-01-23 04:06:00', '2022-01-23 00:00:00', 1),
+(151, 81, 118, '3400', '3400', '1700', '1700', '0', '2022-02-23 04:08:00', '2022-02-23 00:00:00', 1),
+(152, 81, 118, '3400', '3400', '1700', '1700', '0', '2022-04-24 04:14:00', '2022-03-23 00:00:00', 1),
+(153, 81, 118, '3400', '0', '0', '0', '0', '0000-00-00 00:00:00', '2022-04-23 00:00:00', 0),
+(154, 81, 118, '3400', '0', '0', '0', '0', '0000-00-00 00:00:00', '2022-05-23 00:00:00', 0),
+(155, 81, 118, '3400', '0', '0', '0', '0', '0000-00-00 00:00:00', '2022-06-23 00:00:00', 0),
+(156, 81, 118, '3400', '0', '0', '0', '0', '0000-00-00 00:00:00', '2022-07-23 00:00:00', 0),
+(157, 81, 118, '3400', '0', '0', '0', '0', '0000-00-00 00:00:00', '2022-08-23 00:00:00', 0),
+(158, 81, 118, '3400', '0', '0', '0', '0', '0000-00-00 00:00:00', '2022-09-23 00:00:00', 0),
+(159, 81, 118, '3400', '0', '0', '0', '0', '0000-00-00 00:00:00', '2022-10-23 00:00:00', 0),
+(160, 81, 118, '3400', '0', '0', '0', '0', '0000-00-00 00:00:00', '2022-11-23 00:00:00', 0);
 
 -- --------------------------------------------------------
 
@@ -252,30 +283,97 @@ CREATE TABLE `message` (
 --
 
 INSERT INTO `message` (`message_id`, `sender_id`, `receiver_id`, `message`, `date_message`) VALUES
+(169, 80, 81, 'Your loan account number $loan_app_id payment is now posted. Thank You!', '2021-11-19 12:06:40'),
+(170, 80, 81, 'Your payment for loan account number 115', '2021-11-19 12:07:59'),
 (171, 80, 81, 'Your payment for loan account number 115 is now posted. Thank You!', '2021-11-19 12:10:43'),
+(172, 81, 80, 'Received Thanks.\r\n', '2021-11-19 12:15:02'),
+(173, 80, 81, 'Your payment for loan account number 115 is now posted. Thank You!', '2021-11-19 12:48:51'),
+(174, 80, 81, 'Your payment for loan account number 115 is now posted. Thank You!', '2021-11-19 12:51:02'),
+(175, 80, 81, 'Your payment for loan account number 115 is now posted. Thank You!', '2021-11-19 01:43:49'),
+(176, 80, 81, 'Your loan is approved. Please visit our office for the releasing of loan dated on your releasing schedule. Thank you.', '2021-11-19 02:36:39'),
 (177, 80, 81, 'Your loan is released! Thank you!', '2021-11-19 02:48:53'),
-(198, 81, 11, 'Hi ', '2021-11-20 00:00:00'),
-(199, 81, 80, 'Hi Guilmark , I want to check with my loan application. Thanks.', '2021-11-20 00:00:00'),
-(200, 11, 81, 'Thank you.', '2021-11-20 00:00:00'),
-(201, 81, 80, 'Thank You.', '2021-11-20 00:00:00'),
-(202, 83, 81, 'ssss', '2021-11-20 00:00:00'),
-(203, 81, 80, 'yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy', '2021-11-20 00:00:00'),
-(204, 81, 80, 'ttttttttttttttttttt', '2021-11-20 00:00:00'),
-(205, 81, 80, 'kkkkkkkkkkkkkk', '2021-11-20 00:00:00'),
-(206, 81, 80, 'yyyyyyyyyyyyyyyy', '2021-11-20 00:00:00'),
-(207, 11, 83, 'Congratulations! Your account is now activated.', '2021-11-21 02:54:49'),
-(208, 81, 80, 'Dominggo\r\n', '2021-11-21 08:58:22'),
-(209, 81, 80, '', '2021-11-21 09:05:09'),
-(210, 81, 80, 'Dominggo na karon.', '2021-11-21 09:53:28'),
-(211, 81, 11, 'Hi Admin', '2021-11-21 10:19:36'),
-(212, 80, 81, 'Your loan is approved. Please visit our office for the releasing of loan dated on your releasing schedule. Thank you.', '2021-11-21 11:18:56'),
-(213, 80, 81, 'Hi Aname', '2021-11-21 11:33:57'),
-(214, 80, 81, 'Your loan is approved. Please visit our office for the releasing of loan dated on your releasing schedule. Thank you.', '2021-11-21 11:34:36'),
-(215, 80, 81, 'Your loan is approved. Please visit our office for the releasing of loan dated on your releasing schedule. Thank you.', '2021-11-21 11:38:12'),
-(216, 80, 81, 'Your loan is released! Thank you!', '2021-11-21 11:39:17'),
-(217, 80, 81, 'Your loan is released! Thank you!', '2021-11-21 11:44:42'),
-(218, 80, 81, 'released na\r\n', '2021-11-22 12:05:15'),
-(219, 80, 81, 'Your loan is released! Thank you!', '2021-11-22 12:06:08');
+(178, 0, 0, 'Your payment for loan account number 115 is now posted. Thank You!', '2021-11-19 03:23:54'),
+(179, 0, 0, 'Your payment for loan account number 115 is now posted. Thank You!', '2021-11-19 03:28:21'),
+(180, 0, 0, 'Your payment for loan account number 115 is now posted. Thank You!', '2021-11-19 03:29:48'),
+(181, 0, 0, 'Your payment for loan account number 115 is now posted. Thank You!', '2021-11-19 11:29:54'),
+(182, 0, 0, 'Your payment for loan account number 115 is now posted. Thank You!', '2021-11-19 11:30:26'),
+(183, 80, 81, 'Your loan is released! Thank you!', '2021-11-19 11:50:14'),
+(184, 80, 81, 'Your loan is released! Thank you!', '2021-11-19 12:05:38'),
+(185, 80, 81, 'Your loan is released! Thank you!', '2021-11-19 12:07:35'),
+(186, 80, 81, 'Your loan is released! Thank you!', '2021-11-19 12:18:48'),
+(187, 80, 81, 'Your loan is released! Thank you!', '2021-11-19 12:22:23'),
+(188, 80, 81, 'Your loan is released! Thank you!', '2021-11-19 12:26:34'),
+(189, 80, 81, 'Your loan is released! Thank you!', '2021-11-19 01:29:41'),
+(190, 80, 81, 'Your loan is released! Thank you!', '2021-11-19 01:41:48'),
+(191, 80, 81, 'Your loan is released! Thank you!', '2021-11-19 01:52:36'),
+(192, 0, 0, 'Your payment for loan account number 115 is now posted. Thank You!', '2021-11-19 02:08:44'),
+(193, 80, 82, 'Your loan is approved. Please visit our office for the releasing of loan dated on your releasing schedule. Thank you.', '2021-11-19 05:37:20'),
+(194, 80, 82, 'Your loan is released! Thank you!', '2021-11-19 05:37:32'),
+(195, 80, 82, 'Your loan is released! Thank you!', '2021-11-19 07:23:20'),
+(196, 80, 82, 'Your loan is released! Thank you!', '2021-11-19 10:24:06'),
+(197, 80, 82, 'Your loan is released! Thank you!', '2021-11-19 10:24:57'),
+(198, 0, 0, 'Your payment for loan account number 116 is now posted. Thank You!', '2021-11-19 11:18:13'),
+(199, 0, 0, 'Your payment for loan account number 116 is now posted. Thank You!', '2021-11-19 11:23:04'),
+(200, 0, 0, 'Your payment for loan account number 116 is now posted. Thank You!', '2021-11-20 01:06:48'),
+(201, 0, 0, 'Your payment for loan account number 116 is now posted. Thank You!', '2021-11-20 01:34:03'),
+(202, 0, 0, 'Your payment for loan account number 116 is now posted. Thank You!', '2021-11-20 01:36:53'),
+(203, 0, 0, 'Your payment for loan account number 116 is now posted. Thank You!', '2021-11-20 02:18:56'),
+(204, 0, 0, 'Your payment for loan account number 116 is now posted. Thank You!', '2021-11-20 02:20:51'),
+(205, 0, 0, 'Your payment for loan account number 116 is now posted. Thank You!', '2021-11-20 02:21:02'),
+(206, 0, 0, 'Your payment for loan account number 116 is now posted. Thank You!', '2021-11-20 02:21:07'),
+(207, 0, 0, 'Your payment for loan account number 116 is now posted. Thank You!', '2021-11-20 02:21:13'),
+(208, 0, 0, 'Your payment for loan account number 116 is now posted. Thank You!', '2021-11-20 02:21:22'),
+(209, 0, 0, 'Your payment for loan account number 116 is now posted. Thank You!', '2021-11-20 02:21:30'),
+(210, 0, 0, 'Your payment for loan account number 116 is now posted. Thank You!', '2021-11-20 02:21:37'),
+(211, 0, 0, 'Your payment for loan account number 116 is now posted. Thank You!', '2021-11-20 02:21:42'),
+(212, 0, 0, 'Your payment for loan account number 116 is now posted. Thank You!', '2021-11-20 02:21:49'),
+(213, 0, 0, 'Your payment for loan account number 116 is now posted. Thank You!', '2021-11-20 02:25:11'),
+(214, 0, 0, 'Your payment for loan account number 116 is now posted. Thank You!', '2021-11-20 02:29:35'),
+(215, 0, 0, 'Your payment for loan account number 116 is now posted. Thank You!', '2021-11-20 02:30:52'),
+(216, 0, 0, 'Your payment for loan account number 116 is now posted. Thank You!', '2021-11-20 02:32:48'),
+(217, 0, 0, 'Your payment for loan account number 116 is now posted. Thank You!', '2021-11-20 02:52:18'),
+(218, 0, 0, 'Your payment for loan account number 116 is now posted. Thank You!', '2021-11-20 02:55:44'),
+(219, 0, 0, 'Your payment for loan account number 116 is now posted. Thank You!', '2021-11-20 02:59:19'),
+(220, 0, 0, 'Your payment for loan account number 116 is now posted. Thank You!', '2021-11-20 03:02:40'),
+(221, 0, 0, 'Your payment for loan account number 116 is now posted. Thank You!', '2021-11-20 03:03:01'),
+(222, 0, 0, 'Your payment for loan account number 116 is now posted. Thank You!', '2021-11-20 03:03:14'),
+(223, 0, 0, 'Your payment for loan account number 116 is now posted. Thank You!', '2021-11-20 03:03:34'),
+(224, 0, 0, 'Your payment for loan account number 116 is now posted. Thank You!', '2021-11-20 03:03:42'),
+(225, 0, 0, 'Your payment for loan account number 116 is now posted. Thank You!', '2021-11-20 03:03:52'),
+(226, 0, 0, 'Your payment for loan account number 116 is now posted. Thank You!', '2021-11-20 03:04:01'),
+(227, 0, 0, 'Your payment for loan account number 116 is now posted. Thank You!', '2021-11-20 03:04:08'),
+(228, 0, 0, 'Your payment for loan account number 116 is now posted. Thank You!', '2021-11-20 03:04:15'),
+(229, 0, 0, 'Your payment for loan account number 116 is now posted. Thank You!', '2021-11-20 03:04:21'),
+(230, 0, 0, 'Your payment for loan account number 116 is now posted. Thank You!', '2021-11-20 03:04:30'),
+(231, 0, 0, 'Additional Charge Php 170 for payment overdue.', '2021-11-20 09:23:28'),
+(232, 0, 0, 'Your payment for loan account number 116 is now posted. Thank You!', '2021-11-21 02:22:32'),
+(233, 0, 0, 'Your payment for loan account number 116 is now posted. Thank You!', '2021-11-21 02:30:57'),
+(234, 0, 0, 'Your payment for loan account number 116 is now posted. Thank You!', '2021-11-21 02:32:16'),
+(235, 0, 0, 'Your payment for loan account number 116 is now posted. Thank You!', '2021-11-21 11:01:34'),
+(236, 0, 0, 'Your payment for loan account number 116 is now posted. Thank You!', '2021-11-21 11:47:33'),
+(237, 0, 0, 'Your payment for loan account number 116 is now posted. Thank You!', '2021-11-21 12:16:50'),
+(238, 0, 0, 'Your payment for loan account number 116 is now posted. Thank You!', '2021-11-21 12:17:30'),
+(239, 0, 0, 'Your payment for loan account number 116 is now posted. Thank You!', '2021-11-21 12:45:44'),
+(240, 0, 0, 'Your payment for loan account number 116 is now posted. Thank You!', '2021-11-21 12:48:41'),
+(241, 0, 0, 'Your payment for loan account number 116 is now posted. Thank You!', '2021-11-21 12:53:32'),
+(242, 0, 0, 'Your payment for loan account number 116 is now posted. Thank You!', '2021-11-21 12:55:51'),
+(243, 80, 0, 'Your payment for loan account number 116 is now posted. Thank You!', '2021-11-21 12:58:09'),
+(244, 80, 0, 'Your payment for loan account number 116 is now posted. Thank You!', '2021-11-21 12:59:51'),
+(245, 80, 0, 'Your payment for loan account number 116 is now posted. Thank You!', '2021-11-21 01:34:37'),
+(246, 80, 0, 'Your payment for loan account number 116 is now posted. Thank You!', '2021-11-21 01:40:04'),
+(247, 80, 0, 'Your payment for loan account number 116 is now posted. Thank You!', '2021-11-21 01:43:19'),
+(248, 80, 0, 'Your payment for loan account number 116 is now posted. Thank You!', '2021-11-21 01:44:31'),
+(249, 80, 0, 'Your payment for loan account number 116 is now posted. Thank You!', '2021-11-21 01:47:44'),
+(250, 80, 0, 'Your payment for loan account number 116 is now posted. Thank You!', '2021-11-21 01:48:49'),
+(251, 80, 0, 'Your payment for loan account number 116 is now posted. Thank You!', '2021-11-21 01:57:30'),
+(252, 80, 0, 'Your payment for loan account number 116 is now posted. Thank You!', '2021-11-21 01:59:52'),
+(253, 0, 0, '', '0000-00-00 00:00:00'),
+(254, 80, 81, 'Your loan is approved. Please visit our office for the releasing of loan dated on your releasing schedule. Thank you.', '2021-11-23 01:30:33'),
+(255, 80, 81, 'Your loan is released! Thank you!', '2021-11-23 01:30:38'),
+(256, 80, 81, 'Your loan is approved. Please visit our office for the releasing of loan dated on your releasing schedule. Thank you.', '2021-11-23 03:47:14'),
+(257, 80, 81, 'Your loan is released! Thank you!', '2021-11-23 03:47:39'),
+(258, 80, 81, 'Your loan is approved. Please visit our office for the releasing of loan dated on your releasing schedule. Thank you.', '2021-11-23 04:04:51'),
+(259, 80, 81, 'Your loan is released! Thank you!', '2021-11-23 04:05:01');
 
 -- --------------------------------------------------------
 
@@ -295,8 +393,7 @@ CREATE TABLE `mode_payment` (
 --
 
 INSERT INTO `mode_payment` (`mode_id`, `lender_id`, `mode_name`, `remarks`) VALUES
-(4, 80, 'ATM Deduction', 'Payment generated through ATM deduction made bi-monthly.'),
-(5, 83, 'ATM Deduction', 'Payment will be generated through ATM deduction made bi-monthly.');
+(4, 80, 'ATM Deduction', 'Payment generated through ATM deduction made bi-monthly.');
 
 -- --------------------------------------------------------
 
@@ -371,15 +468,16 @@ CREATE TABLE `running_balance` (
   `monthly_pay` decimal(11,2) NOT NULL,
   `payment` decimal(11,2) NOT NULL,
   `late_charge` decimal(11,2) NOT NULL,
-  `paid_date` datetime NOT NULL
+  `paid_date` datetime NOT NULL,
+  `status` int(11) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `running_balance`
 --
 
-INSERT INTO `running_balance` (`balance_id`, `loan_app_id`, `remaining_balance`, `monthly_pay`, `payment`, `late_charge`, `paid_date`) VALUES
-(18, 115, '39100.00', '3400.00', '1700.00', '0.00', '2021-11-19 04:12:52');
+INSERT INTO `running_balance` (`balance_id`, `loan_app_id`, `remaining_balance`, `monthly_pay`, `payment`, `late_charge`, `paid_date`, `status`) VALUES
+(19, 118, '30600.00', '0.00', '0.00', '0.00', '0000-00-00 00:00:00', 0);
 
 -- --------------------------------------------------------
 
@@ -444,7 +542,7 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`user_id`, `user_type`, `company_name`, `lastname`, `firstname`, `middlename`, `email`, `password`, `mobile`, `landline`, `gender`, `b_day`, `c_street`, `c_barangay`, `c_city`, `c_province`, `c_zipcode`, `p_street`, `p_barangay`, `p_city`, `p_province`, `p_zipcode`, `profile_pic`, `status`, `eligible`, `activation_date`, `notice_message`, `token`) VALUES
-(11, 1, '', 'Team', 'The Hulam ', 'Admin', 'hulamloan@gmail.com', '$2y$10$SrGZXi9WoMgYzSiS.Dgr5u9jkJZethDhVc8xaqVw7.Z3zoo5HvY6W', '0', '0', '', '0000-00-00', '', '', '', '', '', '', '', '', '', '', 'h_small.png', 'verified', 'no', '0000-00-00 00:00:00', '', ''),
+(11, 1, '', 'Team', 'The', 'Hulam', 'hulamloan@gmail.com', '$2y$10$SrGZXi9WoMgYzSiS.Dgr5u9jkJZethDhVc8xaqVw7.Z3zoo5HvY6W', '0', '0', '', '0000-00-00', '', '', '', '', '', '', '', '', '', '', 'h_small.png', 'verified', 'no', '0000-00-00 00:00:00', '', ''),
 (80, 3, 'Guilmark Finance Corporation', '', '', '', 'guilmark.lg@gmail.com', '$2y$10$2EbLEmo4gQ2jmSE3X.tSN.HzrbeHSPTqgdqilZjqXPcpsnxgkc6Lu', '09454909530', '', '', '0000-00-00', '', '', '', '', '', '', '', '', '', '', '3542861.jpeg', 'verified', 'yes', '2021-11-16 03:49:19', 'To activate your account you need to complete updating your profile information and required to visit Hulam office for the signing of Memorandum of Agreement', ''),
 (81, 2, '', 'Perdiguez', 'Aname', 'Arabis', 'aname.debtor@gmail.com', '$2y$10$Q4YPIu49JVuED0iLYy7po.oFqe7BJmhflpHOo0hyKBmARkzxCu4zi', '09454909530', '5624963', 'Female', '1986-05-22', 'Isuya', 'Mactan', 'Lapu-Lapu City', 'Cebu', '6015', 'Isuya', 'Mactan', 'Lapu-Lapu City', 'Cebu', '6015', '180333.jpg', 'verified', 'yes', '2021-11-18 18:56:41', 'To apply loan you need to complete updating your profile information to activate your account.', ''),
 (82, 4, '', 'Supremo', 'Chris', 'Chris', 'chris.indiv@gmail.com', '$2y$10$uWpG7o7Ivn9NWWJETlZFjOX3.Rd9XJyL892zzZD9F2Z/jqMYV6g6G', '09454909530', '', '', '0000-00-00', '', '', '', '', '', '', '', '', '', '', '', 'verified', 'no', '0000-00-00 00:00:00', 'To apply loan you need to complete updating your profile information to activate your account.', ''),
@@ -505,6 +603,12 @@ ALTER TABLE `loan_application`
 --
 ALTER TABLE `loan_features`
   ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `loan_payment_detail`
+--
+ALTER TABLE `loan_payment_detail`
+  ADD PRIMARY KEY (`lp_Id`);
 
 --
 -- Indexes for table `loan_receipt`
@@ -574,19 +678,19 @@ ALTER TABLE `user_type`
 -- AUTO_INCREMENT for table `announcement`
 --
 ALTER TABLE `announcement`
-  MODIFY `announce_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `announce_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `feedback`
 --
 ALTER TABLE `feedback`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- AUTO_INCREMENT for table `loan_application`
 --
 ALTER TABLE `loan_application`
-  MODIFY `loan_app_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=116;
+  MODIFY `loan_app_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=119;
 
 --
 -- AUTO_INCREMENT for table `loan_features`
@@ -595,10 +699,16 @@ ALTER TABLE `loan_features`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54;
 
 --
+-- AUTO_INCREMENT for table `loan_payment_detail`
+--
+ALTER TABLE `loan_payment_detail`
+  MODIFY `lp_Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=161;
+
+--
 -- AUTO_INCREMENT for table `loan_receipt`
 --
 ALTER TABLE `loan_receipt`
-  MODIFY `receipt_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `receipt_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `loan_requirements`
@@ -610,13 +720,13 @@ ALTER TABLE `loan_requirements`
 -- AUTO_INCREMENT for table `message`
 --
 ALTER TABLE `message`
-  MODIFY `message_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=220;
+  MODIFY `message_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=260;
 
 --
 -- AUTO_INCREMENT for table `mode_payment`
 --
 ALTER TABLE `mode_payment`
-  MODIFY `mode_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `mode_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `notice`
@@ -634,7 +744,7 @@ ALTER TABLE `requirements_type`
 -- AUTO_INCREMENT for table `running_balance`
 --
 ALTER TABLE `running_balance`
-  MODIFY `balance_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `balance_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `terms_privacy`
@@ -652,7 +762,7 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `user_type`
 --
 ALTER TABLE `user_type`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

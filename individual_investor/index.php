@@ -17,7 +17,7 @@ if ($_SESSION['user_type'] != 4) {
 <head>
     <base href="../">
     <meta charset="utf-8" />
-    <title>Hulam | Admin | Lending Company</title>
+    <title>Hulam | Admin | Individual Inverstor</title>
     <meta name="description" content="Updates and statistics" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <!--begin::Fonts-->
@@ -48,12 +48,13 @@ if ($_SESSION['user_type'] != 4) {
     <div id="kt_header_mobile" class="header-mobile align-items-center header-mobile-fixed">
         <!--begin::Logo-->
         <a href="lending_company/index.php">
-            <img alt="Logo" src="assets/admin/media/logos/Hulam_Logo.png" class="h-60px w-60px" style="padding-top: 10%; padding: right 50%;" />
+            <img alt="Logo" src="assets/keen/hulam_media/<?= $user['profile_pic']?>" class="h-60px w-60px" style="padding-top: 10%; padding: right 50%;" />
         </a>
         <!--end::Logo-->
         <!--begin::Toolbar-->
         <div class="d-flex align-items-center">
             <!--begin::Aside Mobile Toggle-->
+            
             <button class="btn p-0 burger-icon burger-icon-left" id="kt_aside_mobile_toggle">
                 <span></span>
             </button>
@@ -64,16 +65,17 @@ if ($_SESSION['user_type'] != 4) {
             </button>
             <!--end::Header Menu Mobile Toggle-->
             <!--begin::Topbar Mobile Toggle-->
+            
             <button class="btn btn-hover-text-primary p-0 ml-3" id="kt_header_mobile_topbar_toggle">
                 <span class="svg-icon svg-icon-xl">
                     <!--begin::Svg Icon | path:assets/media/svg/icons/General/User.svg-->
                     <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-                        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                            <polygon points="0 0 24 0 24 24 0 24" />
-                            <path d="M12,11 C9.790861,11 8,9.209139 8,7 C8,4.790861 9.790861,3 12,3 C14.209139,3 16,4.790861 16,7 C16,9.209139 14.209139,11 12,11 Z" fill="#000000" fill-rule="nonzero" opacity="0.3" />
-                            <path d="M3.00065168,20.1992055 C3.38825852,15.4265159 7.26191235,13 11.9833413,13 C16.7712164,13 20.7048837,15.2931929 20.9979143,20.2 C21.0095879,20.3954741 20.9979143,21 20.2466999,21 C16.541124,21 11.0347247,21 3.72750223,21 C3.47671215,21 2.97953825,20.45918 3.00065168,20.1992055 Z" fill="#000000" fill-rule="nonzero" />
-                        </g>
-                    </svg>
+						<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+							<polygon points="0 0 24 0 24 24 0 24" />
+							<path d="M12,11 C9.790861,11 8,9.209139 8,7 C8,4.790861 9.790861,3 12,3 C14.209139,3 16,4.790861 16,7 C16,9.209139 14.209139,11 12,11 Z" fill="#000000" fill-rule="nonzero" opacity="0.3" />
+							<path d="M3.00065168,20.1992055 C3.38825852,15.4265159 7.26191235,13 11.9833413,13 C16.7712164,13 20.7048837,15.2931929 20.9979143,20.2 C21.0095879,20.3954741 20.9979143,21 20.2466999,21 C16.541124,21 11.0347247,21 3.72750223,21 C3.47671215,21 2.97953825,20.45918 3.00065168,20.1992055 Z" fill="#000000" fill-rule="nonzero" />
+						</g>
+					</svg>
                     <!--end::Svg Icon-->
                 </span>
             </button>
@@ -91,10 +93,11 @@ if ($_SESSION['user_type'] != 4) {
                 <div class="brand flex-column-auto" id="kt_brand">
                     <!--begin::Logo-->
                     <a href="lending_company/index.php" class="brand-logo">
-                        <img alt="Logo" src="assets/admin/media/logos/Hulam_Logo.png" class="h-100px w-90px" style="padding-top: 20%; padding: right 50%;" />
+                        <img alt="Logo" src="assets/admin/media/users/icon-company.jpg"class="h-100px w-90px" style="padding-top: 20%; padding: right 50%;" />
                     </a>
                     <!--end::Logo-->
                     <!--begin::Toggle-->
+                    
                     <button class="brand-toggle btn btn-sm px-0" id="kt_aside_toggle">
                         <span class="svg-icon svg-icon svg-icon-xl">
                             <!--begin::Svg Icon | path:assets/media/svg/icons/Text/Toggle-Right.svg-->
@@ -249,9 +252,17 @@ if ($_SESSION['user_type'] != 4) {
                                 </div>
                             </li>
                             <li class="menu-section">
-                                <h4 class="menu-text">Manage Payment</h4>
-                                <i class="menu-icon ki ki-bold-more-hor icon-md"></i>
-                            </li>
+								<h4 class="menu-text">Manage Payment</h4>
+								<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
+							</li>
+							<li class="menu-item menu-item-submenu" data-menu-toggle="hover">
+							<a href="individual_investor/record_payment.php" class="menu-link menu-toggle">
+									<span class="svg-icon menu-icon">
+									</span>
+									<span class="menu-text">Add Payment</span>  
+								</a>
+							</li>
+                                
                             <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
                                 <a href="javascript:;" class="menu-link menu-toggle">
                                     <span class="svg-icon menu-icon">
@@ -347,21 +358,7 @@ if ($_SESSION['user_type'] != 4) {
                                 <ul class="menu-nav">
                                 <li class="menu-item menu-item-open menu-item-here menu-item-submenu menu-item-rel menu-item-open menu-item-here menu-item-active" data-menu-toggle="click" aria-haspopup="true">
 										<h4 class="menu-text" style="color:blue">Welcome to Hulam!</h4>&nbsp;&nbsp;
-                                        <h6 class="text-danger">
-													<?php
-													$id = $_SESSION['user_id'];
-
-													$sql = "SELECT * FROM user WHERE user_id = $id";
-													$query = $dbh->prepare($sql);
-													$query->execute();
-													$result = $query->fetch();
-													$notice = $result['notice_message'];
-													if ($result['eligible'] == 'no') {
-
-														echo $notice;
-													}
-													?>
-												</h6>
+                                        
 										<i class="menu-arrow"></i>
 									</li>
                                 </ul>
@@ -957,21 +954,36 @@ if ($_SESSION['user_type'] != 4) {
                                 <div class="d-flex align-items-baseline flex-wrap mr-5">
                                     <!--begin::Page Title-->
                                     <h4 class="text-white font-weight-bold my-1 mr-5">Dashboard |</h4>
-                                    <h5 class="text-white font-weight-bold my-1 mr-5">Lending Investor</h5>
+                                    <h4 class="text-white font-weight-bold my-1 mr-5">Individual Investor</h4>
                                     <!--end::Page Title-->
                                 </div>
                                
                             </div>
                             <!--end::Info-->
+                            <div class="d-flex align-items-center flex-wrap">
+									<!--begin::Daterange-->
+									<a href="#" class="btn btn-fixed-height btn-bg-white btn-text-dark-50 btn-hover-text-primary btn-icon-primary font-weight-bolder font-size-sm px-5 my-1 mr-3" id="kt_dashboard_daterangepicker" data-toggle="tooltip" title="Select dashboard daterange" data-placement="top">
+										<span class="opacity-60 font-weight-bolder mr-2" id="kt_dashboard_daterangepicker_title">Today</span>
+										<span class="font-weight-bolder" id="kt_dashboard_daterangepicker_date">Aug 16</span>
+									</a>
+									<!--end::Daterange-->
+									<!--begin::Dropdown-->
+									<!--end::Dropdown-->
+								</div>
                         </div>
                     </div>
                     <!--end::Subheader-->
                     <!--begin::Entry-->
-                    <div class="d-flex flex-column-fluid">
-                        <!--begin::Container-->
-                        <div class="container">
-                            <div class="row">
-                                <div class="col-lg-4">
+                    <div class="content d-flex flex-column flex-column-fluid" id="kt_content" style="background-image:url('assets/keen/media/logos/banner.png')">
+
+						<!--begin::Entry-->
+						<div class="d-flex flex-column-fluid">
+							<!--begin::Container-->
+							<div class="container">
+								<!--begin::Dashboard-->
+								<!--begin::Row-->
+								<div class="row">
+                                <div class="col-lg-3">
                                     <div class="card card-custom card-stretch gutter-b">
                                         <div class="card-body">
                                             <div class="d-flex align-items-center justify-content-between flex-wrap">
@@ -998,11 +1010,11 @@ if ($_SESSION['user_type'] != 4) {
                                         </div>
                                         <div class="card-footer border-0 d-flex align-items-center justify-content-between pt-0">
                                             <span></span>
-                                            <a href="lending_company/pending_loan.php" class="btn btn-sm btn-primary font-weight-bolder px-6">View</a>
+                                            <a href="individual_investor/pending_loan.php" class="btn btn-md btn-primary font-weight-bolder px-6">View</a>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-lg-4">
+                                <div class="col-lg-3">
                                     <div class="card card-custom card-stretch gutter-b">
                                         <div class="card-body">
                                             <div class="d-flex align-items-center justify-content-between flex-wrap">
@@ -1028,11 +1040,11 @@ if ($_SESSION['user_type'] != 4) {
                                         </div>
                                         <div class="card-footer border-0 d-flex align-items-center justify-content-between pt-0">
                                             <span></span>
-                                            <a href="lending_company/approved_loan.php" class="btn btn-sm btn-primary font-weight-bolder px-6">View</a>
+                                            <a href="individual_investor/approved_loan.php" class="btn btn-md btn-primary font-weight-bolder px-6">View</a>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-lg-4">
+								<div class="col-lg-3">
                                     <div class="card card-custom card-stretch gutter-b">
                                         <div class="card-body">
                                             <div class="d-flex align-items-center justify-content-between flex-wrap">
@@ -1059,58 +1071,38 @@ if ($_SESSION['user_type'] != 4) {
                                         </div>
                                         <div class="card-footer border-0 d-flex align-items-center justify-content-between pt-0">
                                             <span></span>
-                                            <a href="lending_company/released_loan.php" class="btn btn-sm btn-primary font-weight-bolder px-6">View</a>
+                                            <a href="individual_investor/released_loan.php" class="btn btn-md btn-primary font-weight-bolder px-6">View</a>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-lg-4">
+								<div class="col-lg-3">
                                     <div class="card card-custom card-stretch gutter-b">
                                         <div class="card-body">
                                             <div class="d-flex align-items-center justify-content-between flex-wrap">
-                                                <span class="font-size-h6 text-muted font-weight-bolder text-uppercase pr-2">Payment Received</span>
+                                                <span class="font-size-h6 text-muted font-weight-bolder text-uppercase pr-2">Record Payment</span>
                                             </div>
                                             <div class="card-body d-flex align-items-center justify-content-between pt-7 flex-wrap">
                                                 <span class="font-weight-bolder display5 text-dark-75 py-4 pl-5 pr-5">
                                                 <p class="text-primary font-size-h2 font-weight-bolder pt-3 mb-0">
-                                                <?php
-                                                    $lender_id = $_SESSION['user_id'];
-
-                                                    $select = "SELECT * FROM loan_application WHERE lender_id = $lender_id";
-                                                    $query = $dbh->prepare($select);
-                                                    $query->execute();
-                                                    $res2 = $query->fetch();
-                                                    $query_count = $query->rowCount();
-                                                    if ($query_count == 0) {
-                                                        //wala sud
-                                                        echo '0';
-                                                    } else {
-                                                        $loan_id = $res2['loan_app_id'];
-
-                                                        $sql = "SELECT count(*) AS loan_payment_id FROM payment_details WHERE payment_details.confirm = 'no' AND payment_details.loan_id= $loan_id";
-                                                        $query = $dbh->prepare($sql);
-                                                        $query->execute();
-                                                        $results = $query->fetchAll(PDO::FETCH_OBJ);
-
-                                                        if ($query->rowCount() > 0) {
-                                                            foreach ($results as $result) { ?>
-                                                                <?php echo htmlentities($result->loan_payment_id); ?>
-                                                    <?php }
-                                                        }
-                                                    }
-                                                    ?>   
+												
+                                                   
                                                 </p>
                                             </div>
                                         </div>
 
                                         <div class="card-footer border-0 d-flex align-items-center justify-content-between pt-0">
                                             <span></span>
-                                            <a href="lending_company/payment_received.php" class="btn btn-sm btn-primary font-weight-bolder px-6">View</a>
+                                            <a href="individual_investor/released_loan.php" class="btn btn-md btn-primary font-weight-bolder px-6">Add</a>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
+                                </div>
+								<!--end::Dashboard-->
+							</div>
+							<!--end::Container-->
+						</div>
+						<!--end::Entry-->
+					</div>
                 </div>
                 <!--end::Content-->
                 <!--begin::Footer-->
@@ -1160,7 +1152,7 @@ if ($_SESSION['user_type'] != 4) {
                     <i class="symbol-badge bg-success"></i>
                 </div>
                 <div class="d-flex flex-column">
-                    <a href="#" class="font-weight-bold font-size-h5 text-dark-75 text-hover-primary">Lending Company</a>
+                    <a href="#" class="font-weight-bold font-size-h5 text-dark-75 text-hover-primary">Chris Supremo</a>
                     <div class="text-muted mt-1"></div>
                     <div class="navi mt-1">
                         <a href="#" class="navi-item">
@@ -1205,10 +1197,56 @@ if ($_SESSION['user_type'] != 4) {
                         </div>
                         <div class="navi-text">
                             <div class="font-weight-bold">My Account</div>
-                            <div class="text-muted">Update Information</div>
+                            
                         </div>
                     </div>
                 </a>
+                <a href="lending_company/make_announcement.php" class="navi-item">
+						<div class="navi-link">
+							<div class="symbol symbol-40 bg-light mr-3">
+								<div class="symbol-label">
+									<span class="svg-icon svg-icon-md svg-icon-danger">
+										<!--begin::Svg Icon | path:assets/media/svg/icons/Communication/Adress-book2.svg-->
+										<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+											<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+												<rect x="0" y="0" width="24" height="24" />
+												<path d="M18,2 L20,2 C21.6568542,2 23,3.34314575 23,5 L23,19 C23,20.6568542 21.6568542,22 20,22 L18,22 L18,2 Z" fill="#000000" opacity="0.3" />
+												<path d="M5,2 L17,2 C18.6568542,2 20,3.34314575 20,5 L20,19 C20,20.6568542 18.6568542,22 17,22 L5,22 C4.44771525,22 4,21.5522847 4,21 L4,3 C4,2.44771525 4.44771525,2 5,2 Z M12,11 C13.1045695,11 14,10.1045695 14,9 C14,7.8954305 13.1045695,7 12,7 C10.8954305,7 10,7.8954305 10,9 C10,10.1045695 10.8954305,11 12,11 Z M7.00036205,16.4995035 C6.98863236,16.6619875 7.26484009,17 7.4041679,17 C11.463736,17 14.5228466,17 16.5815,17 C16.9988413,17 17.0053266,16.6221713 16.9988413,16.5 C16.8360465,13.4332455 14.6506758,12 11.9907452,12 C9.36772908,12 7.21569918,13.5165724 7.00036205,16.4995035 Z" fill="#000000" />
+											</g>
+										</svg>
+										<!--end::Svg Icon-->
+									</span>
+								</div>
+							</div>
+							<div class="navi-text">
+								<div class="font-weight-bold">Make Announcement</div>
+							</div>
+						</div>
+					</a>
+					<!--end:Item-->
+					<!--begin::Item-->
+				<a href="lending_company/send_feedback.php" class="navi-item">
+					<div class="navi-link">
+						<div class="symbol symbol-40 bg-light mr-3">
+							<div class="symbol-label">
+								<span class="svg-icon svg-icon-md svg-icon-success">
+									<!--begin::Svg Icon | path:assets/media/svg/icons/General/Settings-1.svg-->
+									<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+										<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+											<rect x="0" y="0" width="24" height="24" />
+											<path d="M7,3 L17,3 C19.209139,3 21,4.790861 21,7 C21,9.209139 19.209139,11 17,11 L7,11 C4.790861,11 3,9.209139 3,7 C3,4.790861 4.790861,3 7,3 Z M7,9 C8.1045695,9 9,8.1045695 9,7 C9,5.8954305 8.1045695,5 7,5 C5.8954305,5 5,5.8954305 5,7 C5,8.1045695 5.8954305,9 7,9 Z" fill="#000000" />
+											<path d="M7,13 L17,13 C19.209139,13 21,14.790861 21,17 C21,19.209139 19.209139,21 17,21 L7,21 C4.790861,21 3,19.209139 3,17 C3,14.790861 4.790861,13 7,13 Z M17,19 C18.1045695,19 19,18.1045695 19,17 C19,15.8954305 18.1045695,15 17,15 C15.8954305,15 15,15.8954305 15,17 C15,18.1045695 15.8954305,19 17,19 Z" fill="#000000" opacity="0.3" />
+										</g>
+									</svg>
+									<!--end::Svg Icon-->
+									</span>
+								</div>
+							</div>
+						<div class="navi-text">
+							<div class="font-weight-bold">Send Feedback</div>
+						</div>
+					</div>
+				</a>
                 <span class="navi-item mt-2">
                     <span class="navi-link">
                         <a href="logout.php" class="btn btn-sm btn-light-primary font-weight-bolder py-3 px-6">Sign Out</a>
