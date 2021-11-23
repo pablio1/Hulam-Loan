@@ -2,41 +2,10 @@
 session_start();
 error_reporting(0);
 include('../db_connection/config.php');
+
 if ($_SESSION['user_type'] != 3) {
 	header('location: ../index.php');
 }?>
-
-<?php
-$id = intval($_GET['loan_app_id']);
-
-$sql = "SELECT loan_application.*, user.* FROM loan_application INNER JOIN user on loan_application.debtor_id = user.user_id WHERE loan_application.loan_app_id = $id";
-$query = $dbh->prepare($sql);
-$query->execute();
-$debtor = $query->fetch();
-?>
-
-<?php
-if (isset($_POST['submit_announce'])) {
-
-	$user_id = $_SESSION['user_id'];
-	$date_announce = $_POST['date_announce'];
-	$title = $_POST['title'];
-    $content = $_POST['content'];
-
-	$insert = "INSERT INTO announcement(user_id,date_announce,title,content)VALUES('$user_id','$date_announce','$title','$content')";
-	$query = $dbh->prepare($insert);
-	if ($query->execute()) {
-		$_SESSION['status_ann'] = "Announcement added sucessfully!";
-		header("Location: make_announcement.php");
-		exit();
-	} else {
-		$_SESSION['status_ann'] = "Message Not Sent";
-		header('Location: make_announcement.php');
-		exit();
-	}
-}
-?>
-
 
 <?php
 $lender_id = $_SESSION['user_id'];
@@ -63,7 +32,7 @@ $user = $query->fetch();
 <head>
 	<base href="../">
 	<meta charset="utf-8" />
-	<title>Hulam | View Approved Application</title>
+	<title>Hulam | Released Loan</title>
 	<meta name="description" content="Updates and statistics" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 	<!--begin::Fonts-->
@@ -331,6 +300,7 @@ $user = $query->fetch();
 				<!--end::Aside Menu-->
 			</div>
 			<!--end::Aside-->
+
 				<!--begin::Wrapper-->
 				<div class="d-flex flex-column flex-row-fluid wrapper" id="kt_wrapper">
 					<!--begin::Header-->
@@ -429,27 +399,21 @@ $user = $query->fetch();
 										<!--begin::Page Title-->
 										<h4 class="text-white font-weight-bold my-1 mr-5">Dashboard |</h4>
 										<h5 class="text-white font-weight-bold my-1 mr-5"><?= $user['company_name']?></h5>
-									<div class="col-xl-12 col-xl-12">
-										<?php
-										if(isset($_SESSION['status_ann'])){
-										?>
-											<div class="alert alert-custom alert-notice alert-light-success fade show" role="alert">
-												<div class="alert-text">
-													<h4><?php echo $_SESSION['status_ann'];?></h4>
-												</div>
-												<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
-											</div>
-										<?php unset($_SESSION['status_ann']);
-										}?>
-									</div>
+									<!--end::Page Title-->
 								</div>
+								<!--end::Page Heading-->
 							</div>
+							<!--end::Info-->
+							<!--begin::Toolbar-->
 							<div class="d-flex align-items-center flex-wrap">
+								<!--begin::Daterange-->
 								<a href="#" class="btn btn-fixed-height btn-bg-white btn-text-dark-50 btn-hover-text-primary btn-icon-primary font-weight-bolder font-size-sm px-5 my-1 mr-3" id="kt_dashboard_daterangepicker" data-toggle="tooltip" title="Select dashboard daterange" data-placement="top">
 									<span class="opacity-60 font-weight-bolder mr-2" id="kt_dashboard_daterangepicker_title">Today</span>
 									<span class="font-weight-bolder" id="kt_dashboard_daterangepicker_date">Aug 16</span>
 								</a>
+								<!--end::Daterange-->
 							</div>
+							<!--end::Toolbar-->
 						</div>
 					</div>
 					<!--end::Subheader-->
@@ -457,119 +421,134 @@ $user = $query->fetch();
 					<div class="d-flex flex-column-fluid">
 						<!--begin::Container-->
 						<div class="container">
-							<div class="card card-custom gutter-b">
-							</div>
-							<div class="row">
-								<div class="col-lg-12">
-									<!--begin::Charts Widget 4-->
-									<div class="card card-custom card-stretch gutter-b">
-										<!--begin::Header-->
-										<div class="card-header h-auto border-0">
-											<div class="card-title py-5">
-												<h3 class="card-label">
-													<span class="d-block text-dark font-weight-bolder">Announcements</span>
-												</h3>
-											</div>
-                                            <div class="mr-3">
-                                            <div class="my-lg-5 my-5">
-													<a href="#" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#announce">Add Announcements</a>
-												</div>
-                                            </div>
-                                        </div>
-										<?php
-                                        $user_id = $_SESSION['user_id'];
-                                        $sql = "SELECT * FROM announcement WHERE user_id = $user_id";
-                                        $query = $dbh->prepare($sql);
-                                        $query->execute();
-                                        $ann = $query->fetchAll();
-                                        foreach($ann as $result):?>
-                                        <div class="card card-custom">
-                                       
-                                            <div class="card-header card-header-right ribbon ribbon-clip ribbon-left">
-                                                <div class="ribbon-target" style="top: 12px;">
-                                                     <span class="ribbon-inner bg-success"></span><h6><?= $result['title']?></h6>
-                                                </div>
-                                                <label class="card-title">
-                                                <?= $result['date_announce']?>
-                                                </label>
-                                            </div>
-                                                <div class="card-body">
-                                                <h6><?= $result['content']?></h6>
-                                                </div>
-                                            </div>
-                                            <?php endforeach;?>
+							<div class="card card-custom">
+								<div class="card-body">
+									<h5>List of Loan Released</h5>
+									<form method="post" class="quick-search-form">
+										<div class="col-lg-4">
+											<input type="text" name="search_input" class="form-control" placeholder="Search..."/>
 										</div>
-                                       
-										<!--end::Header-->
-									</div>
-									<!--end::Charts Widget 4-->
-                                    
+									</form></br>
+									<table class="table table-bordered">
+										<thead>
+											<tr>
+												<th>Loan Account No:</th>
+												<th>Borrower</th>
+												<th>Action</th>
+											</tr>
+										</thead>
+										<tbody>
+											<?php
+											if(isset($_POST['search_input'])){
+											error_reporting(E_ALL);
+	
+											$search_input = $_POST['search_input'];
+	
+											if(empty($search_input)){
+											$lender_id = $_SESSION['user_id'];
+											$sql = "SELECT loan_application.*, user.* FROM loan_application INNER JOIN user ON loan_application.debtor_id = user.user_id WHERE loan_application.lender_id = '$lender_id' AND loan_application.loan_status = 'Released'";
+											$query = $dbh->prepare($sql);
+											$query->execute();
+											$res = $query->fetchAll(PDO::FETCH_OBJ);
+											$cnt =1;
+											if ($query->rowCount() > 0) {
+												foreach ($res as $rem) {?>
+											<tr>
+												<th scope="row"><?= htmlentities($rem->loan_app_id)?></th>
+												<td>
+													Name:&nbsp;<?= htmlentities($rem->firstname); ?>&nbsp;<?= htmlentities($rem->lastname); ?></br>
+													Current Address:&nbsp;<?= htmlentities($rem->c_street) . ' ' . htmlentities($rem->c_barangay); ?><?= htmlentities($rem->c_city) . ' ' . htmlentities($rem->c_province) . ' ' . htmlentities($rem->c_zipcode); ?></br>
+													Mobile No: <?= htmlentities($rem->mobile)?>
+												</td>
+												<td>
+													<a href="lending_company/view_released.php?loan_app_id=<?= htmlentities($rem->loan_app_id) ?>" class="kt-nav__link">
+														<span class="kt-nav__link-text">Record Payment</span>
+													</a>
+												</td>
+											</tr>
+											<?php $cnt = $cnt+1; }}}
+											else{
+												$lender_id = $_SESSION['user_id'];
+												$sql = "SELECT loan_application.*, user.* FROM loan_application INNER JOIN user ON loan_application.debtor_id = user.user_id 
+												WHERE loan_application.loan_app_id LIKE '%$search_input%' OR user.firstname LIKE '%$search_input%' OR user.lastname LIKE '%$search_input%' AND loan_application.lender_id = '$lender_id' AND loan_application.loan_status = 'Released'";
+												$query = $dbh->prepare($sql);
+												$query->execute();
+												$res = $query->fetchAll(PDO::FETCH_OBJ);
+												$cnt =1;
+												if ($query->rowCount() > 0) {
+													foreach ($res as $rem) {?>
+	
+													<tr>
+														<th scope="row"><?= htmlentities($rem->loan_app_id)?></th>
+														<td>
+															Name:&nbsp;<?= htmlentities($rem->firstname); ?>&nbsp;<?= htmlentities($rem->lastname); ?></br>
+															Current Address:&nbsp;<?= htmlentities($rem->c_street) . ' ' . htmlentities($rem->c_barangay); ?><?= htmlentities($rem->c_city) . ' ' . htmlentities($rem->c_province) . ' ' . htmlentities($rem->c_zipcode); ?></br>
+															Mobile No: <?= htmlentities($rem->mobile)?>
+														</td>
+														<td>
+															<a href="lending_company/view_released.php?loan_app_id=<?= htmlentities($rem->loan_app_id) ?>" class="kt-nav__link">
+																<span class="kt-nav__link-text">Record Payment</span>
+															</a>
+														</td>
+													</tr>
+													<?php $cnt = $cnt+1; }}}
+												}else{
+												$lender_id = $_SESSION['user_id'];
+												$sql = "SELECT loan_application.*, user.* FROM loan_application INNER JOIN user ON loan_application.debtor_id = user.user_id WHERE loan_application.lender_id = '$lender_id' AND loan_application.loan_status = 'Released'";
+												$query = $dbh->prepare($sql);
+												$query->execute();
+												$res = $query->fetchAll(PDO::FETCH_OBJ);
+												$cnt =1;
+												if ($query->rowCount() > 0) {
+													foreach ($res as $rem) {?>
+	
+													<tr>
+														<th scope="row"><?= htmlentities($rem->loan_app_id)?></th>
+														<td>
+															Name:&nbsp;<?= htmlentities($rem->firstname); ?>&nbsp;<?= htmlentities($rem->lastname); ?></br>
+															Current Address:&nbsp;<?= htmlentities($rem->c_street) . ' ' . htmlentities($rem->c_barangay); ?><?= htmlentities($rem->c_city) . ' ' . htmlentities($rem->c_province) . ' ' . htmlentities($rem->c_zipcode); ?></br>
+															Mobile No: <?= htmlentities($rem->mobile)?>
+														</td>
+														<td>
+															<a href="lending_company/record_payment.php?loan_app_id=<?= htmlentities($rem->loan_app_id) ?>" class="kt-nav__link">
+																<span class="kt-nav__link-text">Record Payment</span>
+															</a>
+														</td>
+													</tr>
+													<?php $cnt = $cnt+1; }}} ?>
+										</tbody>
+									</table>
+							
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-				<!--end::Container-->
 			</div>
-			<!--end::Entry-->
 		</div>
-		<!--end::Content-->
-        <!-- Start Announcement -->
-        <form action="" method="post">
-                <div class="modal fade" id="announce" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">Add Announcement</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <i aria-hidden="true" class="ki ki-close"></i>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <input type="hidden" name="date_announce" value="<?= date("Y-m-d h:i:s A");?>">
-                                <div class="col-lg-12">
-                                    <textarea rows="3" cols="50" name="title" class="form-control form-control-lg" required style="font-size: medium;" placeholder="Type announcement title...."></textarea>
-                                </div></br>
-                                <div class="col-lg-12">
-                                    <textarea rows="10" cols="50" name="content" class="form-control form-control-lg" required style="font-size: medium;" placeholder="Type content....."></textarea>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <!-- <button type="button" class="btn btn-light-danger" data-dismiss="modal">Cancel</button> -->
-                                <button type="submit" name="submit_announce" class="btn btn-light-primary font-weight-bold">Submit</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </form>
-            <!-- End Modal -->
-		<!--begin::Footer-->
-		<div class="footer bg-white py-4 d-flex flex-lg-column" id="kt_footer">
-			<!--begin::Container-->
-			<div class="container d-flex flex-column flex-md-row align-items-center justify-content-between">
-				<!--begin::Copyright-->
-				<div class="text-dark order-2 order-md-1">
-					<span class="text-muted font-weight-bold mr-2">2021©</span>
-					<a href="https://keenthemes.com/keen" target="_blank" class="text-dark-75 text-hover-primary">The Hulam Team</a>
-				</div>
-				<!--end::Copyright-->
-				<!--begin::Nav-->
-				<div class="nav nav-dark">
-					<a href="https://keenthemes.com/keen" target="_blank" class="nav-link pl-0 pr-2">About</a>
-					<a href="https://keenthemes.com/keen" target="_blank" class="nav-link pr-2">Team</a>
-					<a href="https://keenthemes.com/keen" target="_blank" class="nav-link pr-0">Contact</a>
-				</div>
-				<!--end::Nav-->
-			</div>
-			<!--end::Container-->
-		</div>
-		<!--end::Footer-->
 	</div>
-	<!--end::Wrapper-->
+
+	<!--end::Content-->
+	<!--begin::Footer-->
+	<!-- <div class="footer bg-white py-4 d-flex flex-lg-column" id="kt_footer"> -->
+	<!--begin::Container-->
+	<div class="container d-flex flex-column flex-md-row align-items-center justify-content-between">
+		<!--begin::Copyright-->
+		<!-- <div class="text-dark order-2 order-md-1">
+							<span class="text-muted font-weight-bold mr-2">2021©</span>
+							<a href="https://keenthemes.com/keen" target="_blank" class="text-dark-75 text-hover-primary">The Hulam Team</a>
+						</div> -->
+		<!--end::Copyright-->
+		<!--begin::Nav-->
+		<!-- <div class="nav nav-dark">
+							<a href="https://keenthemes.com/keen" target="_blank" class="nav-link pl-0 pr-2">About</a>
+							<a href="https://keenthemes.com/keen" target="_blank" class="nav-link pr-2">Team</a>
+							<a href="https://keenthemes.com/keen" target="_blank" class="nav-link pr-0">Contact</a>
+						</div> -->
+		<!--end::Nav-->
 	</div>
-	<!--end::Page-->
 	</div>
-	<!--end::Main-->
+
 		<!-- begin::User Panel-->
 		<div id="kt_quick_user" class="offcanvas offcanvas-right p-10">
 			<!--begin::Header-->
@@ -793,6 +772,7 @@ $user = $query->fetch();
 		</span>
 	</div>
 	<!--end::Scrolltop-->
+
 
 
 	<script>

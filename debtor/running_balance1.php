@@ -129,76 +129,112 @@ $run = $query->fetch();
 						</div>
 					</div>
 				</div>
-				<!--begin::Content-->
-				<div class="content d-flex flex-column flex-column-fluid" id="kt_content" style="background-image:url('assets/keen/media/logos/banner.png')">
-					<div class="gutter-b" id="kt_breadcrumbs">
-						<div class="container d-flex align-items-center justify-content-between flex-wrap flex-sm-nowrap">
-							<div class="d-flex align-items-center flex-wrap mr-1">
-								<div class="d-flex align-items-baseline flex-wrap mr-5">
-									<h2 class="text-white font-weight-bold my-1 mr-5">ANNOUNCEMENTS</h2>
-								</div>
-							</div>
-							<div class="d-flex align-items-center">
+					<!--begin::Content-->
+					<div class="content d-flex flex-column flex-column-fluid" id="kt_content" style="background-image:url('assets/keen/media/logos/banner.png')">
 
-							</div>
-						</div>
-					</div>
 					<div class="d-flex flex-column-fluid">
 						<div class="container">
 							<div class="card card-custom gutter-b card-stretch">
-								<!--begin::Body-->  
-								<div class="d-flex flex-column-fluid">
-                                <div class="container">
-                                    <div class="row">
-                                        <div class="col-lg-12">
-                                            <!--begin::Charts Widget 4-->
-                                            <div class="card card-custom card-stretch gutter-b">
-                                                <div class="card card-custom">
-                                                <?php
-                                                $sql = "SELECT * FROM announcement INNER JOIN user ON announcement.user_id = user.user_id ORDER BY date_announce DESC";
-                                                $query = $dbh->prepare($sql);
-                                                $query->execute();
-                                                $ann = $query->fetchAll();
-                                                foreach($ann as $result):?>
-                                                    <div class="card-header card-header-right ribbon ribbon-clip ribbon-left">
-                                                        <div class="ribbon-target" style="top: 12px;">
-                                                            <span class="ribbon-inner bg-success"></span>
-                                                            <div class="symbol symbol-circle symbol-40 mr-3">
-                                                                <img alt="Pic" src="/hulam/assets/keen/hulam_media/<?= $result['profile_pic'] ?>" />
-                                                            </div><?= $result['company_name']?>
-                                                        </div>
-                                                        <h3 class="card-title" style="font-size: 20px;">
-                                                        <?= $result['title']?>
-                                                       </h3>
-													  
-                                                    </div>
-													<span><?= $result['date_announce']?></span>
-                                                    <div class="card-body">
-                                                        <div class="d-flex align-items-center">
-                                                            <label class="card-title" style="font-size: 15px;">
-                                                                <?= $result['content']?>
-                                                        </label>
-                                                        </div>
-                                                    </div>
-                                                    <?php endforeach;?>
-                                                </div>
-                                       
-										<!--end::Header-->
+								<div class="card-header border-0 pt-6">
+									<h3 class="card-title align-items-start flex-column">
+										<span class="card-label font-weight-bolder font-size-h4 text-dark-75">Running Balance</span>
+									</h3>
+									<div class="my-lg-0 my-1">
+										<a href="debtor/loan_information.php" class="btn btn-sm btn-light-primary font-weight-bolder mr-2">
+											<< Back</a>
 									</div>
-									<!--end::Charts Widget 4-->
+								</div>
+								<!--begin::Body-->  
+								<div class="card-body pt-4">
+									<div class="card card-custom">
+										<div class="card-body">
+										<h5 style="color:royalblue"> Running Balance to: <?= $run['company_name'] ?> &nbsp;Loan </h5>
+											<table class="table table-bordered">
+												<thead>
+													<tr>
+														<th>Payment Month Date</th>
+														<th>Principal Payment</th>
+														<th>Interest Payment</th>
+														<th>Total Monthly Payment</th>
+														<th>Remaining Balance</th>
+													</tr>
+												</thead>
+												<tbody>
+													<tr>
+														<?php 
+															// GET TOTAL TERMS
+															$term = 12;
+															$date = new DateTime('now');
+															$date->modify('+'.$term.' month'); // or you can use '-90 day' for deduct
+															$date = $date->format('Y-m-d');
+
+															// TO GET DATE INTERVAL DEPENDING ON TOTAL TERM
+															$start    = new DateTime('2021-12-22');
+															$start->modify('first day of this month');
+															$end      = new DateTime($date);
+															$end->modify('first day of next month');
+															$interval = DateInterval::createFromDateString('1 month');
+															$period   = new DatePeriod($start, $interval, $end);
+															
+															foreach ($period as $dt) {
+																$total = 40800;
+																$principal = 2500;
+																$interest = 900;
+																$total_monthly_payment = $principal + $interest;
+
+																
+																$awe0 = $total - $total_monthly_payment;
+																$awe1 = $awe0 - $total_monthly_payment;
+																$awe2 = $awe1 - $total_monthly_payment;
+																$awe3 = $awe2 - $total_monthly_payment;
+																$awe4 = $awe3 - $total_monthly_payment;
+																$awe5 = $awe4 - $total_monthly_payment;
+																$awe6 = $awe5 - $total_monthly_payment;
+																$awe7 = $awe6 - $total_monthly_payment;
+																$awe8 = $awe7 - $total_monthly_payment;
+																$awe9 = $awe8 - $total_monthly_payment;
+																$awe10 = $awe9 - $total_monthly_payment;
+																$awe11 = $awe10 - $total_monthly_payment;
+
+																// for($i = $total_monthly_payment ; $i <= $total; $i--){
+
+																// }
+
+																echo "<tr>";
+																echo "<td>".$dt->format("F 22, Y") . "<br>\n"."</td>";
+																echo "<td>".$principal."</td>";
+																echo "<td>".$interest."</td>";
+																echo "<td>".$total_monthly_payment."</td>";
+																echo "<td>".$awe0."</td>";
+																echo "<td>".$awe1."</td>";
+																echo "<td>".$awe2."</td>";
+																echo "<td>".$awe3."</td>";
+																echo "<td>".$awe4."</td>";
+																echo "<td>".$awe5."</td>";
+																echo "<td>".$awe6."</td>";
+																echo "<td>".$awe7."</td>";
+																echo "<td>".$awe8."</td>";
+																echo "<td>".$awe9."</td>";
+																echo "<td>".$awe10."</td>";
+																echo "<td>".$awe11."</td>";
+																echo "</tr>";
+															}
+														?>
+													</tr>
+												</tbody>
+											</table>
+											</br>
+										</div>
 									</div>
 								</div>
 							</div>
-					   </div>
+						</div>
 					</div>
-                    </div>
-                </div>
-            </div>
-            </div>
+				</div>
 						
-								<!--end::Content-->
-<!--begin::Footer-->
-<div class="footer bg-white py-4 d-flex flex-lg-column" id="kt_footer">
+		<!--end::Content-->
+	<!--begin::Footer-->
+	<div class="footer bg-white py-4 d-flex flex-lg-column" id="kt_footer">
 		<!--begin::Container-->
 		<div class="container d-flex flex-column flex-md-row align-items-center justify-content-between">
 			<!--begin::Copyright-->

@@ -4,34 +4,52 @@ error_reporting(0);
 include('../db_connection/config.php');
 if ($_SESSION['user_type'] != 3) {
 	header('location: ../index.php');
-}?>
+} ?>
 
 <?php
-$id = intval($_GET['loan_app_id']);
+$user_id = $_SESSION['user_id'];
 
-$sql = "SELECT loan_application.*, user.* FROM loan_application INNER JOIN user on loan_application.debtor_id = user.user_id WHERE loan_application.loan_app_id = $id";
+$sql ="SELECT * FROM user WHERE user_id = $user_id";
 $query = $dbh->prepare($sql);
 $query->execute();
-$debtor = $query->fetch();
+$user = $query->fetch();
 ?>
 
+
 <?php
-if (isset($_POST['submit_announce'])) {
+if (isset($_POST['pay'])) {
+	$loan_app_id = intval($_GET['loan_app_id']);
+	// $lender_id = $_SESSION['user_id'];
+	// $debtor_id = $_POST['debtor_id'];
+	$remaining_balance = $_POST['remaining_balance'];
+	$payment = $_POST['payment'];
 
-	$user_id = $_SESSION['user_id'];
-	$date_announce = $_POST['date_announce'];
-	$title = $_POST['title'];
-    $content = $_POST['content'];
+	$remain = $remaining_balance- $payment;
+	$monthly_pay = $_POST['monthly_pay'];
+	$date_paid = $_POST['date_paid'];
+	$date_message = $_POST['date_message'];
+	$start_date = $_POST['start_date'];
+	$end_date = $_POST['end_date'];
+	$message = 'Your payment for loan account number'.' '. $loan_app_id.' '. 'is now posted. Thank You!';
 
-	$insert = "INSERT INTO announcement(user_id,date_announce,title,content)VALUES('$user_id','$date_announce','$title','$content')";
-	$query = $dbh->prepare($insert);
+	
+
+	$sql = "INSERT INTO running_balance(loan_app_id,remaining_balance,monthly_pay,payment,paid_date)VALUES('$loan_app_id','$remain','$monthly_pay','$payment','$date_message')";
+	$query = $dbh->prepare($sql);
+	$query->execute();
+
+	
+
+	$sql ="INSERT INTO message(sender_id,receiver_id,message,date_message)VALUES('$lender_id','$debtor_id','$message','$date_message')";
+	$query = $dbh->prepare($sql);
+
 	if ($query->execute()) {
-		$_SESSION['status_ann'] = "Announcement added sucessfully!";
-		header("Location: make_announcement.php");
+		$_SESSION['status_payment'] = "Submitted Successfully!";
+		header("Location: record_payment.php?loan_app_id=$loan_app_id");
 		exit();
 	} else {
-		$_SESSION['status_ann'] = "Message Not Sent";
-		header('Location: make_announcement.php');
+		$_SESSION['status_payment'] = "Error!";
+		header('Location: record_payment.php?loan_app_id=$loan_app_id');
 		exit();
 	}
 }
@@ -63,7 +81,7 @@ $user = $query->fetch();
 <head>
 	<base href="../">
 	<meta charset="utf-8" />
-	<title>Hulam | View Approved Application</title>
+	<title>Hulam | Record Payment</title>
 	<meta name="description" content="Updates and statistics" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 	<!--begin::Fonts-->
@@ -431,145 +449,218 @@ $user = $query->fetch();
 										<h5 class="text-white font-weight-bold my-1 mr-5"><?= $user['company_name']?></h5>
 									<div class="col-xl-12 col-xl-12">
 										<?php
-										if(isset($_SESSION['status_ann'])){
+										if (isset($_SESSION['status_payment'])) {
 										?>
 											<div class="alert alert-custom alert-notice alert-light-success fade show" role="alert">
 												<div class="alert-text">
-													<h4><?php echo $_SESSION['status_ann'];?></h4>
+													<h4><?php echo $_SESSION['status_payment']; ?></h4>
 												</div>
 												<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
 											</div>
-										<?php unset($_SESSION['status_ann']);
-										}?>
+										<?php unset($_SESSION['status_payment']);
+										} ?>
 									</div>
 								</div>
+
+								<!--end::Page Heading-->
 							</div>
-							<div class="d-flex align-items-center flex-wrap">
-								<a href="#" class="btn btn-fixed-height btn-bg-white btn-text-dark-50 btn-hover-text-primary btn-icon-primary font-weight-bolder font-size-sm px-5 my-1 mr-3" id="kt_dashboard_daterangepicker" data-toggle="tooltip" title="Select dashboard daterange" data-placement="top">
-									<span class="opacity-60 font-weight-bolder mr-2" id="kt_dashboard_daterangepicker_title">Today</span>
-									<span class="font-weight-bolder" id="kt_dashboard_daterangepicker_date">Aug 16</span>
-								</a>
-							</div>
+							<!--end::Info-->
 						</div>
 					</div>
 					<!--end::Subheader-->
+
+
 					<!--begin::Entry-->
 					<div class="d-flex flex-column-fluid">
 						<!--begin::Container-->
-						<div class="container">
-							<div class="card card-custom gutter-b">
-							</div>
-							<div class="row">
-								<div class="col-lg-12">
-									<!--begin::Charts Widget 4-->
-									<div class="card card-custom card-stretch gutter-b">
-										<!--begin::Header-->
-										<div class="card-header h-auto border-0">
-											<div class="card-title py-5">
-												<h3 class="card-label">
-													<span class="d-block text-dark font-weight-bolder">Announcements</span>
-												</h3>
-											</div>
-                                            <div class="mr-3">
-                                            <div class="my-lg-5 my-5">
-													<a href="#" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#announce">Add Announcements</a>
+						<div class="container ">
+							<div class="row align-items-center justify-content-center">
+								<div class="col-md-6">
+									<!--begin::Card-->
+									<div class="card card-custom gutter-b">
+										<div class="card-header">
+											<h3 class="card-title">Record Payment</h3>
+											<div class="card-toolbar">
+												<div class="example-tools justify-content-center">
+													<a href="lending_company/released_loan.php" class="btn btn-secondary">
+														<< Back</a>
 												</div>
-                                            </div>
-                                        </div>
-										<?php
-                                        $user_id = $_SESSION['user_id'];
-                                        $sql = "SELECT * FROM announcement WHERE user_id = $user_id";
-                                        $query = $dbh->prepare($sql);
-                                        $query->execute();
-                                        $ann = $query->fetchAll();
-                                        foreach($ann as $result):?>
-                                        <div class="card card-custom">
-                                       
-                                            <div class="card-header card-header-right ribbon ribbon-clip ribbon-left">
-                                                <div class="ribbon-target" style="top: 12px;">
-                                                     <span class="ribbon-inner bg-success"></span><h6><?= $result['title']?></h6>
-                                                </div>
-                                                <label class="card-title">
-                                                <?= $result['date_announce']?>
-                                                </label>
-                                            </div>
-                                                <div class="card-body">
-                                                <h6><?= $result['content']?></h6>
-                                                </div>
-                                            </div>
-                                            <?php endforeach;?>
+											</div>
 										</div>
-                                       
-										<!--end::Header-->
+										<!--begin::Form-->
+
+										<form action="" method="post">
+											<?php
+											$loan_app_id = intval($_GET['loan_app_id']);
+											$lender_id = $_SESSION['user_id'];
+
+											$sql = "SELECT loan_application.*, user.* FROM loan_application INNER JOIN user ON loan_application.debtor_id = user.user_id 
+											WHERE loan_application.loan_app_id = '$loan_app_id'";
+											$query = $dbh->prepare($sql);
+											$query->execute();
+											$loan = $query->fetch();
+
+											$sql = "SELECT * FROM running_balance WHERE loan_app_id = $loan_app_id";
+											$query = $dbh->prepare($sql);
+											$query->execute();
+											$loan2 = $query->fetch();
+
+											?>
+											<div class="card-body">
+												<div class="alert alert-custom alert-default" role="alert">
+													<div class="alert-text">
+														<h6>LOAN ACCOUNT NO:&nbsp;&nbsp;<span class="text-primary font-weight-bolder"><?= $loan['loan_app_id'] ?></span></h6>
+														<label class="text-lg">Name:&nbsp;&nbsp;<?= $loan['firstname'] . ' ' . $loan['middlename'] . ' ' . $loan['lastname'] ?></label></br>
+														<label class="text-lg">Remaining Balance:&nbsp;&nbsp;<?= $loan2['remaining_balance']?></label>
+														<div class="separator separator-dashed mt-2 mb-2"></div>
+
+														<!-- PAST DUE -->
+														<h6 class="text-sm">PAST DUE: </h6>
+														<div class="col-md-12 bg-light text-center">
+															<table class="table table-borderless">
+																<thead>
+																	<!-- <tr>
+																		<th>Application Date</th>
+																	</tr> -->
+																</thead>
+																<tbody>
+																	<tr>
+																		<td><label class="text-lg">Monthly Payable</label></td>
+
+																		<td><?= $pastamount = number_format($loan2['monthly_pay'], 2) ?></td>
+																	</tr>
+																	<tr>
+																		<td><label class="text-lg">Late Charge</td>
+
+																		<td><label class="text-lg"><?= $late1 =  number_format($loan['late_charge'], 2) ?></td>
+																	</tr>
+																	<tr>
+																		<td><label class="text-lg">Advance Payment(Bi-Monthly)</td>
+
+																		<td><label class="text-lg"><?= $advance1  =  number_format($loan['payment'], 2) ?> </td>
+																	</tr>
+																</tbody>
+															</table>
+														</div>
+														<div class="col-md-12 bg-light text-right">
+															<label class="text-info font-weight-bolder text-right">Past Due Amount:&nbsp;&nbsp;
+
+															<?= $past = $pastamount; 
+																$past2 = $past + $late1;
+																$total1 = $past2 - $advance1;
+															?>
+															</label>
+														</div>
+
+														<!-- CURRENT DUE -->
+														<h6 class="text-sm">CURRENT DUE:</h6>
+														<div class="col-md-12 bg-light text-center">
+															<table class="table table-borderless">
+																<thead>
+																	<!-- <tr>
+																		<th>Application Date</th>
+																	</tr> -->
+																</thead>
+																<tbody>
+																	<tr>
+																		<td><label class="text-lg">Monthly Payable</label></td>
+
+																		<td><?= $currentamount =  number_format($loan2['monthly_pay'], 2) ?></td>
+																	</tr>
+																	<tr>
+																		<td><label class="text-lg">Advance Payment(Bi-Monthly)</td>
+
+																		<td><label class="text-lg"><?= $advance2 = number_format($loan2['payment'], 2) ?></td>
+																	</tr>
+																</tbody>
+															</table>
+														</div>
+														<div class="col-md-12 bg-light text-right">
+															<label class="text-info font-weight-bolder text-right">Current Due Amount:&nbsp;&nbsp;
+																<?= 
+																$current = $currentamount; 
+																$total2 = $current - $advance2;
+																
+																?>
+															</label>
+														</div>
+														<div class="col-md-12 bg-light text-right">
+															<label class="text-danger font-weight-bolder text-right">TOTAL AMOUNT DUE:&nbsp;&nbsp;
+																<?=
+																	$monthly_pay = number_format(($loan2['monthly_pay'] + $loan['late_charge']), 2);
+
+																?>
+															</label>
+														</div>
+													</div>
+												</div>
+												<div class="form-group row">
+													<label class="col-3 col-form-label">Amount Paid</label>
+													<div class="col-9">
+														<input name="payment" class="form-control" type="number" required />
+													</div>
+												</div>
+												<div class="form-group row">
+													<label class="col-3 col-form-label">Date Paid</label>
+													<div class="col-9">
+														<input name="date_paid" class="form-control" type="datetime-local" id="example-datetime-local-input" />
+														
+														<input type="hidden" name="monthly_pay" value="<?= $loan['monthly_payment'] ?>">
+														<input type="hidden" name="remaining_balance" value="<?= $loan['total_amount'] ?>">
+														<?php
+															date_default_timezone_set('Asia/Manila');
+															$todays_date = date("y-m-d h:i:sa");
+															$today = strtotime($todays_date);
+															$det = date('Y-m-d h:i:sa', $today);
+															?>
+														<input type="hidden" name="date_message" value="<?= $det; ?>">
+													</div>
+												</div>
+											</div>
+											<div class="card-footer border-0 d-flex align-items-center justify-content-between pt-0">
+												<span></span>
+												<button type="submit" name="pay" class="btn btn-md btn-primary font-weight-bolder px-6">Submit</button>
+											</div>
+										</form>
 									</div>
-									<!--end::Charts Widget 4-->
-                                    
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-				<!--end::Container-->
-			</div>
-			<!--end::Entry-->
-		</div>
-		<!--end::Content-->
-        <!-- Start Announcement -->
-        <form action="" method="post">
-                <div class="modal fade" id="announce" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">Add Announcement</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <i aria-hidden="true" class="ki ki-close"></i>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <input type="hidden" name="date_announce" value="<?= date("Y-m-d h:i:s A");?>">
-                                <div class="col-lg-12">
-                                    <textarea rows="3" cols="50" name="title" class="form-control form-control-lg" required style="font-size: medium;" placeholder="Type announcement title...."></textarea>
-                                </div></br>
-                                <div class="col-lg-12">
-                                    <textarea rows="10" cols="50" name="content" class="form-control form-control-lg" required style="font-size: medium;" placeholder="Type content....."></textarea>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <!-- <button type="button" class="btn btn-light-danger" data-dismiss="modal">Cancel</button> -->
-                                <button type="submit" name="submit_announce" class="btn btn-light-primary font-weight-bold">Submit</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </form>
-            <!-- End Modal -->
-		<!--begin::Footer-->
-		<div class="footer bg-white py-4 d-flex flex-lg-column" id="kt_footer">
-			<!--begin::Container-->
-			<div class="container d-flex flex-column flex-md-row align-items-center justify-content-between">
-				<!--begin::Copyright-->
-				<div class="text-dark order-2 order-md-1">
-					<span class="text-muted font-weight-bold mr-2">2021©</span>
-					<a href="https://keenthemes.com/keen" target="_blank" class="text-dark-75 text-hover-primary">The Hulam Team</a>
+				<!--end::Content-->
+
+
+
+
+				<!--begin::Footer-->
+				<div class="footer bg-white py-4 d-flex flex-lg-column" id="kt_footer">
+					<!--begin::Container-->
+					<div class="container d-flex flex-column flex-md-row align-items-center justify-content-between">
+						<!--begin::Copyright-->
+						<div class="text-dark order-2 order-md-1">
+							<span class="text-muted font-weight-bold mr-2">2021©</span>
+							<a href="https://keenthemes.com/keen" target="_blank" class="text-dark-75 text-hover-primary">Hulam</a>
+						</div>
+						<!--end::Copyright-->
+						<!--begin::Nav-->
+						<div class="nav nav-dark">
+							<a href="https://keenthemes.com/keen" target="_blank" class="nav-link pl-0 pr-2">About</a>
+							<a href="https://keenthemes.com/keen" target="_blank" class="nav-link pr-2">Team</a>
+							<a href="https://keenthemes.com/keen" target="_blank" class="nav-link pr-0">Contact</a>
+						</div>
+						<!--end::Nav-->
+					</div>
+					<!--end::Container-->
 				</div>
-				<!--end::Copyright-->
-				<!--begin::Nav-->
-				<div class="nav nav-dark">
-					<a href="https://keenthemes.com/keen" target="_blank" class="nav-link pl-0 pr-2">About</a>
-					<a href="https://keenthemes.com/keen" target="_blank" class="nav-link pr-2">Team</a>
-					<a href="https://keenthemes.com/keen" target="_blank" class="nav-link pr-0">Contact</a>
-				</div>
-				<!--end::Nav-->
+				<!--end::Footer-->
 			</div>
-			<!--end::Container-->
+			<!--end::Wrapper-->
 		</div>
-		<!--end::Footer-->
-	</div>
-	<!--end::Wrapper-->
-	</div>
-	<!--end::Page-->
+		<!--end::Page-->
 	</div>
 	<!--end::Main-->
+
 		<!-- begin::User Panel-->
 		<div id="kt_quick_user" class="offcanvas offcanvas-right p-10">
 			<!--begin::Header-->
@@ -778,6 +869,7 @@ $user = $query->fetch();
 
 
 
+			
 	<!--begin::Scrolltop-->
 	<div id="kt_scrolltop" class="scrolltop">
 		<span class="svg-icon">
@@ -794,6 +886,11 @@ $user = $query->fetch();
 	</div>
 	<!--end::Scrolltop-->
 
+
+
+	<!--begin::Sticky Toolbar-->
+
+	<!--end::Sticky Toolbar-->
 
 	<script>
 		var HOST_URL = "https://preview.keenthemes.com/keen/theme/tools/preview";
@@ -870,6 +967,9 @@ $user = $query->fetch();
 	<!--end::Page Vendors-->
 	<!--begin::Page Scripts(used by this page)-->
 	<script src="assets/admin/js/pages/widgets.js"></script>
+	<!--end::Page Scripts-->
+	<!--begin::Page Scripts(used by this page)-->
+	<script src="assets/admin/js/pages/features/charts/apexcharts.js"></script>
 	<!--end::Page Scripts-->
 </body>
 <!--end::Body-->

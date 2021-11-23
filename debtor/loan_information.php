@@ -155,7 +155,7 @@ $user = $query->fetch();
 											<!-- <a href="#" class="d-flex align-items-center text-dark text-hover-primary font-size-h5 font-weight-bold mr-3"><?= $loan['firstname'] ?></a> -->
 										</div>
 										<div class="my-lg-0 my-1">
-											<a href="" class="btn btn-sm btn-primary font-weight-bolder" data-toggle="modal" data-target="#upload_payment"></data-target> Upload Proof of Payment</a>
+											<!-- <a href="" class="btn btn-sm btn-primary font-weight-bolder" data-toggle="modal" data-target="#upload_payment"></data-target> Upload Proof of Payment</a> -->
 										</div>
 									</div>
 								</div>
@@ -375,7 +375,7 @@ $user = $query->fetch();
 
 
 				<!-- begin: display modal of upload payment -->
-				<div class="modal fade" id="upload_payment" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdrop" aria-hidden="true">
+				<!-- <div class="modal fade" id="upload_payment" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdrop" aria-hidden="true">
 					<div class="modal-dialog modal-dialog-centered modal-m" role="document">
 						<div class="modal-content">
 							<div class="modal-header">
@@ -395,7 +395,7 @@ $user = $query->fetch();
 							</div>
 						</div>
 					</div>
-				</div>
+				</div> -->
 			</div>
 			<!--end: display modal of upload payment -->
 
