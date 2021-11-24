@@ -13,10 +13,6 @@ $sql = "SELECT loan_application.*, user.* FROM loan_application INNER JOIN user 
 $query = $dbh->prepare($sql);
 $query->execute();
 $debtor = $query->fetch();
-<<<<<<< HEAD
-
-=======
->>>>>>> bcb71b013ac139ed83a532da494103021b5fa657
 ?>
 
 <?php
@@ -146,11 +142,7 @@ $user = $query->fetch();
 <head>
 	<base href="../">
 	<meta charset="utf-8" />
-<<<<<<< HEAD
 	<title>Hulam | Dashboard</title>
-=======
-	<title>Hulam | View Approved Application</title>
->>>>>>> bcb71b013ac139ed83a532da494103021b5fa657
 	<meta name="description" content="Updates and statistics" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 	<!--begin::Fonts-->
@@ -181,11 +173,7 @@ $user = $query->fetch();
 	<div id="kt_header_mobile" class="header-mobile align-items-center header-mobile-fixed">
 		<!--begin::Logo-->
 		<a href="lending_company/index.php">
-<<<<<<< HEAD
 			<img alt="Logo" src="assets/keen/hulam_media/<?= $user['profile_pic'] ?>" class="h-60px w-60px" style="padding-top: 10%; padding: right 50%;" />
-=======
-			<img alt="Logo"  src="assets/keen/hulam_media/<?= $user['profile_pic']?>" class="h-60px w-60px" style="padding-top: 10%; padding: right 50%;" />
->>>>>>> bcb71b013ac139ed83a532da494103021b5fa657
 		</a>
 		<!--end::Logo-->
 		<!--begin::Toolbar-->
@@ -228,11 +216,7 @@ $user = $query->fetch();
 				<div class="brand flex-column-auto " id="kt_brand">
 					<!--begin::Logo-->
 					<a href="lending_company/index.php" class="brand-logo">
-<<<<<<< HEAD
 						<img alt="Logo" src="/hulam/assets/keen/hulam_media/<?= $user['profile_pic'] ?>" class="h-100px w-90px" style="padding-top: 20%; padding: right 50%;" />
-=======
-						<img alt="Logo" src="/hulam/assets/keen/hulam_media/<?= $user['profile_pic']?>" class="h-100px w-90px" style="padding-top: 20%; padding: right 50%;" />
->>>>>>> bcb71b013ac139ed83a532da494103021b5fa657
 					</a>
 					<!--end::Logo-->
 					<!--begin::Toggle-->
@@ -395,22 +379,14 @@ $user = $query->fetch();
 								<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
 							</li>
 							<li class="menu-item menu-item-submenu" data-menu-toggle="hover">
-<<<<<<< HEAD
 								<a href="lending_company/released_loan.php" class="menu-link menu-toggle">
-=======
-							<a href="lending_company/record_payment.php" class="menu-link menu-toggle">
->>>>>>> bcb71b013ac139ed83a532da494103021b5fa657
 									<span class="svg-icon menu-icon">
 									</span>
 									<span class="menu-text">Add Payment</span>
 								</a>
 							</li>
 							<li class="menu-item menu-item-submenu" data-menu-toggle="hover">
-<<<<<<< HEAD
 								<a href="lending_company/view_payment.php" class="menu-link menu-toggle">
-=======
-							<a href="lending_company/view_payment.php" class="menu-link menu-toggle">
->>>>>>> bcb71b013ac139ed83a532da494103021b5fa657
 									<span class="svg-icon menu-icon">
 									</span>
 									<span class="menu-text">Payment Records</span>
@@ -426,7 +402,6 @@ $user = $query->fetch();
 									</span>
 									<span class="menu-text">Generate Report</span>
 								</a>
-<<<<<<< HEAD
 								<div class="menu-submenu">
 									<ul class="menu-subnav">
 										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
@@ -438,8 +413,6 @@ $user = $query->fetch();
 										</li>
 									</ul>
 								</div>
-=======
->>>>>>> bcb71b013ac139ed83a532da494103021b5fa657
 							</li>
 							<!--end::Menu Nav-->
 					</div>
@@ -461,11 +434,7 @@ $user = $query->fetch();
 									<!--begin::Header Nav-->
 									<ul class="menu-nav">
 									<li class="menu-item menu-item-open menu-item-here menu-item-submenu menu-item-rel menu-item-open menu-item-here menu-item-active" data-menu-toggle="click" aria-haspopup="true">
-<<<<<<< HEAD
 										<h4 class="menu-text" style="color:blue">Welcome to Hulam! <h4>&nbsp;&nbsp;
-=======
-                                        <h4 class="menu-text" style="color:blue">Welcome to Hulam! <h4>&nbsp;&nbsp;
->>>>>>> bcb71b013ac139ed83a532da494103021b5fa657
 												<h6 class="text-danger">
 													<?php
 													$id = $_SESSION['user_id'];
@@ -481,7 +450,6 @@ $user = $query->fetch();
 													}
 													?>
 												</h6>
-<<<<<<< HEAD
 												<i class="menu-arrow"></i>
 									</li>
 								</ul>
@@ -529,65 +497,11 @@ $user = $query->fetch();
 									<img src="assets/keen/hulam_media/<?= $user['profile_pic'] ?>" class="h-40px align-self-end" alt="" />
 								</div>
 
-=======
-											<i class="menu-arrow"></i>
-										 </li>
-								    </ul>
-									<!--end::Header Nav-->
-								</div>
-								<!--end::Header Menu-->
-							</div>
-							<!--end::Header Menu Wrapper-->
-
-
-
-							<!--begin::Topbar-->
-							<div class="topbar">
-							
-							
-                           		 <!--begin::Quick panel-->
-								<div class="topbar-item mr-1">
-									<div class="btn btn-icon btn-clean btn-lg" id="kt_quick_panel_toggle">
-									<span class="svg-icon svg-icon-xl svg-icon-primary">
-											<!--begin::Svg Icon | path:assets/media/svg/icons/Communication/Chat6.svg-->
-											<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-												<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-													<rect x="0" y="0" width="24" height="24" />
-													<path opacity="0.3" fill-rule="evenodd" clip-rule="evenodd" d="M14.4862 18L12.7975 21.0566C12.5304 21.54 11.922 21.7153 11.4386 21.4483C11.2977 21.3704 11.1777 21.2597 11.0887 21.1255L9.01653 18H5C3.34315 18 2 16.6569 2 15V6C2 4.34315 3.34315 3 5 3H19C20.6569 3 22 4.34315 22 6V15C22 16.6569 20.6569 18 19 18H14.4862Z" fill="black" />
-													<path fill-rule="evenodd" clip-rule="evenodd" d="M6 7H15C15.5523 7 16 7.44772 16 8C16 8.55228 15.5523 9 15 9H6C5.44772 9 5 8.55228 5 8C5 7.44772 5.44772 7 6 7ZM6 11H11C11.5523 11 12 11.4477 12 12C12 12.5523 11.5523 13 11 13H6C5.44772 13 5 12.5523 5 12C5 11.4477 5.44772 11 6 11Z" fill="black" />
-												</g>
-											</svg>
-											<!--end::Svg Icon-->
-										</span>
-									</div>
-								</div>
-								<!--end::Quick panel-->
-								<!--begin::Languages-->
-								<div class="dropdown mr-1">
-									<!--begin::Dropdown-->
-									<div class="dropdown-menu p-0 m-0 dropdown-menu-anim-up dropdown-menu-sm dropdown-menu-right">
-										<!--begin::Nav-->
-									
-										<!--end::Nav-->
-									</div>
-									<!--end::Dropdown-->
-								</div>
-								<!--end::Languages-->
-								<!--begin::User-->
-								<div class="topbar-item ml-4">
-									<div class="btn btn-icon btn-light-primary h-40px w-40px p-0" id="kt_quick_user_toggle">
-										<img src="assets/keen/hulam_media/<?= $user['profile_pic']?>" class="h-40px align-self-end" alt="" />
-									</div>
-									
-								</div>
-								<!--end::User-->
->>>>>>> bcb71b013ac139ed83a532da494103021b5fa657
 							</div>
 							<!--end::Topbar-->
 						</div>
 						<!--end::Container-->
 					</div>
-<<<<<<< HEAD
 					<!--end::Container-->
 				</div>
 				<!--end::Header-->
@@ -601,21 +515,6 @@ $user = $query->fetch();
 								<div class="d-flex align-items-baseline flex-wrap mr-5">
 									<h4 class="text-white font-weight-bold my-1 mr-5">Dashboard |</h4>
 									<h5 class="text-white font-weight-bold my-1 mr-5">Lending Investor</h5>
-=======
-					<!--end::Header-->
-					<!--begin::Content-->
-					<div class="content d-flex flex-column flex-column-fluid" id="kt_content" style="background-image:url('assets/keen/media/logos/banner.png')">
-						<!--begin::Subheader-->
-						<div class="subheader py-6 py-lg-8 subheader-transparent" id="kt_subheader">
-							<div class="container d-flex align-items-center justify-content-between flex-wrap flex-sm-nowrap">
-								<!--begin::Info-->
-								<div class="d-flex align-items-center flex-wrap mr-1">
-									<!--begin::Page Heading-->
-									<div class="d-flex align-items-baseline flex-wrap mr-5">
-										<!--begin::Page Title-->
-										<h4 class="text-white font-weight-bold my-1 mr-5">Dashboard |</h4>
-										<h5 class="text-white font-weight-bold my-1 mr-5"><?= $user['company_name']?></h5>
->>>>>>> bcb71b013ac139ed83a532da494103021b5fa657
 									<div class="col-xl-12 col-xl-12">
 										<?php
 										if(isset($_SESSION['status_approved'])){
@@ -651,11 +550,7 @@ $user = $query->fetch();
 										<!--begin::Pic-->
 										<div class="flex-shrink-0 mr-7">
 											<div class="symbol symbol-50 symbol-lg-120">
-<<<<<<< HEAD
 												<img alt="Pic" src="/hulam/assets/keen/hulam_media/<?=$debtor ['profile_pic'] ?>">
-=======
-											<img alt="Pic" src="/hulam/assets/keen/hulam_media/<?=$debtor ['profile_pic'] ?>">
->>>>>>> bcb71b013ac139ed83a532da494103021b5fa657
 											</div>
 										</div>
 										<!--end::Pic-->
@@ -715,11 +610,7 @@ $user = $query->fetch();
 
 												<!--begin::Actions-->
 												<div class="my-lg-0 my-1">
-<<<<<<< HEAD
 													<?php if($debtor['loan_status']=='Approved'):?>
-=======
-													
->>>>>>> bcb71b013ac139ed83a532da494103021b5fa657
 														<a href="#" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#released_loan">Released Loan</a>
 												
 													<a href="#" class="btn btn-sm btn-light-success font-weight-bolder mr-2" data-toggle="modal" data-target="#message">Send Message</a>
@@ -890,11 +781,7 @@ $user = $query->fetch();
 													?>
 															<tr>
 																<td>Valid ID</td>
-<<<<<<< HEAD
 																<td><a href="/hulam/assets/keen/hulam_media/<?= htmlentities($res->valid_id) ?>" target="_blank"><?= htmlentities($res->valid_id); ?></a></td>
-=======
-																<td><a href="/hulam/assets/keen/hulam_media/<?= htmlentities($res->barangay_clearance) ?>" target="_blank"><?= htmlentities($res->barangay_clearance); ?></a></td>
->>>>>>> bcb71b013ac139ed83a532da494103021b5fa657
 															</tr>
 															<tr>
 																<td>Barangay Clearanace</td>
@@ -1266,13 +1153,8 @@ $user = $query->fetch();
 			<!--end::Content-->
 		</div>
 		<!-- end::User Panel-->
-<<<<<<< HEAD
 
 
-=======
-
-
->>>>>>> bcb71b013ac139ed83a532da494103021b5fa657
 		<!--begin::Quick Panel-->
 	<div id="kt_quick_panel" class="offcanvas offcanvas-right pt-5 pb-10">
 		<!--begin::Header-->
@@ -1336,11 +1218,6 @@ $user = $query->fetch();
 	</div>
 	<!--end::Quick Panel-->
 
-<<<<<<< HEAD
-=======
-
-
->>>>>>> bcb71b013ac139ed83a532da494103021b5fa657
 	<!--begin::Scrolltop-->
 	<div id="kt_scrolltop" class="scrolltop">
 		<span class="svg-icon">
@@ -1354,20 +1231,7 @@ $user = $query->fetch();
 			</svg>
 			<!--end::Svg Icon-->
 		</span>
-	</div>
-	<!--end::Scrolltop-->
-
-
-<<<<<<< HEAD
-
-	<!--begin::Sticky Toolbar-->
-
-	<!--end::Sticky Toolbar-->
-
-
-=======
->>>>>>> bcb71b013ac139ed83a532da494103021b5fa657
-	<script>
+										</div>
 		var HOST_URL = "https://preview.keenthemes.com/keen/theme/tools/preview";
 	</script>
 	<!--begin::Global Config(global config for global JS scripts)-->
