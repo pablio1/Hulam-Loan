@@ -184,20 +184,19 @@ $user = $query->fetch();
 						$query_rating = "INSERT INTO feedback (lender_id,debtor_id,comments,ratings,dateOfRate) VALUES ('$lending_id', '$user_id', '$comment' , '$rating' , '$date')";
 						if (mysqli_query($conn, $query_rating)) { ?>
 
-							<div class="alert alert-custom alert-notice alert-light-success fade show" role="alert">
-								<div class="alert-text">
-								<h4>Thank you for your valuable feedback!</h4>
-								</div>&nbsp;
-								<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+							<div class="alert alert-success" role="alert">
+								Thank you for your valuable feedback!
 							</div>
 
-							<?php } else { ?>
-								<div class="alert alert-custom alert alert-danger" role="alert">
-									Something went wrong!
-								</div>
-							<?php }?>
+						<?php } else { ?>
+							<div class="alert alert-danger" role="alert">
+								Something went wrong!
+							</div>
+						<?php }
 
-                            <?php } ?>
+						?>
+
+					<?php } ?>
 					<div class="card card-custom gutter-b card-stretch">
 						<div class="card-header border-0 pt-6">
 							<h3 class="card-title align-items-start flex-column">
@@ -212,16 +211,8 @@ $user = $query->fetch();
 									$query_lending = "SELECT * FROM user WHERE user_id = $lender_id";
 									$query_lending_result = mysqli_query($conn, $query_lending);
 									$lending_result = mysqli_fetch_array($query_lending_result);
-
-									if($lending_result['user_type']=='1'){
-										echo $lending_result['firstname'].' '.$lending_result['middlename'].' '.$lending_result['lastname'];
-									}else{
-										echo $lending_result['company_name'];
-									}
-									
+									echo $lending_result['company_name'];
 									?></h4>
-
-									
 									<?php
 									if (isset($_GET['user_id']))
 										$id = $_GET['user_id'];
@@ -335,7 +326,7 @@ $user = $query->fetch();
 										"</p>";
 									$ratingTotal = 0;
 									$ratingCount = 0;
-									
+
 									$lender_id = intval($_GET['lender_id']);
 									
 									$query = "SELECT * FROM feedback INNER JOIN user ON feedback.debtor_id = user.user_id WHERE lender_id = $lender_id";
@@ -366,7 +357,9 @@ $user = $query->fetch();
 					</div>
 				</div>
 			</div>
-		</div>				
+		</div>
+		</div>
+		</div>							
 <!--begin::Footer-->
 <div class="footer bg-white py-4 d-flex flex-lg-column" id="kt_footer">
 		<!--begin::Container-->

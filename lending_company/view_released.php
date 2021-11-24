@@ -137,6 +137,10 @@ $query = $dbh->prepare($sql);
 $query->execute();
 $user = $query->fetch();
 ?>
+<<<<<<< HEAD
+=======
+
+>>>>>>> bcb71b013ac139ed83a532da494103021b5fa657
 <!DOCTYPE html>
 
 <html lang="en">
@@ -145,7 +149,11 @@ $user = $query->fetch();
 <head>
 	<base href="../">
 	<meta charset="utf-8" />
+<<<<<<< HEAD
 	<title>Hulam | Dashboard</title>
+=======
+	<title>Hulam | View Released Loan</title>
+>>>>>>> bcb71b013ac139ed83a532da494103021b5fa657
 	<meta name="description" content="Updates and statistics" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 	<!--begin::Fonts-->
@@ -381,14 +389,22 @@ $user = $query->fetch();
 								<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
 							</li>
 							<li class="menu-item menu-item-submenu" data-menu-toggle="hover">
+<<<<<<< HEAD
 								<a href="lending_company/released_loan.php" class="menu-link menu-toggle">
+=======
+							<a href="lending_company/record_payment.php" class="menu-link menu-toggle">
+>>>>>>> bcb71b013ac139ed83a532da494103021b5fa657
 									<span class="svg-icon menu-icon">
 									</span>
 									<span class="menu-text">Add Payment</span>
 								</a>
 							</li>
 							<li class="menu-item menu-item-submenu" data-menu-toggle="hover">
+<<<<<<< HEAD
 								<a href="lending_company/view_payment.php" class="menu-link menu-toggle">
+=======
+							<a href="lending_company/view_payment.php" class="menu-link menu-toggle">
+>>>>>>> bcb71b013ac139ed83a532da494103021b5fa657
 									<span class="svg-icon menu-icon">
 									</span>
 									<span class="menu-text">Payment Records</span>
@@ -398,13 +414,13 @@ $user = $query->fetch();
 								<h4 class="menu-text">Manage Report</h4>
 								<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
 							</li>
-							<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-								<a href="javascript:;" class="menu-link menu-toggle">
+							<li class="menu-item menu-item-submenu" data-menu-toggle="hover">
+							<a href="lending_company/generate_report.php" class="menu-link menu-toggle">
 									<span class="svg-icon menu-icon">
 									</span>
 									<span class="menu-text">Generate Report</span>
-									<i class="menu-arrow"></i>
 								</a>
+<<<<<<< HEAD
 								<div class="menu-submenu">
 									<ul class="menu-subnav">
 										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
@@ -416,6 +432,8 @@ $user = $query->fetch();
 										</li>
 									</ul>
 								</div>
+=======
+>>>>>>> bcb71b013ac139ed83a532da494103021b5fa657
 							</li>
 							<!--end::Menu Nav-->
 					</div>
@@ -437,8 +455,13 @@ $user = $query->fetch();
 							<div id="kt_header_menu" class="header-menu header-menu-mobile header-menu-layout-default">
 								<!--begin::Header Nav-->
 								<ul class="menu-nav">
+<<<<<<< HEAD
 									<li class="menu-item menu-item-open menu-item-here menu-item-submenu menu-item-rel menu-item-open menu-item-here menu-item-active" data-menu-toggle="click" aria-haspopup="true">
 										<h4 class="menu-text" style="color:blue">Welcome to Hulam! <h4>&nbsp;&nbsp;
+=======
+								<li class="menu-item menu-item-open menu-item-here menu-item-submenu menu-item-rel menu-item-open menu-item-here menu-item-active" data-menu-toggle="click" aria-haspopup="true">
+                                        <h4 class="menu-text" style="color:blue">Welcome to Hulam! <h4>&nbsp;&nbsp;
+>>>>>>> bcb71b013ac139ed83a532da494103021b5fa657
 												<h6 class="text-danger">
 													<?php
 													$id = $_SESSION['user_id'];
@@ -454,8 +477,13 @@ $user = $query->fetch();
 													}
 													?>
 												</h6>
+<<<<<<< HEAD
 												<i class="menu-arrow"></i>
 									</li>
+=======
+											<i class="menu-arrow"></i>
+										 </li>
+>>>>>>> bcb71b013ac139ed83a532da494103021b5fa657
 								</ul>
 								<!--end::Header Nav-->
 							</div>
@@ -613,6 +641,7 @@ $user = $query->fetch();
 													<!--end::Contacts-->
 												</div>
 												<!--begin::User-->
+<<<<<<< HEAD
 												<?php
 												$id = intval($_GET['loan_app_id']);
 
@@ -628,6 +657,9 @@ $user = $query->fetch();
 												$que->execute();
 												$res = $que->fetch();
 												?>
+=======
+
+>>>>>>> bcb71b013ac139ed83a532da494103021b5fa657
 												<!--begin::Actions-->
 												<div class="my-lg-0 my-1">
 													<!-- <?php if($user['loan_status']=='Released'):?>
@@ -720,7 +752,7 @@ $user = $query->fetch();
 															</tr>
 															<tr>
 																<td>Loan Amount</td>
-																<td><?= htmlentities($res->loan_amount); ?></td>
+																<td><?= number_format(htmlentities($res->loan_amount), 2); ?></td>
 															</tr>
 															<tr>
 																<td>Loan Term</td>
@@ -732,7 +764,7 @@ $user = $query->fetch();
 															</tr>
 															<tr>
 																<td>Total Interest</td>
-																<td><?= htmlentities($res->total_interest); ?></td>
+																<td><?= number_format(htmlentities($res->total_interest), 2); ?></td>
 															</tr>
 															<tr>
 																<td>Late Charge</td>
@@ -740,8 +772,11 @@ $user = $query->fetch();
 															</tr>
 															<tr>
 																<td>Total Amoun to Pay</td>
-																<td><?= htmlentities($res->total_amount); ?></td>
+																<td><?= number_format(htmlentities($res->total_amount), 2); ?></td>
 															</tr>
+															<tr>
+																<td>Monthly Payment</td>
+																<td><?= number_format(htmlentities($res->monthly_payment), 2); ?></td>
 
 												</tbody>
 										<?php }
@@ -969,11 +1004,14 @@ $user = $query->fetch();
 											<table class="table table-bordered">
 												<thead>
 													<tr>
-														<th>Month</th>
 														<th>Payment Month Date</th>
 														<th>Principal Payment</th>
 														<th>Interest Payment</th>
+<<<<<<< HEAD
 														<th>Monthly Payable</th>
+=======
+														<th>Total Monthly Payment</th>
+>>>>>>> bcb71b013ac139ed83a532da494103021b5fa657
 														<th>Remaining Balance</th>
 														<th>(1st)Bi-Monthly Payment</th>
 														<th>(1st)Bi-Monthly Payment Date</th>
@@ -987,27 +1025,16 @@ $user = $query->fetch();
 													<?php
 													$loan_app_id = intval($_GET['loan_app_id']);
 
-													$sql = $dbh->prepare('SELECT * FROM loan_application WHERE  loan_app_id = :lappId');
-													$sql->execute(['lappId' => $loan_app_id ]);
-													$loanDetails = $sql->fetch();
-
-													$sql = "SELECT * FROM loan_payment_detail WHERE loan_app_id = $loan_app_id";
+													$sql = "SELECT * FROM running_balance WHERE loan_app_id = $loan_app_id";
 													$query = $dbh->prepare($sql);
 													$query->execute();
 													$results = $query->fetchAll(PDO::FETCH_OBJ);
-													
-													
-
 													if ($query->rowCount() > 0) {
-														$i = 0;
 														foreach ($results as $res) {
-															$i++;
-												//Monthly
-													$monthlyAmt = $loanDetails['loan_amount'] / $loanDetails['loan_term'];
-													$interest = $loanDetails['loan_amount'] * ($loanDetails['fix_rate'] / 100);
-
-													$loanDetails['total_amount'] = $loanDetails['total_amount'] - $res->monthly_pay;
+															//$d = date("d F Y",strtotime('+1 month',strtotime($res->approval_date)));
+														
 													?>
+<<<<<<< HEAD
 														<tr>
 															<td style='text-align: center;'>
 															<?php
@@ -1053,9 +1080,59 @@ $user = $query->fetch();
 															</td>
 														</tr>
 														
+=======
+													<tr>
+														<td><?php 
+															$approved = $debtor['released_date']; 
+															// $nextduedate = strtotime('+1 month',strtotime($approved));
+															// $monthly_due_date = date('y-m-d', $nextduedate);
+															//echo date("F-d- Y", $d);
+
+															echo date("F-d- Y", strtotime($approved. ' +1 month'));
+															// date_default_timezone_set('Asia/Manila');
+															// $monthly_due_date = htmlentities($res->paid_date);
+															// $d = strtotime($monthly_due_date);
+															// echo date("F-d- Y", $d); 
+															?>
+															
+														</td>
+
+														<td>
+															<?php 
+															$amount = $debtor['loan_amount']/ $debtor['loan_term'];
+															echo number_format(($amount), 2);
+															?>
+														</td>
+														<td>
+														<?php 
+															$amount = $debtor['loan_amount'] * ($debtor['fix_rate']/100);
+															echo number_format(($amount), 2);
+															?>
+														</td>
+														<td>
+															<?php
+															$amount1 = $debtor['loan_amount']/ $debtor['loan_term'];
+															$amount2 = $debtor['loan_amount'] * ($debtor['fix_rate']/100);
+															$to = $amount1 + $amount2;
+															echo number_format(($to), 2);
+															?> 
+															</td>
+														<td>
+														<?php
+															$amount1 = $debtor['loan_amount']/ $debtor['loan_term'];
+															$amount2 = $debtor['loan_amount'] * ($debtor['fix_rate']/100);
+															$x = $amount2 * $debtor['loan_term'];
+															$to = $amount1 + $amount2;
+															$lo = $debtor['loan_amount'] + $x;
+															$yes = $lo-$to;
+															echo number_format(($yes), 2);
+															?> 
+														</td>
+													</tr>
+													
+>>>>>>> bcb71b013ac139ed83a532da494103021b5fa657
 												</tbody>
-												<?php }} 
-												?>
+										<?php }} ?>	
 											</table>
 										</div>
 										<!--end::Header-->
@@ -1306,6 +1383,10 @@ $user = $query->fetch();
 	<!--end::Quick Panel-->
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> bcb71b013ac139ed83a532da494103021b5fa657
 	<!--begin::Scrolltop-->
 	<div id="kt_scrolltop" class="scrolltop">
 		<span class="svg-icon">
@@ -1323,12 +1404,15 @@ $user = $query->fetch();
 	<!--end::Scrolltop-->
 
 
+<<<<<<< HEAD
 
 	<!--begin::Sticky Toolbar-->
 
 	<!--end::Sticky Toolbar-->
 
 
+=======
+>>>>>>> bcb71b013ac139ed83a532da494103021b5fa657
 	<script>
 		var HOST_URL = "https://preview.keenthemes.com/keen/theme/tools/preview";
 	</script>

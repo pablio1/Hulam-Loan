@@ -142,6 +142,111 @@ $user = $query->fetch();
 			<div class="d-flex flex-column-fluid" >
 				<div class="container">
 					<div class="card card-custom gutter-b card-stretch">
+<<<<<<< HEAD
+=======
+					<div class="card card-custom gutter-b" >
+						<div class="card-body">
+							<div class="d-flex">
+								<div class="flex-shrink-0 mr-7">
+									<h4 class="font-weight-bolder">Loan Account NO: <?= $loan['loan_app_id']; ?></h4>
+									<span>Lending Account Name:&nbsp;<?= $loan['company_name'] ?> </span>
+								</div>
+								<div class="flex-grow-1">
+									<div class="d-flex align-items-center justify-content-between flex-wrap mt-2">
+										<div class="mr-3">
+											<!-- <a href="#" class="d-flex align-items-center text-dark text-hover-primary font-size-h5 font-weight-bold mr-3"><?= $loan['firstname'] ?></a> -->
+										</div>
+										<div class="my-lg-0 my-1">
+											<a href="" class="btn btn-sm btn-primary font-weight-bolder" data-toggle="modal" data-target="#upload_payment"></data-target> Upload Proof of Payment</a>
+										</div>
+									</div>
+								</div>
+							</div></br>
+							<div class="d-flex align-items-center">
+								<div class="d-flex flex-column">
+									
+									<span class="font-weight-bolder text-primary">
+										<?php
+										date_default_timezone_set('Asia/Manila');
+										$todays_date = date("y-m-d h:i:sa");
+										$today = strtotime($todays_date);
+										$det = date("F-m-Y h:i:sa", $today);
+
+										?>
+										as of <?= $det ?></span>
+								</div>
+							</div>
+							<div class="d-flex align-items-center flex-wrap">
+								<div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
+									<div class="d-flex flex-column text-dark-75">
+										<span class="font-weight-bolder font-size-lg" style="font-size: large;">Remaining Balance: &nbsp; </span>
+										<span class="font-weight-bolder font-size-lg" style="color:red; font-size: large;">PHP
+											<?php
+											$sql = $dbh->prepare('SELECT * FROM loan_application INNER JOIN loan_features ON loan_features.lender_id = loan_application.lender_id INNER JOIN user ON loan_application.lender_id = user.user_id WHERE loan_application.debtor_id = :user_id');
+											$sql->execute(['user_id' => $_SESSION['user_id']]);
+											$sum = $sql->fetch();
+											
+												$user_id = $_SESSION['user_id'];
+												$loan_id = $sum['loan_app_id'];
+
+												$sql = "SELECT * FROM `running_balance` WHERE loan_app_id = $loan_id";
+												$query = $dbh->prepare($sql);
+												$query->execute();
+												$loan_app = $query->fetch();
+
+												// $sql = "SELECT SUM(payment) AS totalsum FROM `running_balance` WHERE loan_app_id = $loan_id";
+												// $query = $dbh->prepare($sql);
+												// $query->execute();
+												// $loan_app2 = $query->fetch();
+												// $totalsum = $loan_app2['totalsum'];
+												echo number_format(($loan_app['remaining_balance'] - $totalsum), 2);
+											?>
+										</span>
+									</div>
+								</div>
+								<div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
+									<div class="d-flex flex-column text-dark-75">
+										<span class="font-weight-bolder font-size-lg" style="font-size: medium;">Previous Balance:</span>
+										<span class="font-weight-bolder font-size-lg" style="color:red; font-size: large;">PHP
+											<?=
+												$previous= number_format(($loan_app['monthly_pay'] - $loan_app['payment']), 2);
+											?>
+										</span>
+									</div>
+								</div>
+								<div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
+									<div class="d-flex flex-column text-dark-75">
+										<span class="font-weight-bolder font-size-lg" style="font-size: medium;">Current Balance:&nbsp; </span>
+										<span class="font-weight-bolder font-size-lg" style="color:red; font-size: large;">PHP
+										<?=  number_format($current = $loan_app['monthly_pay'], 2); ?>
+										</span>
+									</div>
+								</div>
+								<div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
+									<div class="d-flex flex-column text-dark-75">
+										<span class="font-weight-bolder font-size-lg" style="font-size: medium;">Total Amount Due:&nbsp; </span>
+										<span class="font-weight-bolder font-size-lg" style="color:red; font-size: large;">PHP
+											<?php 
+											// $previous= $loan_app['monthly_pay'] - $loan_app['payment'];
+											// $current = $loan_app['monthly_pay'] - $loan_app['payment'];
+											// echo number_format($previous + $current, 2);
+
+											$previous= $loan_app['monthly_pay'] - $loan_app['payment'];
+											$current = $loan_app['monthly_pay'] + $previous;
+											echo number_format($current, 2);
+
+											?>
+										</span>
+										<span class="font-weight-bolder text-primary">
+											<?php
+												
+											?></span>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+>>>>>>> bcb71b013ac139ed83a532da494103021b5fa657
 							
 							<!-- begin: display modal of upload payment -->
 							<form action="" method="post" enctype="multipart/form-data">
@@ -276,7 +381,7 @@ $user = $query->fetch();
 
 
 				<!-- begin: display modal of upload payment -->
-				<!-- <div class="modal fade" id="upload_payment" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdrop" aria-hidden="true">
+				<div class="modal fade" id="upload_payment" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdrop" aria-hidden="true">
 					<div class="modal-dialog modal-dialog-centered modal-m" role="document">
 						<div class="modal-content">
 							<div class="modal-header">
@@ -296,7 +401,7 @@ $user = $query->fetch();
 							</div>
 						</div>
 					</div>
-				</div> -->
+				</div>
 			</div>
 			<!--end: display modal of upload payment -->
 

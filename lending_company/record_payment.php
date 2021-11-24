@@ -13,163 +13,66 @@ $sql ="SELECT * FROM user WHERE user_id = $user_id";
 $query = $dbh->prepare($sql);
 $query->execute();
 $user = $query->fetch();
+?>
 
 
-$loan_app_id = intval($_GET['loan_app_id']);
-$query = $dbh->prepare("SELECT * FROM loan_application WHERE loan_app_id = $loan_app_id");
+<?php
+if (isset($_POST['pay'])) {
+	$loan_app_id = intval($_GET['loan_app_id']);
+	// $lender_id = $_SESSION['user_id'];
+	// $debtor_id = $_POST['debtor_id'];
+	$remaining_balance = $_POST['remaining_balance'];
+	$payment = $_POST['payment'];
+
+	$remain = $remaining_balance- $payment;
+	$monthly_pay = $_POST['monthly_pay'];
+	$date_paid = $_POST['date_paid'];
+	$date_message = $_POST['date_message'];
+	$start_date = $_POST['start_date'];
+	$end_date = $_POST['end_date'];
+	$message = 'Your payment for loan account number'.' '. $loan_app_id.' '. 'is now posted. Thank You!';
+
+	
+
+	$sql = "INSERT INTO running_balance(loan_app_id,remaining_balance,monthly_pay,payment,paid_date)VALUES('$loan_app_id','$remain','$monthly_pay','$payment','$date_message')";
+	$query = $dbh->prepare($sql);
+	$query->execute();
+
+	
+
+	$sql ="INSERT INTO message(sender_id,receiver_id,message,date_message)VALUES('$lender_id','$debtor_id','$message','$date_message')";
+	$query = $dbh->prepare($sql);
+
+	if ($query->execute()) {
+		$_SESSION['status_payment'] = "Submitted Successfully!";
+		header("Location: record_payment.php?loan_app_id=$loan_app_id");
+		exit();
+	} else {
+		$_SESSION['status_payment'] = "Error!";
+		header('Location: record_payment.php?loan_app_id=$loan_app_id');
+		exit();
+	}
+}
+?>
+
+
+<?php
+$lender_id = $_SESSION['user_id'];
+
+$sql ="SELECT loan_features.*, user.* FROM loan_features INNER JOIN user ON loan_features.lender_id = user.user_id WHERE lender_id = $lender_id";
+$query = $dbh->prepare($sql);
 $query->execute();
-$loanAppDetail = $query->fetch();
-
-
-$lateCharges = (($loanAppDetail['late_charges'] / 100) * $loanAppDetail['monthly_payment'] );// + $loanAppDetail['monthly_payment'];
-$monthlyPaymentLoad = $loanAppDetail['monthly_payment'];
-
+$user = $query->fetch();
 ?>
-
 
 <?php
+$lender_id = $_SESSION['user_id'];
 
+$sql ="SELECT * FROM user WHERE user_id = $lender_id";
+$query = $dbh->prepare($sql);
+$query->execute();
+$user = $query->fetch();
 ?>
-<?php
-
-//echo "<script>alert(1)</script>";
-
-
-if(isset($_POST["payId"])){
-	$dtId=$_POST["payId"];
-
-	if ($dtId != "")
-	{
-		
-
-	$query = $dbh->prepare("SELECT * FROM loan_payment_detail WHERE lp_Id = $dtId");
-	$query->execute();
-	$loanPaymentSelected = $query->fetch();
-
-	//print_r($loanPaymentSelected);
-	
-	$loadAppId = $_GET['loan_app_id'];
-	$currentPaymentMonth = $loanPaymentSelected['due_date'];
-	$monthlyPayAmt = $loanPaymentSelected['monthly_pay'];
-
-
-	$query = $dbh->prepare("SELECT * FROM loan_application WHERE loan_app_id = $loadAppId");
-	$query->execute();
-	$loanAppDetail = $query->fetch();
-
-	$query = $dbh->prepare("SELECT * FROM loan_payment_detail WHERE loan_app_id = $loadAppId");
-	$query->execute();
-	$loanpaymentDetails = $query->fetchAll(PDO::FETCH_OBJ);
-
-	//print_r($loanAppDetail);
-	$lateCharges = (($loanAppDetail['late_charges'] / 100) * $monthlyPayAmt ) + $monthlyPayAmt;
-	$lateChargesFee = (($loanAppDetail['late_charges'] / 100) * $monthlyPayAmt );
-	//echo "<script>alert('lateCharges: $lateCharges')</script>";
-
-	$TotalLateCharge = 0;
-	$TotalAllMonthDue = 0;
-
-	$monthlyPasDuePayAmt = 0;
-	$monthlyPasDuePayCharge = 0;
-
-	$selectedDateDue = $loanPaymentSelected['status'];
-	//echo "<script>alert('lateCharges: $selectedDateDue')</script>";
-
-	$passDueId[] = null;
-	$pasDueIds = "";
-
-	$noMonthDue = 0;
-	$noMonthDueSemiPayed = 0;
-	foreach ($loanpaymentDetails as $dtDetail)
-	{
-		$status = $dtDetail->status;
-		$dtIdDetailsId = $dtDetail->lp_Id;
-
-		if ($dtId == $dtDetail->lp_Id)
-		{
-			break;
-		}
-
-		if ($status == 0)
-		{
-			$monthlyPasDuePayAmt = $monthlyPayAmt;
-			$TotalLateCharge = ($loanAppDetail['late_charges'] / 100) * $monthlyPayAmt;
-			$monthlyPasDuePayCharge = ($loanAppDetail['late_charges'] / 100) * $monthlyPayAmt;
-			//$TotalAllMonthDue = $TotalAllMonthDue + $lateCharges + $monthlyPayAmt;
-
-			$passDueId[] = $dtIdDetailsId;
-			$pasDueIds .= "-".$dtIdDetailsId;
-			$noMonthDue++;
-
-		}
-		else if ($status == -1)
-		{
-			$monthlyPasDuePayAmt = ($monthlyPayAmt / 2);
-			$TotalLateCharge = ($loanAppDetail['late_charges'] / 100) * $monthlyPayAmt;
-			$monthlyPasDuePayCharge = ($loanAppDetail['late_charges'] / 100) * $monthlyPayAmt;
-			//$TotalAllMonthDue = $TotalAllMonthDue + $lateCharges;// + $monthlyPasDuePayAmt;
-
-			$pasDueIds .= "-".$dtIdDetailsId;
-			$noMonthDue++;
-			$noMonthDueSemiPayed++;
-		}
-	}
-
-
-	
-
-	if ($noMonthDue == 0)
-	{
-		$noMonthDue = 1;
-	}
-	//echo "<script>alert('$noMonthDueSemiPayed')</script>";
-	//
-	//Number of month equal to 0 has semi payment
-	if ($noMonthDueSemiPayed == 0)
-	{
-		$totalPasDueMonthly = $monthlyPasDuePayAmt * $noMonthDue;
-		$totalPasDueLateChage = $monthlyPasDuePayCharge * $noMonthDue;
-	
-		$totalPasDueAmount = $totalPasDueMonthly  + $totalPasDueLateChage;
-		$pasDueAdvance = $totalPasDueMonthly / 2;
-
-		$TotalAllMonthDue = $totalPasDueAmount;
-	}
-	else
-	{
-		$monthlyPasDuePayAmt = $monthlyPayAmt;
-		$totalPasDueMonthly = $monthlyPasDuePayAmt * $noMonthDue;
-		$totalPasDueLateChage = $monthlyPasDuePayCharge * $noMonthDue;
-	
-		$totalPasDueAmount = $totalPasDueMonthly  + $totalPasDueLateChage;
-		$pasDueAdvance = $monthlyPayAmt * $noMonthDueSemiPayed;
-
-		//echo "<script>alert('$noMonthDueSemiPayed * $monthlyPayAmt')</script>";
-		
-		for ( $x = 0; $x < $noMonthDueSemiPayed; $x++ )
-		{
-			$totalPasDueAmount = $totalPasDueAmount - ($monthlyPayAmt / 2);
-			$pasDueAdvance = abs($pasDueAdvance - ($monthlyPayAmt / 2));
-		}
-
-		
-		$TotalAllMonthDue = $totalPasDueAmount;
-	}
-	//abs($pasDueAdvance);
-
-	if ($TotalAllMonthDue == 0)
-	{
-		$TotalAllMonthDue = $monthlyPayAmt;
-	}
-}
-else
-{
-	//$loan['monthly_payment'] = 0;
-}
-	//echo "<script>alert('$totalPasDueAmount')</script>";
-}
-?>
-
 <!DOCTYPE html>
 
 <html lang="en">
@@ -178,7 +81,11 @@ else
 <head>
 	<base href="../">
 	<meta charset="utf-8" />
+<<<<<<< HEAD
 	<title>Hulam | Dashboard</title>
+=======
+	<title>Hulam | Record Payment</title>
+>>>>>>> bcb71b013ac139ed83a532da494103021b5fa657
 	<meta name="description" content="Updates and statistics" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 	<!--begin::Fonts-->
@@ -209,7 +116,11 @@ else
 	<div id="kt_header_mobile" class="header-mobile align-items-center header-mobile-fixed">
 		<!--begin::Logo-->
 		<a href="lending_company/index.php">
+<<<<<<< HEAD
 			<img alt="Logo" src="assets/keen/hulam_media/<?= $user['profile_pic'] ?>" class="h-60px w-60px" style="padding-top: 10%; padding: right 50%;" />
+=======
+			<img alt="Logo"  src="assets/keen/hulam_media/<?= $user['profile_pic']?>" class="h-60px w-60px" style="padding-top: 10%; padding: right 50%;" />
+>>>>>>> bcb71b013ac139ed83a532da494103021b5fa657
 		</a>
 		<!--end::Logo-->
 		<!--begin::Toolbar-->
@@ -252,7 +163,11 @@ else
 				<div class="brand flex-column-auto " id="kt_brand">
 					<!--begin::Logo-->
 					<a href="lending_company/index.php" class="brand-logo">
+<<<<<<< HEAD
 						<img alt="Logo" src="/hulam/assets/keen/hulam_media/<?= $user['profile_pic'] ?>" class="h-100px w-90px" style="padding-top: 20%; padding: right 50%;" />
+=======
+						<img alt="Logo" src="/hulam/assets/keen/hulam_media/<?= $user['profile_pic']?>" class="h-100px w-90px" style="padding-top: 20%; padding: right 50%;" />
+>>>>>>> bcb71b013ac139ed83a532da494103021b5fa657
 					</a>
 					<!--end::Logo-->
 					<!--begin::Toggle-->
@@ -294,7 +209,7 @@ else
 									<span class="menu-text">Dashboard</span>
 								</a>
 							</li>
-							<li class="menu-section">
+								<li class="menu-section">
 								<h4 class="menu-text">Manage Account</h4>
 								<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
 							</li>
@@ -363,6 +278,7 @@ else
 									</ul>
 								</div>
 							</li>
+
 							<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
 								<a href="javascript:;" class="menu-link menu-toggle">
 									<span class="svg-icon menu-icon">
@@ -390,13 +306,13 @@ else
 											</a>
 										</li>
 										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-											<a href="lending_company/released_loan.php" class="menu-link menu-toggle">
-												<i class="menu-bullet">
-													<span></span>
-												</i>
-												<span class="menu-text">Release Loan</span>
-											</a>
-										</li>
+                                            <a href="lending_company/released_loan.php" class="menu-link menu-toggle">
+                                                <i class="menu-bullet">
+                                                    <span></span>
+                                                </i>
+                                                <span class="menu-text">Release Loan</span>
+                                            </a>
+                                        </li>
 										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
 											<a href="lending_company/declined_loan.php" class="menu-link menu-toggle">
 												<i class="menu-bullet">
@@ -414,14 +330,22 @@ else
 								<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
 							</li>
 							<li class="menu-item menu-item-submenu" data-menu-toggle="hover">
+<<<<<<< HEAD
 								<a href="lending_company/released_loan.php" class="menu-link menu-toggle">
+=======
+							<a href="lending_company/record_payment.php" class="menu-link menu-toggle">
+>>>>>>> bcb71b013ac139ed83a532da494103021b5fa657
 									<span class="svg-icon menu-icon">
 									</span>
 									<span class="menu-text">Add Payment</span>
 								</a>
 							</li>
 							<li class="menu-item menu-item-submenu" data-menu-toggle="hover">
+<<<<<<< HEAD
 								<a href="lending_company/view_payment.php" class="menu-link menu-toggle">
+=======
+							<a href="lending_company/view_payment.php" class="menu-link menu-toggle">
+>>>>>>> bcb71b013ac139ed83a532da494103021b5fa657
 									<span class="svg-icon menu-icon">
 									</span>
 									<span class="menu-text">Payment Records</span>
@@ -431,13 +355,13 @@ else
 								<h4 class="menu-text">Manage Report</h4>
 								<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
 							</li>
-							<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-								<a href="javascript:;" class="menu-link menu-toggle">
+							<li class="menu-item menu-item-submenu" data-menu-toggle="hover">
+							<a href="lending_company/generate_report.php" class="menu-link menu-toggle">
 									<span class="svg-icon menu-icon">
 									</span>
 									<span class="menu-text">Generate Report</span>
-									<i class="menu-arrow"></i>
 								</a>
+<<<<<<< HEAD
 								<div class="menu-submenu">
 									<ul class="menu-subnav">
 										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
@@ -449,6 +373,8 @@ else
 										</li>
 									</ul>
 								</div>
+=======
+>>>>>>> bcb71b013ac139ed83a532da494103021b5fa657
 							</li>
 							<!--end::Menu Nav-->
 					</div>
@@ -457,6 +383,7 @@ else
 				<!--end::Aside Menu-->
 			</div>
 			<!--end::Aside-->
+<<<<<<< HEAD
 
 			<!--begin::Wrapper-->
 			<div class="d-flex flex-column flex-row-fluid wrapper" id="kt_wrapper">
@@ -470,8 +397,22 @@ else
 							<div id="kt_header_menu" class="header-menu header-menu-mobile header-menu-layout-default">
 								<!--begin::Header Nav-->
 								<ul class="menu-nav">
+=======
+				<!--begin::Wrapper-->
+				<div class="d-flex flex-column flex-row-fluid wrapper" id="kt_wrapper">
+					<!--begin::Header-->
+					<div id="kt_header" class="header header-fixed">
+						<!--begin::Container-->
+						<div class="container-fluid d-flex align-items-stretch justify-content-between">
+							<!--begin::Header Menu Wrapper-->
+							<div class="header-menu-wrapper header-menu-wrapper-left" id="kt_header_menu_wrapper">
+								<!--begin::Header Menu-->
+								<div id="kt_header_menu" class="header-menu header-menu-mobile header-menu-layout-default">
+									<!--begin::Header Nav-->
+									<ul class="menu-nav">
+>>>>>>> bcb71b013ac139ed83a532da494103021b5fa657
 									<li class="menu-item menu-item-open menu-item-here menu-item-submenu menu-item-rel menu-item-open menu-item-here menu-item-active" data-menu-toggle="click" aria-haspopup="true">
-										<h4 class="menu-text" style="color:blue">Welcome to Hulam! <h4>&nbsp;&nbsp;
+                                        <h4 class="menu-text" style="color:blue">Welcome to Hulam! <h4>&nbsp;&nbsp;
 												<h6 class="text-danger">
 													<?php
 													$id = $_SESSION['user_id'];
@@ -487,11 +428,14 @@ else
 													}
 													?>
 												</h6>
-												<i class="menu-arrow"></i>
-									</li>
-								</ul>
-								<!--end::Header Nav-->
+											<i class="menu-arrow"></i>
+										 </li>
+								    </ul>
+									<!--end::Header Nav-->
+								</div>
+								<!--end::Header Menu-->
 							</div>
+<<<<<<< HEAD
 							<!--end::Header Menu-->
 						</div>
 						<!--end::Header Menu Wrapper-->
@@ -501,18 +445,33 @@ else
 							<!--begin::Quick panel-->
 							<div class="topbar-item mr-1">
 								<div class="btn btn-icon btn-clean btn-lg" id="kt_quick_panel_toggle">
+=======
+							<!--end::Header Menu Wrapper-->
+
+
+
+							<!--begin::Topbar-->
+							<div class="topbar">
+							
+							
+                           		 <!--begin::Quick panel-->
+								<div class="topbar-item mr-1">
+									<div class="btn btn-icon btn-clean btn-lg" id="kt_quick_panel_toggle">
+>>>>>>> bcb71b013ac139ed83a532da494103021b5fa657
 									<span class="svg-icon svg-icon-xl svg-icon-primary">
-										<!--begin::Svg Icon | path:assets/media/svg/icons/Communication/Chat6.svg-->
-										<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-											<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-												<rect x="0" y="0" width="24" height="24" />
-												<path opacity="0.3" fill-rule="evenodd" clip-rule="evenodd" d="M14.4862 18L12.7975 21.0566C12.5304 21.54 11.922 21.7153 11.4386 21.4483C11.2977 21.3704 11.1777 21.2597 11.0887 21.1255L9.01653 18H5C3.34315 18 2 16.6569 2 15V6C2 4.34315 3.34315 3 5 3H19C20.6569 3 22 4.34315 22 6V15C22 16.6569 20.6569 18 19 18H14.4862Z" fill="black" />
-												<path fill-rule="evenodd" clip-rule="evenodd" d="M6 7H15C15.5523 7 16 7.44772 16 8C16 8.55228 15.5523 9 15 9H6C5.44772 9 5 8.55228 5 8C5 7.44772 5.44772 7 6 7ZM6 11H11C11.5523 11 12 11.4477 12 12C12 12.5523 11.5523 13 11 13H6C5.44772 13 5 12.5523 5 12C5 11.4477 5.44772 11 6 11Z" fill="black" />
-											</g>
-										</svg>
-										<!--end::Svg Icon-->
-									</span>
+											<!--begin::Svg Icon | path:assets/media/svg/icons/Communication/Chat6.svg-->
+											<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+												<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+													<rect x="0" y="0" width="24" height="24" />
+													<path opacity="0.3" fill-rule="evenodd" clip-rule="evenodd" d="M14.4862 18L12.7975 21.0566C12.5304 21.54 11.922 21.7153 11.4386 21.4483C11.2977 21.3704 11.1777 21.2597 11.0887 21.1255L9.01653 18H5C3.34315 18 2 16.6569 2 15V6C2 4.34315 3.34315 3 5 3H19C20.6569 3 22 4.34315 22 6V15C22 16.6569 20.6569 18 19 18H14.4862Z" fill="black" />
+													<path fill-rule="evenodd" clip-rule="evenodd" d="M6 7H15C15.5523 7 16 7.44772 16 8C16 8.55228 15.5523 9 15 9H6C5.44772 9 5 8.55228 5 8C5 7.44772 5.44772 7 6 7ZM6 11H11C11.5523 11 12 11.4477 12 12C12 12.5523 11.5523 13 11 13H6C5.44772 13 5 12.5523 5 12C5 11.4477 5.44772 11 6 11Z" fill="black" />
+												</g>
+											</svg>
+											<!--end::Svg Icon-->
+										</span>
+									</div>
 								</div>
+<<<<<<< HEAD
 							</div>
 							<!--end::Quick panel-->
 							<!--begin::Languages-->
@@ -534,28 +493,46 @@ else
 									<img src="assets/keen/hulam_media/<?= $user['profile_pic'] ?>" class="h-40px align-self-end" alt="" />
 								</div>
 
+=======
+								<!--end::Quick panel-->
+								<!--begin::Languages-->
+								<div class="dropdown mr-1">
+									<!--begin::Dropdown-->
+									<div class="dropdown-menu p-0 m-0 dropdown-menu-anim-up dropdown-menu-sm dropdown-menu-right">
+										<!--begin::Nav-->
+									
+										<!--end::Nav-->
+									</div>
+									<!--end::Dropdown-->
+								</div>
+								<!--end::Languages-->
+								<!--begin::User-->
+								<div class="topbar-item ml-4">
+									<div class="btn btn-icon btn-light-primary h-40px w-40px p-0" id="kt_quick_user_toggle">
+										<img src="assets/keen/hulam_media/<?= $user['profile_pic']?>" class="h-40px align-self-end" alt="" />
+									</div>
+									
+								</div>
+								<!--end::User-->
+>>>>>>> bcb71b013ac139ed83a532da494103021b5fa657
 							</div>
-							<!--end::User-->
+							<!--end::Topbar-->
 						</div>
-						<!--end::Topbar-->
+						<!--end::Container-->
 					</div>
-					<!--end::Container-->
-				</div>
-				<!--end::Header-->
-
-
-				<!--begin::Content-->
-				<div class="content d-flex flex-column flex-column-fluid" id="kt_content" style="background-image:url('assets/keen/media/logos/banner.png')">
-					<!--begin::Subheader-->
-					<div class="subheader py-6 py-lg-8 subheader-transparent" id="kt_subheader">
-						<div class="container d-flex align-items-center justify-content-between flex-wrap flex-sm-nowrap">
-							<!--begin::Info-->
-							<div class="d-flex align-items-center flex-wrap mr-1">
-								<!--begin::Page Heading-->
-								<div class="d-flex align-items-baseline flex-wrap mr-5">
-									<!--begin::Page Title-->
-									<h4 class="text-white font-weight-bold my-1 mr-5">Dashboard |</h4>
-									<h5 class="text-white font-weight-bold my-1 mr-5">Lending Investor</h5>
+					<!--end::Header-->
+					<!--begin::Content-->
+					<div class="content d-flex flex-column flex-column-fluid" id="kt_content" style="background-image:url('assets/keen/media/logos/banner.png')">
+						<!--begin::Subheader-->
+						<div class="subheader py-6 py-lg-8 subheader-transparent" id="kt_subheader">
+							<div class="container d-flex align-items-center justify-content-between flex-wrap flex-sm-nowrap">
+								<!--begin::Info-->
+								<div class="d-flex align-items-center flex-wrap mr-1">
+									<!--begin::Page Heading-->
+									<div class="d-flex align-items-baseline flex-wrap mr-5">
+										<!--begin::Page Title-->
+										<h4 class="text-white font-weight-bold my-1 mr-5">Dashboard |</h4>
+										<h5 class="text-white font-weight-bold my-1 mr-5"><?= $user['company_name']?></h5>
 									<div class="col-xl-12 col-xl-12">
 										<?php
 										if (isset($_SESSION['status_payment'])) {
@@ -598,7 +575,7 @@ else
 										</div>
 										<!--begin::Form-->
 
-										
+										<form action="" method="post">
 											<?php
 											$loan_app_id = intval($_GET['loan_app_id']);
 											$lender_id = $_SESSION['user_id'];
@@ -609,55 +586,18 @@ else
 											$query->execute();
 											$loan = $query->fetch();
 
-											$sql = "SELECT * FROM loan_application WHERE loan_app_id = '$loan_app_id'";
-											$query = $dbh->prepare($sql);
-											$query->execute();
-											$loanApp = $query->fetch();
-											$monthlyPayment = $loanApp['monthly_payment'];
-											//print(monthlyPayment);
-											
-
-											$todaysMonth = date("m/Y"); 
-											$sql = "SELECT * FROM `loan_payment_detail` WHERE loan_app_id = $loan_app_id && DATE_FORMAT(due_date,'%c/%Y') = $todaysMonth";
-											$query = $dbh->prepare($sql);
-											$query->execute();
-											$currentPayment = $query->fetch();
-
-											
-
-											
-											//print_r($todaysMonth);
-
 											$sql = "SELECT * FROM running_balance WHERE loan_app_id = $loan_app_id";
 											$query = $dbh->prepare($sql);
 											$query->execute();
 											$loan2 = $query->fetch();
 
-											$loan2['monthly_pay'] = $monthlyPasDuePayAmt;
-
-											$loan['late_charge'] = $monthlyPasDuePayCharge;
-
-											$advancePayment = 0;
-											//$paymSemi = $loanPaymentSelected['status'];
-											//echo '<script>alert('.$paymSemi.')</script>';
-											if ($loanPaymentSelected['status'] == -1)
-											{
-												//$loan2['payment'] = $loanPaymentSelected['semi_payment1'];
-												$advancePayment1 = $loanPaymentSelected['semi_payment1'];
-												$loan['monthly_payment'] = $loan['monthly_payment'] - $advancePayment1;
-												$TotalAllMonthDue = $TotalAllMonthDue - $advancePayment1;
-
-											}
-
-											//$monthlyPasDuePayAmt = 0;
-											//$monthlyPasDuePayCharge 
 											?>
 											<div class="card-body">
 												<div class="alert alert-custom alert-default" role="alert">
 													<div class="alert-text">
 														<h6>LOAN ACCOUNT NO:&nbsp;&nbsp;<span class="text-primary font-weight-bolder"><?= $loan['loan_app_id'] ?></span></h6>
 														<label class="text-lg">Name:&nbsp;&nbsp;<?= $loan['firstname'] . ' ' . $loan['middlename'] . ' ' . $loan['lastname'] ?></label></br>
-														<label class="text-lg">Remaining Balance:&nbsp;&nbsp;Php <?= number_format($loan2['remaining_balance'], 2) ?></label>
+														<label class="text-lg">Remaining Balance:&nbsp;&nbsp;<?= $loan2['remaining_balance']?></label>
 														<div class="separator separator-dashed mt-2 mb-2"></div>
 
 														<!-- PAST DUE -->
@@ -672,23 +612,18 @@ else
 																<tbody>
 																	<tr>
 																		<td><label class="text-lg">Monthly Payable</label></td>
-																		<?php 
-																		if ($monthlyPasDuePayAmt == 0)
-																		{
-																			$noMonthDue = 0;
-																		}
-																		?>
-																		<td><?= $pastamount = number_format($loan2['monthly_pay'], 2) ?> (<?= $noMonthDue ?> Month/s)</td>
+
+																		<td><?= $pastamount = number_format($loan2['monthly_pay'], 2) ?></td>
 																	</tr>
 																	<tr>
 																		<td><label class="text-lg">Late Charge</td>
 
-																		<td><label class="text-lg"><?= $late1 =  number_format($loan['late_charge'], 2) ?> (<?= $noMonthDue ?> Month/s)</td>
+																		<td><label class="text-lg"><?= $late1 =  number_format($loan['late_charge'], 2) ?></td>
 																	</tr>
 																	<tr>
 																		<td><label class="text-lg">Advance Payment(Bi-Monthly)</td>
 
-																		<td><label class="text-lg"><?= $advance1  =  number_format($pasDueAdvance, 2) ?> </td>
+																		<td><label class="text-lg"><?= $advance1  =  number_format($loan['payment'], 2) ?> </td>
 																	</tr>
 																</tbody>
 															</table>
@@ -696,13 +631,9 @@ else
 														<div class="col-md-12 bg-light text-right">
 															<label class="text-info font-weight-bolder text-right">Past Due Amount:&nbsp;&nbsp;
 
-															<?= 
-															 number_format($totalPasDueAmount,2);
-															/*
-																$past = $pastamount; 
-																$past2 = ($past * $noMonthDue) + $late1;
+															<?= $past = $pastamount; 
+																$past2 = $past + $late1;
 																$total1 = $past2 - $advance1;
-																*/
 															?>
 															</label>
 														</div>
@@ -720,12 +651,12 @@ else
 																	<tr>
 																		<td><label class="text-lg">Monthly Payable</label></td>
 
-																		<td><?= $currentamount =  number_format($loan['monthly_payment'], 2) ?></td>
+																		<td><?= $currentamount =  number_format($loan2['monthly_pay'], 2) ?></td>
 																	</tr>
 																	<tr>
 																		<td><label class="text-lg">Advance Payment(Bi-Monthly)</td>
 
-																		<td><label class="text-lg"><?= $advance2 = number_format($advancePayment1, 2) ?></td>
+																		<td><label class="text-lg"><?= $advance2 = number_format($loan2['payment'], 2) ?></td>
 																	</tr>
 																</tbody>
 															</table>
@@ -734,17 +665,15 @@ else
 															<label class="text-info font-weight-bolder text-right">Current Due Amount:&nbsp;&nbsp;
 																<?= 
 																$current = $currentamount; 
-																$total2 = ($current - $advance2);
+																$total2 = $current - $advance2;
+																
 																?>
 															</label>
 														</div>
 														<div class="col-md-12 bg-light text-right">
 															<label class="text-danger font-weight-bolder text-right">TOTAL AMOUNT DUE:&nbsp;&nbsp;
-																<?php
-																	//if () 
-																?>
 																<?=
-																	$monthly_pay = number_format(($TotalAllMonthDue+ ($loan['monthly_payment'] - $advancePayment1)), 2);
+																	$monthly_pay = number_format(($loan2['monthly_pay'] + $loan['late_charge']), 2);
 
 																?>
 															</label>
@@ -752,8 +681,9 @@ else
 													</div>
 												</div>
 												<div class="form-group row">
-													<label class="col-3 col-form-label">Payment For</label>
+													<label class="col-3 col-form-label">Amount Paid</label>
 													<div class="col-9">
+<<<<<<< HEAD
 													<form method="POST" action="">
 														<select id='payId' name='payId' class='form-control' onchange="this.form.submit()">
 														   <!-- <option value=''hidden>*** SELECT ***</option> -->
@@ -784,63 +714,33 @@ else
 														 
 													?>
 													<input name="loan_app_id" id='loan_app_id' class="form-control" type="number" value='<?= $loan_app_id; ?>' hidden />
+=======
+														<input name="payment" class="form-control" type="number" required />
+>>>>>>> bcb71b013ac139ed83a532da494103021b5fa657
 													</div>
 												</div>
 												<div class="form-group row">
-												<label class="col-3 col-form-label">Payment Type</label>
+													<label class="col-3 col-form-label">Date Paid</label>
 													<div class="col-9">
-														  <input type="radio" id="semiPayment" name="payment_type" value="semi" onchange='onPaymentOption(this)'>
-														  <label for="semiPayment">Semi-Monthly</label>
-														  <input type="radio" id="fullPayment" name="payment_type" value="full" onchange='onPaymentOption(this)'>
-														  <label for="fullPayment">Monthly</label>
-													</div>
-												</div>
-												<div class="form-group row">
-														<label class="col-3 col-form-label">Date Paid</label>
-															<div class="col-9">
-																<input name="date_paid" id='date_paid' class="form-control" type="datetime-local" id="example-datetime-local-input" onchange='checkDue()'/>
-																<input type="hidden" id='pasDueIds' name="pasDueIds" value="<?= $pasDueIds ?>">
-																<input type="hidden" id='no_pas_due' name="no_pas_due" value="<?= $noMonthDue ?>">
-																<input type="hidden" id='monthly_pay' name="monthly_pay" value="<?= $loan2['monthly_pay'] ?>">
-																<input type="hidden" id='start_date' name="start_date" value="<?= $loan2['start_date'] ?>">
-																<input type="hidden" id='end_date' name="end_date" value="<?= $loan2['end_date'] ?>">
-																<input type="hidden" id='remaining_balance' name="remaining_balance" value="<?= $loan2['remaining_balance'] ?>">
-																<input type="hidden" id='debtor_id' name="debtor_id" value="<?= $debtor_id ?>">
-																<input type="hidden" id='lender_id' name="lender_id" value="<?= $lender_id ?>">
-																<input type="hidden" id='lateCharges' name="lateCharges" value="<?= $lateCharges ?>">
-																<input type="hidden" id='Total' name="Total" value="<?= $monthly_pay ?>">
-																<input type="hidden" id='monthlyPaymentLoan' name="monthlyPaymentLoan" value="<?= $monthlyPaymentLoad ?>">
-																<input type="hidden" id='lateChargesFee' name="lateChargesFee" value="<?= $lateChargesFee ?>">
-																<input type="hidden" id='loan_status' name="loan_status" value="<?= $selectedDateDue ?>">
-																<?php
-																	date_default_timezone_set('Asia/Manila');
-																	$todays_date = date("y-m-d h:i:sa");
-																	$today = strtotime($todays_date);
-																	$det = date('Y-m-d h:i:sa', $today);
-																	?>
-																<input type="hidden" id='date_message' name="date_message" value="<?= $det; ?>">
-															</div>
+														<input name="date_paid" class="form-control" type="datetime-local" id="example-datetime-local-input" />
 														
-												</div>
-												<div class="form-group row">
-													<label class="col-3 col-form-label">Amount Paid</label>
-													<div class="col-9">
-														<input name="payment" id='paymentAmount' class="form-control" type="number" value='<?= ($TotalAllMonthDue+ ($loan['monthly_payment'] - $advancePayment1)); ?>' required />
-													</div>
-												
-												</div>
-												<div class="form-group row">
-													<div class='col-12' style="margin-top: 10px;">
-															<div class="card-footer border-0 d-flex align-items-center justify-content-between pt-0">
-																<span></span>
-																<button type="submit" name="pay" onclick='OnRecordPayment()' class="btn btn-md btn-primary font-weight-bolder px-6">Submit</button>
-															</div>
+														<input type="hidden" name="monthly_pay" value="<?= $loan['monthly_payment'] ?>">
+														<input type="hidden" name="remaining_balance" value="<?= $loan['total_amount'] ?>">
+														<?php
+															date_default_timezone_set('Asia/Manila');
+															$todays_date = date("y-m-d h:i:sa");
+															$today = strtotime($todays_date);
+															$det = date('Y-m-d h:i:sa', $today);
+															?>
+														<input type="hidden" name="date_message" value="<?= $det; ?>">
 													</div>
 												</div>
-												
 											</div>
-											
-										
+											<div class="card-footer border-0 d-flex align-items-center justify-content-between pt-0">
+												<span></span>
+												<button type="submit" name="pay" class="btn btn-md btn-primary font-weight-bolder px-6">Submit</button>
+											</div>
+										</form>
 									</div>
 								</div>
 							</div>
@@ -880,102 +780,150 @@ else
 	</div>
 	<!--end::Main-->
 
-
-	<!-- begin::User Panel-->
-	<div id="kt_quick_user" class="offcanvas offcanvas-right p-10">
-		<!--begin::Header-->
-		<div class="offcanvas-header d-flex align-items-center justify-content-between pb-5">
-			<h3 class="font-weight-bold m-0">Profile
-
+		<!-- begin::User Panel-->
+		<div id="kt_quick_user" class="offcanvas offcanvas-right p-10">
+			<!--begin::Header-->
+			<div class="offcanvas-header d-flex align-items-center justify-content-between pb-5">
+				<h3 class="font-weight-bold m-0">Profile
+				
 				<a href="#" class="btn btn-xs btn-icon btn-light btn-hover-primary" id="kt_quick_user_close">
 					<i class="ki ki-close icon-xs text-muted"></i>
 				</a>
-		</div>
-		<!--end::Header-->
-		<!--begin::Content-->
-		<div class="offcanvas-content pr-5 mr-n5">
-			<!--begin::Header-->
-			<div class="d-flex align-items-center mt-5">
-				<div class="symbol symbol-100 mr-5">
+			</div>
+			<!--end::Header-->
+			<!--begin::Content-->
+			<div class="offcanvas-content pr-5 mr-n5">
+				<!--begin::Header-->
+				<div class="d-flex align-items-center mt-5">
+					<div class="symbol symbol-100 mr-5">
 					<div class="symbol-label" style="background-image:url('/hulam/assets/keen/hulam_media/<?= $user['profile_pic'] ?>')"></div>
-					<i class="symbol-badge bg-success"></i>
+						<i class="symbol-badge bg-success"></i>
+					</div>
+					<div class="d-flex flex-column">
+						<a href="#" class="font-weight-bold font-size-h5 text-dark-75 text-hover-primary"><?= $user['company_name']?></a>
+						<div class="text-muted mt-1"></div>
+						<div class="navi mt-1">
+							<a href="#" class="navi-item">
+								<span class="navi-link p-0 pb-2">
+									<span class="navi-icon mr-1">
+										<span class="svg-icon svg-icon-lg svg-icon-primary">
+											<!--begin::Svg Icon | path:assets/media/svg/icons/Communication/Mail-notification.svg-->
+											<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+												<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+													<rect x="0" y="0" width="24" height="24" />
+													<path d="M21,12.0829584 C20.6747915,12.0283988 20.3407122,12 20,12 C16.6862915,12 14,14.6862915 14,18 C14,18.3407122 14.0283988,18.6747915 14.0829584,19 L5,19 C3.8954305,19 3,18.1045695 3,17 L3,8 C3,6.8954305 3.8954305,6 5,6 L19,6 C20.1045695,6 21,6.8954305 21,8 L21,12.0829584 Z M18.1444251,7.83964668 L12,11.1481833 L5.85557487,7.83964668 C5.4908718,7.6432681 5.03602525,7.77972206 4.83964668,8.14442513 C4.6432681,8.5091282 4.77972206,8.96397475 5.14442513,9.16035332 L11.6444251,12.6603533 C11.8664074,12.7798822 12.1335926,12.7798822 12.3555749,12.6603533 L18.8555749,9.16035332 C19.2202779,8.96397475 19.3567319,8.5091282 19.1603533,8.14442513 C18.9639747,7.77972206 18.5091282,7.6432681 18.1444251,7.83964668 Z" fill="#000000" />
+													<circle fill="#000000" opacity="0.3" cx="19.5" cy="17.5" r="2.5" />
+												</g>
+											</svg>
+											<!--end::Svg Icon-->
+										</span>
+									</span>
+									<span class="navi-text text-muted text-hover-primary"><?= $_SESSION['email'] ?></span>
+								</span>
+							</a>
+						</div>
+					</div>
 				</div>
-				<div class="d-flex flex-column">
-					<a href="#" class="font-weight-bold font-size-h5 text-dark-75 text-hover-primary"><?= $_SESSION['company_name']?></a>
-					<div class="text-muted mt-1"></div>
-					<div class="navi mt-1">
-						<a href="#" class="navi-item">
-							<span class="navi-link p-0 pb-2">
-								<span class="navi-icon mr-1">
-									<span class="svg-icon svg-icon-lg svg-icon-primary">
-										<!--begin::Svg Icon | path:assets/media/svg/icons/Communication/Mail-notification.svg-->
+				<!--end::Header-->
+				<!--begin::Separator-->
+				<div class="separator separator-dashed mt-8 mb-5"></div>
+				<!--end::Separator-->
+				<!--begin::Nav-->
+				<div class="navi navi-spacer-x-0 p-0">
+					<!--begin::Item-->
+					<a href="lending_company/update_profile.php" class="navi-item">
+						<div class="navi-link">
+							<div class="symbol symbol-40 bg-light mr-3">
+								<div class="symbol-label">
+									<span class="svg-icon svg-icon-md svg-icon-danger">
+										<!--begin::Svg Icon | path:assets/media/svg/icons/Communication/Adress-book2.svg-->
 										<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
 											<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
 												<rect x="0" y="0" width="24" height="24" />
-												<path d="M21,12.0829584 C20.6747915,12.0283988 20.3407122,12 20,12 C16.6862915,12 14,14.6862915 14,18 C14,18.3407122 14.0283988,18.6747915 14.0829584,19 L5,19 C3.8954305,19 3,18.1045695 3,17 L3,8 C3,6.8954305 3.8954305,6 5,6 L19,6 C20.1045695,6 21,6.8954305 21,8 L21,12.0829584 Z M18.1444251,7.83964668 L12,11.1481833 L5.85557487,7.83964668 C5.4908718,7.6432681 5.03602525,7.77972206 4.83964668,8.14442513 C4.6432681,8.5091282 4.77972206,8.96397475 5.14442513,9.16035332 L11.6444251,12.6603533 C11.8664074,12.7798822 12.1335926,12.7798822 12.3555749,12.6603533 L18.8555749,9.16035332 C19.2202779,8.96397475 19.3567319,8.5091282 19.1603533,8.14442513 C18.9639747,7.77972206 18.5091282,7.6432681 18.1444251,7.83964668 Z" fill="#000000" />
-												<circle fill="#000000" opacity="0.3" cx="19.5" cy="17.5" r="2.5" />
+												<path d="M18,2 L20,2 C21.6568542,2 23,3.34314575 23,5 L23,19 C23,20.6568542 21.6568542,22 20,22 L18,22 L18,2 Z" fill="#000000" opacity="0.3" />
+												<path d="M5,2 L17,2 C18.6568542,2 20,3.34314575 20,5 L20,19 C20,20.6568542 18.6568542,22 17,22 L5,22 C4.44771525,22 4,21.5522847 4,21 L4,3 C4,2.44771525 4.44771525,2 5,2 Z M12,11 C13.1045695,11 14,10.1045695 14,9 C14,7.8954305 13.1045695,7 12,7 C10.8954305,7 10,7.8954305 10,9 C10,10.1045695 10.8954305,11 12,11 Z M7.00036205,16.4995035 C6.98863236,16.6619875 7.26484009,17 7.4041679,17 C11.463736,17 14.5228466,17 16.5815,17 C16.9988413,17 17.0053266,16.6221713 16.9988413,16.5 C16.8360465,13.4332455 14.6506758,12 11.9907452,12 C9.36772908,12 7.21569918,13.5165724 7.00036205,16.4995035 Z" fill="#000000" />
 											</g>
 										</svg>
 										<!--end::Svg Icon-->
 									</span>
-								</span>
-								<span class="navi-text text-muted text-hover-primary"><?= $_SESSION['email'] ?></span>
-							</span>
-						</a>
-					</div>
-				</div>
-			</div>
-			<!--end::Header-->
-			<!--begin::Separator-->
-			<div class="separator separator-dashed mt-8 mb-5"></div>
-			<!--end::Separator-->
-			<!--begin::Nav-->
-			<div class="navi navi-spacer-x-0 p-0">
-				<!--begin::Item-->
-				<a href="lending_company/update_profile.php" class="navi-item">
+								</div>
+							</div>
+							<div class="navi-text">
+								<div class="font-weight-bold">My Account</div>
+							</div>
+						</div>
+					</a>
+					<!--end:Item-->
+					<!--begin::Item-->
+					<a href="lending_company/make_announcement.php" class="navi-item">
+						<div class="navi-link">
+							<div class="symbol symbol-40 bg-light mr-3">
+								<div class="symbol-label">
+									<span class="svg-icon svg-icon-md svg-icon-danger">
+										<!--begin::Svg Icon | path:assets/media/svg/icons/Communication/Adress-book2.svg-->
+										<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+											<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+												<rect x="0" y="0" width="24" height="24" />
+												<path d="M18,2 L20,2 C21.6568542,2 23,3.34314575 23,5 L23,19 C23,20.6568542 21.6568542,22 20,22 L18,22 L18,2 Z" fill="#000000" opacity="0.3" />
+												<path d="M5,2 L17,2 C18.6568542,2 20,3.34314575 20,5 L20,19 C20,20.6568542 18.6568542,22 17,22 L5,22 C4.44771525,22 4,21.5522847 4,21 L4,3 C4,2.44771525 4.44771525,2 5,2 Z M12,11 C13.1045695,11 14,10.1045695 14,9 C14,7.8954305 13.1045695,7 12,7 C10.8954305,7 10,7.8954305 10,9 C10,10.1045695 10.8954305,11 12,11 Z M7.00036205,16.4995035 C6.98863236,16.6619875 7.26484009,17 7.4041679,17 C11.463736,17 14.5228466,17 16.5815,17 C16.9988413,17 17.0053266,16.6221713 16.9988413,16.5 C16.8360465,13.4332455 14.6506758,12 11.9907452,12 C9.36772908,12 7.21569918,13.5165724 7.00036205,16.4995035 Z" fill="#000000" />
+											</g>
+										</svg>
+										<!--end::Svg Icon-->
+									</span>
+								</div>
+							</div>
+							<div class="navi-text">
+								<div class="font-weight-bold">Make Announcement</div>
+							</div>
+						</div>
+					</a>
+					<!--end:Item-->
+					<!--begin::Item-->
+				<a href="lending_company/send_feedback.php" class="navi-item">
 					<div class="navi-link">
 						<div class="symbol symbol-40 bg-light mr-3">
 							<div class="symbol-label">
-								<span class="svg-icon svg-icon-md svg-icon-danger">
-									<!--begin::Svg Icon | path:assets/media/svg/icons/Communication/Adress-book2.svg-->
+								<span class="svg-icon svg-icon-md svg-icon-success">
+									<!--begin::Svg Icon | path:assets/media/svg/icons/General/Settings-1.svg-->
 									<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
 										<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
 											<rect x="0" y="0" width="24" height="24" />
-											<path d="M18,2 L20,2 C21.6568542,2 23,3.34314575 23,5 L23,19 C23,20.6568542 21.6568542,22 20,22 L18,22 L18,2 Z" fill="#000000" opacity="0.3" />
-											<path d="M5,2 L17,2 C18.6568542,2 20,3.34314575 20,5 L20,19 C20,20.6568542 18.6568542,22 17,22 L5,22 C4.44771525,22 4,21.5522847 4,21 L4,3 C4,2.44771525 4.44771525,2 5,2 Z M12,11 C13.1045695,11 14,10.1045695 14,9 C14,7.8954305 13.1045695,7 12,7 C10.8954305,7 10,7.8954305 10,9 C10,10.1045695 10.8954305,11 12,11 Z M7.00036205,16.4995035 C6.98863236,16.6619875 7.26484009,17 7.4041679,17 C11.463736,17 14.5228466,17 16.5815,17 C16.9988413,17 17.0053266,16.6221713 16.9988413,16.5 C16.8360465,13.4332455 14.6506758,12 11.9907452,12 C9.36772908,12 7.21569918,13.5165724 7.00036205,16.4995035 Z" fill="#000000" />
+											<path d="M7,3 L17,3 C19.209139,3 21,4.790861 21,7 C21,9.209139 19.209139,11 17,11 L7,11 C4.790861,11 3,9.209139 3,7 C3,4.790861 4.790861,3 7,3 Z M7,9 C8.1045695,9 9,8.1045695 9,7 C9,5.8954305 8.1045695,5 7,5 C5.8954305,5 5,5.8954305 5,7 C5,8.1045695 5.8954305,9 7,9 Z" fill="#000000" />
+											<path d="M7,13 L17,13 C19.209139,13 21,14.790861 21,17 C21,19.209139 19.209139,21 17,21 L7,21 C4.790861,21 3,19.209139 3,17 C3,14.790861 4.790861,13 7,13 Z M17,19 C18.1045695,19 19,18.1045695 19,17 C19,15.8954305 18.1045695,15 17,15 C15.8954305,15 15,15.8954305 15,17 C15,18.1045695 15.8954305,19 17,19 Z" fill="#000000" opacity="0.3" />
 										</g>
 									</svg>
 									<!--end::Svg Icon-->
-								</span>
+									</span>
+								</div>
 							</div>
-						</div>
 						<div class="navi-text">
-							<div class="font-weight-bold">My Account</div>
-							</div>
+							<div class="font-weight-bold">Send Feedback</div>
 						</div>
 					</div>
 				</a>
 				<!--end:Item-->
-
-				<!--begin::Item-->
-				<span class="navi-item mt-2">
-					<span class="navi-link">
-						<a href="logout.php" class="btn btn-sm btn-light-primary font-weight-bolder py-3 px-6">Sign Out</a>
+					
+					<!--begin::Item-->
+					<span class="navi-item mt-2">
+						<span class="navi-link">
+							<a href="logout.php" class="btn btn-sm btn-light-primary font-weight-bolder py-3 px-6">Sign Out</a>
+						</span>
 					</span>
-				</span>
-				<!--end:Item-->
+					<!--end:Item-->
+				</div>
+				<!--end::Nav-->
+				<!--begin::Separator-->
+				<div class="separator separator-dashed my-7"></div>
+				<!--end::Separator-->
+
+
 			</div>
-			<!--end::Nav-->
-			<!--begin::Separator-->
-			<div class="separator separator-dashed my-7"></div>
-			<!--end::Separator-->
-
-
+			<!--end::Content-->
 		</div>
-		<!--end::Content-->
-	</div>
-	<!-- end::User Panel-->
-	<!--begin::Quick Panel-->
+		<!-- end::User Panel-->
+
+
+		<!--begin::Quick Panel-->
 	<div id="kt_quick_panel" class="offcanvas offcanvas-right pt-5 pb-10">
 		<!--begin::Header-->
 		<div class="offcanvas-header offcanvas-header-navs d-flex align-items-center justify-content-between mb-5">
@@ -1037,6 +985,7 @@ else
 	<!--end::Content-->
 	</div>
 	<!--end::Quick Panel-->
+
 
 
 			
@@ -1144,6 +1093,7 @@ else
 </body>
 <!--end::Body-->
 
+<<<<<<< HEAD
 </html>
 
 
@@ -1452,3 +1402,6 @@ else
 	
 	}
 </script>
+=======
+</html>
+>>>>>>> bcb71b013ac139ed83a532da494103021b5fa657

@@ -164,8 +164,7 @@ for ($i = 5 - $starRating; $i > 0; $i--) {
                 <div class="container d-flex align-items-center justify-content-between flex-wrap flex-sm-nowrap">
                     <div class="d-flex align-items-center flex-wrap mr-1">
                         <div class="d-flex align-items-baseline flex-wrap mr-5">
-                            <h2 class="text-white font-weight-bold my-1 mr-5">Hi, <?= $_SESSION['firstname']; ?>! Welcome to Hulam.</h2> 
-							<a href="debtor/announcement.php" style="font-size: 20px; font-style:italic">View Announcements</a>
+                            <h2 class="text-white font-weight-bold my-1 mr-5">Hi, <?= $_SESSION['firstname']; ?>! Welcome to Hulam.</h2>
 							<div class="info text-center">
 								<h6 class="text-danger">
 									<?php
@@ -574,13 +573,7 @@ for ($i = 5 - $starRating; $i > 0; $i--) {
 				</a>
 				<!--end:Item-->
 				<!--begin::Item-->
-				<?php
-				$sql = "SELECT * FROM user WHERE user_type='1'";
-				$query = $dbh->prepare($sql);
-				$query->execute();
-				$admin = $query->fetch();
-				?>
-				<a href="debtor/rating.php?lender_id=<?= $admin['user_id']?>" class="navi-item">
+				<a href="debtor/send_feedback.php" class="navi-item">
 					<div class="navi-link">
 						<div class="symbol symbol-40 bg-light mr-3">
 							<div class="symbol-label">
