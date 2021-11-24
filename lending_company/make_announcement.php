@@ -205,6 +205,31 @@ $user = $query->fetch();
 								</div>
 							</li>
 							<li class="menu-section">
+								<h4 class="menu-text">Manage Account</h4>
+								<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
+							</li>
+							<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+								<a href="javascript:;" class="menu-link menu-toggle">
+									<span class="svg-icon menu-icon">
+									</span>
+									<span class="menu-text">My Account</span>
+									<i class="menu-arrow"></i>
+								</a>
+								<div class="menu-submenu">
+									<i class="menu-arrow"></i>
+									<ul class="menu-subnav">
+										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+											<a href="lending_company/update_profile.php" class="menu-link menu-toggle">
+												<i class="menu-bullet">
+													<span></span>
+												</i>
+												<span class="menu-text">My Profile</span>
+											</a>
+										</li>
+									</ul>
+								</div>
+							</li>
+							<li class="menu-section">
 								<h4 class="menu-text">Manage Loan</h4>
 								<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
 							</li>
@@ -248,7 +273,6 @@ $user = $query->fetch();
 									</ul>
 								</div>
 							</li>
-
 							<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
 								<a href="javascript:;" class="menu-link menu-toggle">
 									<span class="svg-icon menu-icon">
@@ -276,13 +300,13 @@ $user = $query->fetch();
 											</a>
 										</li>
 										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-                                            <a href="lending_company/released_loan.php" class="menu-link menu-toggle">
-                                                <i class="menu-bullet">
-                                                    <span></span>
-                                                </i>
-                                                <span class="menu-text">Release Loan</span>
-                                            </a>
-                                        </li>
+											<a href="lending_company/released_loan.php" class="menu-link menu-toggle">
+												<i class="menu-bullet">
+													<span></span>
+												</i>
+												<span class="menu-text">Release Loan</span>
+											</a>
+										</li>
 										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
 											<a href="lending_company/declined_loan.php" class="menu-link menu-toggle">
 												<i class="menu-bullet">
@@ -300,14 +324,14 @@ $user = $query->fetch();
 								<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
 							</li>
 							<li class="menu-item menu-item-submenu" data-menu-toggle="hover">
-							<a href="lending_company/record_payment.php" class="menu-link menu-toggle">
+								<a href="lending_company/released_loan.php" class="menu-link menu-toggle">
 									<span class="svg-icon menu-icon">
 									</span>
 									<span class="menu-text">Add Payment</span>
 								</a>
 							</li>
 							<li class="menu-item menu-item-submenu" data-menu-toggle="hover">
-							<a href="lending_company/view_payment.php" class="menu-link menu-toggle">
+								<a href="lending_company/view_payment.php" class="menu-link menu-toggle">
 									<span class="svg-icon menu-icon">
 									</span>
 									<span class="menu-text">Payment Records</span>
@@ -317,12 +341,24 @@ $user = $query->fetch();
 								<h4 class="menu-text">Manage Report</h4>
 								<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
 							</li>
-							<li class="menu-item menu-item-submenu" data-menu-toggle="hover">
-							<a href="lending_company/generate_report.php" class="menu-link menu-toggle">
+							<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+								<a href="javascript:;" class="menu-link menu-toggle">
 									<span class="svg-icon menu-icon">
 									</span>
 									<span class="menu-text">Generate Report</span>
+									<i class="menu-arrow"></i>
 								</a>
+								<div class="menu-submenu">
+									<ul class="menu-subnav">
+										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+											<a href="lending_company/generate_report.php" class="menu-link menu-toggle">
+												<span class="svg-icon menu-icon">
+												</span>
+												<span class="menu-text">Debtor Report</span>
+											</a>
+										</li>
+									</ul>
+								</div>
 							</li>
 							<!--end::Menu Nav-->
 					</div>
@@ -331,6 +367,8 @@ $user = $query->fetch();
 				<!--end::Aside Menu-->
 			</div>
 			<!--end::Aside-->
+
+
 				<!--begin::Wrapper-->
 				<div class="d-flex flex-column flex-row-fluid wrapper" id="kt_wrapper">
 					<!--begin::Header-->
@@ -453,12 +491,16 @@ $user = $query->fetch();
 						</div>
 					</div>
 					<!--end::Subheader-->
-					<!--begin::Entry-->
+				<?php
+					$user_id = $_SESSION['user_id'];
+					$sql = "SELECT * FROM announcement WHERE user_id = $user_id ORDER BY date_announce DESC";
+					$query = $dbh->prepare($sql);
+					$query->execute();
+					$ann = $query->fetchAll();
+					if($query->rowCount()==0):?>
+					
 					<div class="d-flex flex-column-fluid">
-						<!--begin::Container-->
 						<div class="container">
-							<div class="card card-custom gutter-b">
-							</div>
 							<div class="row">
 								<div class="col-lg-12">
 									<!--begin::Charts Widget 4-->
@@ -470,48 +512,79 @@ $user = $query->fetch();
 													<span class="d-block text-dark font-weight-bolder">Announcements</span>
 												</h3>
 											</div>
-                                            <div class="mr-3">
-                                            <div class="my-lg-5 my-5">
+											<div class="mr-3">
+												<div class="my-lg-5 my-5">
 													<a href="#" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#announce">Add Announcements</a>
 												</div>
-                                            </div>
-                                        </div>
-										<?php
-                                        $user_id = $_SESSION['user_id'];
-                                        $sql = "SELECT * FROM announcement WHERE user_id = $user_id";
-                                        $query = $dbh->prepare($sql);
-                                        $query->execute();
-                                        $ann = $query->fetchAll();
-                                        foreach($ann as $result):?>
-                                        <div class="card card-custom">
-                                       
-                                            <div class="card-header card-header-right ribbon ribbon-clip ribbon-left">
-                                                <div class="ribbon-target" style="top: 12px;">
-                                                     <span class="ribbon-inner bg-success"></span><h6><?= $result['title']?></h6>
-                                                </div>
-                                                <label class="card-title">
-                                                <?= $result['date_announce']?>
-                                                </label>
-                                            </div>
-                                                <div class="card-body">
-                                                <h6><?= $result['content']?></h6>
-                                                </div>
-                                            </div>
-                                            <?php endforeach;?>
+											</div>
 										</div>
-                                       
-										<!--end::Header-->
+											<div class="card card-custom">
+												<div class="card-header card-header-right ribbon ribbon-clip ribbon-left">
+													<div class="ribbon-target" style="top: 12px;">
+														<span class="ribbon-inner bg-success"></span>
+														<h6></h6>
+													</div>
+													<label class="card-title">
+													</label>
+												</div>
+												<div class="card-body">
+													<h6></h6>
+												</div>
+											</div>
+										</div>
 									</div>
-									<!--end::Charts Widget 4-->
-                                    
-								</div>
+								<!--end::Header-->
 							</div>
+							<!--end::Charts Widget 4-->
 						</div>
 					</div>
+					<?php else:?>
+					<div class="d-flex flex-column-fluid">
+						<div class="container">
+							<div class="row">
+								<div class="col-lg-12">
+									<!--begin::Charts Widget 4-->
+									<div class="card card-custom card-stretch gutter-b">
+										<!--begin::Header-->
+										<div class="card-header h-auto border-0">
+											<div class="card-title py-5">
+												<h3 class="card-label">
+													<span class="d-block text-dark font-weight-bolder">Announcements</span>
+												</h3>
+											</div>
+											<div class="mr-3">
+												<div class="my-lg-5 my-5">
+													<a href="#" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#announce">Add Announcements</a>
+												</div>
+											</div>
+										</div>
+										<?php foreach ($ann as $result) : ?>
+											<div class="card card-custom">
+												<div class="card-header card-header-right ribbon ribbon-clip ribbon-left">
+													<div class="ribbon-target" style="top: 12px;">
+														<span class="ribbon-inner bg-success"></span>
+														<h6><?= $result['title'] ?></h6>
+													</div>
+													<label class="card-title">
+														<?= $result['date_announce'] ?>
+													</label>
+												</div>
+												<div class="card-body">
+													<h6><?= $result['content'] ?></h6>
+												</div>
+											</div>
+										
+										<?php endforeach; ?>
+									</div>
+								</div>
+								<!--end::Header-->
+							</div>
+							<!--end::Charts Widget 4-->
+						</div>
+					</div>
+					<?php endif;?>
 				</div>
-				<!--end::Container-->
 			</div>
-			<!--end::Entry-->
 		</div>
 		<!--end::Content-->
         <!-- Start Announcement -->

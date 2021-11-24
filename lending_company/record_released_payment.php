@@ -148,7 +148,7 @@ $user = $query->fetch();
 									<span class="menu-text">Dashboard</span>
 								</a>
 							</li>
-								<li class="menu-section">
+							<li class="menu-section">
 								<h4 class="menu-text">Manage Account</h4>
 								<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
 							</li>
@@ -217,7 +217,6 @@ $user = $query->fetch();
 									</ul>
 								</div>
 							</li>
-
 							<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
 								<a href="javascript:;" class="menu-link menu-toggle">
 									<span class="svg-icon menu-icon">
@@ -245,13 +244,13 @@ $user = $query->fetch();
 											</a>
 										</li>
 										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-                                            <a href="lending_company/released_loan.php" class="menu-link menu-toggle">
-                                                <i class="menu-bullet">
-                                                    <span></span>
-                                                </i>
-                                                <span class="menu-text">Release Loan</span>
-                                            </a>
-                                        </li>
+											<a href="lending_company/released_loan.php" class="menu-link menu-toggle">
+												<i class="menu-bullet">
+													<span></span>
+												</i>
+												<span class="menu-text">Release Loan</span>
+											</a>
+										</li>
 										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
 											<a href="lending_company/declined_loan.php" class="menu-link menu-toggle">
 												<i class="menu-bullet">
@@ -269,14 +268,14 @@ $user = $query->fetch();
 								<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
 							</li>
 							<li class="menu-item menu-item-submenu" data-menu-toggle="hover">
-							<a href="lending_company/record_payment.php" class="menu-link menu-toggle">
+								<a href="lending_company/released_loan.php" class="menu-link menu-toggle">
 									<span class="svg-icon menu-icon">
 									</span>
 									<span class="menu-text">Add Payment</span>
 								</a>
 							</li>
 							<li class="menu-item menu-item-submenu" data-menu-toggle="hover">
-							<a href="lending_company/view_payment.php" class="menu-link menu-toggle">
+								<a href="lending_company/view_payment.php" class="menu-link menu-toggle">
 									<span class="svg-icon menu-icon">
 									</span>
 									<span class="menu-text">Payment Records</span>
@@ -286,12 +285,24 @@ $user = $query->fetch();
 								<h4 class="menu-text">Manage Report</h4>
 								<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
 							</li>
-							<li class="menu-item menu-item-submenu" data-menu-toggle="hover">
-							<a href="lending_company/generate_report.php" class="menu-link menu-toggle">
+							<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+								<a href="javascript:;" class="menu-link menu-toggle">
 									<span class="svg-icon menu-icon">
 									</span>
 									<span class="menu-text">Generate Report</span>
+									<i class="menu-arrow"></i>
 								</a>
+								<div class="menu-submenu">
+									<ul class="menu-subnav">
+										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+											<a href="lending_company/generate_report.php" class="menu-link menu-toggle">
+												<span class="svg-icon menu-icon">
+												</span>
+												<span class="menu-text">Debtor Report</span>
+											</a>
+										</li>
+									</ul>
+								</div>
 							</li>
 							<!--end::Menu Nav-->
 					</div>
@@ -511,7 +522,9 @@ $user = $query->fetch();
 														</td>
 														<td>
 															<a href="lending_company/record_payment.php?loan_app_id=<?= htmlentities($rem->loan_app_id) ?>" class="kt-nav__link">
-																<span class="kt-nav__link-text">Record Payment</span>
+																<span class="kt-nav__link-text">Add Payment</span>
+															</a> | <a href="lending_company/view_payment_record.php?loan_app_id=<?= htmlentities($rem->loan_app_id) ?>" class="kt-nav__link">
+																<span class="kt-nav__link-text">View Record</span>
 															</a>
 														</td>
 													</tr>

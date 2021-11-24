@@ -276,6 +276,31 @@ $user = $query->fetch();
 								</div>
 							</li>
 							<li class="menu-section">
+								<h4 class="menu-text">Manage Account</h4>
+								<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
+							</li>
+							<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+								<a href="javascript:;" class="menu-link menu-toggle">
+									<span class="svg-icon menu-icon">
+									</span>
+									<span class="menu-text">My Account</span>
+									<i class="menu-arrow"></i>
+								</a>
+								<div class="menu-submenu">
+									<i class="menu-arrow"></i>
+									<ul class="menu-subnav">
+										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+											<a href="lending_company/update_profile.php" class="menu-link menu-toggle">
+												<i class="menu-bullet">
+													<span></span>
+												</i>
+												<span class="menu-text">My Profile</span>
+											</a>
+										</li>
+									</ul>
+								</div>
+							</li>
+							<li class="menu-section">
 								<h4 class="menu-text">Manage Loan</h4>
 								<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
 							</li>
@@ -319,7 +344,6 @@ $user = $query->fetch();
 									</ul>
 								</div>
 							</li>
-
 							<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
 								<a href="javascript:;" class="menu-link menu-toggle">
 									<span class="svg-icon menu-icon">
@@ -347,13 +371,13 @@ $user = $query->fetch();
 											</a>
 										</li>
 										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-                                            <a href="lending_company/released_loan.php" class="menu-link menu-toggle">
-                                                <i class="menu-bullet">
-                                                    <span></span>
-                                                </i>
-                                                <span class="menu-text">Release Loan</span>
-                                            </a>
-                                        </li>
+											<a href="lending_company/released_loan.php" class="menu-link menu-toggle">
+												<i class="menu-bullet">
+													<span></span>
+												</i>
+												<span class="menu-text">Release Loan</span>
+											</a>
+										</li>
 										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
 											<a href="lending_company/declined_loan.php" class="menu-link menu-toggle">
 												<i class="menu-bullet">
@@ -371,14 +395,14 @@ $user = $query->fetch();
 								<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
 							</li>
 							<li class="menu-item menu-item-submenu" data-menu-toggle="hover">
-							<a href="lending_company/record_payment.php" class="menu-link menu-toggle">
+								<a href="lending_company/released_loan.php" class="menu-link menu-toggle">
 									<span class="svg-icon menu-icon">
 									</span>
 									<span class="menu-text">Add Payment</span>
 								</a>
 							</li>
 							<li class="menu-item menu-item-submenu" data-menu-toggle="hover">
-							<a href="lending_company/view_payment.php" class="menu-link menu-toggle">
+								<a href="lending_company/view_payment.php" class="menu-link menu-toggle">
 									<span class="svg-icon menu-icon">
 									</span>
 									<span class="menu-text">Payment Records</span>
@@ -388,12 +412,24 @@ $user = $query->fetch();
 								<h4 class="menu-text">Manage Report</h4>
 								<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
 							</li>
-							<li class="menu-item menu-item-submenu" data-menu-toggle="hover">
-							<a href="lending_company/generate_report.php" class="menu-link menu-toggle">
+							<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+								<a href="javascript:;" class="menu-link menu-toggle">
 									<span class="svg-icon menu-icon">
 									</span>
 									<span class="menu-text">Generate Report</span>
+									<i class="menu-arrow"></i>
 								</a>
+								<div class="menu-submenu">
+									<ul class="menu-subnav">
+										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+											<a href="lending_company/generate_report.php" class="menu-link menu-toggle">
+												<span class="svg-icon menu-icon">
+												</span>
+												<span class="menu-text">Debtor Report</span>
+											</a>
+										</li>
+									</ul>
+								</div>
 							</li>
 							<!--end::Menu Nav-->
 					</div>
@@ -758,7 +794,7 @@ $user = $query->fetch();
 													?>
 															<tr>
 																<td>Valid ID</td>
-																<td><a href="/hulam/assets/keen/hulam_media/<?= htmlentities($res->barangay_clearance) ?>" target="_blank"><?= htmlentities($res->barangay_clearance); ?></a></td>
+																<td><a href="/hulam/assets/keen/hulam_media/<?= htmlentities($res->valid_id) ?>" target="_blank"><?= htmlentities($res->valid_id); ?></a></td>
 															</tr>
 															<tr>
 																<td>Barangay Clearanace</td>

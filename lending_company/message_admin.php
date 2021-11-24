@@ -1,11 +1,12 @@
 <?php
-session_start();
-error_reporting(0);
-include('../db_connection/config.php');
+	session_start();
+	error_reporting(0);
+	include('../db_connection/config.php');
+	if ($_SESSION['user_type'] != 3) {
+		header('location: ../index.php');
+	}?>
+	
 
-if ($_SESSION['user_type'] != 3) {
-	header('location: ../index.php');
-}?>
 
 <?php
 $lender_id = $_SESSION['user_id'];
@@ -24,6 +25,34 @@ $query = $dbh->prepare($sql);
 $query->execute();
 $user = $query->fetch();
 ?>
+
+
+<?php
+if (isset($_POST['send_message'])) {
+
+    $from = $_POST['sender_id'];
+    $to = $_POST['receiver_id'];
+    $date_message = $_POST['date_message'];
+    $message = $_POST['message'];
+
+    $insert = "INSERT INTO message(sender_id,receiver_id,message,date_message)VALUES(:sender_id,:receiver_id,:message,:date_message)";
+    $query = $dbh->prepare($insert);
+    $query->bindParam(':sender_id', $from, PDO::PARAM_STR);
+    $query->bindParam(':receiver_id', $to, PDO::PARAM_STR);
+    $query->bindParam(':message', $message, PDO::PARAM_STR);
+    $query->bindParam(':date_message', $date_message, PDO::PARAM_STR);
+    if ($query->execute()) {
+        $_SESSION['status_message'] = "Message Sent";
+        header("Location: messages.php?sender_id=$to");
+        exit();
+    } else {
+        $_SESSION['status_message'] = "Message Not Sent";
+        header('Location: messages.php?sender_id=$to');
+        exit();
+    }
+}
+?>
+
 <!DOCTYPE html>
 
 <html lang="en">
@@ -32,7 +61,7 @@ $user = $query->fetch();
 <head>
 	<base href="../">
 	<meta charset="utf-8" />
-	<title>Hulam | Generate Report Loan Accounts</title>
+	<title>Hulam | Set Up Loan</title>
 	<meta name="description" content="Updates and statistics" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 	<!--begin::Fonts-->
@@ -286,31 +315,12 @@ $user = $query->fetch();
 								<h4 class="menu-text">Manage Report</h4>
 								<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
 							</li>
-							<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-								<a href="javascript:;" class="menu-link menu-toggle">
+							<li class="menu-item menu-item-submenu" data-menu-toggle="hover">
+							<a href="lending_company/generate_report.php" class="menu-link menu-toggle">
 									<span class="svg-icon menu-icon">
 									</span>
 									<span class="menu-text">Generate Report</span>
-									<i class="menu-arrow"></i>
 								</a>
-								<div class="menu-submenu">
-									<ul class="menu-subnav">
-										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-											<a href="lending_company/generate_user.php" class="menu-link menu-toggle">
-												<span class="svg-icon menu-icon">
-												</span>
-												<span class="menu-text">Users</span>
-											</a>
-										</li>
-										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-											<a href="lending_company/generate_loan_accounts.php" class="menu-link menu-toggle">
-												<span class="svg-icon menu-icon">
-												</span>
-												<span class="menu-text">Loan Accounts</span>
-											</a>
-										</li>
-									</ul>
-								</div>
 							</li>
 							<!--end::Menu Nav-->
 					</div>
@@ -406,19 +416,35 @@ $user = $query->fetch();
 						<!--end::Container-->
 					</div>
 					<!--end::Header-->
-					<!--begin::Content-->
-					<div class="content d-flex flex-column flex-column-fluid" id="kt_content" style="background-image:url('assets/keen/media/logos/banner.png')">
-						<!--begin::Subheader-->
-						<div class="subheader py-6 py-lg-8 subheader-transparent" id="kt_subheader">
-							<div class="container d-flex align-items-center justify-content-between flex-wrap flex-sm-nowrap">
-								<!--begin::Info-->
-								<div class="d-flex align-items-center flex-wrap mr-1">
-									<!--begin::Page Heading-->
-									<div class="d-flex align-items-baseline flex-wrap mr-5">
-										<!--begin::Page Title-->
-										<h4 class="text-white font-weight-bold my-1 mr-5">Dashboard |</h4>
-										<h5 class="text-white font-weight-bold my-1 mr-5"><?= $user['company_name']?></h5>
+
+
+			<!--begin::Content-->
+				<div class="content d-flex flex-column flex-column-fluid" id="kt_content" style="background-image:url('assets/keen/media/logos/banner.png')">
+					<!--begin::Subheader-->
+					<div class="subheader py-6 py-lg-8 subheader-transparent" id="kt_subheader">
+						<div class="container d-flex align-items-center justify-content-between flex-wrap flex-sm-nowrap">
+							<!--begin::Info-->
+							<div class="d-flex align-items-center flex-wrap mr-1">
+								<!--begin::Page Heading-->
+								<div class="d-flex align-items-baseline flex-wrap mr-5">
+									<!--begin::Page Title-->
+									<h4 class="text-white font-weight-bold my-1 mr-5">Dashboard |</h4>
+									<h5 class="text-white font-weight-bold my-1 mr-5"><?= $user['company_name'] ?></h5>
+									<!-- <a href="lending_company/view_announcements.php" style="font-size: 20px; font-style:italic">View Announcements</a> -->
 									<!--end::Page Title-->
+									<div class="col-xl-6">
+										<?php
+										if (isset($_SESSION['status_message'])) {
+										?>
+											<div class="alert alert-custom alert-notice alert-light-success fade show" role="alert">
+												<div class="alert-text">
+													<h4><?php echo $_SESSION['status_message']; ?></h4>
+												</div>
+												<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+											</div>
+										<?php unset($_SESSION['status_message']);
+										} ?>
+                            </div>
 								</div>
 								<!--end::Page Heading-->
 							</div>
@@ -431,181 +457,177 @@ $user = $query->fetch();
 									<span class="font-weight-bolder" id="kt_dashboard_daterangepicker_date">Aug 16</span>
 								</a>
 								<!--end::Daterange-->
+								<!--begin::Dropdown-->
+								<!--end::Dropdown-->
 							</div>
 							<!--end::Toolbar-->
 						</div>
 					</div>
 					<!--end::Subheader-->
-					<!--begin::Entry-->
+
+
+
+
 					<div class="d-flex flex-column-fluid">
-						<!--begin::Container-->
 						<div class="container">
-							<div class="card card-custom">
-								<div class="card-body">
-									<h5>Generate Reports</h5>
-                                    <div class="separator separator-dashed mt-8 mb-5"></div>
-                                    <form action=" " method="post">
-                                    <div class="row">
-                                        <div class="col-lg-3">
-                                            <div class="form-group">
-                                                <select name="user_type_name" class="form-control" id="defaultSelect">
-                                                <option value="none">By User Type</option>
-                                                    <?php $sql = "SELECT * from user_type WHERE user_type.id='2' || user_type.id='3' || user_type.id ='4'";
-                                                    $query = $dbh->prepare($sql);
-                                                    $query->execute();
-                                                    $results=$query->fetchAll(PDO::FETCH_OBJ);
-                                                    if($query->rowCount() > 0)
-                                                    {
-                                                    foreach($results as $result)
-                                                    {   ?>
-                                                    <option value="<?php echo htmlentities($result->id); ?>"><?php echo htmlentities($result->user_name); ?></option>
-                                                    <?php }} ?>
-                                                    </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-3">
-                                        <div class="form-group">
-                                                <select name="status_id" class="form-control" id="defaultSelect" >
-                                                <option value="none">By Status</option>
-                                                <option value="yes">Activated</option>
-                                                <option value="no">Inactivated</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-3">
-                                            <div class="form-group">
-                                                <select name="period_time" class="form-control" id="defaultSelect">
-                                                <option value="none">Select Days</option>
-                                                <option value="today">Today</option>
-                                                <option value="yesterday">Yesterday</option>
-                                                <option value="sevenDays">Last 7 Days</option>
-                                                <option value="thisMonth">This Month</option>
-                                                <option value="lastMonth">Last Month</option>
-                                                <option value="thisYear">This Year</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                            <div class="form-group-row">
-                                                <button class="btn btn-primary btn-shadow font-weight-bold mr-2">SEARCH</button>
-                                            </div>
+						<div class="row align-items-center justify-content-center">
+							<div class="card card-custom gutter-b card-stretch " style="width: 800px;">
+                     
+
+                        <!--begin::Card-->
+                        <div class="card card-custom">
+						<?php
+							$user_id = $_SESSION['user_id'];
+							$sender_id = intval($_GET['sender_id']);
+
+							$sql = "SELECT * FROM message WHERE receiver_id = '11'";
+							$query = $dbh->prepare($sql);
+							$query->execute();
+							$res = $query->fetch();
+							$red = $res['user_type'];
+
+
+                            $sql = "SELECT * FROM user WHERE user_id = '11'";
+							$query = $dbh->prepare($sql);
+							$query->execute();
+							$user2 = $query->fetch();
+							?>
+                            <!--begin::Header-->
+                            <div class="card-header align-items-center px-4 py-3">
+                                <div class="text-center flex-grow-1">
+								<div class="symbol symbol-circle symbol-50 mr-3">
+										<img alt="Pic" src="/hulam/assets/keen/hulam_media/3276293.png" />
+									</div>
+                                    <div class="text-dark-75 font-weight-bold font-size-h5">
+                                        <?php
+                                        if ($red == 1 || $red == 2 || $red == 4) : ?>
+                                            <?= $res['firstname'] . ' ' . $res['middlename'] . ' ' . $res['lastname'] ?>
+										
+                                        <?php else : ?>
+                                            <?= $res['company_name']; ?>
+                                        <?php endif; ?>
                                     </div>
+                                </div>
+                            </div>
+                            <!--end::Header-->
+                            <!--begin::Body-->
+                            <div class="card-body">
+                                <div class="scroll scroll-pull" data-height="375" data-mobile-height="300">
+                                    <div class="messages">
 
+                                        <div class="d-flex flex-column mb-5 align-items-start">
+                                            <div class="d-flex align-items-center">
+                                                <!-- <div class="symbol symbol-circle symbol-40 mr-3">
+                                                    <img alt="Pic" src="/hulam/assets/keen/hulam_media/<?= $res['profile_pic'] ?>" />
+                                                </div> -->
+                                                <div>
+                                                    <span class="text-dark-75 text-hover-primary font-weight-bold font-size-h6">
+                                                        <?php
+                                                        $user_id = $_SESSION['user_id'];
+                                                        $sender_id = intval($_GET['sender_id']);
 
+                                                        $sql = "SELECT * FROM message INNER JOIN user ON message.sender_id = user.user_id WHERE message.receiver_id = $user_id AND message.sender_id = $sender_id ORDER BY date_message desc";
+                                                        $query = $dbh->prepare($sql);
+                                                        $query->execute();
+                                                        $res = $query->fetch();
+
+                                                        $rem = $res['user_type'];
+                                                        ?>
+                                                        <?php
+                                                        if ($rem == 1 || $rem == 2 || $rem == 4) : ?>
+                                                            <?= $res['firstname'] . '' . $res['middlename'] . ' ' . $res['lastname'] ?>
+
+                                                        <?php else : ?>
+                                                            <?= $res['company_name']; ?>
+                                                        <?php endif; ?>
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                            <?php
+                                            $user_id = $_SESSION['user_id'];
+                                            $sender_id = intval($_GET['sender_id']);
+
+                                            $sql = "SELECT * FROM message INNER JOIN user ON message.sender_id = user.user_id WHERE message.receiver_id = $user_id AND message.sender_id = $sender_id ORDER BY date_message asc";
+                                            $query = $dbh->prepare($sql);
+                                            $query->execute();
+                                            $r = $query->fetchAll();
+                                            foreach ($r as $red) :
+                                            ?>
+                                                <div class="mt-2 rounded p-5 bg-light-success text-dark-50 font-weight-bold font-size-lg text-left max-w-400px"><?= $red['message'] ?></div>
+                                                <span class="text-muted font-size-sm"><?= date('F-d Y h:i:sa', strtotime($red['date_message'])) ?></span>
+                                            <?php endforeach; ?>
+                                        </div>
                                     </div>
-                                    <form method="post" class="quick-search-form">
-										<div class="col-lg-4">
-											<input type="text" name="search_input" class="form-control" placeholder="Search..."/>
-										</div>
-									</form></br>
-                                    <?php 
-                                    $lender_id = $_SESSION['user_id'];
+                                </div>
+                            </div>
+                            <form action="" method="post">
+                            <div class="card-footer align-items-center">
+                                <textarea name="message" class="form-control border-0 p-0" rows="2" placeholder="Type a message"></textarea>
+                                <div class="d-flex align-items-center justify-content-between mt-5">
+                                    <div class="mr-3">
+                                    </div>
+                                    <div>
+                                    <?php
+                                        date_default_timezone_set('Asia/Manila');
+                                        $todays_date = date("y-m-d h:i:sa");
+                                        $today = strtotime($todays_date);
+                                        $det = date("Y-m-d h:i:sa", $today);
 
-                                    // $sql ="SELECT loan_application.*, user.* FROM user INNER JOIN loan_application ON loan_application.debtor_id = user.user_id WHERE lender_id = $lender_id";
-                                    $sql = "SELECT loan_application.*, user.* FROM loan_application INNER JOIN user ON loan_application.debtor_id = user.user_id WHERE loan_application.lender_id = '$lender_id' AND loan_application.loan_status = 'Released'";
-                                    $query = $dbh->prepare($sql);
-                                    $query->execute();
-                                    $loan_app = $query->fetch();
-                                    ?>
-									<table class="table table-bordered">
-										<thead>
-											<tr>
-												<th>Loan Account No</th>
-												<th>Date Paid</th>
-												<th>Amount</th>
-											</tr>
-										</thead>
-										<tbody>
-											<?php
-                                            if(isset($_POST['search_input'])){
-                                            error_reporting(E_ALL);
-	
-                                            $search_input = $_POST['search_input'];
-        
-                                            if(empty($search_input)){
-											$loan_app_id = $loan_app['loan_app_id'];
-
-											$sql = "SELECT * FROM running_balance WHERE loan_app_id = loan_app_id";
+                                        ?>
+                                        <input type="hidden" name="date_message" value="<?= $det; ?>">
+                                        <input type="hidden" name="sender_id" value="<?= $_SESSION['user_id']?>">
+                                        <input type="hidden" name="receiver_id" value="<?= intval($_GET['sender_id'])?>">
+										<?php
+											$user_id = $_SESSION['user_id'];
+											$sql = "SELECT * FROM message INNER JOIN user ON message.sender_id = user.user_id WHERE (user.user_type!='2' AND user.user_type!='1') AND (message.receiver_id = $user_id OR message.sender_id = $user_id) GROUP BY message.sender_id";
 											$query = $dbh->prepare($sql);
 											$query->execute();
-											$res = $query->fetchAll(PDO::FETCH_OBJ);
-                                            $cnt =1;
-											if ($query->rowCount() > 0) {
-												foreach ($res as $rem) { ?>
+											$user_name = $query->fetchAll();
+											?>
+										<button type="submit" name="send_message" class="btn btn-primary btn-md text-uppercase font-weight-bold chat-send py-2 px-6">Send</button>
+                                       	<a href="lending_company/sent_message.php?sender_id=<?= intval($_GET['sender_id'])?>"  class="btn btn-sm btn-light-primary font-weight-bolder mr-2"> View Sent Messages</a>
+                                    </div>
+                                </div>
+                            </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--end::Content-->
 
-												<tr>
-													<td><?= htmlentities($rem->loan_app_id)?></td>
-                                                    <td><?= htmlentities($rem->paid_date)?></td>
-                                                    <td><?= htmlentities($rem->payment)?></td>
-												</tr>
-                                            <?php $cnt = $cnt+1; }}}
-											else{
-                                            $loan_app_id = $loan_app['loan_app_id'];
-											$sql = "SELECT * FROM running_balance WHERE loan_app_id LIKE '$search_input' OR paid_date LIKE '$search_input' AND loan_app_id = loan_app_id";
-											$query = $dbh->prepare($sql);
-											$query->execute();
-											$res = $query->fetchAll(PDO::FETCH_OBJ);
-                                            $cnt =1;
-											if ($query->rowCount() > 0) {
-												foreach ($res as $rem) { ?>
 
-												<tr>
-													<td><?= htmlentities($rem->loan_app_id)?></td>
-                                                    <td><?= htmlentities($rem->paid_date)?></td>
-                                                    <td><?= htmlentities($rem->payment)?></td>
-												</tr>
-                                            <?php $cnt = $cnt+1; }}}
-											}else{
-                                                $loan_app_id = $loan_app['loan_app_id'];
-    
-                                                $sql = "SELECT * FROM running_balance WHERE loan_app_id = loan_app_id";
-                                                $query = $dbh->prepare($sql);
-                                                $query->execute();
-                                                $res = $query->fetchAll(PDO::FETCH_OBJ);
-                                                $cnt =1;
-                                                if ($query->rowCount() > 0) {
-                                                    foreach ($res as $rem) { ?>
-    
-                                                    <tr>
-                                                        <td><?= htmlentities($rem->loan_app_id)?></td>
-                                                        <td><?= htmlentities($rem->paid_date)?></td>
-                                                        <td><?= htmlentities($rem->payment)?></td>
-                                                    </tr>
-                                             <?php $cnt = $cnt+1; }}} ?>
-                                            
-										</tbody>
-									</table>
-							
+
+						<!--begin::Footer-->
+						<div class="footer bg-white py-4 d-flex flex-lg-column" id="kt_footer">
+							<!--begin::Container-->
+							<div class="container d-flex flex-column flex-md-row align-items-center justify-content-between">
+								<!--begin::Copyright-->
+								<div class="text-dark order-2 order-md-1">
+									<span class="text-muted font-weight-bold mr-2">2021©</span>
+									<a href="https://keenthemes.com/keen" target="_blank" class="text-dark-75 text-hover-primary">The Hulam Team</a>
 								</div>
+								<!--end::Copyright-->
+								<!--begin::Nav-->
+								<div class="nav nav-dark">
+									<a href="https://keenthemes.com/keen" target="_blank" class="nav-link pl-0 pr-2">About</a>
+									<a href="https://keenthemes.com/keen" target="_blank" class="nav-link pr-2">Team</a>
+									<a href="https://keenthemes.com/keen" target="_blank" class="nav-link pr-0">Contact</a>
+								</div>
+								<!--end::Nav-->
 							</div>
+							<!--end::Container-->
 						</div>
+						<!--end::Footer-->
 					</div>
+					<!--end::Wrapper-->
 				</div>
+				<!--end::Page-->
 			</div>
-		</div>
-	</div>
-
-	<!--end::Content-->
-	<!--begin::Footer-->
-	<!-- <div class="footer bg-white py-4 d-flex flex-lg-column" id="kt_footer"> -->
-	<!--begin::Container-->
-	<div class="container d-flex flex-column flex-md-row align-items-center justify-content-between">
-		<!--begin::Copyright-->
-		<!-- <div class="text-dark order-2 order-md-1">
-							<span class="text-muted font-weight-bold mr-2">2021©</span>
-							<a href="https://keenthemes.com/keen" target="_blank" class="text-dark-75 text-hover-primary">The Hulam Team</a>
-						</div> -->
-		<!--end::Copyright-->
-		<!--begin::Nav-->
-		<!-- <div class="nav nav-dark">
-							<a href="https://keenthemes.com/keen" target="_blank" class="nav-link pl-0 pr-2">About</a>
-							<a href="https://keenthemes.com/keen" target="_blank" class="nav-link pr-2">Team</a>
-							<a href="https://keenthemes.com/keen" target="_blank" class="nav-link pr-0">Contact</a>
-						</div> -->
-		<!--end::Nav-->
-	</div>
-	</div>
-
-
+			<!--end::Main-->
 	
 		<!-- begin::User Panel-->
 		<div id="kt_quick_user" class="offcanvas offcanvas-right p-10">
@@ -816,100 +838,55 @@ $user = $query->fetch();
 
 
 
-	<!--begin::Scrolltop-->
-	<div id="kt_scrolltop" class="scrolltop">
-		<span class="svg-icon">
-			<!--begin::Svg Icon | path:assets/media/svg/icons/Navigation/Up-2.svg-->
-			<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-				<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-					<polygon points="0 0 24 0 24 24 0 24" />
-					<rect fill="#000000" opacity="0.3" x="11" y="10" width="2" height="10" rx="1" />
-					<path d="M6.70710678,12.7071068 C6.31658249,13.0976311 5.68341751,13.0976311 5.29289322,12.7071068 C4.90236893,12.3165825 4.90236893,11.6834175 5.29289322,11.2928932 L11.2928932,5.29289322 C11.6714722,4.91431428 12.2810586,4.90106866 12.6757246,5.26284586 L18.6757246,10.7628459 C19.0828436,11.1360383 19.1103465,11.7686056 18.7371541,12.1757246 C18.3639617,12.5828436 17.7313944,12.6103465 17.3242754,12.2371541 L12.0300757,7.38413782 L6.70710678,12.7071068 Z" fill="#000000" fill-rule="nonzero" />
-				</g>
-			</svg>
-			<!--end::Svg Icon-->
-		</span>
-	</div>
-	<!--end::Scrolltop-->
+			<!--begin::Scrolltop-->
+			<div id="kt_scrolltop" class="scrolltop">
+				<span class="svg-icon">
+					<!--begin::Svg Icon | path:assets/media/svg/icons/Navigation/Up-2.svg-->
+					<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+						<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+							<polygon points="0 0 24 0 24 24 0 24" />
+							<rect fill="#000000" opacity="0.3" x="11" y="10" width="2" height="10" rx="1" />
+							<path d="M6.70710678,12.7071068 C6.31658249,13.0976311 5.68341751,13.0976311 5.29289322,12.7071068 C4.90236893,12.3165825 4.90236893,11.6834175 5.29289322,11.2928932 L11.2928932,5.29289322 C11.6714722,4.91431428 12.2810586,4.90106866 12.6757246,5.26284586 L18.6757246,10.7628459 C19.0828436,11.1360383 19.1103465,11.7686056 18.7371541,12.1757246 C18.3639617,12.5828436 17.7313944,12.6103465 17.3242754,12.2371541 L12.0300757,7.38413782 L6.70710678,12.7071068 Z" fill="#000000" fill-rule="nonzero" />
+						</g>
+					</svg>
+					<!--end::Svg Icon-->
+				</span>
+			</div>
+			<!--end::Scrolltop-->
 
 
-	<script>
-		var HOST_URL = "https://preview.keenthemes.com/keen/theme/tools/preview";
-	</script>
-	<!--begin::Global Config(global config for global JS scripts)-->
-	<script>
-		var KTAppSettings = {
-			"breakpoints": {
-				"sm": 576,
-				"md": 768,
-				"lg": 992,
-				"xl": 1200,
-				"xxl": 1400
-			},
-			"colors": {
-				"theme": {
-					"base": {
-						"white": "#ffffff",
-						"primary": "#3E97FF",
-						"secondary": "#E5EAEE",
-						"success": "#08D1AD",
-						"info": "#844AFF",
-						"warning": "#F5CE01",
-						"danger": "#FF3D60",
-						"light": "#E4E6EF",
-						"dark": "#181C32"
-					},
-					"light": {
-						"white": "#ffffff",
-						"primary": "#DEEDFF",
-						"secondary": "#EBEDF3",
-						"success": "#D6FBF4",
-						"info": "#6125E1",
-						"warning": "#FFF4DE",
-						"danger": "#FFE2E5",
-						"light": "#F3F6F9",
-						"dark": "#D6D6E0"
-					},
-					"inverse": {
-						"white": "#ffffff",
-						"primary": "#ffffff",
-						"secondary": "#3F4254",
-						"success": "#ffffff",
-						"info": "#ffffff",
-						"warning": "#ffffff",
-						"danger": "#ffffff",
-						"light": "#464E5F",
-						"dark": "#ffffff"
-					}
-				},
-				"gray": {
-					"gray-100": "#F3F6F9",
-					"gray-200": "#EBEDF3",
-					"gray-300": "#E4E6EF",
-					"gray-400": "#D1D3E0",
-					"gray-500": "#B5B5C3",
-					"gray-600": "#7E8299",
-					"gray-700": "#5E6278",
-					"gray-800": "#3F4254",
-					"gray-900": "#181C32"
-				}
-			},
-			"font-family": "Poppins"
-		};
-	</script>
-	<!--end::Global Config-->
-	<!--begin::Global Theme Bundle(used by all pages)-->
-	<script src="assets/admin/plugins/global/plugins.bundle.js"></script>
-	<script src="assets/admin/plugins/custom/prismjs/prismjs.bundle.js"></script>
-	<script src="assets/admin/js/scripts.bundle.js"></script>
-	<!--end::Global Theme Bundle-->
-	<!--begin::Page Vendors(used by this page)-->
-	<script src="assets/admin/plugins/custom/fullcalendar/fullcalendar.bundle.js"></script>
-	<!--end::Page Vendors-->
-	<!--begin::Page Scripts(used by this page)-->
-	<script src="assets/admin/js/pages/widgets.js"></script>
-	<!--end::Page Scripts-->
-</body>
-<!--end::Body-->
 
-</html>
+			<!--begin::Sticky Toolbar-->
+
+			<!--end::Sticky Toolbar-->
+			<!--begin::Demo Panel-->
+			<div id="kt_demo_panel" class="offcanvas offcanvas-right p-10">
+				<!--begin::Header-->
+				<div class="offcanvas-header d-flex align-items-center justify-content-between pb-7">
+					<h4 class="font-weight-bold m-0">Select A Demo</h4>
+					<a href="#" class="btn btn-xs btn-icon btn-light btn-hover-primary" id="kt_demo_panel_close">
+						<i class="ki ki-close icon-xs text-muted"></i>
+					</a>
+				</div>
+				<!--end::Header-->
+			</div>
+			<!--end::Demo Panel-->
+			<script>var HOST_URL = "https://preview.keenthemes.com/keen/theme/tools/preview";</script>
+			<!--begin::Global Config(global config for global JS scripts)-->
+			<script>var KTAppSettings = { "breakpoints": { "sm": 576, "md": 768, "lg": 992, "xl": 1200, "xxl": 1400 }, "colors": { "theme": { "base": { "white": "#ffffff", "primary": "#3E97FF", "secondary": "#E5EAEE", "success": "#08D1AD", "info": "#844AFF", "warning": "#F5CE01", "danger": "#FF3D60", "light": "#E4E6EF", "dark": "#181C32" }, "light": { "white": "#ffffff", "primary": "#DEEDFF", "secondary": "#EBEDF3", "success": "#D6FBF4", "info": "#6125E1", "warning": "#FFF4DE", "danger": "#FFE2E5", "light": "#F3F6F9", "dark": "#D6D6E0" }, "inverse": { "white": "#ffffff", "primary": "#ffffff", "secondary": "#3F4254", "success": "#ffffff", "info": "#ffffff", "warning": "#ffffff", "danger": "#ffffff", "light": "#464E5F", "dark": "#ffffff" } }, "gray": { "gray-100": "#F3F6F9", "gray-200": "#EBEDF3", "gray-300": "#E4E6EF", "gray-400": "#D1D3E0", "gray-500": "#B5B5C3", "gray-600": "#7E8299", "gray-700": "#5E6278", "gray-800": "#3F4254", "gray-900": "#181C32" } }, "font-family": "Poppins" };</script>
+			<!--end::Global Config-->
+			<!--begin::Global Theme Bundle(used by all pages)-->
+			<script src="assets/admin/plugins/global/plugins.bundle.js"></script>
+			<script src="assets/admin/plugins/custom/prismjs/prismjs.bundle.js"></script>
+			<script src="assets/admin/js/scripts.bundle.js"></script>
+			<!--end::Global Theme Bundle-->
+			<!--begin::Page Vendors(used by this page)-->
+			<script src="assets/admin/plugins/custom/fullcalendar/fullcalendar.bundle.js"></script>
+			<!--end::Page Vendors-->
+			<!--begin::Page Scripts(used by this page)-->
+			<script src="assets/admin/js/pages/widgets.js"></script>
+	        <script src="assets/keen/js/pages/features/file-upload/image-input.js"></script>
+			<!--end::Page Scripts-->
+		</body>
+		<!--end::Body-->
+	</html>

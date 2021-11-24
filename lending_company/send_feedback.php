@@ -1,77 +1,18 @@
 <?php
-	session_start();
-	error_reporting(0);
-	include('../db_connection/config.php');
-	if ($_SESSION['user_type'] != 3) {
-		header('location: ../index.php');
-	}?>
-	
-	<?php
+session_start();
+error_reporting(0);
+include('../db_connection/config.php');
+if ($_SESSION['user_type'] != 3) {
+	header('location: ../index.php');
+} ?>
 
-	if(isset($_POST['update'])){
 
-	    $lender_id = $_SESSION['user_id'];
-	    $min_loan= $_POST['min_loan'];
-	    $max_loan= $_POST['max_loan'];
-	    $min_term= $_POST['min_term'];
-	    $max_term= $_POST['max_term'];
-	    $fix_rate = $_POST['fix_rate'];
-	    $late_charges = $_POST['late_charges'];
-		$reloan_period = $_POST['reloan_period'];
-		$reloan_amount = $_POST['reloan_amount'];
-
-		$lender_id = $_SESSION['user_id'];
-
-	    $sql = "SELECT * FROM loan_features WHERE lender_id = $lender_id";
-		$q= $dbh->prepare($sql);
-		$q->execute();
-	   	if($q->rowCount()== 0){
-
-	        $sql="INSERT INTO loan_features(lender_id,min_loan,max_loan,min_term,max_term,fix_rate,late_charges,reloan_period,reloan_amount)
-	        VALUES(:lender_id,:min_loan,:max_loan,:min_term,:max_term,:fix_rate,:late_charges,:reloan_period,:reloan_amount)";
-		    $query =$dbh->prepare($sql);
-	        $query->bindParam(':lender_id',$lender_id,PDO::PARAM_STR);
-	        $query->bindParam(':min_loan',$min_loan,PDO::PARAM_STR);
-	        $query->bindParam(':max_loan',$max_loan,PDO::PARAM_STR);
-	        $query->bindParam(':min_term',$min_term,PDO::PARAM_STR);
-	        $query->bindParam(':max_term',$max_term,PDO::PARAM_STR);
-	        $query->bindParam(':fix_rate',$fix_rate,PDO::PARAM_STR);
-	        $query->bindParam(':late_charges',$late_charges,PDO::PARAM_STR);
-			$query->bindParam(':reloan_period',$reloan_period,PDO::PARAM_STR);
-			$query->bindParam(':reloan_amount',$reloan_amount,PDO::PARAM_STR);
-	        $query->execute();
-	    }else{
-	        
-	        $sql="UPDATE loan_features SET min_loan=:min_loan,max_loan=:max_loan,min_term=:min_term,max_term=:max_term,fix_rate=:fix_rate,late_charges=:late_charges,reloan_period=:reloan_period,reloan_amount=:reloan_amount WHERE lender_id = :lender_id";
-	        $query =$dbh->prepare($sql);
-	        $query->bindParam(':lender_id',$lender_id,PDO::PARAM_STR);
-	        $query->bindParam(':min_loan',$min_loan,PDO::PARAM_STR);
-	        $query->bindParam(':max_loan',$max_loan,PDO::PARAM_STR);
-	        $query->bindParam(':min_term',$min_term,PDO::PARAM_STR);
-	        $query->bindParam(':max_term',$max_term,PDO::PARAM_STR);
-	        $query->bindParam(':fix_rate',$fix_rate,PDO::PARAM_STR);
-	        $query->bindParam(':late_charges',$late_charges,PDO::PARAM_STR);
-			$query->bindParam(':reloan_period',$reloan_period,PDO::PARAM_STR);
-			$query->bindParam(':reloan_amount',$reloan_amount,PDO::PARAM_STR);
-
-		if($query->execute()){
-			$_SESSION['setup'] = "Submitted successfully!";
-			header("Location: setup_loan.php");
-			exit();
-		} else {
-			$_SESSION['setup'] = "Error!";
-			header("Location: setup_loan.php");
-			exit();
-		}
-	}
-}
-	?>
 
 
 <?php
 $lender_id = $_SESSION['user_id'];
 
-$sql ="SELECT loan_features.*, user.* FROM loan_features INNER JOIN user ON loan_features.lender_id = user.user_id WHERE lender_id = $lender_id";
+$sql = "SELECT loan_features.*, user.* FROM loan_features INNER JOIN user ON loan_features.lender_id = user.user_id WHERE lender_id = $lender_id";
 $query = $dbh->prepare($sql);
 $query->execute();
 $user = $query->fetch();
@@ -80,7 +21,7 @@ $user = $query->fetch();
 <?php
 $lender_id = $_SESSION['user_id'];
 
-$sql ="SELECT * FROM user WHERE user_id = $lender_id";
+$sql = "SELECT * FROM user WHERE user_id = $lender_id";
 $query = $dbh->prepare($sql);
 $query->execute();
 $user = $query->fetch();
@@ -114,6 +55,53 @@ $user = $query->fetch();
 	<link href="assets/admin/css/themes/layout/aside/dark.css" rel="stylesheet" type="text/css" />
 	<!--end::Layout Themes-->
 	<link rel="shortcut icon" href="assets/keen/media/logos/h_small.png" />
+	<style type="text/css">
+		.rate {
+			float: left;
+			height: 46px;
+			padding: 0 10px;
+		}
+
+		.rate:not(:checked)>input {
+			position: absolute;
+			top: -9999px;
+		}
+
+		.rate:not(:checked)>label {
+			float: right;
+			width: 1em;
+			overflow: hidden;
+			white-space: nowrap;
+			cursor: pointer;
+			font-size: 30px;
+			color: #000;
+		}
+
+		.rate:not(:checked)>label:before {
+			content: '★ ';
+		}
+
+		.rate>input:checked~label {
+			color: #ffc700;
+		}
+
+		.rate:not(:checked)>label:hover,
+		.rate:not(:checked)>label:hover~label {
+			color: #deb217;
+		}
+
+		.rate>input:checked+label:hover,
+		.rate>input:checked+label:hover~label,
+		.rate>input:checked~label:hover,
+		.rate>input:checked~label:hover~label,
+		.rate>label:hover~input:checked~label {
+			color: #c59b08;
+		}
+
+		.hideme {
+			display: none;
+		}
+	</style>
 </head>
 <!--end::Head-->
 <!--begin::Body-->
@@ -124,7 +112,7 @@ $user = $query->fetch();
 	<div id="kt_header_mobile" class="header-mobile align-items-center header-mobile-fixed">
 		<!--begin::Logo-->
 		<a href="lending_company/index.php">
-			<img alt="Logo"  src="assets/keen/hulam_media/<?= $user['profile_pic']?>" class="h-60px w-60px" style="padding-top: 10%; padding: right 50%;" />
+			<img alt="Logo" src="assets/keen/hulam_media/<?= $user['profile_pic'] ?>" class="h-60px w-60px" style="padding-top: 10%; padding: right 50%;" />
 		</a>
 		<!--end::Logo-->
 		<!--begin::Toolbar-->
@@ -167,7 +155,7 @@ $user = $query->fetch();
 				<div class="brand flex-column-auto" id="kt_brand">
 					<!--begin::Logo-->
 					<a href="lending_company/index.php" class="brand-logo">
-						<img alt="Logo" src="/hulam/assets/keen/hulam_media/<?= $user['profile_pic']?>" class="h-100px w-90px" style="padding-top: 20%; padding: right 50%;" />
+						<img alt="Logo" src="/hulam/assets/keen/hulam_media/<?= $user['profile_pic'] ?>" class="h-100px w-90px" style="padding-top: 20%; padding: right 50%;" />
 					</a>
 					<!--end::Logo-->
 					<!--begin::Toggle-->
@@ -209,7 +197,7 @@ $user = $query->fetch();
 									<span class="menu-text">Dashboard</span>
 								</a>
 							</li>
-								<li class="menu-section">
+							<li class="menu-section">
 								<h4 class="menu-text">Manage Account</h4>
 								<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
 							</li>
@@ -278,7 +266,6 @@ $user = $query->fetch();
 									</ul>
 								</div>
 							</li>
-
 							<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
 								<a href="javascript:;" class="menu-link menu-toggle">
 									<span class="svg-icon menu-icon">
@@ -306,13 +293,13 @@ $user = $query->fetch();
 											</a>
 										</li>
 										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-                                            <a href="lending_company/released_loan.php" class="menu-link menu-toggle">
-                                                <i class="menu-bullet">
-                                                    <span></span>
-                                                </i>
-                                                <span class="menu-text">Release Loan</span>
-                                            </a>
-                                        </li>
+											<a href="lending_company/released_loan.php" class="menu-link menu-toggle">
+												<i class="menu-bullet">
+													<span></span>
+												</i>
+												<span class="menu-text">Release Loan</span>
+											</a>
+										</li>
 										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
 											<a href="lending_company/declined_loan.php" class="menu-link menu-toggle">
 												<i class="menu-bullet">
@@ -330,14 +317,14 @@ $user = $query->fetch();
 								<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
 							</li>
 							<li class="menu-item menu-item-submenu" data-menu-toggle="hover">
-							<a href="lending_company/record_payment.php" class="menu-link menu-toggle">
+								<a href="lending_company/released_loan.php" class="menu-link menu-toggle">
 									<span class="svg-icon menu-icon">
 									</span>
 									<span class="menu-text">Add Payment</span>
 								</a>
 							</li>
 							<li class="menu-item menu-item-submenu" data-menu-toggle="hover">
-							<a href="lending_company/view_payment.php" class="menu-link menu-toggle">
+								<a href="lending_company/view_payment.php" class="menu-link menu-toggle">
 									<span class="svg-icon menu-icon">
 									</span>
 									<span class="menu-text">Payment Records</span>
@@ -347,12 +334,24 @@ $user = $query->fetch();
 								<h4 class="menu-text">Manage Report</h4>
 								<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
 							</li>
-							<li class="menu-item menu-item-submenu" data-menu-toggle="hover">
-							<a href="lending_company/generate_report.php" class="menu-link menu-toggle">
+							<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+								<a href="javascript:;" class="menu-link menu-toggle">
 									<span class="svg-icon menu-icon">
 									</span>
 									<span class="menu-text">Generate Report</span>
+									<i class="menu-arrow"></i>
 								</a>
+								<div class="menu-submenu">
+									<ul class="menu-subnav">
+										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+											<a href="lending_company/generate_report.php" class="menu-link menu-toggle">
+												<span class="svg-icon menu-icon">
+												</span>
+												<span class="menu-text">Debtor Report</span>
+											</a>
+										</li>
+									</ul>
+								</div>
 							</li>
 							<!--end::Menu Nav-->
 					</div>
@@ -362,20 +361,21 @@ $user = $query->fetch();
 			</div>
 			<!--end::Aside-->
 
-				<!--begin::Wrapper-->
-				<div class="d-flex flex-column flex-row-fluid wrapper" id="kt_wrapper">
-					<!--begin::Header-->
-					<div id="kt_header" class="header header-fixed">
-						<!--begin::Container-->
-						<div class="container-fluid d-flex align-items-stretch justify-content-between">
-							<!--begin::Header Menu Wrapper-->
-							<div class="header-menu-wrapper header-menu-wrapper-left" id="kt_header_menu_wrapper">
-								<!--begin::Header Menu-->
-								<div id="kt_header_menu" class="header-menu header-menu-mobile header-menu-layout-default">
-									<!--begin::Header Nav-->
-									<ul class="menu-nav">
+			
+			<!--begin::Wrapper-->
+			<div class="d-flex flex-column flex-row-fluid wrapper" id="kt_wrapper">
+				<!--begin::Header-->
+				<div id="kt_header" class="header header-fixed">
+					<!--begin::Container-->
+					<div class="container-fluid d-flex align-items-stretch justify-content-between">
+						<!--begin::Header Menu Wrapper-->
+						<div class="header-menu-wrapper header-menu-wrapper-left" id="kt_header_menu_wrapper">
+							<!--begin::Header Menu-->
+							<div id="kt_header_menu" class="header-menu header-menu-mobile header-menu-layout-default">
+								<!--begin::Header Nav-->
+								<ul class="menu-nav">
 									<li class="menu-item menu-item-open menu-item-here menu-item-submenu menu-item-rel menu-item-open menu-item-here menu-item-active" data-menu-toggle="click" aria-haspopup="true">
-                                        <h4 class="menu-text" style="color:blue">Welcome to Hulam! <h4>&nbsp;&nbsp;
+										<h4 class="menu-text" style="color:blue">Welcome to Hulam! <h4>&nbsp;&nbsp;
 												<h6 class="text-danger">
 													<?php
 													$id = $_SESSION['user_id'];
@@ -391,212 +391,304 @@ $user = $query->fetch();
 													}
 													?>
 												</h6>
-											<i class="menu-arrow"></i>
-										 </li>
-								    </ul>
-									<!--end::Header Nav-->
-								</div>
-								<!--end::Header Menu-->
+												<i class="menu-arrow"></i>
+									</li>
+								</ul>
+								<!--end::Header Nav-->
 							</div>
-							<!--end::Header Menu Wrapper-->
-
-
-
-							<!--begin::Topbar-->
-							<div class="topbar">
-							
-							
-                           		 <!--begin::Quick panel-->
-								<div class="topbar-item mr-1">
-									<div class="btn btn-icon btn-clean btn-lg" id="kt_quick_panel_toggle">
-									<span class="svg-icon svg-icon-xl svg-icon-primary">
-											<!--begin::Svg Icon | path:assets/media/svg/icons/Communication/Chat6.svg-->
-											<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-												<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-													<rect x="0" y="0" width="24" height="24" />
-													<path opacity="0.3" fill-rule="evenodd" clip-rule="evenodd" d="M14.4862 18L12.7975 21.0566C12.5304 21.54 11.922 21.7153 11.4386 21.4483C11.2977 21.3704 11.1777 21.2597 11.0887 21.1255L9.01653 18H5C3.34315 18 2 16.6569 2 15V6C2 4.34315 3.34315 3 5 3H19C20.6569 3 22 4.34315 22 6V15C22 16.6569 20.6569 18 19 18H14.4862Z" fill="black" />
-													<path fill-rule="evenodd" clip-rule="evenodd" d="M6 7H15C15.5523 7 16 7.44772 16 8C16 8.55228 15.5523 9 15 9H6C5.44772 9 5 8.55228 5 8C5 7.44772 5.44772 7 6 7ZM6 11H11C11.5523 11 12 11.4477 12 12C12 12.5523 11.5523 13 11 13H6C5.44772 13 5 12.5523 5 12C5 11.4477 5.44772 11 6 11Z" fill="black" />
-												</g>
-											</svg>
-											<!--end::Svg Icon-->
-										</span>
-									</div>
-								</div>
-								<!--end::Quick panel-->
-								<!--begin::Languages-->
-								<div class="dropdown mr-1">
-									<!--begin::Dropdown-->
-									<div class="dropdown-menu p-0 m-0 dropdown-menu-anim-up dropdown-menu-sm dropdown-menu-right">
-										<!--begin::Nav-->
-									
-										<!--end::Nav-->
-									</div>
-									<!--end::Dropdown-->
-								</div>
-								<!--end::Languages-->
-								<!--begin::User-->
-								<div class="topbar-item ml-4">
-									<div class="btn btn-icon btn-light-primary h-40px w-40px p-0" id="kt_quick_user_toggle">
-										<img src="assets/keen/hulam_media/<?= $user['profile_pic']?>" class="h-40px align-self-end" alt="" />
-									</div>
-									
-								</div>
-								<!--end::User-->
-							</div>
-							<!--end::Topbar-->
+							<!--end::Header Menu-->
 						</div>
-						<!--end::Container-->
-					</div>
-					<!--end::Header-->
-					<!--begin::Content-->
-					<div class="content d-flex flex-column flex-column-fluid" id="kt_content" style="background-image:url('assets/keen/media/logos/banner.png')">
-						<!--begin::Subheader-->
-						<div class="subheader py-6 py-lg-8 subheader-transparent" id="kt_subheader">
-							<div class="container d-flex align-items-center justify-content-between flex-wrap flex-sm-nowrap">
-								<!--begin::Info-->
-								<div class="d-flex align-items-center flex-wrap mr-1">
-									<!--begin::Page Heading-->
-									<div class="d-flex align-items-baseline flex-wrap mr-5">
-										<!--begin::Page Title-->
-										<h4 class="text-white font-weight-bold my-1 mr-5">Dashboard |</h4>
-										<h5 class="text-white font-weight-bold my-1 mr-5"><?= $user['company_name']?></h5>
-											<div class="col-xl-12 col-xl-12">
-												<?php
-												if(isset($_SESSION['setup'])){
-												?>
-													<div class="alert alert-custom alert-notice alert-light-success fade show" role="alert">
-														<div class="alert-text">
-															<h4><?php echo $_SESSION['setup'];?></h4>
-														</div>
-														<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
-													</div>
-												<?php unset($_SESSION['setup']);
-												}?>
-											</div>
-										</div>
-										<!--end::Page Heading-->
-									</div>
-									<!--end::Info-->
+						<!--end::Header Menu Wrapper-->
+
+
+
+						<!--begin::Topbar-->
+						<div class="topbar">
+
+
+							<!--begin::Quick panel-->
+							<div class="topbar-item mr-1">
+								<div class="btn btn-icon btn-clean btn-lg" id="kt_quick_panel_toggle">
+									<span class="svg-icon svg-icon-xl svg-icon-primary">
+										<!--begin::Svg Icon | path:assets/media/svg/icons/Communication/Chat6.svg-->
+										<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+											<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+												<rect x="0" y="0" width="24" height="24" />
+												<path opacity="0.3" fill-rule="evenodd" clip-rule="evenodd" d="M14.4862 18L12.7975 21.0566C12.5304 21.54 11.922 21.7153 11.4386 21.4483C11.2977 21.3704 11.1777 21.2597 11.0887 21.1255L9.01653 18H5C3.34315 18 2 16.6569 2 15V6C2 4.34315 3.34315 3 5 3H19C20.6569 3 22 4.34315 22 6V15C22 16.6569 20.6569 18 19 18H14.4862Z" fill="black" />
+												<path fill-rule="evenodd" clip-rule="evenodd" d="M6 7H15C15.5523 7 16 7.44772 16 8C16 8.55228 15.5523 9 15 9H6C5.44772 9 5 8.55228 5 8C5 7.44772 5.44772 7 6 7ZM6 11H11C11.5523 11 12 11.4477 12 12C12 12.5523 11.5523 13 11 13H6C5.44772 13 5 12.5523 5 12C5 11.4477 5.44772 11 6 11Z" fill="black" />
+											</g>
+										</svg>
+										<!--end::Svg Icon-->
+									</span>
 								</div>
 							</div>
-							<!--end::Subheader-->
-								<!--begin::Entry-->
-	                            <div class="d-flex flex-column-fluid" >
-								<!--begin::Container-->
-								<div class="container" >
-									<div class="card card-custom">
-										<div class="card-body p-0">
-											<!--begin: Wizard Body-->
-											<div class="wizard-body py-8 px-8 py-lg-20 px-lg-10">
-												<!--begin: Wizard Form-->
-												<div class="row">
-													<div class="offset-xxl-2 col-xxl-8">
-														<form action="" method="post" id="kt_form" enctype="multipart/form-data">
-	                                                        <?php
-	                                                        $lender_id = $_SESSION['user_id'];
+							<!--end::Quick panel-->
+							<!--begin::Languages-->
+							<div class="dropdown mr-1">
+								<!--begin::Dropdown-->
+								<div class="dropdown-menu p-0 m-0 dropdown-menu-anim-up dropdown-menu-sm dropdown-menu-right">
+									<!--begin::Nav-->
 
-	                                                        $sql = "SELECT * FROM loan_features INNER JOIN user ON loan_features.lender_id = user.user_id WHERE lender_id = $lender_id";
-	                                                        $query = $dbh->prepare($sql);
-	                                                        $query->execute();
-	                                                        $res = $query->fetch();
-	                                                        ?>
-															<!--begin: Wizard Step 1-->
-															<div class="pb-5" data-wizard-type="step-content" data-wizard-state="current">
-																<h4 class="mb-10 font-weight-bold text-dark">Set Up Your Loan Features</h4>
-	                                                            <div class="row">
-																	<div class="col-xl-4">
-																		<!--begin::Input-->
-																		<div class="form-group">
-																			<label>Minimum Loan</label>
-																			<input type="text" class="form-control" name="min_loan" value="<?= $res['min_loan']?>" />
-																		</div>
-																		<!--end::Input-->
-																	</div>
-																	<div class="col-xl-4">
-																		<!--begin::Input-->
-																		<div class="form-group">
-																			<label>Maximum Loan</label>
-																			<input type="text" class="form-control" name="max_loan" value="<?= $res['max_loan']?>" />
-																		</div>
-																		<!--end::Input-->
-																	</div>
-																	<div class="col-xl-4">
-																		<!--begin::Input-->
-																		<div class="form-group">
-																			<label>Minimum Loan Term</label>
-																			<input type="text" class="form-control" name="min_term"  value="<?= $res['min_term']?>" />
-																		</div>
-																		<!--end::Input-->
-																	</div>
-	                                            				</div>
-																<div class="row">
-																	<div class="col-xl-4">
-																		<!--begin::Input-->
-																		<div class="form-group">
-																			<label>Maximum Loan Term</label>
-																			<input type="text" class="form-control" name="max_term" value="<?= $res['max_term']?>" />
-																		</div>
-																		<!--end::Input-->
-																	</div>
-																	<div class="col-xl-4">
-																		<!--begin::Input-->
-																		<div class="form-group">
-																			<label>Fix Interest Rate</label>
-																			<input type="text" class="form-control" name="fix_rate" value="<?= $res['fix_rate']?>" />
-																		</div>
-																		<!--end::Input-->
-																	</div>
-	                                                                <div class="col-xl-4">
-																		<!--begin::Input-->
-																		<div class="form-group">
-																			<label>Late Charges</label>
-																			<input type="text" class="form-control" name="late_charges" value="<?= $res['late_charges']?>" />
-																		</div>
-																		<!--end::Input-->
-																	</div>
+									<!--end::Nav-->
+								</div>
+								<!--end::Dropdown-->
+							</div>
+							<!--end::Languages-->
+							<!--begin::User-->
+							<div class="topbar-item ml-4">
+								<div class="btn btn-icon btn-light-primary h-40px w-40px p-0" id="kt_quick_user_toggle">
+									<img src="assets/keen/hulam_media/<?= $user['profile_pic'] ?>" class="h-40px align-self-end" alt="" />
+								</div>
+
+							</div>
+							<!--end::User-->
+						</div>
+						<!--end::Topbar-->
+					</div>
+					<!--end::Container-->
+				</div>
+				<!--end::Header-->
+
+
+				<!--begin::Content-->
+				<div class="content d-flex flex-column flex-column-fluid" id="kt_content" style="background-image:url('assets/keen/media/logos/banner.png')">
+					<!--begin::Subheader-->
+					<div class="subheader py-6 py-lg-8 subheader-transparent" id="kt_subheader">
+						<div class="container d-flex align-items-center justify-content-between flex-wrap flex-sm-nowrap">
+							<!--begin::Info-->
+							<div class="d-flex align-items-center flex-wrap mr-1">
+								<!--begin::Page Heading-->
+								<div class="d-flex align-items-baseline flex-wrap mr-5">
+									<!--begin::Page Title-->
+									<h4 class="text-white font-weight-bold my-1 mr-5">Dashboard |</h4>
+									<h5 class="text-white font-weight-bold my-1 mr-5"><?= $user['company_name'] ?></h5>
+									<div class="col-xl-6 col-xl-6">
+										<?php
+										if (isset($_SESSION['status_ann'])) {
+										?>
+											<div class="alert alert-custom alert-notice alert-light-success fade show" role="alert">
+												<div class="alert-text">
+													<h4><?php echo $_SESSION['status_ann']; ?></h4>
+												</div>
+												<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+											</div>
+										<?php unset($_SESSION['status_ann']);
+										} ?>
+									</div>
+								</div>
+							</div>
+							<div class="d-flex align-items-center flex-wrap">
+								<a href="#" class="btn btn-fixed-height btn-bg-white btn-text-dark-50 btn-hover-text-primary btn-icon-primary font-weight-bolder font-size-sm px-5 my-1 mr-3" id="kt_dashboard_daterangepicker" data-toggle="tooltip" title="Select dashboard daterange" data-placement="top">
+									<span class="opacity-60 font-weight-bolder mr-2" id="kt_dashboard_daterangepicker_title">Today</span>
+									<span class="font-weight-bolder" id="kt_dashboard_daterangepicker_date">Aug 16</span>
+								</a>
+							</div>
+						</div>
+					</div>
+					<!--end::Subheader-->
+					<div class="d-flex flex-column-fluid">
+						<div class="container">
+							<?php
+							if (isset($_GET['submit'])) {
+								$rating = $_GET['rating'];
+								$user_id = $_GET['user_id'];
+								$lending_id = $_GET['lender_id'];
+								$comment = $_GET['comment'];
+								$date = $_GET['date'];
+
+								$query_rating = "INSERT INTO feedback (lender_id,debtor_id,comments,ratings,dateOfRate) VALUES ('$lending_id', '$user_id', '$comment' , '$rating' , '$date')";
+								if (mysqli_query($conn, $query_rating)) { ?>
+
+									<div class="alert alert-custom alert-notice alert-light-success fade show" role="alert">
+										<div class="alert-text">
+											<h4>Thank you for your valuable feedback!</h4>
+										</div>&nbsp;
+										<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+									</div>
+
+								<?php } else { ?>
+									<div class="alert alert-custom alert alert-danger" role="alert">
+										Something went wrong!
+									</div>
+								<?php } ?>
+
+							<?php } ?>
+							<div class="d-flex flex-column-fluid">
+								<!--begin::Container-->
+								<div class="container">
+									<div class="card card-custom">
+										<div class="card-body">
+											<div class="card card-custom card-stretch gutter-b">
+												
+												<h3>Rate
+												<?php
+												if (isset($_GET['lender_id']))
+													$lender_id = $_GET['lender_id'];
+												if (isset($_GET['user_id']))
+													$user_id = $_GET['user_id'];
+
+												$query_lending = "SELECT * FROM user WHERE user_id = $lender_id";
+												$query_lending_result = mysqli_query($conn, $query_lending);
+												$lending_result = mysqli_fetch_array($query_lending_result);
+
+												if ($lending_result['user_type'] == '1') {
+													echo $lending_result['firstname'] . ' ' . $lending_result['middlename'] . ' ' . $lending_result['lastname'];
+												} else {
+													//echo $lending_result['company_name'];
+												}
+
+												?></h3>
+
+
+												<?php
+												if (isset($_GET['user_id']))
+													$id = $_GET['user_id'];
+												?>
+												</span>
+												</h3>
+												
+											</div>
+
+
+											<div class="col-12">
+												<div class="form-group">
+													<form method="get" autocomplete="off">
+														<div class="row">
+															<div class="col-lg-2">
+																<div class="form-group">
+																	<?php
+																	if (isset($_POST['submit'])) {
+																		$lender = mysqli_real_escape_string($conn, $_POST['lender_id']);
+																		$debtor_id = mysqli_real_escape_string($conn, $_POST['debtor_id']);
+																		$comments = mysqli_real_escape_string($conn, $_POST['comments']);
+																		$rating = mysqli_real_escape_string($conn, $_POST['rating']);
+																		$dateOfRate = mysqli_real_escape_string($conn, $_POST['dateOfRate']);
+																		if (empty($ratings)) {
+																			$ratings = 0;
+																		}
+
+																		$result = mysqli_query($conn, "INSERT INTO feedback(lender_id,debtor_id,comments,ratings,dateOfRate) VALUES ('$lender','$debtor_id','$comments','$ratings','$dateOfRate')");
+
+																		//	echo "<script>alert('Thank you for rating!');window.location.href='debtor/index.php'</script>";
+																	}
+																	?>
+
+
+																	<form method="GET">
+
+																		<table style="margin-left:300px">
+																			<tr>
+																				<td>Rate</td>
+																				<td>
+																					<div class="rate">
+																						<input type="radio" name="rating" id="star5" value="5" />
+																						<label for="star5" title="5 stars">5 stars</label>
+																						<input type="radio" name="rating" id="star4" value="4" />
+																						<label for="star4" title="4 stars">4 stars</label>
+																						<input type="radio" name="rating" id="star3" value="3" />
+																						<label for="star3" title="3 stars">3 stars</label>
+																						<input type="radio" name="rating" id="star2" value="2" />
+																						<label for="star2" title="2 stars">2 stars</label>
+																						<input type="radio" name="rating" id="star1" value="1" />
+																						<label for="star1" title="1 star">1 star</label>
+																						<input class="hideme" type="radio" name="rating" id="star0" value="0" checked />
+																						<label class="hideme" for="star0" title="0 stars">0 stars</label>
+																					</div>
+																					<br><br>
+																				</td>
+																			</tr>
+																			<tr>
+																				<input type="hidden" name="user_id" value="<?php echo $_SESSION['user_id']; ?>">
+																				<input type="hidden" name="lender_id" value="<?php echo $lender_id; ?>">
+																				<td>COMMENT </td>
+																				<td><textarea type="text" name="comment" style="width:500px; height:100px;"></textarea></td>
+																			</tr>
+																			<tr>
+																				<td> <label><input type="hidden" name="date" value="<?php echo date('Y-m-d'); ?>"></label></td>
+																			</tr>
+																			<tr>
+																				<!-- <input type="hidden" name="debtor" value="<?php echo $user_id; ?>" > -->
+																			</tr>
+																			<!-- <input type="hidden" name="lender" value="<?php if (isset($_GET['lender']))
+																																echo $_GET['company_name ']; ?>" > -->
+																			</tr>
+																			<tr>
+																				<td><input type="submit" class="btn btn-primary btn-block font-weight-bolder" name="submit" value="Submit"></td>
+																			</tr>
+																		</table>
+
+																		<?php
+																		function drawStars(int $starRating)
+																		{
+																			echo "<span style='color: yellow;'>";
+																			for ($i = 0; $i < $starRating; $i++) {
+																				echo "&#x2605;";
+																			}
+																			echo "</span>";
+																			for ($i = 5 - $starRating; $i > 0; $i--) {
+																				echo "&#x2605;";
+																			}
+																		}
+																		?>
 																</div>
 															</div>
-																<h4 class="mb-10 font-weight-bold text-dark">Set Up Reloan Period</h4>
-																<div class="row">
-																	<div class="col-xl-4">
-																		<!--begin::Input-->
-																		<div class="form-group">
-																			<label>How many months after the releasing date?</label>
-																			<input type="number" placeholder="Set how many months" class="form-control" name="reloan_period" value="<?= $res['reloan_period']?>" />
-																		</div>
-																		<!--end::Input-->
-																	</div>
-																	<div class="col-xl-4">
-																		<!--begin::Input-->
-																		<div class="form-group">
-																			<label>Remaining balance should be less than: </label>
-																			<input type="number" placeholder="Set amount" class="form-control" name="reloan_amount" value="<?= $res['reloan_amount']?>" />
-																		</div>
-																		<!--end::Input-->
-																	</div>
-																	
-																	</div>
-																	<div class="mr-2"></div>
-																	<div>
-																		<button type="submit" name="update"  class="btn btn-primary font-weight-bolder px-10 py-3" data-wizard-type="action-next">Submit</button>
-																	</div>
-																</div>
-																<!--end: Wizard Actions-->
-															 </div>
-	                                        				<!--end::Body-->
-	                                    				</form>
-	                                   					 <!--end::Form-->
-	                               					</div>
-	                            				</div>
-	                            				<!--end::Content-->
-	                                        </div>
-	                                    </div>
-	                                </div>
-	                            </div>
+														</div>
+													</form>
+													<div class="col-6">
+														<?php
+														$lender_id = intval($_GET['lender_id']);
+														$query = "SELECT * FROM feedback INNER JOIN user ON feedback.debtor_id = user.user_id WHERE lender_id = $lender_id";
+														$result = mysqli_query($conn, $query);
+														$ratingTotal = $ratingCount = 0;
+														while ($row = mysqli_fetch_array($result)) {
+															$ratingTotal += $row['ratings'];
+															$ratingCount++;
+														}
+
+														echo "<h5>Average Rating :</h5>";
+														echo "<p>" . number_format(($ratingTotal / $ratingCount), 2) . " " .
+															drawStars(round($ratingTotal / $ratingCount)) .
+															"</p>";
+														$ratingTotal = 0;
+														$ratingCount = 0;
+														
+														$lender_id = intval($_GET['lender_id']);
+														
+														$query = "SELECT * FROM feedback INNER JOIN user ON feedback.debtor_id = user.user_id WHERE lender_id = $lender_id";
+														$result = mysqli_query($conn, $query);
+														while ($row = mysqli_fetch_array($result)) {
+															$ratingTotal += $row['ratings'];
+															$ratingCount++;
+														?>
+															<div class="card">
+																<div class="card-body">
+																	<?php if($row['user_type']=='1' || $row['user_type']=='2' || $row['user_type']=='4'):?>
+																		<h5 class="card-title"><?php echo "" . $row['firstname'] . " " . $row['lastname']; ?></h5>
+																	<?php else:?>
+																		<h5 class="card-title"><?php echo "" . $row['company_name']?></h5>
+																	<?php endif;?>
+																	<p class="card-text"><?php drawStars($row['ratings']); ?>
+																		<?php echo "" . $row['comments']; ?></p>
+																	<?php echo $row['dateOfRate']; ?>
+																</div class="card-body">
+
+																<div class=""></div>
+															</div>
+														<?php }
+														?>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
 							</div>
-							<!--end::Entry-->
 						</div>
-						<!--end::Content-->
+						</div>
+					</div>
+
+
+
 						<!--begin::Footer-->
 						<div class="footer bg-white py-4 d-flex flex-lg-column" id="kt_footer">
 							<!--begin::Container-->
@@ -624,263 +716,325 @@ $user = $query->fetch();
 				<!--end::Page-->
 			</div>
 			<!--end::Main-->
-		<!-- begin::User Panel-->
-		<div id="kt_quick_user" class="offcanvas offcanvas-right p-10">
-			<!--begin::Header-->
-			<div class="offcanvas-header d-flex align-items-center justify-content-between pb-5">
-				<h3 class="font-weight-bold m-0">Profile
-				
-				<a href="#" class="btn btn-xs btn-icon btn-light btn-hover-primary" id="kt_quick_user_close">
-					<i class="ki ki-close icon-xs text-muted"></i>
-				</a>
-			</div>
-			<!--end::Header-->
-			<!--begin::Content-->
-			<div class="offcanvas-content pr-5 mr-n5">
+			<!-- begin::User Panel-->
+			<div id="kt_quick_user" class="offcanvas offcanvas-right p-10">
 				<!--begin::Header-->
-				<div class="d-flex align-items-center mt-5">
-					<div class="symbol symbol-100 mr-5">
-					<div class="symbol-label" style="background-image:url('/hulam/assets/keen/hulam_media/<?= $user['profile_pic'] ?>')"></div>
-						<i class="symbol-badge bg-success"></i>
+				<div class="offcanvas-header d-flex align-items-center justify-content-between pb-5">
+					<h3 class="font-weight-bold m-0">Profile
+
+						<a href="#" class="btn btn-xs btn-icon btn-light btn-hover-primary" id="kt_quick_user_close">
+							<i class="ki ki-close icon-xs text-muted"></i>
+						</a>
+				</div>
+				<!--end::Header-->
+				<!--begin::Content-->
+				<div class="offcanvas-content pr-5 mr-n5">
+					<!--begin::Header-->
+					<div class="d-flex align-items-center mt-5">
+						<div class="symbol symbol-100 mr-5">
+							<div class="symbol-label" style="background-image:url('/hulam/assets/keen/hulam_media/<?= $user['profile_pic'] ?>')"></div>
+							<i class="symbol-badge bg-success"></i>
+						</div>
+						<div class="d-flex flex-column">
+							<a href="#" class="font-weight-bold font-size-h5 text-dark-75 text-hover-primary"><?= $user['company_name'] ?></a>
+							<div class="text-muted mt-1"></div>
+							<div class="navi mt-1">
+								<a href="#" class="navi-item">
+									<span class="navi-link p-0 pb-2">
+										<span class="navi-icon mr-1">
+											<span class="svg-icon svg-icon-lg svg-icon-primary">
+												<!--begin::Svg Icon | path:assets/media/svg/icons/Communication/Mail-notification.svg-->
+												<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+													<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+														<rect x="0" y="0" width="24" height="24" />
+														<path d="M21,12.0829584 C20.6747915,12.0283988 20.3407122,12 20,12 C16.6862915,12 14,14.6862915 14,18 C14,18.3407122 14.0283988,18.6747915 14.0829584,19 L5,19 C3.8954305,19 3,18.1045695 3,17 L3,8 C3,6.8954305 3.8954305,6 5,6 L19,6 C20.1045695,6 21,6.8954305 21,8 L21,12.0829584 Z M18.1444251,7.83964668 L12,11.1481833 L5.85557487,7.83964668 C5.4908718,7.6432681 5.03602525,7.77972206 4.83964668,8.14442513 C4.6432681,8.5091282 4.77972206,8.96397475 5.14442513,9.16035332 L11.6444251,12.6603533 C11.8664074,12.7798822 12.1335926,12.7798822 12.3555749,12.6603533 L18.8555749,9.16035332 C19.2202779,8.96397475 19.3567319,8.5091282 19.1603533,8.14442513 C18.9639747,7.77972206 18.5091282,7.6432681 18.1444251,7.83964668 Z" fill="#000000" />
+														<circle fill="#000000" opacity="0.3" cx="19.5" cy="17.5" r="2.5" />
+													</g>
+												</svg>
+												<!--end::Svg Icon-->
+											</span>
+										</span>
+										<span class="navi-text text-muted text-hover-primary"><?= $_SESSION['email'] ?></span>
+									</span>
+								</a>
+							</div>
+						</div>
 					</div>
-					<div class="d-flex flex-column">
-						<a href="#" class="font-weight-bold font-size-h5 text-dark-75 text-hover-primary"><?= $user['company_name']?></a>
-						<div class="text-muted mt-1"></div>
-						<div class="navi mt-1">
-							<a href="#" class="navi-item">
-								<span class="navi-link p-0 pb-2">
-									<span class="navi-icon mr-1">
-										<span class="svg-icon svg-icon-lg svg-icon-primary">
-											<!--begin::Svg Icon | path:assets/media/svg/icons/Communication/Mail-notification.svg-->
+					<!--end::Header-->
+					<!--begin::Separator-->
+					<div class="separator separator-dashed mt-8 mb-5"></div>
+					<!--end::Separator-->
+					<!--begin::Nav-->
+					<div class="navi navi-spacer-x-0 p-0">
+						<!--begin::Item-->
+						<a href="lending_company/update_profile.php" class="navi-item">
+							<div class="navi-link">
+								<div class="symbol symbol-40 bg-light mr-3">
+									<div class="symbol-label">
+										<span class="svg-icon svg-icon-md svg-icon-danger">
+											<!--begin::Svg Icon | path:assets/media/svg/icons/Communication/Adress-book2.svg-->
 											<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
 												<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
 													<rect x="0" y="0" width="24" height="24" />
-													<path d="M21,12.0829584 C20.6747915,12.0283988 20.3407122,12 20,12 C16.6862915,12 14,14.6862915 14,18 C14,18.3407122 14.0283988,18.6747915 14.0829584,19 L5,19 C3.8954305,19 3,18.1045695 3,17 L3,8 C3,6.8954305 3.8954305,6 5,6 L19,6 C20.1045695,6 21,6.8954305 21,8 L21,12.0829584 Z M18.1444251,7.83964668 L12,11.1481833 L5.85557487,7.83964668 C5.4908718,7.6432681 5.03602525,7.77972206 4.83964668,8.14442513 C4.6432681,8.5091282 4.77972206,8.96397475 5.14442513,9.16035332 L11.6444251,12.6603533 C11.8664074,12.7798822 12.1335926,12.7798822 12.3555749,12.6603533 L18.8555749,9.16035332 C19.2202779,8.96397475 19.3567319,8.5091282 19.1603533,8.14442513 C18.9639747,7.77972206 18.5091282,7.6432681 18.1444251,7.83964668 Z" fill="#000000" />
-													<circle fill="#000000" opacity="0.3" cx="19.5" cy="17.5" r="2.5" />
+													<path d="M18,2 L20,2 C21.6568542,2 23,3.34314575 23,5 L23,19 C23,20.6568542 21.6568542,22 20,22 L18,22 L18,2 Z" fill="#000000" opacity="0.3" />
+													<path d="M5,2 L17,2 C18.6568542,2 20,3.34314575 20,5 L20,19 C20,20.6568542 18.6568542,22 17,22 L5,22 C4.44771525,22 4,21.5522847 4,21 L4,3 C4,2.44771525 4.44771525,2 5,2 Z M12,11 C13.1045695,11 14,10.1045695 14,9 C14,7.8954305 13.1045695,7 12,7 C10.8954305,7 10,7.8954305 10,9 C10,10.1045695 10.8954305,11 12,11 Z M7.00036205,16.4995035 C6.98863236,16.6619875 7.26484009,17 7.4041679,17 C11.463736,17 14.5228466,17 16.5815,17 C16.9988413,17 17.0053266,16.6221713 16.9988413,16.5 C16.8360465,13.4332455 14.6506758,12 11.9907452,12 C9.36772908,12 7.21569918,13.5165724 7.00036205,16.4995035 Z" fill="#000000" />
 												</g>
 											</svg>
 											<!--end::Svg Icon-->
 										</span>
-									</span>
-									<span class="navi-text text-muted text-hover-primary"><?= $_SESSION['email'] ?></span>
-								</span>
-							</a>
-						</div>
-					</div>
-				</div>
-				<!--end::Header-->
-				<!--begin::Separator-->
-				<div class="separator separator-dashed mt-8 mb-5"></div>
-				<!--end::Separator-->
-				<!--begin::Nav-->
-				<div class="navi navi-spacer-x-0 p-0">
-					<!--begin::Item-->
-					<a href="lending_company/update_profile.php" class="navi-item">
-						<div class="navi-link">
-							<div class="symbol symbol-40 bg-light mr-3">
-								<div class="symbol-label">
-									<span class="svg-icon svg-icon-md svg-icon-danger">
-										<!--begin::Svg Icon | path:assets/media/svg/icons/Communication/Adress-book2.svg-->
-										<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-											<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-												<rect x="0" y="0" width="24" height="24" />
-												<path d="M18,2 L20,2 C21.6568542,2 23,3.34314575 23,5 L23,19 C23,20.6568542 21.6568542,22 20,22 L18,22 L18,2 Z" fill="#000000" opacity="0.3" />
-												<path d="M5,2 L17,2 C18.6568542,2 20,3.34314575 20,5 L20,19 C20,20.6568542 18.6568542,22 17,22 L5,22 C4.44771525,22 4,21.5522847 4,21 L4,3 C4,2.44771525 4.44771525,2 5,2 Z M12,11 C13.1045695,11 14,10.1045695 14,9 C14,7.8954305 13.1045695,7 12,7 C10.8954305,7 10,7.8954305 10,9 C10,10.1045695 10.8954305,11 12,11 Z M7.00036205,16.4995035 C6.98863236,16.6619875 7.26484009,17 7.4041679,17 C11.463736,17 14.5228466,17 16.5815,17 C16.9988413,17 17.0053266,16.6221713 16.9988413,16.5 C16.8360465,13.4332455 14.6506758,12 11.9907452,12 C9.36772908,12 7.21569918,13.5165724 7.00036205,16.4995035 Z" fill="#000000" />
-											</g>
-										</svg>
-										<!--end::Svg Icon-->
-									</span>
-								</div>
-							</div>
-							<div class="navi-text">
-								<div class="font-weight-bold">My Account</div>
-							</div>
-						</div>
-					</a>
-					<!--end:Item-->
-					<!--begin::Item-->
-					<a href="lending_company/make_announcement.php" class="navi-item">
-						<div class="navi-link">
-							<div class="symbol symbol-40 bg-light mr-3">
-								<div class="symbol-label">
-									<span class="svg-icon svg-icon-md svg-icon-danger">
-										<!--begin::Svg Icon | path:assets/media/svg/icons/Communication/Adress-book2.svg-->
-										<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-											<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-												<rect x="0" y="0" width="24" height="24" />
-												<path d="M18,2 L20,2 C21.6568542,2 23,3.34314575 23,5 L23,19 C23,20.6568542 21.6568542,22 20,22 L18,22 L18,2 Z" fill="#000000" opacity="0.3" />
-												<path d="M5,2 L17,2 C18.6568542,2 20,3.34314575 20,5 L20,19 C20,20.6568542 18.6568542,22 17,22 L5,22 C4.44771525,22 4,21.5522847 4,21 L4,3 C4,2.44771525 4.44771525,2 5,2 Z M12,11 C13.1045695,11 14,10.1045695 14,9 C14,7.8954305 13.1045695,7 12,7 C10.8954305,7 10,7.8954305 10,9 C10,10.1045695 10.8954305,11 12,11 Z M7.00036205,16.4995035 C6.98863236,16.6619875 7.26484009,17 7.4041679,17 C11.463736,17 14.5228466,17 16.5815,17 C16.9988413,17 17.0053266,16.6221713 16.9988413,16.5 C16.8360465,13.4332455 14.6506758,12 11.9907452,12 C9.36772908,12 7.21569918,13.5165724 7.00036205,16.4995035 Z" fill="#000000" />
-											</g>
-										</svg>
-										<!--end::Svg Icon-->
-									</span>
-								</div>
-							</div>
-							<div class="navi-text">
-								<div class="font-weight-bold">Make Announcement</div>
-							</div>
-						</div>
-					</a>
-					<!--end:Item-->
-					<!--begin::Item-->
-				<a href="lending_company/send_feedback.php" class="navi-item">
-					<div class="navi-link">
-						<div class="symbol symbol-40 bg-light mr-3">
-							<div class="symbol-label">
-								<span class="svg-icon svg-icon-md svg-icon-success">
-									<!--begin::Svg Icon | path:assets/media/svg/icons/General/Settings-1.svg-->
-									<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-										<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-											<rect x="0" y="0" width="24" height="24" />
-											<path d="M7,3 L17,3 C19.209139,3 21,4.790861 21,7 C21,9.209139 19.209139,11 17,11 L7,11 C4.790861,11 3,9.209139 3,7 C3,4.790861 4.790861,3 7,3 Z M7,9 C8.1045695,9 9,8.1045695 9,7 C9,5.8954305 8.1045695,5 7,5 C5.8954305,5 5,5.8954305 5,7 C5,8.1045695 5.8954305,9 7,9 Z" fill="#000000" />
-											<path d="M7,13 L17,13 C19.209139,13 21,14.790861 21,17 C21,19.209139 19.209139,21 17,21 L7,21 C4.790861,21 3,19.209139 3,17 C3,14.790861 4.790861,13 7,13 Z M17,19 C18.1045695,19 19,18.1045695 19,17 C19,15.8954305 18.1045695,15 17,15 C15.8954305,15 15,15.8954305 15,17 C15,18.1045695 15.8954305,19 17,19 Z" fill="#000000" opacity="0.3" />
-										</g>
-									</svg>
-									<!--end::Svg Icon-->
-									</span>
-								</div>
-							</div>
-						<div class="navi-text">
-							<div class="font-weight-bold">Send Feedback</div>
-						</div>
-					</div>
-				</a>
-				<!--end:Item-->
-					
-					<!--begin::Item-->
-					<span class="navi-item mt-2">
-						<span class="navi-link">
-							<a href="logout.php" class="btn btn-sm btn-light-primary font-weight-bolder py-3 px-6">Sign Out</a>
-						</span>
-					</span>
-					<!--end:Item-->
-				</div>
-				<!--end::Nav-->
-				<!--begin::Separator-->
-				<div class="separator separator-dashed my-7"></div>
-				<!--end::Separator-->
-
-
-			</div>
-			<!--end::Content-->
-		</div>
-		<!-- end::User Panel-->
-
-
-		<!--begin::Quick Panel-->
-	<div id="kt_quick_panel" class="offcanvas offcanvas-right pt-5 pb-10">
-		<!--begin::Header-->
-		<div class="offcanvas-header offcanvas-header-navs d-flex align-items-center justify-content-between mb-5">
-			<ul class="nav nav-bold nav-tabs nav-tabs-line nav-tabs-line-3x nav-tabs-primary flex-grow-1 px-10" role="tablist">
-				<li class="nav-item">
-					<a class="nav-link active" data-toggle="tab" href="#kt_chat_modal">Messages</a>
-				</li>
-			</ul>
-			<div class="offcanvas-close mt-n1 pr-5">
-				<a href="#" class="btn btn-xs btn-icon btn-light btn-hover-primary" id="kt_quick_panel_close">
-					<i class="ki ki-close icon-xs text-muted"></i>
-				</a>
-			</div>
-		</div>
-		<!--end::Header-->
-		<!--begin::Content-->
-		<div class="offcanvas-content px-10">
-			<div class="tab-content">
-				<div class="navi navi-icon-circle navi-spacer-x-0">
-					<?php
-					$user_id = $_SESSION['user_id'];
-					$sql = "SELECT * FROM message INNER JOIN user ON message.sender_id = user.user_id WHERE message.receiver_id = $user_id ORDER BY date_message desc";
-					$query = $dbh->prepare($sql);
-					$query->execute();
-					$results = $query->fetchAll(PDO::FETCH_OBJ);
-
-					foreach ($results as $res) :
-
-					?> <a href="lending_company/messages.php?sender_id=<?= htmlentities($res->sender_id) ?>">
-							<div class="navi-link rounded">
-								<div class="symbol symbol-50 mr-3">
+									</div>
 								</div>
 								<div class="navi-text">
-									<div class="font-weight-bold font-size-lg">
-										<?php
-										$red = htmlentities($res->user_type);
-
-										if ($red == 1) : ?>
-											<?= htmlentities($res->firstname) . ' ' . htmlentities($res->middlename) . ' ' . htmlentities($res->lastname); ?>
-										<?php elseif ($red == 2) : ?>
-											<?= htmlentities($res->firstname) . ' ' . htmlentities($res->middlename) . ' ' . htmlentities($res->lastname); ?>
-										<?php elseif ($red == 3) : ?>
-											<?= htmlentities($res->company_name); ?>
-										<?php elseif ($red == 4) : ?>
-											<?= htmlentities($res->firstname) . ' ' . htmlentities($res->middlename) . ' ' . htmlentities($res->lastname); ?>
-										<?php else : ?>
-											<?= htmlentities($res->company_name); ?>
-										<?php endif; ?>
-									</div><span class="font-size-sm"><?= htmlentities($res->date_message); ?></span>
-									<div class="text-muted"><?= htmlentities($res->message) ?></div>
+									<div class="font-weight-bold">My Account</div>
 								</div>
 							</div>
 						</a>
-					<?php endforeach; ?>
+						<!--end:Item-->
+						<!--begin::Item-->
+						<a href="lending_company/make_announcement.php" class="navi-item">
+							<div class="navi-link">
+								<div class="symbol symbol-40 bg-light mr-3">
+									<div class="symbol-label">
+										<span class="svg-icon svg-icon-md svg-icon-danger">
+											<!--begin::Svg Icon | path:assets/media/svg/icons/Communication/Adress-book2.svg-->
+											<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+												<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+													<rect x="0" y="0" width="24" height="24" />
+													<path d="M18,2 L20,2 C21.6568542,2 23,3.34314575 23,5 L23,19 C23,20.6568542 21.6568542,22 20,22 L18,22 L18,2 Z" fill="#000000" opacity="0.3" />
+													<path d="M5,2 L17,2 C18.6568542,2 20,3.34314575 20,5 L20,19 C20,20.6568542 18.6568542,22 17,22 L5,22 C4.44771525,22 4,21.5522847 4,21 L4,3 C4,2.44771525 4.44771525,2 5,2 Z M12,11 C13.1045695,11 14,10.1045695 14,9 C14,7.8954305 13.1045695,7 12,7 C10.8954305,7 10,7.8954305 10,9 C10,10.1045695 10.8954305,11 12,11 Z M7.00036205,16.4995035 C6.98863236,16.6619875 7.26484009,17 7.4041679,17 C11.463736,17 14.5228466,17 16.5815,17 C16.9988413,17 17.0053266,16.6221713 16.9988413,16.5 C16.8360465,13.4332455 14.6506758,12 11.9907452,12 C9.36772908,12 7.21569918,13.5165724 7.00036205,16.4995035 Z" fill="#000000" />
+												</g>
+											</svg>
+											<!--end::Svg Icon-->
+										</span>
+									</div>
+								</div>
+								<div class="navi-text">
+									<div class="font-weight-bold">Make Announcement</div>
+								</div>
+							</div>
+						</a>
+						<!--end:Item-->
+						<!--begin::Item-->
+						<a href="lending_company/send_feedback.php" class="navi-item">
+							<div class="navi-link">
+								<div class="symbol symbol-40 bg-light mr-3">
+									<div class="symbol-label">
+										<span class="svg-icon svg-icon-md svg-icon-success">
+											<!--begin::Svg Icon | path:assets/media/svg/icons/General/Settings-1.svg-->
+											<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+												<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+													<rect x="0" y="0" width="24" height="24" />
+													<path d="M7,3 L17,3 C19.209139,3 21,4.790861 21,7 C21,9.209139 19.209139,11 17,11 L7,11 C4.790861,11 3,9.209139 3,7 C3,4.790861 4.790861,3 7,3 Z M7,9 C8.1045695,9 9,8.1045695 9,7 C9,5.8954305 8.1045695,5 7,5 C5.8954305,5 5,5.8954305 5,7 C5,8.1045695 5.8954305,9 7,9 Z" fill="#000000" />
+													<path d="M7,13 L17,13 C19.209139,13 21,14.790861 21,17 C21,19.209139 19.209139,21 17,21 L7,21 C4.790861,21 3,19.209139 3,17 C3,14.790861 4.790861,13 7,13 Z M17,19 C18.1045695,19 19,18.1045695 19,17 C19,15.8954305 18.1045695,15 17,15 C15.8954305,15 15,15.8954305 15,17 C15,18.1045695 15.8954305,19 17,19 Z" fill="#000000" opacity="0.3" />
+												</g>
+											</svg>
+											<!--end::Svg Icon-->
+										</span>
+									</div>
+								</div>
+								<div class="navi-text">
+									<div class="font-weight-bold">Send Feedback</div>
+								</div>
+							</div>
+						</a>
+						<!--end:Item-->
+
+						<!--begin::Item-->
+						<span class="navi-item mt-2">
+							<span class="navi-link">
+								<a href="logout.php" class="btn btn-sm btn-light-primary font-weight-bolder py-3 px-6">Sign Out</a>
+							</span>
+						</span>
+						<!--end:Item-->
+					</div>
+					<!--end::Nav-->
+					<!--begin::Separator-->
+					<div class="separator separator-dashed my-7"></div>
+					<!--end::Separator-->
+
+
 				</div>
+				<!--end::Content-->
 			</div>
-		</div>
-	</div>
-	<!--end::Content-->
-	</div>
-	<!--end::Quick Panel-->
+			<!-- end::User Panel-->
 
 
-
-			<!--begin::Scrolltop-->
-			<div id="kt_scrolltop" class="scrolltop">
-				<span class="svg-icon">
-					<!--begin::Svg Icon | path:assets/media/svg/icons/Navigation/Up-2.svg-->
-					<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-						<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-							<polygon points="0 0 24 0 24 24 0 24" />
-							<rect fill="#000000" opacity="0.3" x="11" y="10" width="2" height="10" rx="1" />
-							<path d="M6.70710678,12.7071068 C6.31658249,13.0976311 5.68341751,13.0976311 5.29289322,12.7071068 C4.90236893,12.3165825 4.90236893,11.6834175 5.29289322,11.2928932 L11.2928932,5.29289322 C11.6714722,4.91431428 12.2810586,4.90106866 12.6757246,5.26284586 L18.6757246,10.7628459 C19.0828436,11.1360383 19.1103465,11.7686056 18.7371541,12.1757246 C18.3639617,12.5828436 17.7313944,12.6103465 17.3242754,12.2371541 L12.0300757,7.38413782 L6.70710678,12.7071068 Z" fill="#000000" fill-rule="nonzero" />
-						</g>
-					</svg>
-					<!--end::Svg Icon-->
-				</span>
-			</div>
-			<!--end::Scrolltop-->
-
-
-
-			<!--begin::Sticky Toolbar-->
-
-			<!--end::Sticky Toolbar-->
-			<!--begin::Demo Panel-->
-			<div id="kt_demo_panel" class="offcanvas offcanvas-right p-10">
+			<!--begin::Quick Panel-->
+			<div id="kt_quick_panel" class="offcanvas offcanvas-right pt-5 pb-10">
 				<!--begin::Header-->
-				<div class="offcanvas-header d-flex align-items-center justify-content-between pb-7">
-					<h4 class="font-weight-bold m-0">Select A Demo</h4>
-					<a href="#" class="btn btn-xs btn-icon btn-light btn-hover-primary" id="kt_demo_panel_close">
-						<i class="ki ki-close icon-xs text-muted"></i>
-					</a>
+				<div class="offcanvas-header offcanvas-header-navs d-flex align-items-center justify-content-between mb-5">
+					<ul class="nav nav-bold nav-tabs nav-tabs-line nav-tabs-line-3x nav-tabs-primary flex-grow-1 px-10" role="tablist">
+						<li class="nav-item">
+							<a class="nav-link active" data-toggle="tab" href="#kt_chat_modal">Messages</a>
+						</li>
+					</ul>
+					<div class="offcanvas-close mt-n1 pr-5">
+						<a href="#" class="btn btn-xs btn-icon btn-light btn-hover-primary" id="kt_quick_panel_close">
+							<i class="ki ki-close icon-xs text-muted"></i>
+						</a>
+					</div>
 				</div>
 				<!--end::Header-->
+				<!--begin::Content-->
+				<div class="offcanvas-content px-10">
+					<div class="tab-content">
+						<div class="navi navi-icon-circle navi-spacer-x-0">
+							<?php
+							$user_id = $_SESSION['user_id'];
+							$sql = "SELECT * FROM message INNER JOIN user ON message.sender_id = user.user_id WHERE message.receiver_id = $user_id ORDER BY date_message desc";
+							$query = $dbh->prepare($sql);
+							$query->execute();
+							$results = $query->fetchAll(PDO::FETCH_OBJ);
+
+							foreach ($results as $res) :
+
+							?> <a href="lending_company/messages.php?sender_id=<?= htmlentities($res->sender_id) ?>">
+									<div class="navi-link rounded">
+										<div class="symbol symbol-50 mr-3">
+										</div>
+										<div class="navi-text">
+											<div class="font-weight-bold font-size-lg">
+												<?php
+												$red = htmlentities($res->user_type);
+
+												if ($red == 1) : ?>
+													<?= htmlentities($res->firstname) . ' ' . htmlentities($res->middlename) . ' ' . htmlentities($res->lastname); ?>
+												<?php elseif ($red == 2) : ?>
+													<?= htmlentities($res->firstname) . ' ' . htmlentities($res->middlename) . ' ' . htmlentities($res->lastname); ?>
+												<?php elseif ($red == 3) : ?>
+													<?= htmlentities($res->company_name); ?>
+												<?php elseif ($red == 4) : ?>
+													<?= htmlentities($res->firstname) . ' ' . htmlentities($res->middlename) . ' ' . htmlentities($res->lastname); ?>
+												<?php else : ?>
+													<?= htmlentities($res->company_name); ?>
+												<?php endif; ?>
+											</div><span class="font-size-sm"><?= htmlentities($res->date_message); ?></span>
+											<div class="text-muted"><?= htmlentities($res->message) ?></div>
+										</div>
+									</div>
+								</a>
+							<?php endforeach; ?>
+						</div>
+					</div>
+				</div>
 			</div>
-			<!--end::Demo Panel-->
-			<script>var HOST_URL = "https://preview.keenthemes.com/keen/theme/tools/preview";</script>
-			<!--begin::Global Config(global config for global JS scripts)-->
-			<script>var KTAppSettings = { "breakpoints": { "sm": 576, "md": 768, "lg": 992, "xl": 1200, "xxl": 1400 }, "colors": { "theme": { "base": { "white": "#ffffff", "primary": "#3E97FF", "secondary": "#E5EAEE", "success": "#08D1AD", "info": "#844AFF", "warning": "#F5CE01", "danger": "#FF3D60", "light": "#E4E6EF", "dark": "#181C32" }, "light": { "white": "#ffffff", "primary": "#DEEDFF", "secondary": "#EBEDF3", "success": "#D6FBF4", "info": "#6125E1", "warning": "#FFF4DE", "danger": "#FFE2E5", "light": "#F3F6F9", "dark": "#D6D6E0" }, "inverse": { "white": "#ffffff", "primary": "#ffffff", "secondary": "#3F4254", "success": "#ffffff", "info": "#ffffff", "warning": "#ffffff", "danger": "#ffffff", "light": "#464E5F", "dark": "#ffffff" } }, "gray": { "gray-100": "#F3F6F9", "gray-200": "#EBEDF3", "gray-300": "#E4E6EF", "gray-400": "#D1D3E0", "gray-500": "#B5B5C3", "gray-600": "#7E8299", "gray-700": "#5E6278", "gray-800": "#3F4254", "gray-900": "#181C32" } }, "font-family": "Poppins" };</script>
-			<!--end::Global Config-->
-			<!--begin::Global Theme Bundle(used by all pages)-->
-			<script src="assets/admin/plugins/global/plugins.bundle.js"></script>
-			<script src="assets/admin/plugins/custom/prismjs/prismjs.bundle.js"></script>
-			<script src="assets/admin/js/scripts.bundle.js"></script>
-			<!--end::Global Theme Bundle-->
-			<!--begin::Page Vendors(used by this page)-->
-			<script src="assets/admin/plugins/custom/fullcalendar/fullcalendar.bundle.js"></script>
-			<!--end::Page Vendors-->
-			<!--begin::Page Scripts(used by this page)-->
-			<script src="assets/admin/js/pages/widgets.js"></script>
-	        <script src="assets/keen/js/pages/features/file-upload/image-input.js"></script>
-			<!--end::Page Scripts-->
-		</body>
-		<!--end::Body-->
-	</html>
+			<!--end::Content-->
+		</div>
+		<!--end::Quick Panel-->
+
+
+
+		<!--begin::Scrolltop-->
+		<div id="kt_scrolltop" class="scrolltop">
+			<span class="svg-icon">
+				<!--begin::Svg Icon | path:assets/media/svg/icons/Navigation/Up-2.svg-->
+				<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+					<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+						<polygon points="0 0 24 0 24 24 0 24" />
+						<rect fill="#000000" opacity="0.3" x="11" y="10" width="2" height="10" rx="1" />
+						<path d="M6.70710678,12.7071068 C6.31658249,13.0976311 5.68341751,13.0976311 5.29289322,12.7071068 C4.90236893,12.3165825 4.90236893,11.6834175 5.29289322,11.2928932 L11.2928932,5.29289322 C11.6714722,4.91431428 12.2810586,4.90106866 12.6757246,5.26284586 L18.6757246,10.7628459 C19.0828436,11.1360383 19.1103465,11.7686056 18.7371541,12.1757246 C18.3639617,12.5828436 17.7313944,12.6103465 17.3242754,12.2371541 L12.0300757,7.38413782 L6.70710678,12.7071068 Z" fill="#000000" fill-rule="nonzero" />
+					</g>
+				</svg>
+				<!--end::Svg Icon-->
+			</span>
+		</div>
+		<!--end::Scrolltop-->
+
+
+
+		<!--begin::Sticky Toolbar-->
+
+		<!--end::Sticky Toolbar-->
+		<!--begin::Demo Panel-->
+		<div id="kt_demo_panel" class="offcanvas offcanvas-right p-10">
+			<!--begin::Header-->
+			<div class="offcanvas-header d-flex align-items-center justify-content-between pb-7">
+				<h4 class="font-weight-bold m-0">Select A Demo</h4>
+				<a href="#" class="btn btn-xs btn-icon btn-light btn-hover-primary" id="kt_demo_panel_close">
+					<i class="ki ki-close icon-xs text-muted"></i>
+				</a>
+			</div>
+			<!--end::Header-->
+		</div>
+		<!--end::Demo Panel-->
+		<script>
+			var HOST_URL = "https://preview.keenthemes.com/keen/theme/tools/preview";
+		</script>
+		<!--begin::Global Config(global config for global JS scripts)-->
+		<script>
+			var KTAppSettings = {
+				"breakpoints": {
+					"sm": 576,
+					"md": 768,
+					"lg": 992,
+					"xl": 1200,
+					"xxl": 1400
+				},
+				"colors": {
+					"theme": {
+						"base": {
+							"white": "#ffffff",
+							"primary": "#3E97FF",
+							"secondary": "#E5EAEE",
+							"success": "#08D1AD",
+							"info": "#844AFF",
+							"warning": "#F5CE01",
+							"danger": "#FF3D60",
+							"light": "#E4E6EF",
+							"dark": "#181C32"
+						},
+						"light": {
+							"white": "#ffffff",
+							"primary": "#DEEDFF",
+							"secondary": "#EBEDF3",
+							"success": "#D6FBF4",
+							"info": "#6125E1",
+							"warning": "#FFF4DE",
+							"danger": "#FFE2E5",
+							"light": "#F3F6F9",
+							"dark": "#D6D6E0"
+						},
+						"inverse": {
+							"white": "#ffffff",
+							"primary": "#ffffff",
+							"secondary": "#3F4254",
+							"success": "#ffffff",
+							"info": "#ffffff",
+							"warning": "#ffffff",
+							"danger": "#ffffff",
+							"light": "#464E5F",
+							"dark": "#ffffff"
+						}
+					},
+					"gray": {
+						"gray-100": "#F3F6F9",
+						"gray-200": "#EBEDF3",
+						"gray-300": "#E4E6EF",
+						"gray-400": "#D1D3E0",
+						"gray-500": "#B5B5C3",
+						"gray-600": "#7E8299",
+						"gray-700": "#5E6278",
+						"gray-800": "#3F4254",
+						"gray-900": "#181C32"
+					}
+				},
+				"font-family": "Poppins"
+			};
+		</script>
+		<!--end::Global Config-->
+		<!--begin::Global Theme Bundle(used by all pages)-->
+		<script src="assets/admin/plugins/global/plugins.bundle.js"></script>
+		<script src="assets/admin/plugins/custom/prismjs/prismjs.bundle.js"></script>
+		<script src="assets/admin/js/scripts.bundle.js"></script>
+		<!--end::Global Theme Bundle-->
+		<!--begin::Page Vendors(used by this page)-->
+		<script src="assets/admin/plugins/custom/fullcalendar/fullcalendar.bundle.js"></script>
+		<!--end::Page Vendors-->
+		<!--begin::Page Scripts(used by this page)-->
+		<script src="assets/admin/js/pages/widgets.js"></script>
+		<script src="assets/keen/js/pages/features/file-upload/image-input.js"></script>
+		<!--end::Page Scripts-->
+</body>
+<!--end::Body-->
+
+</html>

@@ -147,7 +147,6 @@ $user = $query->fetch();
 									</span>
 									<span class="menu-text">Dashboard</span>
 								</a>
-							</li>
 								<li class="menu-section">
 								<h4 class="menu-text">Manage Account</h4>
 								<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
@@ -217,7 +216,6 @@ $user = $query->fetch();
 									</ul>
 								</div>
 							</li>
-
 							<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
 								<a href="javascript:;" class="menu-link menu-toggle">
 									<span class="svg-icon menu-icon">
@@ -245,13 +243,13 @@ $user = $query->fetch();
 											</a>
 										</li>
 										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-                                            <a href="lending_company/released_loan.php" class="menu-link menu-toggle">
-                                                <i class="menu-bullet">
-                                                    <span></span>
-                                                </i>
-                                                <span class="menu-text">Release Loan</span>
-                                            </a>
-                                        </li>
+											<a href="lending_company/released_loan.php" class="menu-link menu-toggle">
+												<i class="menu-bullet">
+													<span></span>
+												</i>
+												<span class="menu-text">Release Loan</span>
+											</a>
+										</li>
 										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
 											<a href="lending_company/declined_loan.php" class="menu-link menu-toggle">
 												<i class="menu-bullet">
@@ -269,14 +267,14 @@ $user = $query->fetch();
 								<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
 							</li>
 							<li class="menu-item menu-item-submenu" data-menu-toggle="hover">
-							<a href="lending_company/record_payment.php" class="menu-link menu-toggle">
+								<a href="lending_company/released_loan.php" class="menu-link menu-toggle">
 									<span class="svg-icon menu-icon">
 									</span>
 									<span class="menu-text">Add Payment</span>
 								</a>
 							</li>
 							<li class="menu-item menu-item-submenu" data-menu-toggle="hover">
-							<a href="lending_company/view_payment.php" class="menu-link menu-toggle">
+								<a href="lending_company/view_payment.php" class="menu-link menu-toggle">
 									<span class="svg-icon menu-icon">
 									</span>
 									<span class="menu-text">Payment Records</span>
@@ -286,12 +284,24 @@ $user = $query->fetch();
 								<h4 class="menu-text">Manage Report</h4>
 								<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
 							</li>
-							<li class="menu-item menu-item-submenu" data-menu-toggle="hover">
-							<a href="lending_company/generate_report.php" class="menu-link menu-toggle">
+							<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+								<a href="javascript:;" class="menu-link menu-toggle">
 									<span class="svg-icon menu-icon">
 									</span>
 									<span class="menu-text">Generate Report</span>
+									<i class="menu-arrow"></i>
 								</a>
+								<div class="menu-submenu">
+									<ul class="menu-subnav">
+										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+											<a href="lending_company/generate_report.php" class="menu-link menu-toggle">
+												<span class="svg-icon menu-icon">
+												</span>
+												<span class="menu-text">Debtor Report</span>
+											</a>
+										</li>
+									</ul>
+								</div>
 							</li>
 							<!--end::Menu Nav-->
 					</div>
@@ -424,6 +434,11 @@ $user = $query->fetch();
 							<div class="card card-custom">
 								<div class="card-body">
 									<h5> Pending Loan Application</h5>
+									<form action="" method="post">
+										<div class="col-lg-4">
+											<input type="text" name="searhc_input" class="form-control" placeholder="Search.....">
+										</div>
+									</form><br>
 									<table class="table table-bordered">
 										<thead>
 											<tr>
@@ -434,15 +449,19 @@ $user = $query->fetch();
 										</thead>
 										<tbody>
 											<?php
-											$lender_id = $_SESSION['user_id'];
-
-											$sql = "SELECT loan_application.*, user.* FROM loan_application INNER JOIN user ON loan_application.debtor_id = user.user_id WHERE loan_application.lender_id = '$lender_id' AND loan_application.loan_status = 'pending'";
+											if(isset($_POST['search_input'])){
+												$lender_id = $_SESSION['user_id'];
+												$search_input = $_POST['search_input'];
+												$sql = "SELECT loan_application.*, user.* FROM loan_application INNER JOIN user ON loan_application.debtor_id = user.user_id WHERE loan_application.lender_id = '$lender_id' AND loan_application.loan_status = 'pending'";
+											}else{
+												$sql = "SELECT loan_application.*, user.* FROM loan_application INNER JOIN user ON loan_application.debtor_id = user.user_id WHERE loan_application.lender_id = '$lender_id' AND loan_application.loan_status = 'pending'";
+											}
 											$query = $dbh->prepare($sql);
 											$query->execute();
-											$res = $query->fetchAll(PDO::FETCH_OBJ);
-											if ($query->rowCount() > 0) {
-												foreach ($res as $rem) { ?>
-
+											$row = $query->fetchAll(PDO::FETCH_OBJ);
+											if($query->rowCount()>0){
+												foreach ($row as $rem);?>
+											
 												<tr>
 													<th scope="row">
 														Name:&nbsp;<?= htmlentities($rem->firstname); ?>&nbsp;<?= htmlentities($rem->lastname); ?></br>
@@ -464,11 +483,10 @@ $user = $query->fetch();
 														</a>
 													</td>
 												</tr>
-
+											<?php }?>
 										</tbody>
 									</table>
-							<?php }
-											} ?>
+								
 								</div>
 							</div>
 						</div>

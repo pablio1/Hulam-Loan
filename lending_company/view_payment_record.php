@@ -24,6 +24,17 @@ $query = $dbh->prepare($sql);
 $query->execute();
 $user = $query->fetch();
 ?>
+
+
+<?php
+$loan_app_id = intval($_GET['loan_app_id']);
+
+$sql ="SELECT * FROM loan_application INNER JOIN user ON loan_application.debtor_id = user.user_id WHERE loan_application.loan_app_id = $loan_app_id";
+$query = $dbh->prepare($sql);
+$query->execute();
+$debtor = $query->fetch();
+
+?>
 <!DOCTYPE html>
 
 <html lang="en">
@@ -32,7 +43,7 @@ $user = $query->fetch();
 <head>
 	<base href="../">
 	<meta charset="utf-8" />
-	<title>Hulam | Declined Loan</title>
+	<title>Hulam | View Payment</title>
 	<meta name="description" content="Updates and statistics" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 	<!--begin::Fonts-->
@@ -147,7 +158,8 @@ $user = $query->fetch();
 									</span>
 									<span class="menu-text">Dashboard</span>
 								</a>
-								<li class="menu-section">
+							</li>
+							<li class="menu-section">
 								<h4 class="menu-text">Manage Account</h4>
 								<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
 							</li>
@@ -311,7 +323,6 @@ $user = $query->fetch();
 			</div>
 			<!--end::Aside-->
 
-
 				<!--begin::Wrapper-->
 				<div class="d-flex flex-column flex-row-fluid wrapper" id="kt_wrapper">
 					<!--begin::Header-->
@@ -434,52 +445,49 @@ $user = $query->fetch();
 						<div class="container">
 							<div class="card card-custom">
 								<div class="card-body">
-									<h5>Declined Loan Application</h5>
+									<h5> Payment Records For:  &nbsp;<?= $debtor['firstname'].' '.$debtor['middlename'].' '.$debtor['lastname']?></h5>
+                                    <form method="post" class="quick-search-form">
+										<div class="col-lg-4">
+											<input type="text" name="search_input" class="form-control" placeholder="Search..."/>
+										</div>
+									</form></br>
 									<table class="table table-bordered">
 										<thead>
 											<tr>
-												<th>Borrower</th>
-												<th>Loan Details</th>
-												<th>Action</th>
+												<th>Loan Account No</th>
+												<th>Date Paid</th>
+												<th>Amount</th>
 											</tr>
 										</thead>
 										<tbody>
 											<?php
-											$lender_id = $_SESSION['user_id'];
+                                            if(isset($_POST['search_input'])){
+												$search_input = $_POST['search_input'];
+												$loan_app_id = intval($_GET['loan_app_id']);
+												$debtor_id = $debtor['user_id'];
 
-											$sql = "SELECT loan_application.*, user.* FROM loan_application INNER JOIN user ON loan_application.debtor_id = user.user_id WHERE loan_application.lender_id = '$lender_id' AND loan_application.loan_status = 'declined'";
+												$sql = "SELECT * FROM loan_payment_detail WHERE loan_app_id LIKE '%$search_input%' AND loan_app_id = $loan_app_id AND user_id = $debtor_id";
+											}else{
+												$sql = "SELECT * FROM loan_payment_detail WHERE loan_app_id = '118'";
+											}
 											$query = $dbh->prepare($sql);
 											$query->execute();
-											$res = $query->fetchAll(PDO::FETCH_OBJ);
-											if ($query->rowCount() > 0) {
-												foreach ($res as $rem) { ?>
-
-												<tr>
-													<th scope="row">
-														Name:&nbsp;<?= htmlentities($rem->firstname); ?>&nbsp;<?= htmlentities($rem->lastname); ?></br>
-														Current Address:&nbsp;<?= htmlentities($rem->c_street) . ' ' . htmlentities($rem->c_barangay); ?><?= htmlentities($rem->c_city) . ' ' . htmlentities($rem->c_province) . ' ' . htmlentities($rem->c_zipcode); ?></br>
-														Mobile No: <?= htmlentities($rem->mobile)?>
-													</th>
-													<td>
-														Loan Application No: <?= htmlentities($rem->loan_app_id)?></br>
-														Application Date: <?= htmlentities($rem->date); ?></br>
-														Loan Amount: <?= htmlentities($rem->loan_amount)?></br>
-														Total Payable Amount: <?= htmlentities($rem->total_amount)?></br>
-														Loan Term: <?= htmlentities($rem->loan_term)?></br>
-														Interest Rate: <?= htmlentities($rem->fix_rate)?>%</br>
-														Monthly Payable: <?= htmlentities($rem->monthly_payment)?>
-													</td>
-													<td>
-														<a href="lending_company/view_application.php?loan_app_id=<?= htmlentities($rem->loan_app_id) ?>" class="kt-nav__link">
-															<span class="kt-nav__link-text">View</span>
-														</a>
-													</td>
-												</tr>
-
+											while($row = $query->fetch()){
+												echo "
+													<tr>
+														<td>".$row['loan_app_id']."</td>
+														<td>".$row['payment']."</td>
+														<td>".$row['semi_payment1']."</td>
+														<td>".$row['semi_payment2']."</td>
+														<td>".$row['late_charge']."</td>
+														<td>".$row['date_paid']."</td>
+														<td>".$row['semi_payment1'] + $row['semi_payment2'] + $row['late_charge']."</td>
+													</tr>
+												";
+											}?>
 										</tbody>
 									</table>
-							<?php }
-											} ?>
+							
 								</div>
 							</div>
 						</div>
@@ -511,7 +519,6 @@ $user = $query->fetch();
 	</div>
 
 
-	
 		<!-- begin::User Panel-->
 		<div id="kt_quick_user" class="offcanvas offcanvas-right p-10">
 			<!--begin::Header-->
@@ -720,7 +727,6 @@ $user = $query->fetch();
 
 
 
-
 	<!--begin::Scrolltop-->
 	<div id="kt_scrolltop" class="scrolltop">
 		<span class="svg-icon">
@@ -738,123 +744,6 @@ $user = $query->fetch();
 	<!--end::Scrolltop-->
 
 
-
-	<!--begin::Sticky Toolbar-->
-
-	<!--end::Sticky Toolbar-->
-	<!--begin::Demo Panel-->
-	<div id="kt_demo_panel" class="offcanvas offcanvas-right p-10">
-		<!--begin::Header-->
-		<div class="offcanvas-header d-flex align-items-center justify-content-between pb-7">
-			<h4 class="font-weight-bold m-0">Select A Demo</h4>
-			<a href="#" class="btn btn-xs btn-icon btn-light btn-hover-primary" id="kt_demo_panel_close">
-				<i class="ki ki-close icon-xs text-muted"></i>
-			</a>
-		</div>
-		<!--end::Header-->
-		<!--begin::Content-->
-		<div class="offcanvas-content">
-			<!--begin::Wrapper-->
-			<div class="offcanvas-wrapper mb-5 scroll-pull">
-				<h5 class="font-weight-bold mb-4 text-center">Demo 1</h5>
-				<div class="overlay rounded-lg mb-8 offcanvas-demo offcanvas-demo-active">
-					<div class="overlay-wrapper rounded-lg">
-						<img src="assets/media/demos/demo1.png" alt="" class="w-100" />
-					</div>
-					<div class="overlay-layer">
-						<a href="../../demo1/dist" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">HTML</a>
-						<a href="https://preview.keenthemes.com/keen/demo1/rtl/index.html" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">RTL</a>
-					</div>
-				</div>
-				<h5 class="font-weight-bold mb-4 text-center">Demo 2</h5>
-				<div class="overlay rounded-lg mb-8 offcanvas-demo">
-					<div class="overlay-wrapper rounded-lg">
-						<img src="assets/media/demos/demo2.png" alt="" class="w-100" />
-					</div>
-					<div class="overlay-layer">
-						<a href="../../demo2/dist" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">HTML</a>
-						<a href="https://preview.keenthemes.com/keen/demo2/rtl/index.html" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">RTL</a>
-					</div>
-				</div>
-				<h5 class="font-weight-bold mb-4 text-center">Demo 3</h5>
-				<div class="overlay rounded-lg mb-8 offcanvas-demo">
-					<div class="overlay-wrapper rounded-lg">
-						<img src="assets/media/demos/demo3.png" alt="" class="w-100" />
-					</div>
-					<div class="overlay-layer">
-						<a href="../../demo3/dist" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">HTML</a>
-						<a href="https://preview.keenthemes.com/keen/demo3/rtl/index.html" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">RTL</a>
-					</div>
-				</div>
-				<h5 class="font-weight-bold mb-4 text-center">Demo 4</h5>
-				<div class="overlay rounded-lg mb-8 offcanvas-demo">
-					<div class="overlay-wrapper rounded-lg">
-						<img src="assets/media/demos/demo4.png" alt="" class="w-100" />
-					</div>
-					<div class="overlay-layer">
-						<a href="../../demo4/dist" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">HTML</a>
-						<a href="https://preview.keenthemes.com/keen/demo4/rtl/index.html" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">RTL</a>
-					</div>
-				</div>
-				<h5 class="font-weight-bold mb-4 text-center">Demo 5</h5>
-				<div class="overlay rounded-lg mb-8 offcanvas-demo">
-					<div class="overlay-wrapper rounded-lg">
-						<img src="assets/media/demos/demo5.png" alt="" class="w-100" />
-					</div>
-					<div class="overlay-layer">
-						<a href="../../demo5/dist" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">HTML</a>
-						<a href="https://preview.keenthemes.com/keen/demo5/rtl/index.html" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">RTL</a>
-					</div>
-				</div>
-				<h5 class="font-weight-bold mb-4 text-center">Demo 6</h5>
-				<div class="overlay rounded-lg mb-8 offcanvas-demo">
-					<div class="overlay-wrapper rounded-lg">
-						<img src="assets/media/demos/demo6.png" alt="" class="w-100" />
-					</div>
-					<div class="overlay-layer">
-						<a href="../../demo6/dist" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">HTML</a>
-						<a href="https://preview.keenthemes.com/keen/demo6/rtl/index.html" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">RTL</a>
-					</div>
-				</div>
-				<h5 class="font-weight-bold mb-4 text-center">Demo 7</h5>
-				<div class="overlay rounded-lg mb-8 offcanvas-demo">
-					<div class="overlay-wrapper rounded-lg">
-						<img src="assets/media/demos/demo7.png" alt="" class="w-100" />
-					</div>
-					<div class="overlay-layer">
-						<a href="../../demo7/dist" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">HTML</a>
-						<a href="https://preview.keenthemes.com/keen/demo7/rtl/index.html" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">RTL</a>
-					</div>
-				</div>
-				<h5 class="font-weight-bold mb-4 text-center">Demo 8</h5>
-				<div class="overlay rounded-lg mb-8 offcanvas-demo">
-					<div class="overlay-wrapper rounded-lg">
-						<img src="assets/media/demos/demo8.png" alt="" class="w-100" />
-					</div>
-					<div class="overlay-layer">
-						<a href="#" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow disabled opacity-90">Coming soon</a>
-					</div>
-				</div>
-				<h5 class="font-weight-bold mb-4 text-center">Demo 9</h5>
-				<div class="overlay rounded-lg mb-8 offcanvas-demo">
-					<div class="overlay-wrapper rounded-lg">
-						<img src="assets/media/demos/demo9.png" alt="" class="w-100" />
-					</div>
-					<div class="overlay-layer">
-						<a href="#" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow disabled opacity-90">Coming soon</a>
-					</div>
-				</div>
-			</div>
-			<!--end::Wrapper-->
-			<!--begin::Purchase-->
-			<div class="offcanvas-footer">
-				<a href="https://themes.getbootstrap.com/product/keen-the-ultimate-bootstrap-admin-theme/" target="_blank" class="btn btn-block btn-danger btn-shadow font-weight-bolder text-uppercase">Buy Keen Now!</a>
-			</div>
-			<!--end::Purchase-->
-		</div>
-		<!--end::Content-->
-	</div>
-	<!--end::Demo Panel-->
 	<script>
 		var HOST_URL = "https://preview.keenthemes.com/keen/theme/tools/preview";
 	</script>

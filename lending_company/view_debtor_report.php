@@ -2,50 +2,141 @@
 session_start();
 error_reporting(0);
 include('../db_connection/config.php');
-
 if ($_SESSION['user_type'] != 3) {
 	header('location: ../index.php');
-} ?>
+}?>
+
 
 <?php
-$lender_id = $_SESSION['user_id'];
+$id = intval($_GET['loan_app_id']);
 
-$sql = "SELECT loan_features.*, user.* FROM loan_features INNER JOIN user ON loan_features.lender_id = user.user_id WHERE lender_id = $lender_id";
+$sql = "SELECT loan_application.*, user.* FROM loan_application INNER JOIN user on loan_application.debtor_id = user.user_id WHERE loan_application.loan_app_id = $id";
 $query = $dbh->prepare($sql);
 $query->execute();
-$user = $query->fetch();
-?>
-<?php
-$lender_id = $_SESSION['user_id'];
-
-$sql = "SELECT * FROM user WHERE user_id = $lender_id";
-$query = $dbh->prepare($sql);
-$query->execute();
-$user = $query->fetch();
+$debtor = $query->fetch();
 ?>
 
 <?php
-if (isset($_POST['submit_announce'])) {
+if (isset($_POST['send_message'])) {
+	$id = intval($_GET['loan_app_id']);
 
-	$user_id = $_SESSION['user_id'];
-	$date_announce = $_POST['date_announce'];
-	$title = $_POST['title'];
-	$content = $_POST['content'];
+	$sender_id = $_POST['sender_id'];
+	$receiver_id = $_POST['receiver_id'];
+	$date_message = $_POST['date_message'];
+	$message = $_POST['message'];
 
-	$insert = "INSERT INTO announcement(user_id,date_announce,title,content)VALUES('$user_id','$date_announce','$title','$content')";
+	$insert = "INSERT INTO message(sender_id,receiver_id,message,date_message)VALUES(:sender_id,:receiver_id,:message,:date_message)";
 	$query = $dbh->prepare($insert);
+	$query->bindParam(':sender_id', $sender_id, PDO::PARAM_STR);
+	$query->bindParam(':receiver_id', $receiver_id, PDO::PARAM_STR);
+	$query->bindParam(':message', $message, PDO::PARAM_STR);
+	$query->bindParam(':date_message', $date_message, PDO::PARAM_STR);
 	if ($query->execute()) {
-		$_SESSION['status_ann'] = "Announcement added sucessfully!";
-		header("Location: index.php");
+		$_SESSION['status_released'] = "Message Sent";
+		header("Location: view_released.php?loan_app_id=$id");
 		exit();
 	} else {
-		$_SESSION['status_ann'] = "Message Not Sent";
-		header('Location: index.php');
+		$_SESSION['status_released'] = "Message Not Sent";
+		header('Location: view_released.php?loan_app_id=$id');
 		exit();
 	}
 }
 ?>
 
+<?php
+if (isset($_POST['released_loan'])) {
+	$id = intval($_GET['loan_app_id']);
+	$released_date = $_POST['released_date'];
+    $sender_id = $_POST['sender_id'];
+	$receiver_id = $_POST['receiver_id'];
+    $loan_message = $_POST['loan_message'];
+	$monthly_due_date = $_POST['monthly_due_date'];
+	$remaining_balance = $_POST['remaining_balance'];
+	$monthly_interest = $_POST['monthly_interest'];
+	$monthly_payable= $_POST['monthly_payable'];
+	$payment_status = 'unpaid';
+ 
+	$update = "UPDATE loan_application SET loan_status = 'Released', released_date = :released_date WHERE loan_app_id = $id";
+	$query2 = $dbh->prepare($update);
+	$query2->bindParam(':released_date',$released_date,PDO::PARAM_STR);
+    $query2->execute();
+
+	$s = "SELECT * FROM loan_payment WHERE loan_app_id = $id";
+	$ss = $dbh->prepare($s);
+	$ss->execute();
+	if($ss->rowCount()==0){
+		$insert2 = "INSERT INTO loan_payment(loan_app_id,debtor_id,lender_id,remaining_balance,monthly_interest,monthly_payable,monthly_due_date,payment_status)
+		VALUES(:loan_app_id,:debtor_id,:lender_id,:remaining_balance,:monthly_interest,:monthly_payable,:monthly_due_date,:payment_status)";
+		$insertquery = $dbh->prepare($insert2);
+		$insertquery->bindParam(':loan_app_id',$id,PDO::PARAM_STR);
+		$insertquery->bindParam(':debtor_id',$receiver_id,PDO::PARAM_STR);
+		$insertquery->bindParam(':lender_id',$sender_id,PDO::PARAM_STR);
+		$insertquery->bindParam(':remaining_balance',$remaining_balance,PDO::PARAM_STR);
+		$insertquery->bindParam(':monthly_interest',$monthly_interest,PDO::PARAM_STR);
+		$insertquery->bindParam(':monthly_payable',$monthly_payable,PDO::PARAM_STR);
+		$insertquery->bindParam(':monthly_due_date',$monthly_due_date,PDO::PARAM_STR);
+		$insertquery->bindParam(':payment_status',$payment_status,PDO::PARAM_STR);
+		$insertquery->execute();
+	}else{
+		$update2 = "UPDATE loan_payment SET debtor_id =:debtor_id,lender_id =:lender_id,remaining_balance=:remaining_balance,
+		monthly_interest=:monthly_interest,monthly_payable =:monthly_payable,monthly_due_date=:monthly_due_date,payment_status=:payment_status WHERE loan_app_id =$id";
+		$iquery = $dbh->prepare($update2);
+		$iquery->bindParam(':debtor_id',$receiver_id,PDO::PARAM_STR);
+		$iquery->bindParam(':lender_id',$sender_id,PDO::PARAM_STR);
+		$iquery->bindParam(':remaining_balance',$remaining_balance,PDO::PARAM_STR);
+		$iquery->bindParam(':monthly_interest',$monthly_interest,PDO::PARAM_STR);
+		$iquery->bindParam(':monthly_payable',$monthly_payable,PDO::PARAM_STR);
+		$iquery->bindParam(':monthly_due_date',$monthly_due_date,PDO::PARAM_STR);
+		$iquery->bindParam(':payment_status',$payment_status,PDO::PARAM_STR);
+		$iquery->execute();
+	}
+
+    $insert = "INSERT INTO message(sender_id,receiver_id,message,date_message)VALUES(:sender_id,:receiver_id,:message,:date_message)";
+	$query = $dbh->prepare($insert);
+	$query->bindParam(':sender_id', $sender_id, PDO::PARAM_STR);
+	$query->bindParam(':receiver_id', $receiver_id, PDO::PARAM_STR);
+    $query->bindParam(':message', $loan_message, PDO::PARAM_STR);
+	$query->bindParam(':date_message', $released_date, PDO::PARAM_STR);
+
+	if($query->execute()){
+		$_SESSION['status_released'] = "Loan Released!";
+		header("Location: view_released.php?loan_app_id=$id");
+		exit();
+	} else {
+		$_SESSION['status_released'] = "Error!";
+		header('Location: view_released.php?loan_app_id=$id');
+		exit();
+	}
+}
+?>
+
+<?php
+if (isset($_POST['declined_loan'])) {
+	$id = intval($_GET['loan_app_id']);
+
+	$update = "UPDATE loan_application SET loan_status = 'Declined' WHERE loan_app_id = $id";
+	$query2 = $dbh->prepare($update);
+
+	if($query2->execute()){
+		$_SESSION['status_declined'] = "Loan Declined!";
+		header("Location: view_declined.php?loan_app_id=$id");
+		exit();
+	} else {
+		$_SESSION['status_declined'] = "Error!";
+		header('Location: view_declined.php?loan_app_id=$id');
+		exit();
+	}
+}
+?>
+
+<?php
+$lender_id = $_SESSION['user_id'];
+
+$sql ="SELECT * FROM user WHERE user_id = $lender_id";
+$query = $dbh->prepare($sql);
+$query->execute();
+$user = $query->fetch();
+?>
 <!DOCTYPE html>
 
 <html lang="en">
@@ -170,7 +261,7 @@ if (isset($_POST['submit_announce'])) {
 									<span class="menu-text">Dashboard</span>
 								</a>
 							</li>
-							<li class="menu-section">
+                            <li class="menu-section">
 								<h4 class="menu-text">Manage Account</h4>
 								<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
 							</li>
@@ -422,34 +513,33 @@ if (isset($_POST['submit_announce'])) {
 
 				<!--begin::Content-->
 				<div class="content d-flex flex-column flex-column-fluid" id="kt_content" style="background-image:url('assets/keen/media/logos/banner.png')">
-					<!--begin::Subheader-->
 					<div class="subheader py-6 py-lg-8 subheader-transparent" id="kt_subheader">
 						<div class="container d-flex align-items-center justify-content-between flex-wrap flex-sm-nowrap">
-							<!--begin::Info-->
 							<div class="d-flex align-items-center flex-wrap mr-1">
-								<!--begin::Page Heading-->
 								<div class="d-flex align-items-baseline flex-wrap mr-5">
-									<!--begin::Page Title-->
 									<h4 class="text-white font-weight-bold my-1 mr-5">Dashboard |</h4>
-									<h5 class="text-white font-weight-bold my-1 mr-5"><?= $user['company_name'] ?></h5>
-									<a href="lending_company/view_announcements.php" style="font-size: 20px; font-style:italic">View Announcements</a>
-									<!--end::Page Title-->
+									<h5 class="text-white font-weight-bold my-1 mr-5">Lending Investor</h5>
+									<div class="col-xl-12 col-xl-12">
+										<?php
+										if(isset($_SESSION['status_released'])){
+										?>
+											<div class="alert alert-custom alert-notice alert-light-success fade show" role="alert">
+												<div class="alert-text">
+													<h4><?php echo $_SESSION['status_released'];?></h4>
+												</div>
+												<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+											</div>
+										<?php unset($_SESSION['status_released']);
+										}?>
+									</div>
 								</div>
-								<!--end::Page Heading-->
 							</div>
-							<!--end::Info-->
-							<!--begin::Toolbar-->
 							<div class="d-flex align-items-center flex-wrap">
-								<!--begin::Daterange-->
 								<a href="#" class="btn btn-fixed-height btn-bg-white btn-text-dark-50 btn-hover-text-primary btn-icon-primary font-weight-bolder font-size-sm px-5 my-1 mr-3" id="kt_dashboard_daterangepicker" data-toggle="tooltip" title="Select dashboard daterange" data-placement="top">
 									<span class="opacity-60 font-weight-bolder mr-2" id="kt_dashboard_daterangepicker_title">Today</span>
 									<span class="font-weight-bolder" id="kt_dashboard_daterangepicker_date">Aug 16</span>
 								</a>
-								<!--end::Daterange-->
-								<!--begin::Dropdown-->
-								<!--end::Dropdown-->
 							</div>
-							<!--end::Toolbar-->
 						</div>
 					</div>
 					<!--end::Subheader-->
@@ -459,159 +549,311 @@ if (isset($_POST['submit_announce'])) {
 					<div class="d-flex flex-column-fluid">
 						<!--begin::Container-->
 						<div class="container">
-							<!--begin::Dashboard-->
-							<!--begin::Row-->
-							<div class="row">
-								<div class="col-lg-3">
-									<div class="card card-custom card-stretch gutter-b">
-										<div class="card-body">
-											<div class="d-flex align-items-center justify-content-between flex-wrap">
-												<span class="font-size-h6 text-muted font-weight-bolder text-uppercase pr-2">Pending Loan Application</span>
-											</div>
-											<div class="card-body d-flex align-items-center justify-content-between pt-7 flex-wrap">
-												<span class="font-weight-bolder display5 text-dark-75 py-4 pl-5 pr-5">
-													<p class="text-primary font-size-h2 font-weight-bolder pt-3 mb-0">
-														<?php
-														$id = $_SESSION['user_id'];
-
-														$sql = "SELECT count(*) AS loan_app_id FROM loan_application WHERE loan_application.loan_status = 'Pending' AND lender_id = $id ";
-														$query = $dbh->prepare($sql);
-														$query->execute();
-														$results = $query->fetchAll(PDO::FETCH_OBJ);
-
-														if ($query->rowCount() > 0) {
-															foreach ($results as $result) { ?>
-																<?php echo htmlentities($result->loan_app_id); ?>
-														<?php }
-														} ?>
-													</p>
+							<div class="card card-custom gutter-b">
+								<div class="card-body">
+									<!--begin::Top-->
+									<div class="d-flex">
+										<!--begin::Pic-->
+										<div class="flex-shrink-0 mr-7">
+											<div class="symbol symbol-50 symbol-lg-120">
+											<img alt="Pic" src="/hulam/assets/keen/hulam_media/<?=$debtor ['profile_pic'] ?>">
 											</div>
 										</div>
-										<div class="card-footer border-0 d-flex align-items-center justify-content-between pt-0">
-											<span></span>
-											<a href="lending_company/pending_loan.php" class="btn btn-md btn-primary font-weight-bolder px-6">View</a>
+										<!--end::Pic-->
+										<!--begin: Info-->
+										<div class="flex-grow-1">
+											<!--begin::Title-->
+											<div class="d-flex align-items-center justify-content-between flex-wrap mt-2">
+												<!--begin::User-->
+												<div class="mr-3">
+													<!--begin::Name-->
+													<h4 class="d-flex align-items-center text-dark text-hover-primary font-size-h5 font-weight-bold mr-3"><?= $debtor ['firstname'] . ' ' . $debtor ['middlename'] . ' ' . $debtor ['lastname'] ?></h4>
+													<?php
+													if($debtor ['loan_status']=='Pending'):?>
+														<span class="text-warning font-weight-bolder mr-2">Loan &nbsp;<?= $debtor ['loan_status']?></span>
+													<?php elseif($debtor ['loan_status']=='Approved'):?>
+														<span class="text-primary font-weight-bolder mr-2">Loan &nbsp;<?= $debtor ['loan_status']?></span>
+													<?php elseif($debtor ['loan_status']=='Released'):?>
+														<span class="text-info font-weight-bolder mr-2">Loan &nbsp;<?= $debtor ['loan_status']?></span>
+													<?php else:?>
+														<span class="text-danger font-weight-bolder mr-2">Loan &nbsp;<?= $debtor ['loan_status']?></span>
+													<?php endif; ?>
+													<!--end::Name-->
+													<!--begin::Contacts-->
+													<div class="d-flex flex-wrap my-2">
+														<span class="svg-icon svg-icon-md svg-icon-gray-500 mr-1">
+															<!--begin::Svg Icon | path:assets/media/svg/icons/Communication/Mail-notification.svg-->
+															<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+																<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+																	<rect x="0" y="0" width="24" height="24"></rect>
+																	<path d="M21,12.0829584 C20.6747915,12.0283988 20.3407122,12 20,12 C16.6862915,12 14,14.6862915 14,18 C14,18.3407122 14.0283988,18.6747915 14.0829584,19 L5,19 C3.8954305,19 3,18.1045695 3,17 L3,8 C3,6.8954305 3.8954305,6 5,6 L19,6 C20.1045695,6 21,6.8954305 21,8 L21,12.0829584 Z M18.1444251,7.83964668 L12,11.1481833 L5.85557487,7.83964668 C5.4908718,7.6432681 5.03602525,7.77972206 4.83964668,8.14442513 C4.6432681,8.5091282 4.77972206,8.96397475 5.14442513,9.16035332 L11.6444251,12.6603533 C11.8664074,12.7798822 12.1335926,12.7798822 12.3555749,12.6603533 L18.8555749,9.16035332 C19.2202779,8.96397475 19.3567319,8.5091282 19.1603533,8.14442513 C18.9639747,7.77972206 18.5091282,7.6432681 18.1444251,7.83964668 Z" fill="#000000"></path>
+																	<circle fill="#000000" opacity="0.3" cx="19.5" cy="17.5" r="2.5"></circle>
+																</g>
+															</svg>
+															<!--end::Svg Icon-->
+														</span>
+														<span class="mr-2"><?= $debtor ['email'] ?></span>
+													</div>
+													<div class="d-flex flex-wrap my-2">
+														<span class="svg-icon svg-icon-md svg-icon-gray-500 mr-1">
+															<!--begin::Svg Icon | path:assets/media/svg/icons/Map/Marker2.svg-->
+															<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+																<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+																	<rect x="0" y="0" width="24" height="24"></rect>
+																	<path d="M9.82829464,16.6565893 C7.02541569,15.7427556 5,13.1079084 5,10 C5,6.13400675 8.13400675,3 12,3 C15.8659932,3 19,6.13400675 19,10 C19,13.1079084 16.9745843,15.7427556 14.1717054,16.6565893 L12,21 L9.82829464,16.6565893 Z M12,12 C13.1045695,12 14,11.1045695 14,10 C14,8.8954305 13.1045695,8 12,8 C10.8954305,8 10,8.8954305 10,10 C10,11.1045695 10.8954305,12 12,12 Z" fill="#000000"></path>
+																</g>
+															</svg>
+															<!--end::Svg Icon-->
+														</span><?= $debtor ['p_street'] . ' ' . $debtor ['p_barangay'] . ' ' . $debtor ['p_city'] . ' ' . $debtor ['p_province'] . ' ' . $debtor ['p_zipcode'] ?>
+													</div>
+													<div class="d-flex flex-wrap my-2">
+														<span class="font-weight-bolder font-size-sm">Contact No:
+														</span><?= $debtor ['mobile'] ?>
+													</div>
+													<!--end::Contacts-->
+												</div>
+												<!--begin::User-->
+												<?php
+												$id = intval($_GET['loan_app_id']);
+
+												$sql = "SELECT loan_application.*, user.* FROM loan_application INNER JOIN user on loan_application.debtor_id = user.user_id WHERE loan_application.loan_app_id = $id";
+												$query = $dbh->prepare($sql);
+												$query->execute();
+												$user = $query->fetch();
+
+												$id = $user['debtor_id'];
+
+												$sql = "SELECT * FROM debtors_info WHERE user_id = $id";
+												$que = $dbh->prepare($sql);
+												$que->execute();
+												$res = $que->fetch();
+												?>
+												
+
+												<!--begin::Actions-->
+												<div class="my-lg-0 my-1">
+													<!-- <?php if($user['loan_status']=='Released'):?>
+														<a href="#" class="btn btn-sm btn-light-danger font-weight-bolder mr-2" data-toggle="modal" data-target="#declined_loan">Declined Loan</a>
+													<?php elseif($user['loan_status']=='Approved'):?>
+													<a href="#" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#released_loan">Released Loan</a>
+													<?php endif;?> -->
+													<!-- <a href="lending_company/record_payment.php?loan_app_id=<?= $user['loan_app_id']?>" class="btn btn-sm btn-light-info font-weight-bolder mr-2">Add Payment</a> -->
+													<!-- <a href="#" class="btn btn-sm btn-light-success font-weight-bolder mr-2" data-toggle="modal" data-target="#message">Send Message</a> -->
+													
+												</div>
+												<!--end::Actions-->
+											</div>
+											<!--end::Title-->
 										</div>
+										<!--end::Info-->
 									</div>
+									<!--end::Top-->
+									<!--begin::Separator-->
+									<div class="separator separator-solid my-7"></div>
+									<!--end::Separator-->
+									<!--begin::Bottom-->
+									<div class="d-flex align-items-center flex-wrap">
+										<!--begin: Item-->
+										<div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
+											<div class="d-flex flex-column text-dark-75">
+                                            <h6 class="card-label">
+													<span class="d-block text-dark font-weight-bolder">Source of Income</span>
+													<!-- <span class="d-block text-muted mt-2 font-size-sm">More than 500+ new orders</span> -->
+												</h6>
+												<span class="font-size-sm">Company Name: &nbsp;<?= $res['company_name'] ?></span>
+												<span class="font-size-sm">Monthly Salary: &nbsp;<?= $res['monthly_salary'] ?></span>
+												<span class="font-size-sm">Monthly Salary: &nbsp;<?= $res['company_street'] . ' ' . $res['company_barangay'] . ' ' . $res['company_city']
+																										. ' ' . $res['company_province'] . ' ' . $res['company_zipcode'] ?></span>
+											</div>
+										</div>
+										<!--end: Item-->
+										<!--begin: Item-->
+										<div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
+											<div class="d-flex flex-column text-dark-75">
+                                            <h6 class="card-label">
+													<span class="d-block text-dark font-weight-bolder">Relative Contact:</span></h6>
+												<span class="font-size-sm">Relative Name: &nbsp;<?= $res['rel_name'] ?></span>
+												<span class="font-size-sm">Relative Mobile No: &nbsp;<?= $res['rel_mobile'] ?></span>
+												<span class="font-size-sm">Relation: &nbsp;<?= $res['rel_type'] ?></span>
+											</div>
+										</div>
+                                        <div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
+											<div class="d-flex flex-column text-dark-75">
+                                                <h6 class="card-label">
+													<span class="d-block text-dark font-weight-bolder">Loan Application Details</span>
+												</h6>
+                                                <?php
+                                                $loan_app_id = intval($_GET['loan_app_id']);
+
+                                                $sql = "SELECT * FROM loan_application WHERE loan_app_id = $loan_app_id";
+                                                $query = $dbh->prepare($sql);
+                                                $query->execute();
+                                                $res = $query->fetch(); ?>
+												<span class="font-size-sm">Approval Date: &nbsp;<?= $res['approval_date'] ?></span>
+												<span class="font-size-sm">Released Date: &nbsp;<?= $res['released_date'] ?></span>
+												<span class="font-size-sm">Application Date: &nbsp;<?= $res['date'] ?></span>
+											</div>
+										</div>
+                                        <div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
+											<div class="d-flex flex-column text-dark-75">
+                                         
+												<span class="font-size-sm">Loan Amoun: &nbsp;<?= $res['loan_amount'] ?></span>
+												<span class="font-size-sm">Loan Term: &nbsp;<?= $res['loan_term'] ?></span>
+												<span class="font-size-sm">Fix Rate: &nbsp;<?= $res['fix_rate'] ?></span>
+                                                <span class="font-size-sm">Total Interest: &nbsp;<?= $res['total_interest'] ?></span>
+                                                <span class="font-size-sm">Late Charge: &nbsp;<?= $res['late_charges'] ?></span>
+                                                <span class="font-size-sm">Total Amoun to Pay: &nbsp;<?= $res['total_amount'] ?></span>
+											</div>
+										</div>
+										<!--end: Item-->
+									</div>
+									<!--end::Bottom-->
+
+
+								<div class="col-lg-12">
+									<!--begin::Charts Widget 4-->
+									<div class="card card-custom card-stretch gutter-b">
+										<!--begin::Header-->
+										<div class="card-header h-auto border-0">
+											<div class="card-title py-5">
+												<h3 class="card-label">
+													<span class="d-block text-dark font-weight-bolder">Running Balance</span>
+													<!-- <span class="d-block text-muted mt-2 font-size-sm">More than 500+ new orders</span> -->
+												</h3>
+											</div>
+											<table class="table table-bordered">
+												<thead>
+													<tr>
+														<th>Month</th>
+														<th>Payment Month Date</th>
+														<th>Principal Payment</th>
+														<th>Interest Payment</th>
+														<th>Monthly Payable</th>
+														<th>Remaining Balance</th>
+														<th>(1st)Bi-Monthly Payment</th>
+														<th>(1st)Bi-Monthly Payment Date</th>
+														<th>(2nd)Bi-Monthly Payment</th>
+														<th>(2nd)Bi-Monthly Payment Date</th>
+														<th>Late Charge</th>
+														<th>Total Payment</th>
+													</tr>
+												</thead>
+												<tbody>
+													<?php
+													$loan_app_id = intval($_GET['loan_app_id']);
+
+													$sql = $dbh->prepare('SELECT * FROM loan_application WHERE  loan_app_id = :lappId');
+													$sql->execute(['lappId' => $loan_app_id ]);
+													$loanDetails = $sql->fetch();
+
+													$sql = "SELECT * FROM loan_payment_detail WHERE loan_app_id = $loan_app_id";
+													$query = $dbh->prepare($sql);
+													$query->execute();
+													$results = $query->fetchAll(PDO::FETCH_OBJ);
+													
+													
+
+													if ($query->rowCount() > 0) {
+														$i = 0;
+														foreach ($results as $res) {
+															$i++;
+												//Monthly
+													$monthlyAmt = $loanDetails['loan_amount'] / $loanDetails['loan_term'];
+													$interest = $loanDetails['loan_amount'] * ($loanDetails['fix_rate'] / 100);
+
+													$loanDetails['total_amount'] = $loanDetails['total_amount'] - $res->monthly_pay;
+													?>
+														<tr>
+															<td style='text-align: center;'>
+															<?php
+																$status = $res->status;
+																if($status == 1):?>
+																	<span><i class="fas fa-check" style='color: green;'></i> <?= htmlentities( $i); ?></span>
+																<?php elseif($status == 0): ?>
+																	<span><?= htmlentities( $i); ?> </span> 
+																<?php elseif($status == -1): ?>
+																	<span><i class="fas fa-clock" style='color: gray;'></i> <?= htmlentities( $i); ?></span>
+																<?php endif; ?>
+															</td>
+															<td><?= htmlentities(date("F j, Y",strtotime($res->due_date))); ?></td>
+															<td>Php <?= htmlentities(number_format($monthlyAmt, 2, '.', ',') ); ?></td>
+															<td>Php <?= htmlentities(number_format( $interest, 2, '.', ',')); ?></td>
+															<td>Php <?= htmlentities(number_format($res->monthly_pay, 2, '.', ',') ); ?></td>
+															<td>Php <?= htmlentities(number_format($loanDetails['total_amount'], 2, '.', ',')); ?></td>
+															<td><?= htmlentities($res->semi_payment1);?></td>
+															<td><?= htmlentities($res->paid_date);?></td>
+															<td><?= htmlentities($res->semi_payment2);?></td>
+															<td><?= htmlentities($res->paid_date);?></td>
+															<td><?= htmlentities($res->late_charge);?></td>
+															<td>Php
+															<?php
+																$status = $res->status;
+																if($status == 1):?>
+																	<span>
+																	<?php $late = htmlentities($res->late_charge); 
+																		  $month = htmlentities($res->monthly_pay);
+																		  $m = $late + $month;
+																	      echo number_format($m , 2, '.', ','); ?></span>
+																<?php elseif($status == 0): ?>
+																	<span>0.00</span> 
+																<?php elseif($status == -1): ?>
+																	<span>
+																	<?php $late = htmlentities($res->late_charge); 
+																		  $month = htmlentities($res->monthly_pay);
+																		  $m = $late + $month;
+																	      echo number_format($m / 2,2); ?> (advance)</span>
+																	
+																	
+																<?php endif; ?>
+															</td>
+														</tr>
+														
+												</tbody>
+												<?php }} 
+												?>
+											</table>
+										</div>
+                                    </div>
+										<!--end::Header-->
+									</div>
+									<!--end::Charts Widget 4-->
 								</div>
-								<div class="col-lg-3">
-									<div class="card card-custom card-stretch gutter-b">
-										<div class="card-body">
-											<div class="d-flex align-items-center justify-content-between flex-wrap">
-												<span class="font-size-h6 text-muted font-weight-bolder text-uppercase pr-2">Approved Loan Application</span>
-											</div>
-											<div class="card-body d-flex align-items-center justify-content-between pt-7 flex-wrap">
-												<span class="font-weight-bolder display5 text-dark-75 py-4 pl-5 pr-5">
-													<p class="text-primary font-size-h2 font-weight-bolder pt-3 mb-0">
-														<?php
-														$id = $_SESSION['user_id'];
-														$sql = "SELECT count(*) AS loan_app_id FROM loan_application WHERE loan_application.loan_status = 'approved' AND lender_id = $id ";
-														$query = $dbh->prepare($sql);
-														$query->execute();
-														$results = $query->fetchAll(PDO::FETCH_OBJ);
-
-														if ($query->rowCount() > 0) {
-															foreach ($results as $result) { ?>
-																<?php echo htmlentities($result->loan_app_id); ?>
-														<?php }
-														} ?>
-													</p>
-											</div>
-										</div>
-										<div class="card-footer border-0 d-flex align-items-center justify-content-between pt-0">
-											<span></span>
-											<a href="lending_company/approved_loan.php" class="btn btn-md btn-primary font-weight-bolder px-6">View</a>
-										</div>
-									</div>
-								</div>
-								<div class="col-lg-3">
-									<div class="card card-custom card-stretch gutter-b">
-										<div class="card-body">
-											<div class="d-flex align-items-center justify-content-between flex-wrap">
-												<span class="font-size-h6 text-muted font-weight-bolder text-uppercase pr-2">Released Loan</span>
-											</div>
-											<div class="card-body d-flex align-items-center justify-content-between pt-7 flex-wrap">
-												<span class="font-weight-bolder display5 text-dark-75 py-4 pl-5 pr-5">
-													<p class="text-primary font-size-h2 font-weight-bolder pt-3 mb-0">
-														<?php
-														$id = $_SESSION['user_id'];
-
-														$sql = "SELECT count(*) AS loan_app_id FROM loan_application WHERE loan_application.loan_status = 'released' AND lender_id = $id ";
-														$query = $dbh->prepare($sql);
-														$query->execute();
-														$results = $query->fetchAll(PDO::FETCH_OBJ);
-
-														if ($query->rowCount() > 0) {
-															foreach ($results as $result) { ?>
-																<?php echo htmlentities($result->loan_app_id); ?>
-														<?php }
-														} ?>
-													</p>
-											</div>
-										</div>
-										<div class="card-footer border-0 d-flex align-items-center justify-content-between pt-0">
-											<span></span>
-											<a href="lending_company/released_loan.php" class="btn btn-md btn-primary font-weight-bolder px-6">View</a>
-										</div>
-									</div>
-								</div>
-								<!-- <div class="col-lg-3">
-									<div class="card card-custom card-stretch gutter-b">
-										<div class="card-body">
-											<div class="d-flex align-items-center justify-content-between flex-wrap">
-												<span class="font-size-h6 text-muted font-weight-bolder text-uppercase pr-2">Record Payment</span>
-											</div>
-											<div class="card-body d-flex align-items-center justify-content-between pt-7 flex-wrap">
-												<span class="font-weight-bolder display5 text-dark-75 py-4 pl-5 pr-5">
-													<p class="text-primary font-size-h2 font-weight-bolder pt-3 mb-0">
-
-
-													</p>
-											</div>
-										</div>
-
-										<div class="card-footer border-0 d-flex align-items-center justify-content-between pt-0">
-											<span></span>
-											<a href="lending_company/record_released_payment.php" class="btn btn-md btn-primary font-weight-bolder px-6">Add</a>
-										</div>
-									</div>
-								</div> -->
 							</div>
-							<!--end::Dashboard-->
 						</div>
-						<!--end::Container-->
 					</div>
 				</div>
-
-
-				<!--begin::Footer-->
-				<div class="footer bg-white py-4 d-flex flex-lg-column" id="kt_footer">
-					<!--begin::Container-->
-					<div class="container d-flex flex-column flex-md-row align-items-center justify-content-between">
-						<!--begin::Copyright-->
-						<div class="text-dark order-2 order-md-1">
-							<span class="text-muted font-weight-bold mr-2">2021©</span>
-							<a href="https://keenthemes.com/keen" target="_blank" class="text-dark-75 text-hover-primary">Hulam</a>
-						</div>
-						<!--end::Copyright-->
-						<!--begin::Nav-->
-						<div class="nav nav-dark">
-							<a href="https://keenthemes.com/keen" target="_blank" class="nav-link pl-0 pr-2">About</a>
-							<a href="https://keenthemes.com/keen" target="_blank" class="nav-link pr-2">Team</a>
-							<a href="https://keenthemes.com/keen" target="_blank" class="nav-link pr-0">Contact</a>
-						</div>
-						<!--end::Nav-->
-					</div>
-					<!--end::Container-->
-				</div>
-				<!--end::Footer-->
+				<!--end::Container-->
 			</div>
-			<!--end::Wrapper-->
+			<!--end::Entry-->
 		</div>
-		<!--end::Page-->
+		<!--end::Content-->
+		<!--begin::Footer-->
+		<div class="footer bg-white py-4 d-flex flex-lg-column" id="kt_footer">
+			<!--begin::Container-->
+			<div class="container d-flex flex-column flex-md-row align-items-center justify-content-between">
+				<!--begin::Copyright-->
+				<div class="text-dark order-2 order-md-1">
+					<span class="text-muted font-weight-bold mr-2">2021©</span>
+					<a href="https://keenthemes.com/keen" target="_blank" class="text-dark-75 text-hover-primary">The Hulam Team</a>
+				</div>
+				<!--end::Copyright-->
+				<!--begin::Nav-->
+				<div class="nav nav-dark">
+					<a href="https://keenthemes.com/keen" target="_blank" class="nav-link pl-0 pr-2">About</a>
+					<a href="https://keenthemes.com/keen" target="_blank" class="nav-link pr-2">Team</a>
+					<a href="https://keenthemes.com/keen" target="_blank" class="nav-link pr-0">Contact</a>
+				</div>
+				<!--end::Nav-->
+			</div>
+			<!--end::Container-->
+		</div>
+		<!--end::Footer-->
+	</div>
+	<!--end::Wrapper-->
+	</div>
+	<!--end::Page-->
 	</div>
 	<!--end::Main-->
-
-
 
 	<!-- begin::User Panel-->
 	<div id="kt_quick_user" class="offcanvas offcanvas-right p-10">
@@ -623,17 +865,25 @@ if (isset($_POST['submit_announce'])) {
 					<i class="ki ki-close icon-xs text-muted"></i>
 				</a>
 		</div>
+        <?php
+        $lender_id = $_SESSION['user_id'];
+
+        $sql ="SELECT * FROM user WHERE user_id = $lender_id";
+        $query = $dbh->prepare($sql);
+        $query->execute();
+        $user2 = $query->fetch();
+        ?>
 		<!--end::Header-->
 		<!--begin::Content-->
 		<div class="offcanvas-content pr-5 mr-n5">
 			<!--begin::Header-->
 			<div class="d-flex align-items-center mt-5">
 				<div class="symbol symbol-100 mr-5">
-					<div class="symbol-label" style="background-image:url('/hulam/assets/keen/hulam_media/<?= $user['profile_pic'] ?>')"></div>
+					<div class="symbol-label" style="background-image:url('/hulam/assets/keen/hulam_media/<?= $user2['profile_pic'] ?>')"></div>
 					<i class="symbol-badge bg-success"></i>
 				</div>
 				<div class="d-flex flex-column">
-					<a href="#" class="font-weight-bold font-size-h5 text-dark-75 text-hover-primary"><?= $user['company_name'] ?></a>
+					<a href="#" class="font-weight-bold font-size-h5 text-dark-75 text-hover-primary"><?= $user2['company_name'] ?></a>
 					<div class="text-muted mt-1"></div>
 					<div class="navi mt-1">
 						<a href="#" class="navi-item">
@@ -712,13 +962,7 @@ if (isset($_POST['submit_announce'])) {
 				</a>
 				<!--end:Item-->
 				<!--begin::Item-->
-				<?php
-				$sql = "SELECT * FROM user WHERE user_type='1'";
-				$query = $dbh->prepare($sql);
-				$query->execute();
-				$admin = $query->fetch();
-				?>
-				<a href="lending_company/send_feedback.php?lender_id=<?= $admin['user_id'] ?>" class="navi-item">
+				<a href="lending_company/send_feedback.php" class="navi-item">
 					<div class="navi-link">
 						<div class="symbol symbol-40 bg-light mr-3">
 							<div class="symbol-label">
@@ -736,7 +980,7 @@ if (isset($_POST['submit_announce'])) {
 							</div>
 						</div>
 						<div class="navi-text">
-							<div class="font-weight-bold">Send Feedback to Hulam Team</div>
+							<div class="font-weight-bold">Send Feedback</div>
 						</div>
 					</div>
 				</a>
@@ -768,10 +1012,7 @@ if (isset($_POST['submit_announce'])) {
 		<div class="offcanvas-header offcanvas-header-navs d-flex align-items-center justify-content-between mb-5">
 			<ul class="nav nav-bold nav-tabs nav-tabs-line nav-tabs-line-3x nav-tabs-primary flex-grow-1 px-10" role="tablist">
 				<li class="nav-item">
-					<a class="nav-link active" data-toggle="tab" href="#kt_quick_panel_notifications">Notification</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link" data-toggle="tab" href="#kt_quick_panel_logs">Contacts</a>
+					<a class="nav-link active" data-toggle="tab" href="#kt_chat_modal">Messages</a>
 				</li>
 			</ul>
 			<div class="offcanvas-close mt-n1 pr-5">
@@ -784,121 +1025,52 @@ if (isset($_POST['submit_announce'])) {
 		<!--begin::Content-->
 		<div class="offcanvas-content px-10">
 			<div class="tab-content">
-				<div class="tab-pane show pt-2 pr-5 mr-n5 active" id="kt_quick_panel_notifications" role="tabpanel">
-					<div class="navi navi-icon-circle navi-spacer-x-0">
-						<?php
-						$user_id = $_SESSION['user_id'];
-						$sql = "SELECT * FROM message INNER JOIN user ON message.sender_id = user.user_id WHERE message.receiver_id = $user_id ORDER BY date_message desc";
-						$query = $dbh->prepare($sql);
-						$query->execute();
-						$results = $query->fetchAll(PDO::FETCH_OBJ);
+				<div class="navi navi-icon-circle navi-spacer-x-0">
+					<?php
+					$user_id = $_SESSION['user_id'];
+					$sql = "SELECT * FROM message INNER JOIN user ON message.sender_id = user.user_id WHERE message.receiver_id = $user_id ORDER BY date_message desc";
+					$query = $dbh->prepare($sql);
+					$query->execute();
+					$results = $query->fetchAll(PDO::FETCH_OBJ);
 
-						foreach ($results as $res) :
+					foreach ($results as $res) :
 
-						?> <a href="lending_company/messages.php?sender_id=<?= htmlentities($res->sender_id) ?>">
-								<div class="navi-link rounded">
-									<div class="symbol symbol-50 mr-3">
-									</div>
-									<div class="navi-text">
-										<div class="font-weight-bold font-size-lg">
-											<?php
-											$red = htmlentities($res->user_type);
-
-											if ($red == 1) : ?>
-												<?= htmlentities($res->firstname) . ' ' . htmlentities($res->middlename) . ' ' . htmlentities($res->lastname); ?>
-											<?php elseif ($red == 2) : ?>
-												<?= htmlentities($res->firstname) . ' ' . htmlentities($res->middlename) . ' ' . htmlentities($res->lastname); ?>
-											<?php elseif ($red == 3) : ?>
-												<?= htmlentities($res->company_name); ?>
-											<?php elseif ($red == 4) : ?>
-												<?= htmlentities($res->firstname) . ' ' . htmlentities($res->middlename) . ' ' . htmlentities($res->lastname); ?>
-											<?php else : ?>
-												<?= htmlentities($res->company_name); ?>
-											<?php endif; ?>
-										</div><span class="font-size-sm"><?= htmlentities($res->date_message); ?></span>
-										<div class="text-muted"><?= htmlentities($res->message) ?></div>
-									</div>
+					?> <a href="lending_company/messages.php?sender_id=<?= htmlentities($res->sender_id) ?>">
+							<div class="navi-link rounded">
+								<div class="symbol symbol-50 mr-3">
 								</div>
-							</a>
-						<?php endforeach; ?>
-			
-		</div>
-		<!--end::Content-->
-	</div>
-	<!--end::Quick Panel-->
+								<div class="navi-text">
+									<div class="font-weight-bold font-size-lg">
+										<?php
+										$red = htmlentities($res->user_type);
 
-	<!-- CONTACTS -->
-	<div class="tab-pane fade show pt-3 pr-5 mr-n5" id="kt_quick_panel_logs" role="tabpanel">
-		<div class="mb-5">
-			<h5 class="font-weight-bold mb-5">Your contacts</h5>
-			<?php
-
-			$user_id = $_SESSION['user_id'];
-
-			$sql = "SELECT * FROM message INNER JOIN user ON message.receiver_id = user.user_id WHERE (user.user_type!='4' AND user.user_type!='1' AND user.user_type!='3') AND (message.receiver_id = $user_id OR message.sender_id = $user_id) GROUP BY message.receiver_id!= $user_id";
-			$query = $dbh->prepare($sql);
-			$query->execute();
-			$user_name = $query->fetchAll();
-
-			?>
-			<?php foreach ($user_name as $contacts) : ?>
-				<div class="d-flex align-items-center mb-">
-					<div class="symbol symbol-35 flex-shrink-0 mr-3">
-						<img alt="Pic" src="/hulam/assets/keen/hulam_media/<?= $contacts['profile_pic'] ?>" />
-					</div>
-					<div class="d-flex flex-wrap flex-row-fluid">
-						<div class="d-flex flex-column pr-2 flex-grow-1">
-							<a href="lending_company/messages.php?sender_id=<?= $contacts['receiver_id'] ?>" class="text-dark text-hover-primary mb-1 font-weight-bold font-size-lg"><?= $contacts['firstname'].' '.$contatcs['middlename'].' '.$contacts['lastname'] ?></a>
-						</div>
-						<a href="lending_company/messages.php?sender_id=<?= $contacts['receiver_id'] ?>" class="btn btn-icon btn-light btn-sm">
-							<span class="svg-icon svg-icon-success">
-								<span class="svg-icon svg-icon-md">
-									<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-										<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-											<polygon points="0 0 24 0 24 24 0 24" />
-											<path d="M6.70710678,15.7071068 C6.31658249,16.0976311 5.68341751,16.0976311 5.29289322,15.7071068 C4.90236893,15.3165825 4.90236893,14.6834175 5.29289322,14.2928932 L11.2928932,8.29289322 C11.6714722,7.91431428 12.2810586,7.90106866 12.6757246,8.26284586 L18.6757246,13.7628459 C19.0828436,14.1360383 19.1103465,14.7686056 18.7371541,15.1757246 C18.3639617,15.5828436 17.7313944,15.6103465 17.3242754,15.2371541 L12.0300757,10.3841378 L6.70710678,15.7071068 Z" fill="#000000" fill-rule="nonzero" transform="translate(12.000003, 11.999999) rotate(-270.000000) translate(-12.000003, -11.999999)" />
-										</g>
-									</svg>
-								</span>
-							</span>
+										if ($red == 1) : ?>
+											<?= htmlentities($res->firstname) . ' ' . htmlentities($res->middlename) . ' ' . htmlentities($res->lastname); ?>
+										<?php elseif ($red == 2) : ?>
+											<?= htmlentities($res->firstname) . ' ' . htmlentities($res->middlename) . ' ' . htmlentities($res->lastname); ?>
+										<?php elseif ($red == 3) : ?>
+											<?= htmlentities($res->company_name); ?>
+										<?php elseif ($red == 4) : ?>
+											<?= htmlentities($res->firstname) . ' ' . htmlentities($res->middlename) . ' ' . htmlentities($res->lastname); ?>
+										<?php else : ?>
+											<?= htmlentities($res->company_name); ?>
+										<?php endif; ?>
+									</div><span class="font-size-sm"><?= htmlentities($res->date_message); ?></span>
+									<div class="text-muted"><?= htmlentities($res->message) ?></div>
+								</div>
+							</div>
 						</a>
-					</div>
-				</div>
-			<?php endforeach; ?>
-			<div class="d-flex align-items-center mb-6">
-				<div class="symbol symbol-35 flex-shrink-0 mr-3">
-					<img alt="Pic" src="/hulam/assets/keen/media/logos/h_small.png" />
-				</div>
-				<?php
-				$sql = "SELECT * FROM user WHERE user_type = '1'";
-				$query = $dbh->prepare($sql);
-				$query->execute();
-				$admin = $query->fetch();
-				?>
-				<div class="d-flex flex-wrap flex-row-fluid">
-					<div class="d-flex flex-column pr-2 flex-grow-1">
-						<a href="lending_company/message_admin.php?receiver_id=<?= $admin['user_id'] ?>" class="text-dark text-hover-primary mb-1 font-weight-bold font-size-lg">The Hulam Team</a>
-					</div>
-					<a href="lending_company/message_admin.php?receiver_id=<?= $admin['user_id'] ?>" class="btn btn-icon btn-light btn-sm">
-						<span class="svg-icon svg-icon-success">
-							<span class="svg-icon svg-icon-md">
-								<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-									<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-										<polygon points="0 0 24 0 24 24 0 24" />
-										<path d="M6.70710678,15.7071068 C6.31658249,16.0976311 5.68341751,16.0976311 5.29289322,15.7071068 C4.90236893,15.3165825 4.90236893,14.6834175 5.29289322,14.2928932 L11.2928932,8.29289322 C11.6714722,7.91431428 12.2810586,7.90106866 12.6757246,8.26284586 L18.6757246,13.7628459 C19.0828436,14.1360383 19.1103465,14.7686056 18.7371541,15.1757246 C18.3639617,15.5828436 17.7313944,15.6103465 17.3242754,15.2371541 L12.0300757,10.3841378 L6.70710678,15.7071068 Z" fill="#000000" fill-rule="nonzero" transform="translate(12.000003, 11.999999) rotate(-270.000000) translate(-12.000003, -11.999999)" />
-									</g>
-								</svg>
-							</span>
-						</span>
-					</a>
+					<?php endforeach; ?>
 				</div>
 			</div>
 		</div>
 	</div>
-	</div>
-	</div>
+	<!--end::Content-->
 	</div>
 	<!--end::Quick Panel-->
+
+
+
 
 	<!--begin::Scrolltop-->
 	<div id="kt_scrolltop" class="scrolltop">
@@ -997,9 +1169,6 @@ if (isset($_POST['submit_announce'])) {
 	<!--end::Page Vendors-->
 	<!--begin::Page Scripts(used by this page)-->
 	<script src="assets/admin/js/pages/widgets.js"></script>
-	<!--end::Page Scripts-->
-	<!--begin::Page Scripts(used by this page)-->
-	<script src="assets/admin/js/pages/features/charts/apexcharts.js"></script>
 	<!--end::Page Scripts-->
 </body>
 <!--end::Body-->

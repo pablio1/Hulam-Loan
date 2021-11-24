@@ -9,18 +9,7 @@ if ($_SESSION['user_type'] != 1) {
 
 
 <!DOCTYPE html>
-<!--
-Template Name: Keen - The Ultimate Bootstrap 4 HTML Admin Dashboard Theme
-Author: KeenThemes
-Website: http://www.keenthemes.com/
-Contact: support@keenthemes.com
-Follow: www.twitter.com/keenthemes
-Dribbble: www.dribbble.com/keenthemes
-Like: www.facebook.com/keenthemes
-Purchase: https://themes.getbootstrap.com/product/keen-the-ultimate-bootstrap-admin-theme/
-Support: https://keenthemes.com/theme-support
-License: You must have a valid license purchased only from themes.getbootstrap.com(the above link) in order to legally use the theme for your project.
--->
+<
 <html lang="en">
 	<!--begin::Head-->
 	<head><base href="../index.php">
@@ -1072,7 +1061,7 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 				<!--begin::Nav-->
 				<div class="navi navi-spacer-x-0 p-0">
 					<!--begin::Item-->
-					<a href="custom/apps/user/profile-1/personal-information.html" class="navi-item">
+					<a href="admin/update_profile.php" class="navi-item">
 						<div class="navi-link">
 							<div class="symbol symbol-40 bg-light mr-3">
 								<div class="symbol-label">
@@ -1091,8 +1080,6 @@ License: You must have a valid license purchased only from themes.getbootstrap.c
 							</div>
 							<div class="navi-text">
 								<div class="font-weight-bold">My Account</div>
-								<div class="text-muted">Profile info
-								<span class="label label-light-danger label-inline font-weight-bold">update</span></div>
 							</div>
 						</div>
 					</a>

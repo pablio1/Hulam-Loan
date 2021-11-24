@@ -4,8 +4,8 @@ error_reporting(0);
 include('../db_connection/config.php');
 
 if ($_SESSION['user_type'] != 2) {
-	header('location: ../index.php');
-} ?>
+    header('location: ../index.php');
+}?>
 
 <?php
 $user_id = $_SESSION['user_id'];
@@ -16,76 +16,66 @@ $user = $query->fetch();
 ?>
 
 <?php
-$loan_app_id = intval($_GET['loan_app_id']);
+if (isset($_POST['send_message'])) {
 
-$sql = "SELECT loan_application.*, user.* FROM loan_application INNER JOIN user ON loan_application.lender_id = user.user_id WHERE loan_application.loan_app_id = $loan_app_id AND loan_application.loan_status= 'released'";
-$query = $dbh->prepare($sql);
-$query->execute();
-$run = $query->fetch();
+    $from = $_POST['sender_id'];
+    $to = $_POST['receiver_id'];
+    $date_message = $_POST['date_message'];
+    $message = $_POST['message'];
+
+    $insert = "INSERT INTO message(sender_id,receiver_id,message,date_message)VALUES(:sender_id,:receiver_id,:message,:date_message)";
+    $query = $dbh->prepare($insert);
+    $query->bindParam(':sender_id', $from, PDO::PARAM_STR);
+    $query->bindParam(':receiver_id', $to, PDO::PARAM_STR);
+    $query->bindParam(':message', $message, PDO::PARAM_STR);
+    $query->bindParam(':date_message', $date_message, PDO::PARAM_STR);
+    if ($query->execute()) {
+        $_SESSION['status_message'] = "Message Sent";
+        header("Location: messages.php?sender_id=$to");
+        exit();
+    } else {
+        $_SESSION['status_message'] = "Message Not Sent";
+        header('Location: messages.php?sender_id=$to');
+        exit();
+    }
+}
 ?>
+
 
 <!DOCTYPE html>
 
 <html lang="en">
-<!--begin::Head-->
 
 <head>
 	<base href="../">
 	<meta charset="utf-8" />
-	<title>Loan Information: Running Balance</title>
+	<title>Home</title>
 	<meta name="description" content="Updates and statistics" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-	<!--begin::Fonts-->
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" />
-	<!--end::Fonts-->
-	<!--begin::Page Custom Styles(used by this page)-->
-	<link href="assets/keen/css/pages/wizard/wizard-2.css" rel="stylesheet" type="text/css" />
-	<!--begin::Page Vendors Styles(used by this page)-->
 	<link href="assets/keen/plugins/custom/fullcalendar/fullcalendar.bundle.css" rel="stylesheet" type="text/css" />
-	<!--end::Page Vendors Styles-->
-	<!--begin::Global Theme Styles(used by all pages)-->
 	<link href="assets/keen/plugins/global/plugins.bundle.css" rel="stylesheet" type="text/css" />
 	<link href="assets/keen/plugins/custom/prismjs/prismjs.bundle.css" rel="stylesheet" type="text/css" />
 	<link href="assets/keen/css/style.bundle.css" rel="stylesheet" type="text/css" />
-	<!--end::Global Theme Styles-->
-	<!--begin::Layout Themes(used by all pages)-->
-	<!--end::Layout Themes-->
 	<link rel="shortcut icon" href="assets/keen/media/logos/Hulam_Logo.png" />
 </head>
-<!--end::Head-->
-<!--begin::Body-->
 
-<body id="kt_body" class="header-fixed header-mobile-fixed subheader-enabled page-loading">
-	<!--begin::Main-->
-	<!--begin::Header Mobile-->
+<body id="kt_body" class="header-fixed header-mobile-fixed subheader-enabled page-loading opacity:0.2" style="background-image: url('assets/keen/media/logos/banner.png');">
+
 	<div id="kt_header_mobile" class="header-mobile header-mobile-fixed">
-		<!--begin::Logo-->
-		<a href="debtor/index.php">
-			<img alt="Logo" src="assets/keen/media/logos/h_logo2.png" class="max-h-30px" />
+		<a href="index.php">
+			<img alt="Logo" src="assets/keen/media/logos/h_logo2.png" class="max-h-45px" />
 		</a>
-		<!--end::Logo-->
-
-		<!-- TOOL BAR -->
-
 	</div>
-	<!--end::Header Mobile-->
-
 
 	<div class="d-flex flex-column flex-root">
-		<!--begin::Page-->
-
-		<!--begin::Subheader-->
 		<div class="subheader bg-white h-100px" id="kt_subheader">
 			<div class="container flex-wrap flex-sm-nowrap">
-				<!--begin::Logo-->
 				<div class="d-none d-lg-flex align-items-center flex-wrap w-250px">
-					<!--begin::Logo-->
 					<a href="debtor/index.php">
 						<img alt="Logo" src="assets/keen/media/logos/h_logo2.png" class="max-h-50px" />
 					</a>
-					<!--end::Logo-->
 				</div>
-				<!--end::Logo-->
 				<div class="subheader-nav nav flex-grow-1">
 					<a href="debtor/index.php" class="nav-item active">
 						<span class="nav-label px-10">
@@ -102,139 +92,142 @@ $run = $query->fetch();
 							<span class="nav-title text-dark-75 font-weight-bold font-size-h4">LOAN INFORMATION</span>
 						</span>
 					</a>
+
 				</div>
-				<!--end::Nav-->
 			</div>
 
-					<div class="topbar">
-						<div class="topbar-item mr-1">
-							<div class="btn btn-icon btn-hover-transparent-black btn-clean btn-lg" data-toggle="modal" id="kt_quick_panel_toggle">
-								<span class="svg-icon svg-icon-xl svg-icon-primary">
-									<!--begin::Svg Icon | path:assets/media/svg/icons/Communication/Chat6.svg-->
-									<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-										<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-											<rect x="0" y="0" width="24" height="24" />
-											<path opacity="0.3" fill-rule="evenodd" clip-rule="evenodd" d="M14.4862 18L12.7975 21.0566C12.5304 21.54 11.922 21.7153 11.4386 21.4483C11.2977 21.3704 11.1777 21.2597 11.0887 21.1255L9.01653 18H5C3.34315 18 2 16.6569 2 15V6C2 4.34315 3.34315 3 5 3H19C20.6569 3 22 4.34315 22 6V15C22 16.6569 20.6569 18 19 18H14.4862Z" fill="black" />
-											<path fill-rule="evenodd" clip-rule="evenodd" d="M6 7H15C15.5523 7 16 7.44772 16 8C16 8.55228 15.5523 9 15 9H6C5.44772 9 5 8.55228 5 8C5 7.44772 5.44772 7 6 7ZM6 11H11C11.5523 11 12 11.4477 12 12C12 12.5523 11.5523 13 11 13H6C5.44772 13 5 12.5523 5 12C5 11.4477 5.44772 11 6 11Z" fill="black" />
-										</g>
-									</svg>
-									<!--end::Svg Icon-->
-								</span>
-							</div>
-						</div>
-						<div class="topbar-item mr-5">
-							<div class="btn btn-icon btn-light-primary h-40px w-40px p-0" id="kt_quick_user_toggle">
-							<img src="/hulam/assets/keen/hulam_media/<?= $user['profile_pic']?>" class="h-40px align-self-end" alt="">
-							</div>
-						</div>
+			<div class="topbar">
+				<div class="topbar-item mr-1">
+					<div class="btn btn-icon btn-hover-transparent-black btn-clean btn-lg" data-toggle="modal" id="kt_quick_panel_toggle">
+						<span class="svg-icon svg-icon-xl svg-icon-primary">
+							<!--begin::Svg Icon | path:assets/media/svg/icons/Communication/Chat6.svg-->
+							<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+								<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+									<rect x="0" y="0" width="24" height="24" />
+									<path opacity="0.3" fill-rule="evenodd" clip-rule="evenodd" d="M14.4862 18L12.7975 21.0566C12.5304 21.54 11.922 21.7153 11.4386 21.4483C11.2977 21.3704 11.1777 21.2597 11.0887 21.1255L9.01653 18H5C3.34315 18 2 16.6569 2 15V6C2 4.34315 3.34315 3 5 3H19C20.6569 3 22 4.34315 22 6V15C22 16.6569 20.6569 18 19 18H14.4862Z" fill="black" />
+									<path fill-rule="evenodd" clip-rule="evenodd" d="M6 7H15C15.5523 7 16 7.44772 16 8C16 8.55228 15.5523 9 15 9H6C5.44772 9 5 8.55228 5 8C5 7.44772 5.44772 7 6 7ZM6 11H11C11.5523 11 12 11.4477 12 12C12 12.5523 11.5523 13 11 13H6C5.44772 13 5 12.5523 5 12C5 11.4477 5.44772 11 6 11Z" fill="black" />
+								</g>
+							</svg>
+							<!--end::Svg Icon-->
+						</span>
 					</div>
 				</div>
-					<!--begin::Content-->
-					<div class="content d-flex flex-column flex-column-fluid" id="kt_content" style="background-image:url('assets/keen/media/logos/banner.png')">
-
-					<div class="d-flex flex-column-fluid">
-						<div class="container">
-							<div class="card card-custom gutter-b card-stretch">
-								<div class="card-header border-0 pt-6">
-									<h3 class="card-title align-items-start flex-column">
-										<span class="card-label font-weight-bolder font-size-h4 text-dark-75">Running Balance</span>
-									</h3>
-									<div class="my-lg-0 my-1">
-										<a href="debtor/loan_information.php" class="btn btn-sm btn-light-primary font-weight-bolder mr-2">
-											<< Back</a>
-									</div>
-								</div>
-								<!--begin::Body-->  
-								<div class="card-body pt-4">
-									<div class="card card-custom">
-										<div class="card-body">
-										<h5 style="color:royalblue"> Running Balance to: <?= $run['company_name'] ?> &nbsp;Loan </h5>
-											<table class="table table-bordered">
-												<thead>
-													<tr>
-														<th>Payment Month Date</th>
-														<th>Principal Payment</th>
-														<th>Interest Payment</th>
-														<th>Total Monthly Payment</th>
-														<th>Remaining Balance</th>
-													</tr>
-												</thead>
-												<tbody>
-													<tr>
-														<?php 
-															// GET TOTAL TERMS
-															$term = 12;
-															$date = new DateTime('now');
-															$date->modify('+'.$term.' month'); // or you can use '-90 day' for deduct
-															$date = $date->format('Y-m-d');
-
-															// TO GET DATE INTERVAL DEPENDING ON TOTAL TERM
-															$start    = new DateTime('2021-12-22');
-															$start->modify('first day of this month');
-															$end      = new DateTime($date);
-															$end->modify('first day of next month');
-															$interval = DateInterval::createFromDateString('1 month');
-															$period   = new DatePeriod($start, $interval, $end);
-															
-															foreach ($period as $dt) {
-																$total = 40800;
-																$principal = 2500;
-																$interest = 900;
-																$total_monthly_payment = $principal + $interest;
-
-																
-																$awe0 = $total - $total_monthly_payment;
-																$awe1 = $awe0 - $total_monthly_payment;
-																$awe2 = $awe1 - $total_monthly_payment;
-																$awe3 = $awe2 - $total_monthly_payment;
-																$awe4 = $awe3 - $total_monthly_payment;
-																$awe5 = $awe4 - $total_monthly_payment;
-																$awe6 = $awe5 - $total_monthly_payment;
-																$awe7 = $awe6 - $total_monthly_payment;
-																$awe8 = $awe7 - $total_monthly_payment;
-																$awe9 = $awe8 - $total_monthly_payment;
-																$awe10 = $awe9 - $total_monthly_payment;
-																$awe11 = $awe10 - $total_monthly_payment;
-
-																// for($i = $total_monthly_payment ; $i <= $total; $i--){
-
-																// }
-
-																echo "<tr>";
-																echo "<td>".$dt->format("F 22, Y") . "<br>\n"."</td>";
-																echo "<td>".$principal."</td>";
-																echo "<td>".$interest."</td>";
-																echo "<td>".$total_monthly_payment."</td>";
-																echo "<td>".$awe0."</td>";
-																echo "<td>".$awe1."</td>";
-																echo "<td>".$awe2."</td>";
-																echo "<td>".$awe3."</td>";
-																echo "<td>".$awe4."</td>";
-																echo "<td>".$awe5."</td>";
-																echo "<td>".$awe6."</td>";
-																echo "<td>".$awe7."</td>";
-																echo "<td>".$awe8."</td>";
-																echo "<td>".$awe9."</td>";
-																echo "<td>".$awe10."</td>";
-																echo "<td>".$awe11."</td>";
-																echo "</tr>";
-															}
-														?>
-													</tr>
-												</tbody>
-											</table>
-											</br>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
+				<div class="topbar-item mr-5">
+					<div class="btn btn-icon btn-light-primary h-40px w-40px p-0" id="kt_quick_user_toggle">
+					<img src="/hulam/assets/keen/hulam_media/<?= $user['profile_pic']?>" class="h-40px align-self-end" alt="">
 					</div>
 				</div>
-						
-		<!--end::Content-->
-	<!--begin::Footer-->
-	<div class="footer bg-white py-4 d-flex flex-lg-column" id="kt_footer">
+			</div>
+		</div>
+
+        <!--begin::Content-->
+        <div class="content d-flex flex-column flex-column-fluid" id="kt_content" style="background-image:url('assets/keen/media/logos/banner.png')">
+            <div class="d-flex flex-column-fluid ">
+                <div class="container ">
+                <div class="row align-items-center justify-content-center">
+                    <div class="card card-custom gutter-b card-stretch " style="width: 800px;">
+                        <div class="card-header border-0 pt-6 ">
+                            <h3 class="card-title align-items-start flex-column">
+                                <span class="card-label font-weight-bolder font-size-h4 text-dark-75"></span>
+                            </h3>
+                            <?php
+
+							$user_id = $_SESSION['user_id'];
+							$sql = "SELECT * FROM message INNER JOIN user ON message.sender_id = user.user_id WHERE (user.user_type!='2' AND user.user_type!='1') AND (message.receiver_id = $user_id OR message.sender_id = $user_id) GROUP BY message.sender_id";
+							$query = $dbh->prepare($sql);
+							$query->execute();
+							$user_name = $query->fetchAll();
+
+							?>
+                            <div class="col-xl-4">
+                                <?php
+                                if (isset($_SESSION['status_message'])) {
+                                ?>
+                                    <div class="alert alert-custom alert-notice alert-light-success fade show" role="alert">
+                                        <div class="alert-text">
+                                            <h4><?php echo $_SESSION['status_message']; ?></h4>
+                                        </div>
+                                        <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+                                    </div>
+                                <?php unset($_SESSION['status_message']);
+                                } ?>
+                            </div>
+                            <div class="my-lg-0 my-1">
+                            <a href="debtor/messages.php?sender_id=<?= intval($_GET['sender_id'])?>" class="btn btn-sm btn-light-primary font-weight-bolder mr-2">
+                                    << B A C K</a>
+                            </div>
+                        </div>
+
+                        <!--begin::Card-->
+                        <div class="card card-custom ">
+						<?php
+                            $user_id = $_SESSION['user_id'];
+                            $sender_id = intval($_GET['sender_id']);
+
+                            $sql = "SELECT * FROM message INNER JOIN user ON message.sender_id = user.user_id WHERE message.receiver_id = $user_id AND message.sender_id = $sender_id ORDER BY date_message desc";
+                            $query = $dbh->prepare($sql);
+                            $query->execute();
+                            $res = $query->fetch();
+                            $red = $res['user_type'];
+                            ?>
+                            <!--begin::Header-->
+                            <div class="card-header align-items-center px-4 py-3">
+                                <div class="text-center flex-grow-1">
+								<div class="symbol symbol-circle symbol-40 mr-3">
+										<img alt="Pic" src="/hulam/assets/keen/hulam_media/<?= $res['profile_pic'] ?>" />
+									</div>
+                                    <div class="text-dark-75 font-weight-bold font-size-h5">
+                                        <?php
+                                        if ($red == 1 || $red == 2 || $red == 4) : ?>
+                                            <?= $res['firstname'] . '' . $res['middlename'] . ' ' . $res['lastname'] ?>
+                                        <?php else : ?>
+                                            <?= $res['company_name']; ?>
+                                        <?php endif; ?>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--end::Header-->
+                            <!--begin::Body-->
+                            <div class="card-body">
+                                <div class="scroll scroll-pull" data-height="375" data-mobile-height="300">
+                                    <div class="messages">
+                                        <div class="d-flex flex-column mb-5 align-items-end">
+                                            <div class="d-flex align-items-center">
+                                                <div>
+                                                    <a href="#" class="text-dark-75 text-hover-primary font-weight-bold font-size-h6"><?= $_SESSION['firstname'] . ' ' . $_SESSION['lastname'] ?></a>
+                                                </div>
+                                                <div class="symbol symbol-circle symbol-40 ml-3">
+                                                </div>
+                                            </div>
+                                            <?php
+                                            $user_id = $_SESSION['user_id'];
+                                            $sender_id = intval($_GET['sender_id']);
+
+                                            $sql = "SELECT * FROM message INNER JOIN user ON message.receiver_id = user.user_id WHERE message.sender_id = $user_id AND message.receiver_id = $sender_id ORDER BY date_message asc";
+                                            $query = $dbh->prepare($sql);
+                                            $query->execute();
+                                            $r = $query->fetchAll();
+                                            foreach ($r as $my_message) :
+                                            ?>
+                                                <div class="mt-2 rounded p-5 bg-light-primary text-dark-50 font-weight-bold font-size-lg text-right max-w-400px"><?= $my_message['message'] ?></div>
+                                                <span class="text-muted font-size-sm"><?= date('F-d Y h:i:sa', strtotime($my_message['date_message'])) ?></span>
+                                            <?php endforeach; ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    <!--end::Content-->
+
+    
+<!--begin::Footer-->
+<div class="footer bg-white py-4 d-flex flex-lg-column" id="kt_footer">
 		<!--begin::Container-->
 		<div class="container d-flex flex-column flex-md-row align-items-center justify-content-between">
 			<!--begin::Copyright-->
@@ -329,7 +322,13 @@ $run = $query->fetch();
 				</a>
 				<!--end:Item-->
 				<!--begin::Item-->
-				<a href="debtor/send_feedback.php" class="navi-item">
+				<?php
+				$sql = "SELECT * FROM user WHERE user_type='1'";
+				$query = $dbh->prepare($sql);
+				$query->execute();
+				$admin = $query->fetch();
+				?>
+				<a href="debtor/rating.php?lender_id=<?= $admin['user_id']?>" class="navi-item">
 					<div class="navi-link">
 						<div class="symbol symbol-40 bg-light mr-3">
 							<div class="symbol-label">
@@ -370,17 +369,14 @@ $run = $query->fetch();
 	<!-- end::User Panel-->
 
 
+
 	<!--begin::Quick Panel-->
 	<div id="kt_quick_panel" class="offcanvas offcanvas-right pt-5 pb-10">
 		<!--begin::Header-->
 		<div class="offcanvas-header offcanvas-header-navs d-flex align-items-center justify-content-between mb-5">
 			<ul class="nav nav-bold nav-tabs nav-tabs-line nav-tabs-line-3x nav-tabs-primary flex-grow-1 px-10" role="tablist">
 				<li class="nav-item">
-					<a class="nav-link active" data-toggle="tab" href="#kt_quick_panel_notifications">Notification</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link" data-toggle="tab" href="#kt_quick_panel_logs">Contacts</a>
-				</li>
+					<a class="nav-link active" data-toggle="tab" href="#kt_chat_modal">Messages</a>
 				</li>
 			</ul>
 			<div class="offcanvas-close mt-n1 pr-5">
@@ -390,11 +386,9 @@ $run = $query->fetch();
 			</div>
 		</div>
 		<!--end::Header-->
-
 		<!--begin::Content-->
 		<div class="offcanvas-content px-10">
 			<div class="tab-content">
-				<div class="tab-pane show pt-2 pr-5 mr-n5 active" id="kt_quick_panel_notifications" role="tabpanel">
 				<div class="navi navi-icon-circle navi-spacer-x-0">
 					<?php
 					$user_id = $_SESSION['user_id'];
@@ -432,81 +426,12 @@ $run = $query->fetch();
 						</a>
 					<?php endforeach; ?>
 				</div>
-				</div>
-				<!-- END NOTIFICATION CONTENT -->
-
-				<!-- CONTACTS -->
-					<div class="tab-pane fade show pt-3 pr-5 mr-n5" id="kt_quick_panel_logs" role="tabpanel">
-						<div class="mb-5">
-							<h5 class="font-weight-bold mb-5">Your contacts</h5>
-							<?php
-
-							$user_id = $_SESSION['user_id'];
-							$sql = "SELECT * FROM message INNER JOIN user ON message.sender_id = user.user_id WHERE (user.user_type!='2' AND user.user_type!='1') AND (message.receiver_id = $user_id OR message.sender_id = $user_id) GROUP BY message.sender_id";
-							$query = $dbh->prepare($sql);
-							$query->execute();
-							$user_name = $query->fetchAll();
-
-							?>
-							<?php foreach ($user_name as $contacts) : ?>
-							<div class="d-flex align-items-center mb-">
-								<div class="symbol symbol-35 flex-shrink-0 mr-3">
-									<img alt="Pic" src="/hulam/assets/keen/hulam_media/<?= $contacts['profile_pic']?>" />
-								</div>
-								<div class="d-flex flex-wrap flex-row-fluid">
-									<div class="d-flex flex-column pr-2 flex-grow-1">
-										<a href="debtor/messages.php?sender_id=<?= $contacts['sender_id']?>" class="text-dark text-hover-primary mb-1 font-weight-bold font-size-lg"><?= $contacts['company_name']?></a>
-									</div>
-										<a href="debtor/messages.php?sender_id=<?= $contacts['sender_id']?>" class="btn btn-icon btn-light btn-sm">
-											<span class="svg-icon svg-icon-success">
-												<span class="svg-icon svg-icon-md">
-													<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-														<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-															<polygon points="0 0 24 0 24 24 0 24" />
-															<path d="M6.70710678,15.7071068 C6.31658249,16.0976311 5.68341751,16.0976311 5.29289322,15.7071068 C4.90236893,15.3165825 4.90236893,14.6834175 5.29289322,14.2928932 L11.2928932,8.29289322 C11.6714722,7.91431428 12.2810586,7.90106866 12.6757246,8.26284586 L18.6757246,13.7628459 C19.0828436,14.1360383 19.1103465,14.7686056 18.7371541,15.1757246 C18.3639617,15.5828436 17.7313944,15.6103465 17.3242754,15.2371541 L12.0300757,10.3841378 L6.70710678,15.7071068 Z" fill="#000000" fill-rule="nonzero" transform="translate(12.000003, 11.999999) rotate(-270.000000) translate(-12.000003, -11.999999)" />
-														</g>
-													</svg>
-												</span>
-											</span>
-										</a>
-									</div>
-								</div>
-							<?php endforeach; ?>
-							<div class="d-flex align-items-center mb-6">
-								<div class="symbol symbol-35 flex-shrink-0 mr-3">
-									<img alt="Pic" src="/hulam/assets/keen/media/logos/h_small.png" />
-								</div>
-								<?php
-								$sql = "SELECT * FROM user WHERE user_type = '1'";
-								$query = $dbh->prepare($sql);
-								$query->execute();
-								$admin = $query->fetch();
-								?>
-								<div class="d-flex flex-wrap flex-row-fluid">
-									<div class="d-flex flex-column pr-2 flex-grow-1">
-										<a href="debtor/messages.php?sender_id=<?= $admin['user_id']?>" class="text-dark text-hover-primary mb-1 font-weight-bold font-size-lg">The Hulam Team</a>
-									</div>
-									<a href="debtor/messages.php?sender_id=<?= $admin['user_id']?>" class="btn btn-icon btn-light btn-sm">
-											<span class="svg-icon svg-icon-success">
-												<span class="svg-icon svg-icon-md">
-													<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-														<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-															<polygon points="0 0 24 0 24 24 0 24" />
-															<path d="M6.70710678,15.7071068 C6.31658249,16.0976311 5.68341751,16.0976311 5.29289322,15.7071068 C4.90236893,15.3165825 4.90236893,14.6834175 5.29289322,14.2928932 L11.2928932,8.29289322 C11.6714722,7.91431428 12.2810586,7.90106866 12.6757246,8.26284586 L18.6757246,13.7628459 C19.0828436,14.1360383 19.1103465,14.7686056 18.7371541,15.1757246 C18.3639617,15.5828436 17.7313944,15.6103465 17.3242754,15.2371541 L12.0300757,10.3841378 L6.70710678,15.7071068 Z" fill="#000000" fill-rule="nonzero" transform="translate(12.000003, 11.999999) rotate(-270.000000) translate(-12.000003, -11.999999)" />
-														</g>
-													</svg>
-												</span>
-											</span>
-										</a>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
 			</div>
+		</div>
+	</div>
+	<!--end::Content-->
+	</div>
 	<!--end::Quick Panel-->
-
 
 	<!--begin::Scrolltop-->
 	<div id="kt_scrolltop" class="scrolltop">

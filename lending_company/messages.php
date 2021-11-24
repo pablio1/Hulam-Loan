@@ -6,66 +6,6 @@
 		header('location: ../index.php');
 	}?>
 	
-	<?php
-
-	if(isset($_POST['update'])){
-
-	    $lender_id = $_SESSION['user_id'];
-	    $min_loan= $_POST['min_loan'];
-	    $max_loan= $_POST['max_loan'];
-	    $min_term= $_POST['min_term'];
-	    $max_term= $_POST['max_term'];
-	    $fix_rate = $_POST['fix_rate'];
-	    $late_charges = $_POST['late_charges'];
-		$reloan_period = $_POST['reloan_period'];
-		$reloan_amount = $_POST['reloan_amount'];
-
-		$lender_id = $_SESSION['user_id'];
-
-	    $sql = "SELECT * FROM loan_features WHERE lender_id = $lender_id";
-		$q= $dbh->prepare($sql);
-		$q->execute();
-	   	if($q->rowCount()== 0){
-
-	        $sql="INSERT INTO loan_features(lender_id,min_loan,max_loan,min_term,max_term,fix_rate,late_charges,reloan_period,reloan_amount)
-	        VALUES(:lender_id,:min_loan,:max_loan,:min_term,:max_term,:fix_rate,:late_charges,:reloan_period,:reloan_amount)";
-		    $query =$dbh->prepare($sql);
-	        $query->bindParam(':lender_id',$lender_id,PDO::PARAM_STR);
-	        $query->bindParam(':min_loan',$min_loan,PDO::PARAM_STR);
-	        $query->bindParam(':max_loan',$max_loan,PDO::PARAM_STR);
-	        $query->bindParam(':min_term',$min_term,PDO::PARAM_STR);
-	        $query->bindParam(':max_term',$max_term,PDO::PARAM_STR);
-	        $query->bindParam(':fix_rate',$fix_rate,PDO::PARAM_STR);
-	        $query->bindParam(':late_charges',$late_charges,PDO::PARAM_STR);
-			$query->bindParam(':reloan_period',$reloan_period,PDO::PARAM_STR);
-			$query->bindParam(':reloan_amount',$reloan_amount,PDO::PARAM_STR);
-	        $query->execute();
-	    }else{
-	        
-	        $sql="UPDATE loan_features SET min_loan=:min_loan,max_loan=:max_loan,min_term=:min_term,max_term=:max_term,fix_rate=:fix_rate,late_charges=:late_charges,reloan_period=:reloan_period,reloan_amount=:reloan_amount WHERE lender_id = :lender_id";
-	        $query =$dbh->prepare($sql);
-	        $query->bindParam(':lender_id',$lender_id,PDO::PARAM_STR);
-	        $query->bindParam(':min_loan',$min_loan,PDO::PARAM_STR);
-	        $query->bindParam(':max_loan',$max_loan,PDO::PARAM_STR);
-	        $query->bindParam(':min_term',$min_term,PDO::PARAM_STR);
-	        $query->bindParam(':max_term',$max_term,PDO::PARAM_STR);
-	        $query->bindParam(':fix_rate',$fix_rate,PDO::PARAM_STR);
-	        $query->bindParam(':late_charges',$late_charges,PDO::PARAM_STR);
-			$query->bindParam(':reloan_period',$reloan_period,PDO::PARAM_STR);
-			$query->bindParam(':reloan_amount',$reloan_amount,PDO::PARAM_STR);
-
-		if($query->execute()){
-			$_SESSION['setup'] = "Submitted successfully!";
-			header("Location: setup_loan.php");
-			exit();
-		} else {
-			$_SESSION['setup'] = "Error!";
-			header("Location: setup_loan.php");
-			exit();
-		}
-	}
-}
-	?>
 
 
 <?php
@@ -85,6 +25,34 @@ $query = $dbh->prepare($sql);
 $query->execute();
 $user = $query->fetch();
 ?>
+
+
+<?php
+if (isset($_POST['send_message'])) {
+
+    $from = $_POST['sender_id'];
+    $to = $_POST['receiver_id'];
+    $date_message = $_POST['date_message'];
+    $message = $_POST['message'];
+
+    $insert = "INSERT INTO message(sender_id,receiver_id,message,date_message)VALUES(:sender_id,:receiver_id,:message,:date_message)";
+    $query = $dbh->prepare($insert);
+    $query->bindParam(':sender_id', $from, PDO::PARAM_STR);
+    $query->bindParam(':receiver_id', $to, PDO::PARAM_STR);
+    $query->bindParam(':message', $message, PDO::PARAM_STR);
+    $query->bindParam(':date_message', $date_message, PDO::PARAM_STR);
+    if ($query->execute()) {
+        $_SESSION['status_message'] = "Message Sent";
+        header("Location: messages.php?sender_id=$to");
+        exit();
+    } else {
+        $_SESSION['status_message'] = "Message Not Sent";
+        header('Location: messages.php?sender_id=$to');
+        exit();
+    }
+}
+?>
+
 <!DOCTYPE html>
 
 <html lang="en">
@@ -208,7 +176,6 @@ $user = $query->fetch();
 									</span>
 									<span class="menu-text">Dashboard</span>
 								</a>
-							</li>
 								<li class="menu-section">
 								<h4 class="menu-text">Manage Account</h4>
 								<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
@@ -278,7 +245,6 @@ $user = $query->fetch();
 									</ul>
 								</div>
 							</li>
-
 							<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
 								<a href="javascript:;" class="menu-link menu-toggle">
 									<span class="svg-icon menu-icon">
@@ -306,13 +272,13 @@ $user = $query->fetch();
 											</a>
 										</li>
 										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-                                            <a href="lending_company/released_loan.php" class="menu-link menu-toggle">
-                                                <i class="menu-bullet">
-                                                    <span></span>
-                                                </i>
-                                                <span class="menu-text">Release Loan</span>
-                                            </a>
-                                        </li>
+											<a href="lending_company/released_loan.php" class="menu-link menu-toggle">
+												<i class="menu-bullet">
+													<span></span>
+												</i>
+												<span class="menu-text">Release Loan</span>
+											</a>
+										</li>
 										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
 											<a href="lending_company/declined_loan.php" class="menu-link menu-toggle">
 												<i class="menu-bullet">
@@ -330,14 +296,14 @@ $user = $query->fetch();
 								<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
 							</li>
 							<li class="menu-item menu-item-submenu" data-menu-toggle="hover">
-							<a href="lending_company/record_payment.php" class="menu-link menu-toggle">
+								<a href="lending_company/released_loan.php" class="menu-link menu-toggle">
 									<span class="svg-icon menu-icon">
 									</span>
 									<span class="menu-text">Add Payment</span>
 								</a>
 							</li>
 							<li class="menu-item menu-item-submenu" data-menu-toggle="hover">
-							<a href="lending_company/view_payment.php" class="menu-link menu-toggle">
+								<a href="lending_company/view_payment.php" class="menu-link menu-toggle">
 									<span class="svg-icon menu-icon">
 									</span>
 									<span class="menu-text">Payment Records</span>
@@ -347,12 +313,24 @@ $user = $query->fetch();
 								<h4 class="menu-text">Manage Report</h4>
 								<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
 							</li>
-							<li class="menu-item menu-item-submenu" data-menu-toggle="hover">
-							<a href="lending_company/generate_report.php" class="menu-link menu-toggle">
+							<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+								<a href="javascript:;" class="menu-link menu-toggle">
 									<span class="svg-icon menu-icon">
 									</span>
 									<span class="menu-text">Generate Report</span>
+									<i class="menu-arrow"></i>
 								</a>
+								<div class="menu-submenu">
+									<ul class="menu-subnav">
+										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+											<a href="lending_company/generate_report.php" class="menu-link menu-toggle">
+												<span class="svg-icon menu-icon">
+												</span>
+												<span class="menu-text">Debtor Report</span>
+											</a>
+										</li>
+									</ul>
+								</div>
 							</li>
 							<!--end::Menu Nav-->
 					</div>
@@ -448,155 +426,185 @@ $user = $query->fetch();
 						<!--end::Container-->
 					</div>
 					<!--end::Header-->
-					<!--begin::Content-->
-					<div class="content d-flex flex-column flex-column-fluid" id="kt_content" style="background-image:url('assets/keen/media/logos/banner.png')">
-						<!--begin::Subheader-->
-						<div class="subheader py-6 py-lg-8 subheader-transparent" id="kt_subheader">
-							<div class="container d-flex align-items-center justify-content-between flex-wrap flex-sm-nowrap">
-								<!--begin::Info-->
-								<div class="d-flex align-items-center flex-wrap mr-1">
-									<!--begin::Page Heading-->
-									<div class="d-flex align-items-baseline flex-wrap mr-5">
-										<!--begin::Page Title-->
-										<h4 class="text-white font-weight-bold my-1 mr-5">Dashboard |</h4>
-										<h5 class="text-white font-weight-bold my-1 mr-5"><?= $user['company_name']?></h5>
-											<div class="col-xl-12 col-xl-12">
-												<?php
-												if(isset($_SESSION['setup'])){
-												?>
-													<div class="alert alert-custom alert-notice alert-light-success fade show" role="alert">
-														<div class="alert-text">
-															<h4><?php echo $_SESSION['setup'];?></h4>
-														</div>
-														<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
-													</div>
-												<?php unset($_SESSION['setup']);
-												}?>
-											</div>
-										</div>
-										<!--end::Page Heading-->
-									</div>
-									<!--end::Info-->
-								</div>
-							</div>
-							<!--end::Subheader-->
-								<!--begin::Entry-->
-	                            <div class="d-flex flex-column-fluid" >
-								<!--begin::Container-->
-								<div class="container" >
-									<div class="card card-custom">
-										<div class="card-body p-0">
-											<!--begin: Wizard Body-->
-											<div class="wizard-body py-8 px-8 py-lg-20 px-lg-10">
-												<!--begin: Wizard Form-->
-												<div class="row">
-													<div class="offset-xxl-2 col-xxl-8">
-														<form action="" method="post" id="kt_form" enctype="multipart/form-data">
-	                                                        <?php
-	                                                        $lender_id = $_SESSION['user_id'];
 
-	                                                        $sql = "SELECT * FROM loan_features INNER JOIN user ON loan_features.lender_id = user.user_id WHERE lender_id = $lender_id";
-	                                                        $query = $dbh->prepare($sql);
-	                                                        $query->execute();
-	                                                        $res = $query->fetch();
-	                                                        ?>
-															<!--begin: Wizard Step 1-->
-															<div class="pb-5" data-wizard-type="step-content" data-wizard-state="current">
-																<h4 class="mb-10 font-weight-bold text-dark">Set Up Your Loan Features</h4>
-	                                                            <div class="row">
-																	<div class="col-xl-4">
-																		<!--begin::Input-->
-																		<div class="form-group">
-																			<label>Minimum Loan</label>
-																			<input type="text" class="form-control" name="min_loan" value="<?= $res['min_loan']?>" />
-																		</div>
-																		<!--end::Input-->
-																	</div>
-																	<div class="col-xl-4">
-																		<!--begin::Input-->
-																		<div class="form-group">
-																			<label>Maximum Loan</label>
-																			<input type="text" class="form-control" name="max_loan" value="<?= $res['max_loan']?>" />
-																		</div>
-																		<!--end::Input-->
-																	</div>
-																	<div class="col-xl-4">
-																		<!--begin::Input-->
-																		<div class="form-group">
-																			<label>Minimum Loan Term</label>
-																			<input type="text" class="form-control" name="min_term"  value="<?= $res['min_term']?>" />
-																		</div>
-																		<!--end::Input-->
-																	</div>
-	                                            				</div>
-																<div class="row">
-																	<div class="col-xl-4">
-																		<!--begin::Input-->
-																		<div class="form-group">
-																			<label>Maximum Loan Term</label>
-																			<input type="text" class="form-control" name="max_term" value="<?= $res['max_term']?>" />
-																		</div>
-																		<!--end::Input-->
-																	</div>
-																	<div class="col-xl-4">
-																		<!--begin::Input-->
-																		<div class="form-group">
-																			<label>Fix Interest Rate</label>
-																			<input type="text" class="form-control" name="fix_rate" value="<?= $res['fix_rate']?>" />
-																		</div>
-																		<!--end::Input-->
-																	</div>
-	                                                                <div class="col-xl-4">
-																		<!--begin::Input-->
-																		<div class="form-group">
-																			<label>Late Charges</label>
-																			<input type="text" class="form-control" name="late_charges" value="<?= $res['late_charges']?>" />
-																		</div>
-																		<!--end::Input-->
-																	</div>
-																</div>
-															</div>
-																<h4 class="mb-10 font-weight-bold text-dark">Set Up Reloan Period</h4>
-																<div class="row">
-																	<div class="col-xl-4">
-																		<!--begin::Input-->
-																		<div class="form-group">
-																			<label>How many months after the releasing date?</label>
-																			<input type="number" placeholder="Set how many months" class="form-control" name="reloan_period" value="<?= $res['reloan_period']?>" />
-																		</div>
-																		<!--end::Input-->
-																	</div>
-																	<div class="col-xl-4">
-																		<!--begin::Input-->
-																		<div class="form-group">
-																			<label>Remaining balance should be less than: </label>
-																			<input type="number" placeholder="Set amount" class="form-control" name="reloan_amount" value="<?= $res['reloan_amount']?>" />
-																		</div>
-																		<!--end::Input-->
-																	</div>
-																	
-																	</div>
-																	<div class="mr-2"></div>
-																	<div>
-																		<button type="submit" name="update"  class="btn btn-primary font-weight-bolder px-10 py-3" data-wizard-type="action-next">Submit</button>
-																	</div>
-																</div>
-																<!--end: Wizard Actions-->
-															 </div>
-	                                        				<!--end::Body-->
-	                                    				</form>
-	                                   					 <!--end::Form-->
-	                               					</div>
-	                            				</div>
-	                            				<!--end::Content-->
-	                                        </div>
-	                                    </div>
-	                                </div>
-	                            </div>
+
+			<!--begin::Content-->
+				<div class="content d-flex flex-column flex-column-fluid" id="kt_content" style="background-image:url('assets/keen/media/logos/banner.png')">
+					<!--begin::Subheader-->
+					<div class="subheader py-6 py-lg-8 subheader-transparent" id="kt_subheader">
+						<div class="container d-flex align-items-center justify-content-between flex-wrap flex-sm-nowrap">
+							<!--begin::Info-->
+							<div class="d-flex align-items-center flex-wrap mr-1">
+								<!--begin::Page Heading-->
+								<div class="d-flex align-items-baseline flex-wrap mr-5">
+									<!--begin::Page Title-->
+									<h4 class="text-white font-weight-bold my-1 mr-5">Dashboard |</h4>
+									<h5 class="text-white font-weight-bold my-1 mr-5"><?= $user['company_name'] ?></h5>
+									<!-- <a href="lending_company/view_announcements.php" style="font-size: 20px; font-style:italic">View Announcements</a> -->
+									<!--end::Page Title-->
+									<div class="col-xl-6">
+										<?php
+										if (isset($_SESSION['status_message'])) {
+										?>
+											<div class="alert alert-custom alert-notice alert-light-success fade show" role="alert">
+												<div class="alert-text">
+													<h4><?php echo $_SESSION['status_message']; ?></h4>
+												</div>
+												<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+											</div>
+										<?php unset($_SESSION['status_message']);
+										} ?>
+                            </div>
+								</div>
+								<!--end::Page Heading-->
 							</div>
-							<!--end::Entry-->
+							<!--end::Info-->
+							<!--begin::Toolbar-->
+							<div class="d-flex align-items-center flex-wrap">
+								<!--begin::Daterange-->
+								<a href="#" class="btn btn-fixed-height btn-bg-white btn-text-dark-50 btn-hover-text-primary btn-icon-primary font-weight-bolder font-size-sm px-5 my-1 mr-3" id="kt_dashboard_daterangepicker" data-toggle="tooltip" title="Select dashboard daterange" data-placement="top">
+									<span class="opacity-60 font-weight-bolder mr-2" id="kt_dashboard_daterangepicker_title">Today</span>
+									<span class="font-weight-bolder" id="kt_dashboard_daterangepicker_date">Aug 16</span>
+								</a>
+								<!--end::Daterange-->
+								<!--begin::Dropdown-->
+								<!--end::Dropdown-->
+							</div>
+							<!--end::Toolbar-->
 						</div>
-						<!--end::Content-->
+					</div>
+					<!--end::Subheader-->
+
+
+
+
+					<div class="d-flex flex-column-fluid">
+						<div class="container">
+						<div class="row align-items-center justify-content-center">
+							<div class="card card-custom gutter-b card-stretch " style="width: 800px;">
+                     
+
+                        <!--begin::Card-->
+                        <div class="card card-custom">
+						<?php
+							$user_id = $_SESSION['user_id'];
+							$sender_id = intval($_GET['sender_id']);
+
+							$sql = "SELECT * FROM message INNER JOIN user ON message.sender_id = user.user_id WHERE message.receiver_id = $user_id AND message.sender_id = $sender_id ORDER BY date_message desc";
+							$query = $dbh->prepare($sql);
+							$query->execute();
+							$res = $query->fetch();
+							$red = $res['user_type'];
+							?>
+                            <!--begin::Header-->
+                            <div class="card-header align-items-center px-4 py-3">
+                                <div class="text-center flex-grow-1">
+								<div class="symbol symbol-circle symbol-40 mr-3">
+										<img alt="Pic" src="/hulam/assets/keen/hulam_media/<?= $res['profile_pic'] ?>" />
+									</div>
+                                    <div class="text-dark-75 font-weight-bold font-size-h5">
+                                        <?php
+                                        if ($red == 1 || $red == 2 || $red == 4) : ?>
+                                            <?= $res['firstname'] . ' ' . $res['middlename'] . ' ' . $res['lastname'] ?>
+											<?= $res['sender_id']?>
+                                        <?php else : ?>
+                                            <?= $res['company_name']; ?>
+                                        <?php endif; ?>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--end::Header-->
+                            <!--begin::Body-->
+                            <div class="card-body">
+                                <div class="scroll scroll-pull" data-height="375" data-mobile-height="300">
+                                    <div class="messages">
+
+                                        <div class="d-flex flex-column mb-5 align-items-start">
+                                            <div class="d-flex align-items-center">
+                                                <!-- <div class="symbol symbol-circle symbol-40 mr-3">
+                                                    <img alt="Pic" src="/hulam/assets/keen/hulam_media/<?= $res['profile_pic'] ?>" />
+                                                </div> -->
+                                                <div>
+                                                    <span class="text-dark-75 text-hover-primary font-weight-bold font-size-h6">
+                                                        <?php
+                                                        $user_id = $_SESSION['user_id'];
+                                                        $sender_id = intval($_GET['sender_id']);
+
+                                                        $sql = "SELECT * FROM message INNER JOIN user ON message.sender_id = user.user_id WHERE message.receiver_id = $user_id AND message.sender_id = $sender_id ORDER BY date_message desc";
+                                                        $query = $dbh->prepare($sql);
+                                                        $query->execute();
+                                                        $res = $query->fetch();
+
+                                                        $rem = $res['user_type'];
+                                                        ?>
+                                                        <?php
+                                                        if ($rem == 1 || $rem == 2 || $rem == 4) : ?>
+                                                            <?= $res['firstname'] . '' . $res['middlename'] . ' ' . $res['lastname'] ?>
+
+                                                        <?php else : ?>
+                                                            <?= $res['company_name']; ?>
+                                                        <?php endif; ?>
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                            <?php
+                                            $user_id = $_SESSION['user_id'];
+                                            $sender_id = intval($_GET['sender_id']);
+
+                                            $sql = "SELECT * FROM message INNER JOIN user ON message.sender_id = user.user_id WHERE message.receiver_id = $user_id AND message.sender_id = $sender_id ORDER BY date_message asc";
+                                            $query = $dbh->prepare($sql);
+                                            $query->execute();
+                                            $r = $query->fetchAll();
+                                            foreach ($r as $red) :
+                                            ?>
+                                                <div class="mt-2 rounded p-5 bg-light-success text-dark-50 font-weight-bold font-size-lg text-left max-w-400px"><?= $red['message'] ?></div>
+                                                <span class="text-muted font-size-sm"><?= date('F-d Y h:i:sa', strtotime($red['date_message'])) ?></span>
+                                            <?php endforeach; ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <form action="" method="post">
+                            <div class="card-footer align-items-center">
+                                <textarea name="message" class="form-control border-0 p-0" rows="2" placeholder="Type a message"></textarea>
+                                <div class="d-flex align-items-center justify-content-between mt-5">
+                                    <div class="mr-3">
+                                    </div>
+                                    <div>
+                                    <?php
+                                        date_default_timezone_set('Asia/Manila');
+                                        $todays_date = date("y-m-d h:i:sa");
+                                        $today = strtotime($todays_date);
+                                        $det = date("Y-m-d h:i:sa", $today);
+
+                                        ?>
+                                        <input type="hidden" name="date_message" value="<?= $det; ?>">
+                                        <input type="hidden" name="sender_id" value="<?= $_SESSION['user_id']?>">
+                                        <input type="hidden" name="receiver_id" value="<?= intval($_GET['sender_id'])?>">
+										<?php
+											$user_id = $_SESSION['user_id'];
+											$sql = "SELECT * FROM message INNER JOIN user ON message.sender_id = user.user_id WHERE (user.user_type!='2' AND user.user_type!='1') AND (message.receiver_id = $user_id OR message.sender_id = $user_id) GROUP BY message.sender_id";
+											$query = $dbh->prepare($sql);
+											$query->execute();
+											$user_name = $query->fetchAll();
+											?>
+										<button type="submit" name="send_message" class="btn btn-primary btn-md text-uppercase font-weight-bold chat-send py-2 px-6">Send</button>
+                                       	<a href="lending_company/sent_message.php?sender_id=<?= intval($_GET['sender_id'])?>"  class="btn btn-sm btn-light-primary font-weight-bolder mr-2"> View Sent Messages</a>
+                                    </div>
+                                </div>
+                            </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--end::Content-->
+
+
+
 						<!--begin::Footer-->
 						<div class="footer bg-white py-4 d-flex flex-lg-column" id="kt_footer">
 							<!--begin::Container-->

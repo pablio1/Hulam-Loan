@@ -2,15 +2,225 @@
 session_start();
 error_reporting(0);
 include('../db_connection/config.php');
-
-if ($_SESSION['user_type'] != 3) {
+if ($_SESSION['user_type'] != 1) {
 	header('location: ../index.php');
 }?>
+
+
+<?php 
+if(isset($_POST['upload_logo'])){
+	$user_id = $_SESSION['user_id'];
+
+	$images = $_FILES['logo']['name'];
+	$tmp_dir = $_FILES['logo']['tmp_name'];
+	$imageSize = $_FILES['logo']['size'];
+
+	$upload_dir = '../assets/keen/hulam_media/';
+	$imgExt = strtolower(pathinfo($images, PATHINFO_EXTENSION));
+	$valid_extensions = array('jpeg', 'jpg', 'gif', 'pdf', 'doc', 'docx');
+	$logo = rand(1000, 10000000) . "." . $imgExt;
+	move_uploaded_file($tmp_dir, $upload_dir . $logo);
+
+	$sql = "UPDATE user SET profile_pic = '$logo' WHERE user_id = $user_id";
+	$query = $dbh->prepare($sql);
+
+    if ($query->execute()) {
+		$_SESSION['status_profile'] = "Submitted Successfuly!";
+		header("location: update_profile.php");
+		exit();
+	} else {
+		$_SESSION['status_profile'] = "Error!";
+		header("location: update_profile.php");
+		exit();
+	}
+}
+?>
+
+
+<?php
+if (isset($_POST['submit'])) {
+
+	$lender_id = $_SESSION['user_id'];
+	$company_name = $_POST['company_name'];
+	$description = $_POST['description'];
+	$company_street = $_POST['company_street'];
+	$company_barangay = $_POST['company_barangay'];
+	$company_city = $_POST['company_city'];
+	$company_province = $_POST['company_province'];
+	$company_zipcode = $_POST['company_zipcode'];
+	$mobile = $_POST['mobile'];
+	$company_landline = $_POST['company_landline'];
+
+	$updateuser = "UPDATE user SET company_name=:company_name,mobile=:mobile WHERE user_id = $lender_id";
+    $que = $dbh->prepare($updateuser);
+    $que->bindParam(':company_name', $company_name, PDO::PARAM_STR);
+    $que->bindParam(':mobile', $mobile, PDO::PARAM_STR);
+    $que->execute();
+
+	$lender_id = $_SESSION['user_id'];
+	$sql = "SELECT * FROM loan_features WHERE lender_id = $lender_id";
+	$q = $dbh->prepare($sql);
+	$q->execute();
+	if ($q->rowCount() == 0) {
+
+		$sql = "INSERT INTO loan_features(lender_id,description,company_street,company_barangay,company_city,company_province,company_zipcode,company_landline)
+	VALUES(:lender_id,:description,:company_street,:company_barangay,:company_city,:company_province,:company_zipcode,:company_landline)";
+		$query = $dbh->prepare($sql);
+		$query->bindParam(':lender_id', $lender_id, PDO::PARAM_STR);
+		$query->bindParam(':description', $description, PDO::PARAM_STR);
+		$query->bindParam(':company_street', $company_street, PDO::PARAM_STR);
+		$query->bindParam(':company_barangay', $company_barangay, PDO::PARAM_STR);
+		$query->bindParam(':company_city', $company_city, PDO::PARAM_STR);
+		$query->bindParam(':company_province', $company_province, PDO::PARAM_STR);
+		$query->bindParam(':company_zipcode', $company_zipcode, PDO::PARAM_STR);
+		$query->bindParam(':company_landline', $company_landline, PDO::PARAM_STR);
+	} else {
+
+		$sql = "UPDATE loan_features SET description=:description,company_street=:company_street,company_barangay=:company_barangay,company_city=:company_city,
+        company_province=:company_province,company_zipcode=:company_zipcode,company_landline=:company_landline WHERE lender_id = :lender_id";
+		$query = $dbh->prepare($sql);
+		$query->bindParam(':lender_id', $lender_id, PDO::PARAM_STR);
+		$query->bindParam(':description', $description, PDO::PARAM_STR);
+		$query->bindParam(':company_street', $company_street, PDO::PARAM_STR);
+		$query->bindParam(':company_barangay', $company_barangay, PDO::PARAM_STR);
+		$query->bindParam(':company_city', $company_city, PDO::PARAM_STR);
+		$query->bindParam(':company_province', $company_province, PDO::PARAM_STR);
+		$query->bindParam(':company_zipcode', $company_zipcode, PDO::PARAM_STR);
+		$query->bindParam(':company_landline', $company_landline, PDO::PARAM_STR);
+	}
+
+	if ($query->execute()) {
+		$_SESSION['status_profile'] = "Submitted Successfuly!";
+		header("location: update_profile.php");
+		exit();
+	} else {
+		$_SESSION['status_profile'] = "Error!";
+		header("location: update_profile.php");
+		exit();
+	}
+}
+?>
+
+<?php
+if (isset($_POST['upload_photo'])) {
+	$user_id = $_SESSION['user_id'];
+
+	$images = $_FILES['profile_pic']['name'];
+	$tmp_dir = $_FILES['profile_pic']['tmp_name'];
+	$imageSize = $_FILES['profile_pic']['size'];
+
+	$upload_dir = '../assets/keen/hulam_media/';
+	$imgExt = strtolower(pathinfo($images, PATHINFO_EXTENSION));
+	$valid_extensions = array('jpeg', 'jpg', 'gif', 'pdf', 'doc', 'docx');
+	$profile_pic = rand(1000, 10000000) . "." . $imgExt;
+	move_uploaded_file($tmp_dir, $upload_dir . $profile_pic);
+
+	$update = "UPDATE user SET profile_pic = :profile_pic WHERE user_id = $user_id";
+	$update_query = $dbh->prepare($update);
+	$update_query->bindParam(':profile_pic', $profile_pic, PDO::PARAM_STR);
+	$update_query->execute();
+
+	if ($update_query) {
+		$_SESSION['status_profile'] = "Updated Company Logo!";
+		header("location: update_profile.php");
+		exit();
+	} else {
+		$_SESSION['status_profile'] = "Error!";
+		header("location: update_profile.php");
+		exit();
+	}
+}
+?>
+
+
+<?php
+if (isset($_POST['b_permit'])) {
+	$lender_id = $_SESSION['user_id'];
+
+	$images3 = $_FILES['b_permit']['name'];
+	$tmp_dir3 = $_FILES['b_permit']['tmp_name'];
+	$imageSize3 = $_FILES['b_permit']['size'];
+
+	$upload_dir3 = '../assets/keen/hulam_media/';
+	$imgExt3 = strtolower(pathinfo($images3, PATHINFO_EXTENSION));
+	$valid_extensions = array('jpeg', 'jpg', 'gif', 'pdf', 'doc', 'docx');
+	$pic3 = rand(1000, 10000000) . "." . $imgExt3;
+	move_uploaded_file($tmp_dir3, $upload_dir3 . $pic3);
+
+	$lender_id = $_SESSION['user_id'];
+	$sql = "SELECT * FROM loan_features WHERE lender_id = $lender_id";
+	$q = $dbh->prepare($sql);
+	$q->execute();
+	if ($q->rowCount() == 0) {
+	$sql = "INSERT INTO loan_features(lender_id,b_permit)
+	VALUES(:lender_id,:b_permit)";
+		$query = $dbh->prepare($sql);
+		$query->bindParam(':lender_id',$lender_id,PDO::PARAM_STR);
+		$query->bindParam(':b_permit', $pic3, PDO::PARAM_STR);
+		$query->execute();
+	} else{
+		$sql = "UPDATE loan_features SET b_permit=:b_permit WHERE lender_id = $lender_id";
+		$query = $dbh->prepare($sql);
+		$query->bindParam(':b_permit', $pic3, PDO::PARAM_STR);
+	}
+	if ($query->execute()) {
+		$_SESSION['status_profile'] = "Business Permit Updated!";
+		header("location: update_profile.php");
+		exit();
+	} else {
+		$_SESSION['status_profile'] = "Error!";
+		header("location: update_profile.php");
+		exit();
+	}
+}
+?>
+
+<?php
+if (isset($_POST['dti_permit'])) {
+	$lender_id = $_SESSION['user_id'];
+
+	$images3 = $_FILES['dti_permit']['name'];
+	$tmp_dir3 = $_FILES['dti_permit']['tmp_name'];
+	$imageSize3 = $_FILES['dti_permit']['size'];
+
+	$upload_dir3 = '../assets/keen/hulam_media/';
+	$imgExt3 = strtolower(pathinfo($images3, PATHINFO_EXTENSION));
+	$valid_extensions = array('jpeg', 'jpg', 'gif', 'pdf', 'doc', 'docx');
+	$dti_permit = rand(1000, 10000000) . "." . $imgExt3;
+	move_uploaded_file($tmp_dir3, $upload_dir3 . $dti_permit);
+
+	$lender_id = $_SESSION['user_id'];
+	$sql = "SELECT * FROM loan_features WHERE lender_id = $lender_id";
+	$q = $dbh->prepare($sql);
+	$q->execute();
+	if ($q->rowCount() == 0) {
+	$sql = "INSERT INTO loan_features(lender_id,dti_permit)
+	VALUES(:lender_id,:dti_permit)";
+		$query = $dbh->prepare($sql);
+		$query->bindParam(':lender_id',$lender_id,PDO::PARAM_STR);
+		$query->bindParam(':dti_permit', $dti_permit, PDO::PARAM_STR);
+		$query->execute();
+	} else{
+		$sql = "UPDATE loan_features SET dti_permit=:dti_permit WHERE lender_id = $lender_id";
+		$query = $dbh->prepare($sql);
+		$query->bindParam(':dti_permit', $dti_permit, PDO::PARAM_STR);
+	}
+	if ($query->execute()) {
+		$_SESSION['status_profile'] = "DTI Permit Updated!";
+		header("location: update_profile.php");
+		exit();
+	} else {
+		$_SESSION['status_profile'] = "Error!";
+		header("location: update_profile.php");
+		exit();
+	}
+}
+?>
 
 <?php
 $lender_id = $_SESSION['user_id'];
 
-$sql ="SELECT loan_features.*, user.* FROM loan_features INNER JOIN user ON loan_features.lender_id = user.user_id WHERE lender_id = $lender_id";
+$sql ="SELECT * FROM user WHERE user_id = $lender_id";
 $query = $dbh->prepare($sql);
 $query->execute();
 $user = $query->fetch();
@@ -32,7 +242,7 @@ $user = $query->fetch();
 <head>
 	<base href="../">
 	<meta charset="utf-8" />
-	<title>Hulam | Generate Report User Account</title>
+	<title>Hulam | Update Profile</title>
 	<meta name="description" content="Updates and statistics" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 	<!--begin::Fonts-->
@@ -109,6 +319,7 @@ $user = $query->fetch();
 						<img alt="Logo" src="/hulam/assets/keen/hulam_media/<?= $user['profile_pic']?>" class="h-100px w-90px" style="padding-top: 20%; padding: right 50%;" />
 					</a>
 					<!--end::Logo-->
+					
 					<!--begin::Toggle-->
 					<button class="brand-toggle btn btn-sm px-0" id="kt_aside_toggle">
 						<span class="svg-icon svg-icon svg-icon-xl">
@@ -286,31 +497,12 @@ $user = $query->fetch();
 								<h4 class="menu-text">Manage Report</h4>
 								<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
 							</li>
-							<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-								<a href="javascript:;" class="menu-link menu-toggle">
+							<li class="menu-item menu-item-submenu" data-menu-toggle="hover">
+							<a href="lending_company/generate_report.php" class="menu-link menu-toggle">
 									<span class="svg-icon menu-icon">
 									</span>
 									<span class="menu-text">Generate Report</span>
-									<i class="menu-arrow"></i>
 								</a>
-								<div class="menu-submenu">
-									<ul class="menu-subnav">
-										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-											<a href="lending_company/generate_user.php" class="menu-link menu-toggle">
-												<span class="svg-icon menu-icon">
-												</span>
-												<span class="menu-text">Users</span>
-											</a>
-										</li>
-										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-											<a href="lending_company/generate_loan_accounts.php" class="menu-link menu-toggle">
-												<span class="svg-icon menu-icon">
-												</span>
-												<span class="menu-text">Loan Accounts</span>
-											</a>
-										</li>
-									</ul>
-								</div>
 							</li>
 							<!--end::Menu Nav-->
 					</div>
@@ -418,286 +610,300 @@ $user = $query->fetch();
 										<!--begin::Page Title-->
 										<h4 class="text-white font-weight-bold my-1 mr-5">Dashboard |</h4>
 										<h5 class="text-white font-weight-bold my-1 mr-5"><?= $user['company_name']?></h5>
-									<!--end::Page Title-->
-								</div>
+											<div class="col-xl-6 col-xl-6">
+											<?php
+												if (isset($_SESSION['status_profile'])) {
+												?>
+													<div class="alert alert-success alert-dismissable" id="flash-msg">
+														<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+														<h4><?= $_SESSION['status_profile'] ?></h4>
+													</div>
+												<?php
+													unset($_SESSION['status_profile']);
+												} ?>
+											</div>
+									</div>
 								<!--end::Page Heading-->
-							</div>
+								</div>
 							<!--end::Info-->
-							<!--begin::Toolbar-->
-							<div class="d-flex align-items-center flex-wrap">
-								<!--begin::Daterange-->
-								<a href="#" class="btn btn-fixed-height btn-bg-white btn-text-dark-50 btn-hover-text-primary btn-icon-primary font-weight-bolder font-size-sm px-5 my-1 mr-3" id="kt_dashboard_daterangepicker" data-toggle="tooltip" title="Select dashboard daterange" data-placement="top">
-									<span class="opacity-60 font-weight-bolder mr-2" id="kt_dashboard_daterangepicker_title">Today</span>
-									<span class="font-weight-bolder" id="kt_dashboard_daterangepicker_date">Aug 16</span>
-								</a>
-								<!--end::Daterange-->
 							</div>
-							<!--end::Toolbar-->
 						</div>
-					</div>
 					<!--end::Subheader-->
 					<!--begin::Entry-->
 					<div class="d-flex flex-column-fluid">
 						<!--begin::Container-->
 						<div class="container">
 							<div class="card card-custom">
-								<div class="card-body">
-									<h5>Generate Reports</h5>
-                                    <div class="separator separator-dashed mt-8 mb-5"></div>
-                                    <form action=" " method="post">
-                                    <div class="row">
-                                        <!-- <div class="col-lg-3">
-                                            <div class="form-group">
-                                                <select name="user_type_name" class="form-control" id="defaultSelect">
-                                                <option value="none">By User Type</option>
-                                                    <?php $sql = "SELECT * from user_type WHERE user_type.id='2' || user_type.id='3' || user_type.id ='4'";
-                                                    $query = $dbh->prepare($sql);
-                                                    $query->execute();
-                                                    $results=$query->fetchAll(PDO::FETCH_OBJ);
-                                                    if($query->rowCount() > 0)
-                                                    {
-                                                    foreach($results as $result)
-                                                    {   ?>
-                                                    <option value="<?php echo htmlentities($result->id); ?>"><?php echo htmlentities($result->user_name); ?></option>
-                                                    <?php }} ?>
-                                                    </select>
-                                            </div>
-                                        </div> -->
-                                        <div class="col-lg-3">
-                                        <div class="form-group">
-                                                <select name="user_status" class="form-control" id="defaultSelect" >
-                                                <option value="none">By Status</option>
-                                                <option value="yes">Activated</option>
-                                                <option value="no">Inactivated</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-3">
-                                            <div class="form-group">
-                                                <select name="period_time" class="form-control" id="defaultSelect">
-                                                <option value="none">Select Days</option>
-                                                <option value="today">Today</option>
-                                                <option value="yesterday">Yesterday</option>
-                                                <option value="sevenDays">Last 7 Days</option>
-                                                <option value="thisMonth">This Month</option>
-                                                <option value="lastMonth">Last Month</option>
-                                                <option value="thisYear">This Year</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                            <div class="form-group-row">
-                                                <button type="submit" name="btn-category" class="btn btn-primary btn-shadow font-weight-bold mr-2">SEARCH</button>
-                                        </div>
-                                    </div>
-									<form method="post" class="quick-search-form">
-										<div class="col-lg-4">
-											<input type="text" name="search_input" class="form-control" placeholder="Search..."/>
-										</div>
-									</form></br>
-                                  <?php
-                                    $lender_id = $_SESSION['user_id'];
+								<div class="card-body p-0">
+									<!--begin: Wizard Body-->
+									<div class="wizard-body py-8 px-8 py-lg-20 px-lg-10">
+										<!--begin: Wizard Form-->
+										<div class="row">
+											<div class="offset-xxl-2 col-xxl-8">
+												<form action="" method="post" id="kt_form" enctype="multipart/form-data">
+													<?php
+													$lender_id = $_SESSION['user_id'];
 
-                                    // $sql ="SELECT loan_application.*, user.* FROM user INNER JOIN loan_application ON loan_application.debtor_id = user.user_id WHERE lender_id = $lender_id";
-                                    $sql = "SELECT loan_application.*, user.* FROM loan_application INNER JOIN user ON loan_application.debtor_id = user.user_id WHERE loan_application.lender_id = '$lender_id' AND loan_application.loan_status = 'Released'";
-                                    $query = $dbh->prepare($sql);
-                                    $query->execute();
-                                    $loan_app = $query->fetch();
-                                    ?>
-
-									
-									<table class="table table-bordered">
-										<thead>
-											<tr>
-												<th>Profile Image</th>
-												<th>Profile Information</th>
-												<th>Addresses</th>
-												<th>Employment Information</th>
-												<th>Relatives</th>
-											</tr>
-										</thead>
-										<tbody>
-											<?php
-
-											if(isset($_POST['btn-category']) || isset($_POST['search_input']))
-											{
-												$statusType = $_POST['user_status'];
-												$periodType = $_POST['period_time'];
-												$searchInput = $_POST['search_input'];
-
-											}
-											if($statusType == 'none' && $periodType == 'none' && $searchInput == '')
-											{
-												$sql = "SELECT * FROM user INNER JOIN debtors_info ON user.user_id = debtors_info.user_id INNER JOIN loan_application ON loan_application.debtor_id = user.user_id WHERE user_type !='1' || user_type !='3' || user_type !='4'";
-												$query = $dbh->prepare($sql);
-												$query->execute();
-												$res = $query->fetchAll();
-												$cnt =1;
-												if ($query->rowCount() > 0) {
-													foreach ($res as $rem): ?>
-	
-													<tr>
-														<td>
-															<div class="brand-logo">
-																<img alt="Pic" src="/hulam/assets/keen/hulam_media/<?= $rem['profile_pic']?>" class="h-80px w-80px">
+													$sql = "SELECT * FROM loan_features INNER JOIN user ON loan_features.lender_id = user.user_id WHERE lender_id = $lender_id";
+													$query = $dbh->prepare($sql);
+													$query->execute();
+													$res = $query->fetch();
+													?>
+													<!--begin: Wizard Step 1-->
+													<div class="pb-5" data-wizard-type="step-content" data-wizard-state="current">
+														<h4 class="mb-10 font-weight-bold text-dark">Enter your Company Details</h4>
+														<form action="" method="post" id="kt_form" enctype="multipart/form-data">
+															<div class="form-group row">
+																<label class="col-xl-3 col-lg-3 col-form-label text-right"></label>
+																<div class="col-lg-9 col-xl-6">
+																	<div class="image-input image-input-outline" id="kt_image_1">
+																		<div class="image-input-wrapper" style="background-image: url(/hulam/assets/keen/hulam_media/<?= $user['profile_pic'] ?>"></div>
+																		<label class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow" data-action="change" data-toggle="tooltip" title="" data-original-title="upload photo">
+																			<i class="fa fa-pen icon-sm text-muted" style="margin-left: 27px;"></i>
+																			<!-- <input type="file" name="profile" accept=".png, .jpg, .jpeg" /> -->
+																			<input type="file" name="logo" class="form-control" accept="*/image">
+																			<input type="hidden" name="profile_avatar_remove" />
+																		</label>
+																		<span class="btn btn-xs btn-white btn-hover-text-primary btn-shadow" data-action="cancel" data-toggle="tooltip" title="Cancel Photo">
+																			<i class="ki ki-bold-close icon-xs text-muted"></i>
+																		</span>
+																	</div>
+																	&nbsp;&nbsp;<button type="submit" name="upload_logo" class="btn btn-primary btn-sm">confirm logo</button>
+																</div>
 															</div>
-														</td>
-                                                        <td>Name: <?= $rem['firstname'].' ' .$rem['middlename'].' '.$rem['lastname']?></br>
-															Gender: <?= $rem['gender']?></br>
-															Birthdate: <?= $rem['b_day']?></br>
-															Mobile: <?= $rem['mobile']?></br>
-															Landline: <?= $rem['landline']?></br>
-															Email: <?= $rem['email']?>
-														</td>
-                                                        <td>Current Address: <?= $rem['c_street'].' '.$rem['c_barangay'].' '.$rem['c_city'].' '.$rem['c_province'].' '.$rem['c_zipcode']?></br>
-															Permanent Address: <?= $rem['p_street'].' '.$rem['p_barangay'].' '.$rem['p_city'].' '.$rem['p_province'].' '.$rem['p_zipcode']?>
-														</td>
-														<td>Company Name: <?= $rem['company_name']?></br>
-															Mobile: <?= $rem['company_mobile']?></br>
-															Landline: <?= $rem['company_landline']?></br>
-															Email: <?= $rem['company_email']?></br>
-															Monthly Salary: <?= $rem['monthly_salary']?></br>
-															Permanent Address: <?= $rem['p_street'].' '.$rem['p_barangay'].' '.$rem['p_city'].' '.$rem['p_province'].' '.$rem['p_zipcode']?>
-														</td>
-														<td>Name: <?= $rem['rel_name']?></br>
-															Relation: <?= $rem['rel_type']?></br>
-															Mobile: <?= $rem['rel_mobile']?></br>
-														</td>
-                                                    </tr>
-                                             <?php endforeach; $cnt = $cnt+1; }}
-
-											if($statusType != 'none' && $periodType == 'none' && $searchInput == '')
-											{
-												$sql = "SELECT * FROM user INNER JOIN debtors_info ON user.user_id = debtors_info.user_id INNER JOIN loan_application ON loan_application.debtor_id = user.user_id WHERE user_type !='1' || user_type !='3' || user_type !='4'";
-												$query = $dbh->prepare($sql);
-												$query->execute();
-												$res = $query->fetchAll();
-												$cnt =1;
-												if ($query->rowCount() > 0) {
-													foreach ($res as $rem): ?>
-	
-													<tr>
-														<td>
-															<div class="brand-logo">
-																<img alt="Pic" src="/hulam/assets/keen/hulam_media/<?= $rem['profile_pic']?>" class="h-80px w-80px">
+														</form>
+                                                        <form action="" method="post" id="kt_form">
+														<div class="form-group row">
+															<label class="col-xl-3 col-lg-3 col-form-label text-right">Company Name</label>
+															<div class="col-lg-9 col-xl-6">
+																<input class="form-control" type="text" name="company_name" value="<?= $_SESSION['company_name']; ?>" required />
 															</div>
-														</td>
-                                                        <td>Name: <?= $rem['firstname'].' ' .$rem['middlename'].' '.$rem['lastname']?></br>
-															Gender: <?= $rem['gender']?></br>
-															Birthdate: <?= $rem['b_day']?></br>
-															Mobile: <?= $rem['mobile']?></br>
-															Landline: <?= $rem['landline']?></br>
-															Email: <?= $rem['email']?>
-														</td>
-                                                        <td>Current Address: <?= $rem['c_street'].' '.$rem['c_barangay'].' '.$rem['c_city'].' '.$rem['c_province'].' '.$rem['c_zipcode']?></br>
-															Permanent Address: <?= $rem['p_street'].' '.$rem['p_barangay'].' '.$rem['p_city'].' '.$rem['p_province'].' '.$rem['p_zipcode']?>
-														</td>
-														<td>Company Name: <?= $rem['company_name']?></br>
-															Mobile: <?= $rem['company_mobile']?></br>
-															Landline: <?= $rem['company_landline']?></br>
-															Email: <?= $rem['company_email']?></br>
-															Monthly Salary: <?= $rem['monthly_salary']?></br>
-															Permanent Address: <?= $rem['p_street'].' '.$rem['p_barangay'].' '.$rem['p_city'].' '.$rem['p_province'].' '.$rem['p_zipcode']?>
-														</td>
-														<td>Name: <?= $rem['rel_name']?></br>
-															Relation: <?= $rem['rel_type']?></br>
-															Mobile: <?= $rem['rel_mobile']?></br>
-														</td>
-                                                    </tr>
-                                             <?php endforeach; $cnt = $cnt+1; }} 
-
-											if($statusType == 'none' && $periodType != 'none' && $searchInput == '')
-											{
-												$cdate = date("Y-m-d");
-												$getDate = date_create($cdate);
-												$getMonth = date('m');
-												$getLastMonth='';
-												$getYear = date('Y');
-												if($getMonth == 1)
-													$getLastMonth = 12;
-												else
-													$getLastMonth = $getMonth - 1;
-
-												$query = $dbh->prepare("SELECT * FROM user INNER JOIN debtors_info ON user.user_id = debtors_info.user_id INNER JOIN loan_application ON loan_application.debtor_id = user.user_id WHERE MONTH(activation_date) = '$getMonth' ORDER BY activation_date asc AND user_type !='1' || user_type !='3' || user_type !='4'")->execute();
-												$queryMonth = $dbh->prepare("SELECT * FROM user INNER JOIN debtors_info ON user.user_id = debtors_info.user_id INNER JOIN loan_application ON loan_application.debtor_id = user.user_id WHERE MONTH(activation_date) = '$getMonth' ORDER BY activation_date asc AND user_type !='1' || user_type !='3' || user_type !='4'")->execute();
-												$queryLastMonth = $dbh->prepare("SELECT * FROM user INNER JOIN debtors_info ON user.user_id = debtors_info.user_id INNER JOIN loan_application ON loan_application.debtor_id = user.user_id WHERE MONTH(activation_date) = '$getLastMonth' ORDER BY activation_date asc AND user_type !='1' || user_type !='3' || user_type !='4'")->execute();
-												$queryYear = $dbh->prepare("SELECT * FROM user INNER JOIN debtors_info ON user.user_id = debtors_info.user_id INNER JOIN loan_application ON loan_application.debtor_id = user.user_id WHERE MONTH(activation_date) = '$getYear' ORDER BY activation_date asc AND  user_type !='1' || user_type !='3' || user_type !='4'")->execute();
-												
-												if($periodType == 'today')
-												{
-													
-											    if ($query->rowCount() > 0) {
-													$formid = $data['form_id'];
-													$_newDate = new DateTime($data['reservation_date']);
-													$newDate = $_newDate->format('Y-m-d');
-													$createDate=date_create($newDate);
-													$diff = date_diff($createDate,$getDate);
-													$numDays = $diff->format('%d');
-													foreach ($res as $rem): ?>
-	
-													<tr>
-														<td>
-															<div class="brand-logo">
-																<img alt="Pic" src="/hulam/assets/keen/hulam_media/<?= $rem['profile_pic']?>" class="h-80px w-80px">
+														</div>
+														<div class="form-group row">
+															<label class="col-xl-3 col-lg-3 col-form-label text-right">Description</label>
+															<div class="col-lg-9 col-xl-6">
+																<textarea rows="4" cols="50" name="description" class="form-control" required ><?= $res['description']; ?></textarea>
 															</div>
-														</td>
-                                                        <td>Name: <?= $rem['firstname'].' ' .$rem['middlename'].' '.$rem['lastname']?></br>
-															Gender: <?= $rem['gender']?></br>
-															Birthdate: <?= $rem['b_day']?></br>
-															Mobile: <?= $rem['mobile']?></br>
-															Landline: <?= $rem['landline']?></br>
-															Email: <?= $rem['email']?>
-														</td>
-                                                        <td>Current Address: <?= $rem['c_street'].' '.$rem['c_barangay'].' '.$rem['c_city'].' '.$rem['c_province'].' '.$rem['c_zipcode']?></br>
-															Permanent Address: <?= $rem['p_street'].' '.$rem['p_barangay'].' '.$rem['p_city'].' '.$rem['p_province'].' '.$rem['p_zipcode']?>
-														</td>
-														<td>Company Name: <?= $rem['company_name']?></br>
-															Mobile: <?= $rem['company_mobile']?></br>
-															Landline: <?= $rem['company_landline']?></br>
-															Email: <?= $rem['company_email']?></br>
-															Monthly Salary: <?= $rem['monthly_salary']?></br>
-															Permanent Address: <?= $rem['p_street'].' '.$rem['p_barangay'].' '.$rem['p_city'].' '.$rem['p_province'].' '.$rem['p_zipcode']?>
-														</td>
-														<td>Name: <?= $rem['rel_name']?></br>
-															Relation: <?= $rem['rel_type']?></br>
-															Mobile: <?= $rem['rel_mobile']?></br>
-														</td>
-                                                    </tr>
-                                             <?php endforeach; $cnt = $cnt+1; }} ?>
-                                            
-										</tbody>
-									</table>
-							
+														</div>
+														<div class="separator separator-dashed mt-8 mb-5"></div>
+														<div class="row">
+															<div class="col-lg-9 col-xl-6">
+																<h5 class="font-weight-bold mt-10 mb-6">Company Contact Information</h5>
+															</div>
+														</div>
+														<div class="row">
+															<div class="col-xl-4">
+																<!--begin::Input-->
+																<div class="form-group">
+																	<label>Mobile</label>
+																	<input type="text" minlength="11" maxlength="11" class="form-control" name="mobile" value="<?= $_SESSION['mobile']; ?>" required />
+																	<label><span style="color:green">&#x2714;</span><span style="font-family: Courier New; font-size: 11px"> Atleast 11 digits</label></span>
+																</div>
+																<!--end::Input-->
+															</div>
+															<div class="col-xl-4">
+																<!--begin::Input-->
+																<div class="form-group">
+																	<label>Landline</label>
+																	<input type="text" minlength="7" maxlength="7" class="form-control" name="company_landline" value="<?= $res['company_landline']; ?>" required />
+																	<label><span style="color:green">&#x2714;</span><span style="font-family: Courier New; font-size: 11px"> Atleast 7 digits</label></span>
+																</div>
+																<!--end::Input-->
+															</div>
+															<div class="col-xl-4">
+																<!--begin::Input-->
+																<div class="form-group">
+																	<label>Email Address</label>
+																	<input type="text" disabled class="form-control" name="email" value="<?= $_SESSION['email']; ?>" />
+																</div>
+																<!--end::Input-->
+															</div>
+														</div>
+														<div class="row">
+															<div class="col-lg-9 col-xl-6">
+																<h5 class="font-weight-bold mt-10 mb-6">Company Address</h5>
+															</div>
+														</div>
+														<div class="row">
+															<div class="col-xl-4">
+																<!--begin::Input-->
+																<div class="form-group">
+																	<label>Street</label>
+																	<input type="text" class="form-control" name="company_street" value="<?= $res['company_street']; ?>" required />
+																</div>
+																<!--end::Input-->
+															</div>
+															<div class="col-xl-4">
+																<!--begin::Input-->
+																<div class="form-group">
+																	<label>Barangay</label>
+																	<input type="text" class="form-control" name="company_barangay" value="<?= $res['company_barangay']; ?>" required />
+																</div>
+																<!--end::Input-->
+															</div>
+															<div class="col-xl-4">
+																<!--begin::Input-->
+																<div class="form-group">
+																	<label>City/Municipality</label>
+																	<input type="text" class="form-control" name="company_city" value="<?= $res['company_city']; ?>" required />
+																</div>
+																<!--end::Input-->
+															</div>
+														</div>
+														<div class="row">
+															<div class="col-xl-4">
+																<!--begin::Input-->
+																<div class="form-group">
+																	<label>Province</label>
+																	<input type="text" class="form-control" name="company_province" value="<?= $res['company_province']; ?>" required />
+																</div>
+																<!--end::Input-->
+															</div>
+															<div class="col-xl-4">
+																<!--begin::Input-->
+																<div class="form-group">
+																	<label>Zip Code</label>
+																	<input type="text" class="form-control" name="company_zipcode" value="<?= $res['company_zipcode']; ?>" required />
+																</div>
+																<!--end::Input-->
+															</div>
+														</div>
+															<div class="d-flex justify-content-between border-top mt-5 pt-10">
+																<div></div>
+																<div>
+																	<button type="submit" name="submit" class="btn btn-success font-weight-bolder px-10 py-3">Submit</button>
+																</div>
+															</div>
+														</div>
+														</form>
+														<div class="row">
+															<div class="col-lg-9 col-xl-6">
+																<h5 class="font-weight-bold mt-10 mb-6">Upload Company Credentials</h5>
+															</div>
+														</div>
+														<div class="separator separator-solid my-7"></div>
+														<div class="row">
+															<h5>Upload Requirements</h5>
+															<table class="table table-bordered">
+																<thead>
+																	<tr>
+																		<th>Type of Documents</th>
+																		<th>Uploaded Documents</th>
+																		<th>Action</th>
+																	</tr>
+																</thead>
+																<tbody>
+																	<tr>
+																		<td>
+																			<label class="form-control-label" for="input-username">Business Permit</label>
+																			<p class="text-muted font-size-sm">Accept files docx, jpeg, png, pdf</p>
+																		</td>
+																		<td><a href="/hulam/assets/keen/hulam_media/<?= $res['b_permit']; ?>" target="_blank"><?= $res['b_permit']; ?></a></td>
+																		<td><a href="" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#b_permit">Update</a></td>
+																	</tr>
+																	<tr>
+																		<td>
+																			<label class="form-control-label" for="input-username">DTI Permit</label>
+																			<p class="text-muted font-size-sm">Accept files docx, jpeg, png, pdf</p>
+																		</td>
+																		<td><a href="/hulam/assets/keen/hulam_media/<?= $res['dti_permit']; ?>" target="_blank"><?= $res['dti_permit']; ?></a></td>
+																		<td><a href="" class="btn btn-sm btn-light-primary font-weight-bolder mr-2" data-toggle="modal" data-target="#dti_permit">Update</a></td>
+																	</tr>
+																</tbody>
+															</table>
+														</div>
+													</div>
+												</div>
+										
+										<!--end::Content-->
+									</div>
 								</div>
 							</div>
 						</div>
 					</div>
+					<!--end::Entry-->
 				</div>
-			</div>
-		</div>
-	</div>
-
-	<!--end::Content-->
-	<!--begin::Footer-->
-	<!-- <div class="footer bg-white py-4 d-flex flex-lg-column" id="kt_footer"> -->
-	<!--begin::Container-->
-	<div class="container d-flex flex-column flex-md-row align-items-center justify-content-between">
-		<!--begin::Copyright-->
-		<!-- <div class="text-dark order-2 order-md-1">
+				<!--end::Content-->
+				<!-- Start Modal -->
+				<form action="" method="post" enctype="multipart/form-data">
+					<div class="modal fade" id="b_permit" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
+						<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h5 class="modal-title" id="exampleModalLabel">BUSINESS PERMIT</h5>
+									<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+										<i aria-hidden="true" class="ki ki-close"></i>
+									</button>
+								</div>
+								<div class="col-xl-4">
+									<label class="font-weight-bolder font-size-lg" for="input-username">Upload/Edit Business Permit</label>
+									<div class="form-group">
+										<input type="file" name="b_permit" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3" />
+									</div>
+								</div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-light-primary font-weight-bold" data-dismiss="modal">Close</button>
+									<button type="submit" name="b_permit" class="btn btn-primary font-weight-bold">Save changes</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</form>
+				<!-- End Modal -->
+				<!-- Start Modal -->
+				<form action="" method="post" enctype="multipart/form-data">
+					<div class="modal fade" id="dti_permit" tabindex="-1" role="dialog" aria-labelledby="exampleModalSizeSm" aria-hidden="true">
+						<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h5 class="modal-title" id="exampleModalLabel">DTI PERMIT</h5>
+									<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+										<i aria-hidden="true" class="ki ki-close"></i>
+									</button>
+								</div>
+								<div class="col-xl-4">
+									<label class="font-weight-bolder font-size-lg" for="input-username">Upload/Edit DTI Permit</label>
+									<div class="form-group">
+										<input type="file" name="dti_permit" class="dropzone-select btn btn-light-primary font-weight-bold btn-sm mt-3" />
+									</div>
+								</div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-light-primary font-weight-bold" data-dismiss="modal">Close</button>
+									<button type="submit" name="dti_permit" class="btn btn-primary font-weight-bold">Save changes</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</form>
+				<!-- End Modal -->
+				<!--begin::Footer-->
+				<div class="footer bg-white py-4 d-flex flex-lg-column" id="kt_footer">
+					<!--begin::Container-->
+					<div class="container d-flex flex-column flex-md-row align-items-center justify-content-between">
+						<!--begin::Copyright-->
+						<div class="text-dark order-2 order-md-1">
 							<span class="text-muted font-weight-bold mr-2">2021©</span>
 							<a href="https://keenthemes.com/keen" target="_blank" class="text-dark-75 text-hover-primary">The Hulam Team</a>
-						</div> -->
-		<!--end::Copyright-->
-		<!--begin::Nav-->
-		<!-- <div class="nav nav-dark">
+						</div>
+						<!--end::Copyright-->
+						<!--begin::Nav-->
+						<div class="nav nav-dark">
 							<a href="https://keenthemes.com/keen" target="_blank" class="nav-link pl-0 pr-2">About</a>
 							<a href="https://keenthemes.com/keen" target="_blank" class="nav-link pr-2">Team</a>
 							<a href="https://keenthemes.com/keen" target="_blank" class="nav-link pr-0">Contact</a>
-						</div> -->
-		<!--end::Nav-->
+						</div>
+						<!--end::Nav-->
+					</div>
+					<!--end::Container-->
+				</div>
+				<!--end::Footer-->
+			</div>
+			<!--end::Wrapper-->
+		</div>
+		<!--end::Page-->
 	</div>
-	</div>
+	<!--end::Main-->
 
-	
 		<!-- begin::User Panel-->
 		<div id="kt_quick_user" class="offcanvas offcanvas-right p-10">
 			<!--begin::Header-->
@@ -905,7 +1111,6 @@ $user = $query->fetch();
 	<!--end::Quick Panel-->
 
 
-
 	<!--begin::Scrolltop-->
 	<div id="kt_scrolltop" class="scrolltop">
 		<span class="svg-icon">
@@ -923,6 +1128,22 @@ $user = $query->fetch();
 	<!--end::Scrolltop-->
 
 
+
+	<!--begin::Sticky Toolbar-->
+
+	<!--end::Sticky Toolbar-->
+	<!--begin::Demo Panel-->
+	<div id="kt_demo_panel" class="offcanvas offcanvas-right p-10">
+		<!--begin::Header-->
+		<div class="offcanvas-header d-flex align-items-center justify-content-between pb-7">
+			<h4 class="font-weight-bold m-0">Select A Demo</h4>
+			<a href="#" class="btn btn-xs btn-icon btn-light btn-hover-primary" id="kt_demo_panel_close">
+				<i class="ki ki-close icon-xs text-muted"></i>
+			</a>
+		</div>
+		<!--end::Header-->
+	</div>
+	<!--end::Demo Panel-->
 	<script>
 		var HOST_URL = "https://preview.keenthemes.com/keen/theme/tools/preview";
 	</script>
@@ -998,6 +1219,7 @@ $user = $query->fetch();
 	<!--end::Page Vendors-->
 	<!--begin::Page Scripts(used by this page)-->
 	<script src="assets/admin/js/pages/widgets.js"></script>
+	<script src="assets/keen/js/pages/features/file-upload/image-input.js"></script>
 	<!--end::Page Scripts-->
 </body>
 <!--end::Body-->

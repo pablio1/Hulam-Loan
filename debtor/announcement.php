@@ -184,13 +184,14 @@ $run = $query->fetch();
                                                 </div>
                                        
 										<!--end::Header-->
-									</div>
+										</div>
 									<!--end::Charts Widget 4-->
 									</div>
 								</div>
 							</div>
 					   </div>
 					</div>
+
                     </div>
                 </div>
             </div>
@@ -293,7 +294,13 @@ $run = $query->fetch();
 				</a>
 				<!--end:Item-->
 				<!--begin::Item-->
-				<a href="debtor/send_feedback.php" class="navi-item">
+				<?php
+				$sql = "SELECT * FROM user WHERE user_type='1'";
+				$query = $dbh->prepare($sql);
+				$query->execute();
+				$admin = $query->fetch();
+				?>
+				<a href="debtor/rating.php?lender_id=<?= $admin['user_id']?>" class="navi-item">
 					<div class="navi-link">
 						<div class="symbol symbol-40 bg-light mr-3">
 							<div class="symbol-label">

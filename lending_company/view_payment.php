@@ -148,7 +148,7 @@ $user = $query->fetch();
 									<span class="menu-text">Dashboard</span>
 								</a>
 							</li>
-								<li class="menu-section">
+							<li class="menu-section">
 								<h4 class="menu-text">Manage Account</h4>
 								<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
 							</li>
@@ -217,7 +217,6 @@ $user = $query->fetch();
 									</ul>
 								</div>
 							</li>
-
 							<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
 								<a href="javascript:;" class="menu-link menu-toggle">
 									<span class="svg-icon menu-icon">
@@ -245,13 +244,13 @@ $user = $query->fetch();
 											</a>
 										</li>
 										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
-                                            <a href="lending_company/released_loan.php" class="menu-link menu-toggle">
-                                                <i class="menu-bullet">
-                                                    <span></span>
-                                                </i>
-                                                <span class="menu-text">Release Loan</span>
-                                            </a>
-                                        </li>
+											<a href="lending_company/released_loan.php" class="menu-link menu-toggle">
+												<i class="menu-bullet">
+													<span></span>
+												</i>
+												<span class="menu-text">Release Loan</span>
+											</a>
+										</li>
 										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
 											<a href="lending_company/declined_loan.php" class="menu-link menu-toggle">
 												<i class="menu-bullet">
@@ -269,14 +268,14 @@ $user = $query->fetch();
 								<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
 							</li>
 							<li class="menu-item menu-item-submenu" data-menu-toggle="hover">
-							<a href="lending_company/record_payment.php" class="menu-link menu-toggle">
+								<a href="lending_company/released_loan.php" class="menu-link menu-toggle">
 									<span class="svg-icon menu-icon">
 									</span>
 									<span class="menu-text">Add Payment</span>
 								</a>
 							</li>
 							<li class="menu-item menu-item-submenu" data-menu-toggle="hover">
-							<a href="lending_company/view_payment.php" class="menu-link menu-toggle">
+								<a href="lending_company/view_payment.php" class="menu-link menu-toggle">
 									<span class="svg-icon menu-icon">
 									</span>
 									<span class="menu-text">Payment Records</span>
@@ -286,12 +285,24 @@ $user = $query->fetch();
 								<h4 class="menu-text">Manage Report</h4>
 								<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
 							</li>
-							<li class="menu-item menu-item-submenu" data-menu-toggle="hover">
-							<a href="lending_company/generate_report.php" class="menu-link menu-toggle">
+							<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+								<a href="javascript:;" class="menu-link menu-toggle">
 									<span class="svg-icon menu-icon">
 									</span>
 									<span class="menu-text">Generate Report</span>
+									<i class="menu-arrow"></i>
 								</a>
+								<div class="menu-submenu">
+									<ul class="menu-subnav">
+										<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+											<a href="lending_company/generate_report.php" class="menu-link menu-toggle">
+												<span class="svg-icon menu-icon">
+												</span>
+												<span class="menu-text">Debtor Report</span>
+											</a>
+										</li>
+									</ul>
+								</div>
 							</li>
 							<!--end::Menu Nav-->
 					</div>
@@ -430,80 +441,45 @@ $user = $query->fetch();
 										</div>
 									</form></br>
                                     <?php 
-                                    // $lender_id = $_SESSION['user_id'];
-
-                                    // $sql ="SELECT loan_application.*, user.* FROM user INNER JOIN loan_application ON loan_application.debtor_id = user.user_id WHERE lender_id = $lender_id";
-                                    // $sql = "SELECT loan_application.*, user.* FROM loan_application INNER JOIN user ON loan_application.debtor_id = user.user_id WHERE loan_application.lender_id = $lender_id AND loan_application.loan_status = 'Released'";
-                                    // $query = $dbh->prepare($sql);
-                                    // $query->execute();
-                                    // $loan_app = $query->fetch();
                                     ?>
 									<table class="table table-bordered">
 										<thead>
 											<tr>
 												<th>Loan Account No</th>
-												<th>Date Paid</th>
-												<th>Amount</th>
+												<th>(1st)Bi-Monthly Payment</th>
+												<th>(1st)Bi-Monthly Date Paid</th>
+												<th>(2nd)Bi-Monthly Payment</th>
+												<th>(2nd)Bi-Monthly Date Paid</th>
+												<th>Late Charge</th>
+												<th>Total Amount Paid</th>
 											</tr>
 										</thead>
 										<tbody>
-											<?php
+										<?php
                                             if(isset($_POST['search_input'])){
-                                            error_reporting(E_ALL);
-	
-                                            $search_input = $_POST['search_input'];
-        
-                                            if(empty($search_input)){
-											// $loan_app_id = $loan_app['loan_app_id'];
+												$search_input = $_POST['search_input'];
+												$loan_app_id = intval($_GET['loan_app_id']);
+												$debtor_id = $debtor['user_id'];
 
-											$sql = "SELECT * FROM running_balance WHERE loan_app_id = loan_app_id";
-											$query = $dbh->prepare($sql);
-											$query->execute();
-											$res = $query->fetchAll(PDO::FETCH_OBJ);
-                                            $cnt =1;
-											if ($query->rowCount() > 0) {
-												foreach ($res as $rem) { ?>
-
-												<tr>
-													<td><?= htmlentities($rem->loan_app_id)?></td>
-                                                    <td><?= htmlentities($rem->paid_date)?></td>
-                                                    <td><?= htmlentities($rem->payment)?></td>
-												</tr>
-                                            <?php $cnt = $cnt+1; }}}
-											else{
-                                            // $loan_app_id = $loan_app['loan_app_id'];
-											$sql = "SELECT * FROM running_balance WHERE loan_app_id LIKE '$search_input' OR paid_date LIKE '$search_input' AND loan_app_id = loan_app_id";
-											$query = $dbh->prepare($sql);
-											$query->execute();
-											$res = $query->fetchAll(PDO::FETCH_OBJ);
-                                            $cnt =1;
-											if ($query->rowCount() > 0) {
-												foreach ($res as $rem) { ?>
-
-												<tr>
-													<td><?= htmlentities($rem->loan_app_id)?></td>
-                                                    <td><?= htmlentities($rem->paid_date)?></td>
-                                                    <td><?= htmlentities($rem->payment)?></td>
-												</tr>
-                                            <?php $cnt = $cnt+1; }}}
+												$sql = "SELECT * FROM loan_payment_detail WHERE loan_app_id LIKE '%$search_input%' OR user_id LIKE '%$search_input%'  AND payment!='0' ";
 											}else{
-                                                // $loan_app_id = $loan_app['loan_app_id'];
-												$lender_id = $_SESSION['user_id'];
-    
-                                                $sql = "SELECT * FROM loan_application INNER JOIN running_balance ON loan_application.loan_app_id = running_balance.loan_app_id WHERE loan_application.lender_id = $lender_id ";
-                                                $query = $dbh->prepare($sql);
-                                                $query->execute();
-                                                $res = $query->fetchAll(PDO::FETCH_OBJ);
-                                                $cnt =1;
-                                                if ($query->rowCount() > 0) {
-                                                    foreach ($res as $rem) { ?>
-    
-                                                    <tr>
-                                                        <td><?= htmlentities($rem->loan_app_id)?></td>
-                                                        <td><?= htmlentities($rem->paid_date)?></td>
-                                                        <td><?= htmlentities($rem->payment)?></td>
-                                                    </tr>
-                                             <?php $cnt = $cnt+1; }}} ?>
+												$sql = "SELECT * FROM loan_payment_detail WHERE payment!='0'";
+											}
+											$query = $dbh->prepare($sql);
+											$query->execute();
+											while($row = $query->fetch()){
+												echo "
+													<tr>
+														<td>".$row['loan_app_id']."</td>
+														<td>".$row['semi_payment1']."</td>
+														<td>".$row['paid_date']."</td>
+														<td>".$row['semi_payment2']."</td>
+														<td>".$row['paid_date']."</td>
+														<td>".$row['late_charge']."</td>
+														<td>".$row['payment'] + $row['late_charge']."</td>
+													</tr>
+												";
+											}?>
                                             
 										</tbody>
 									</table>

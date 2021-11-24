@@ -337,6 +337,7 @@ $user = $query->fetch();
 									$ratingCount = 0;
 									
 									$lender_id = intval($_GET['lender_id']);
+									
 									$query = "SELECT * FROM feedback INNER JOIN user ON feedback.debtor_id = user.user_id WHERE lender_id = $lender_id";
 									$result = mysqli_query($conn, $query);
 									while ($row = mysqli_fetch_array($result)) {
@@ -345,7 +346,11 @@ $user = $query->fetch();
 									?>
 										<div class="card">
 											<div class="card-body">
-												<h5 class="card-title"><?php echo "" . $row['firstname'] . " " . $row['lastname']; ?></h5>
+												<?php if($row['user_type']=='1' || $row['user_type']=='2' || $row['user_type']=='4'):?>
+													<h5 class="card-title"><?php echo "" . $row['firstname'] . " " . $row['lastname']; ?></h5>
+												<?php else:?>
+													<h5 class="card-title"><?php echo "" . $row['company_name']?></h5>
+												<?php endif;?>
 												<p class="card-text"><?php drawStars($row['ratings']); ?>
 													<?php echo "" . $row['comments']; ?></p>
 												<?php echo $row['dateOfRate']; ?>
@@ -458,7 +463,13 @@ $user = $query->fetch();
 				</a>
 				<!--end:Item-->
 				<!--begin::Item-->
-				<a href="debtor/send_feedback.php" class="navi-item">
+				<?php
+				$sql = "SELECT * FROM user WHERE user_type='1'";
+				$query = $dbh->prepare($sql);
+				$query->execute();
+				$admin = $query->fetch();
+				?>
+				<a href="debtor/rating.php?lender_id=<?= $admin['user_id']?>" class="navi-item">
 					<div class="navi-link">
 						<div class="symbol symbol-40 bg-light mr-3">
 							<div class="symbol-label">

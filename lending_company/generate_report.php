@@ -32,7 +32,7 @@ $user = $query->fetch();
 <head>
 	<base href="../">
 	<meta charset="utf-8" />
-	<title>Hulam | Declined Loan</title>
+	<title>Hulam | Generate Report User Account</title>
 	<meta name="description" content="Updates and statistics" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 	<!--begin::Fonts-->
@@ -311,7 +311,6 @@ $user = $query->fetch();
 			</div>
 			<!--end::Aside-->
 
-
 				<!--begin::Wrapper-->
 				<div class="d-flex flex-column flex-row-fluid wrapper" id="kt_wrapper">
 					<!--begin::Header-->
@@ -434,52 +433,617 @@ $user = $query->fetch();
 						<div class="container">
 							<div class="card card-custom">
 								<div class="card-body">
-									<h5>Declined Loan Application</h5>
-									<table class="table table-bordered">
-										<thead>
-											<tr>
-												<th>Borrower</th>
-												<th>Loan Details</th>
-												<th>Action</th>
-											</tr>
-										</thead>
-										<tbody>
-											<?php
-											$lender_id = $_SESSION['user_id'];
+									<h5>Generate Reports</h5>
+                                    <div class="separator separator-dashed mt-8 mb-5"></div>
+                                 
+											<form action=" " method="post">
+												<div class="row">
+												  <div class="col-lg-3">
+													<div class="form-group">
+															<select name="loan_status" class="form-control" id="defaultSelect" >
+															<option value="none">By Status</option>
+															<option value="Pending">Pending</option>
+															<option value="Approved">Approved</option>
+															<option value="Released">Released</option>
+															<option value="Declined">Declined</option>
+															</select>
+														</div>
+													</div>
+													<div class="col-lg-3">
+														<div class="form-group">
+															<select name="period_time" class="form-control" id="defaultSelect">
+															<option value="none">Select Days</option>
+															<option value="today">Today</option>
+															<option value="yesterday">Yesterday</option>
+															<option value="sevenDays">Last 7 Days</option>
+															<option value="thisMonth">This Month</option>
+															<option value="lastMonth">Last Month</option>
+															<option value="thisYear">This Year</option>
+															</select>
+														</div>
+													</div>
+													<div class="form-group-row">
+														<button type="submit" name="btn-category" class="btn btn-primary btn-shadow font-weight-bold mr-2">SEARCH</button>
+												</div>
+											</div>
+											<form method="post" class="quick-search-form">
+												<div class="col-lg-4">
+													<input type="text" name="search_input" class="form-control" placeholder="Search..."/>
+												</div>
+											</form>
+												<!--end: Search Form -->
+											</div>		
+											<!--begin::Entry-->
+												<div class="d-flex flex-column-fluid">
+													<!--begin::Container-->
+												<div class="container">
 
-											$sql = "SELECT loan_application.*, user.* FROM loan_application INNER JOIN user ON loan_application.debtor_id = user.user_id WHERE loan_application.lender_id = '$lender_id' AND loan_application.loan_status = 'declined'";
-											$query = $dbh->prepare($sql);
-											$query->execute();
-											$res = $query->fetchAll(PDO::FETCH_OBJ);
-											if ($query->rowCount() > 0) {
-												foreach ($res as $rem) { ?>
+												<!--begin: Datatable -->
+												<table class="table table-striped- table-bordered table-hover table-checkable" id="kt_table_1" >
+													<thead>	
+														<tr>
+															<th>Loan Account No:</th>
+															<th>Profile Information</th>
+															<th>Address</th>
+															<th>Action</th>
+														</tr>
+													</thead>
+													<tbody>	
+													<?php
 
-												<tr>
-													<th scope="row">
-														Name:&nbsp;<?= htmlentities($rem->firstname); ?>&nbsp;<?= htmlentities($rem->lastname); ?></br>
-														Current Address:&nbsp;<?= htmlentities($rem->c_street) . ' ' . htmlentities($rem->c_barangay); ?><?= htmlentities($rem->c_city) . ' ' . htmlentities($rem->c_province) . ' ' . htmlentities($rem->c_zipcode); ?></br>
-														Mobile No: <?= htmlentities($rem->mobile)?>
-													</th>
-													<td>
-														Loan Application No: <?= htmlentities($rem->loan_app_id)?></br>
-														Application Date: <?= htmlentities($rem->date); ?></br>
-														Loan Amount: <?= htmlentities($rem->loan_amount)?></br>
-														Total Payable Amount: <?= htmlentities($rem->total_amount)?></br>
-														Loan Term: <?= htmlentities($rem->loan_term)?></br>
-														Interest Rate: <?= htmlentities($rem->fix_rate)?>%</br>
-														Monthly Payable: <?= htmlentities($rem->monthly_payment)?>
-													</td>
-													<td>
-														<a href="lending_company/view_application.php?loan_app_id=<?= htmlentities($rem->loan_app_id) ?>" class="kt-nav__link">
-															<span class="kt-nav__link-text">View</span>
-														</a>
-													</td>
-												</tr>
+														$mysqli = new mysqli('localhost', 'root', '', 'hulam');
+														if(isset($_POST['btn-category']) || isset($_POST['search_input']))
+														{
+															// $userType = mysqli_real_escape_string($mysqli, $_POST['user_type_name']);
+															$statusType = mysqli_real_escape_string($mysqli, $_POST['loan_status']);
+															$periodType = mysqli_real_escape_string($mysqli, $_POST['period_time']);
+															$searchInput = mysqli_real_escape_string($mysqli, $_POST['search_input']);
 
-										</tbody>
-									</table>
-							<?php }
-											} ?>
+															if($statusType == 'none' && $periodType == 'none' && $searchInput == '')
+															{
+																$query = mysqli_query($mysqli, "SELECT loan_application.*, user.*, debtors_info.* FROM loan_application inner join user on loan_application.debtor_id = user.user_id inner join debtors_info on user.user_id = debtors_info.user_id");
+
+																if(mysqli_num_rows($query) > 0)
+																{
+																	while($data = mysqli_fetch_array($query)){
+																		$formid = $data['loan_app_id'];
+																		echo "
+																			<tr>
+																				<td>".$data['loan_app_id']."</td>
+																				<td> Name: ".$data['firstname'].' '.$data['middlename'].' '.$data['lastname']."<br>
+																					 Mobile: ".$data['mobile']."<br>
+																					 Email: ".$data['email']."</td>
+																				<td> Current Address: ".$data['c_street'].' '.$data['c_barangay'].' '.$data['c_city'].' '.$data['c_province'].' '.$data['c_zipcode']."</td>
+																				<td>
+																				<a href='lending_company/view_debtor_report.php?loan_app_id=$formid' class='kt-nav__link'>
+																				<span class='kt-nav__link-text'>View Details</span>
+																				</a>
+																				</td>
+																			</tr>
+																		";
+																	}
+																}
+															}
+															if($statusType != 'none' && $periodType == 'none' && $searchInput == '')
+															{
+																$query = mysqli_query($mysqli, "SELECT loan_application.*, user.*, debtors_info.* FROM loan_application inner join user on loan_application.debtor_id = user.user_id inner join debtors_info on user.user_id = debtors_info.user_id");
+
+																if(mysqli_num_rows($query) > 0)
+																{
+																	while($data = mysqli_fetch_array($query)){
+																		$formid = $data['loan_app_id'];
+																		echo "
+																			<tr>
+																				<td>".$data['loan_app_id']."</td>
+																				<td> Name: ".$data['firstname'].' '.$data['middlename'].' '.$data['lastname']."<br>
+																					 Mobile: ".$data['mobile']."<br>
+																					 Email: ".$data['email']."</td>
+																				<td> Current Address: ".$data['c_street'].' '.$data['c_barangay'].' '.$data['c_city'].' '.$data['c_province'].' '.$data['c_zipcode']."<br>
+																				<td>
+																				<a href='lending_company/view_debtor_report.php?loan_app_id=$formid' class='kt-nav__link'>
+																				<span class='kt-nav__link-text'>View Details</span>
+																				</a>
+																				</td>
+																			</tr>
+																		";
+																	}
+																}
+															}
+															if($statusType == 'none' && $periodType != 'none' && $searchInput == '')
+															{
+																//$date1=date_create("2013-03-15");
+																$cdate = date("Y-m-d");
+																$getDate = date_create($cdate);
+																//$convertDate = $cdate->format('Y-m-d');
+																//$diff=date_diff($date1,$date2);
+																//echo "<script>alert('".$diff->format('%d days')."')</script>";
+																$getMonth = date('m');
+																$getLastMonth='';
+																$getYear = date('Y');
+																if($getMonth == 1)
+																	$getLastMonth = 12;
+																else
+																	$getLastMonth = $getMonth - 1;
+
+																$query = mysqli_query($mysqli, "SELECT loan_application.*, user.*, debtors_info.* FROM loan_application inner join user on loan_application.debtor_id = user.user_id inner join debtors_info on user.user_id = debtors_info.user_id WHERE MONTH(released_date) = '$getMonth' ORDER BY released_date asc");
+
+
+																$queryMonth = mysqli_query($mysqli, "SELECT loan_application.*, user.*, debtors_info.* FROM loan_application inner join user on loan_application.debtor_id = user.user_id inner join debtors_info on user.user_id = debtors_info.user_id WHERE MONTH(released_date) = '$getMonth' ORDER BY released_date asc");
+
+																$queryLastMonth = mysqli_query($mysqli, "SELECT loan_application.*, user.*, debtors_info.* FROM loan_application inner join user on loan_application.debtor_id = user.user_id inner join debtors_info on user.user_id = debtors_info.user_id WHERE MONTH(released_date) = '$getLastMonth' ORDER BY released_date asc");
+
+																$queryYear = mysqli_query($mysqli, "SELECT loan_application.*, user.*, debtors_info.* FROM loan_application inner join user on loan_application.debtor_id = user.user_id inner join debtors_info on user.user_id = debtors_info.user_id WHERE MONTH(released_date) = '$getYear' ORDER BY released_date asc");
+
+																if($periodType == 'today')
+																{
+																	//Start
+
+																	if(mysqli_num_rows($query) > 0)
+																	{
+																		while($data = mysqli_fetch_array($query))
+																		{
+																			$formid = $data['loan_app_id'];
+																			$_newDate = new DateTime($data['released_date']);
+																			$newDate = $_newDate->format('Y-m-d');
+																			$createDate=date_create($newDate);
+																			$diff = date_diff($createDate,$getDate);
+																			$numDays = $diff->format('%d');
+																			//echo "<script>alert('".$numDays."')</script>";
+																			
+																			if($numDays == 0)
+																			{
+																				echo "
+																					<tr>
+																					<td>".$data['loan_app_id']."</td>
+																					<td> Name: ".$data['firstname'].' '.$data['middlename'].' '.$data['lastname']."<br>
+																						 Mobile: ".$data['mobile']."<br>
+																						 Email: ".$data['email']."</td>
+																					<td> Current Address: ".$data['c_street'].' '.$data['c_barangay'].' '.$data['c_city'].' '.$data['c_province'].' '.$data['c_zipcode']."</td>
+																					<td>
+																					<a href='lending_company/view_debtor_report.php?loan_app_id=$formid' class='kt-nav__link'>
+																				<span class='kt-nav__link-text'>View Details</span>
+																				</a>
+																				</td>
+																					</tr>
+																				";
+																			}
+																			
+																		}
+																	}
+
+																	//End
+																}
+																if($periodType == 'yesterday')
+																{
+																	//Start
+
+																	if(mysqli_num_rows($query) > 0)
+																	{
+																		while($data = mysqli_fetch_array($query))
+																		{
+																			$date1 =date_create('2020-12-1');
+																			$date2 =date_create('2020-12-16');
+
+																			$formid = $data['loan_app_id'];		
+																			$_newDate = new DateTime($data['released_date']);
+																			$newDate = $_newDate->format('Y-m-d');
+																			$createDate=date_create($newDate);
+																			$diff = date_diff($date1,$date2);
+																			$numDays = $diff->format('%d');
+																			echo "<script>alert('".$date1->format('Y-m-d')."/".$date2->format('Y-m-d')." ".$numDays."')</script>";
+																			
+																			if($numDays == 1)
+																			{
+																				echo "
+																				<tr>
+																				<td>".$data['loan_app_id']."</td>
+																				<td> Name: ".$data['firstname'].' '.$data['middlename'].' '.$data['lastname']."<br>
+																					 Mobile: ".$data['mobile']."<br>
+																					 Email: ".$data['email']."</td>
+																				<td> Current Address: ".$data['c_street'].' '.$data['c_barangay'].' '.$data['c_city'].' '.$data['c_province'].' '.$data['c_zipcode']."</td>
+																				<td>
+																				<a href='lending_company/view_debtor_report.php?loan_app_id=$formid' class='kt-nav__link'>
+																				<span class='kt-nav__link-text'>View Details</span>
+																				</a>
+																			</td>
+																					</tr>
+																				";
+																			}
+																			
+																		}
+																	}
+
+																	//End
+																}
+																if($periodType == 'sevenDays')
+																{
+																	//Start
+
+																	if(mysqli_num_rows($query) > 0)
+																	{
+																		while($data = mysqli_fetch_array($query))
+																		{
+																			$formid = $data['loan_app_id'];
+																			$_newDate = new DateTime($data['released_date']);
+																			$newDate = $_newDate->format('Y-m-d');
+																			$createDate=date_create($newDate);
+																			$diff = date_diff($createDate,$getDate);
+																			$numDays = $diff->format('%d');
+																			//echo "<script>alert('".$numDays."')</script>";
+																			
+																			if($numDays <= 7)
+																			{
+																				echo "
+																					<tr>
+																					<tr>
+																					<td>".$data['loan_app_id']."</td>
+																					<td> Name: ".$data['firstname'].' '.$data['middlename'].' '.$data['lastname']."<br>
+																						 Mobile: ".$data['mobile']."<br>
+																						 Email: ".$data['email']."</td>
+																					<td> Current Address: ".$data['c_street'].' '.$data['c_barangay'].' '.$data['c_city'].' '.$data['c_province'].' '.$data['c_zipcode']."</td>
+																					<td>
+																					<a href='lending_company/view_debtor_report.php?loan_app_id=$formid' class='kt-nav__link'>
+																				<span class='kt-nav__link-text'>View Details</span>
+																				</a>
+																				</td>
+																					</tr>
+																				";
+																			}
+																			
+																		}
+																	}
+
+																	//End
+																}
+																if($periodType == 'thisMonth')
+																{
+																	//Start
+
+																	if(mysqli_num_rows($queryMonth) > 0)
+																	{
+																		while($data = mysqli_fetch_array($queryMonth))
+																		{
+																			$formid = $data['loan_app_id'];
+																			echo "
+																				<tr>
+																					<td>".$data['loan_app_id']."</td>
+																					<td> Name: ".$data['firstname'].' '.$data['middlename'].' '.$data['lastname']."<br>
+																						 Mobile: ".$data['mobile']."<br>
+																						 Email: ".$data['email']."</td>
+																					<td> Current Address: ".$data['c_street'].' '.$data['c_barangay'].' '.$data['c_city'].' '.$data['c_province'].' '.$data['c_zipcode']."</td>
+																					<td>
+																					<a href='lending_company/view_debtor_report.php?loan_app_id=$formid' class='kt-nav__link'>
+																				<span class='kt-nav__link-text'>View Details</span>
+																				</a>
+																				</td>
+																				</tr>
+																			";
+																			
+																		}
+																	}
+
+																	//End
+																}
+																if($periodType == 'lastMonth')
+																{
+																	//Start
+
+																	if(mysqli_num_rows($queryLastMonth) > 0)
+																	{
+																		while($data = mysqli_fetch_array($queryLastMonth))
+																		{
+																			$formid = $data['loan_app_id'];
+																			echo "
+																			<tr>
+																			<td>".$data['loan_app_id']."</td>
+																			<td> Name: ".$data['firstname'].' '.$data['middlename'].' '.$data['lastname']."<br>
+																				 Mobile: ".$data['mobile']."<br>
+																				 Email: ".$data['email']."</td>
+																			<td> Current Address: ".$data['c_street'].' '.$data['c_barangay'].' '.$data['c_city'].' '.$data['c_province'].' '.$data['c_zipcode']."</td>
+																			<td>
+																			<a href='lending_company/view_debtor_report.php?loan_app_id=$formid' class='kt-nav__link'>
+																				<span class='kt-nav__link-text'>View Details</span>
+																				</a>
+																		</td>
+																				</tr>
+																			";
+																			
+																		}
+																	} 
+																}
+																if($periodType == 'thisYear')
+																{
+																	//Start
+
+																	if(mysqli_num_rows($queryYear) > 0)
+																	{
+																		while($data = mysqli_fetch_array($queryYear))
+																		{
+																			$formid = $data['loan_app_id'];
+																			echo "
+																			<tr>
+																			<td>".$data['loan_app_id']."</td>
+																			<td> Name: ".$data['firstname'].' '.$data['middlename'].' '.$data['lastname']."<br>
+																				 Mobile: ".$data['mobile']."<br>
+																				 Email: ".$data['email']."</td>
+																			<td> Current Address: ".$data['c_street'].' '.$data['c_barangay'].' '.$data['c_city'].' '.$data['c_province'].' '.$data['c_zipcode']."</td>
+																			<td>
+																			<a href='lending_company/view_debtor_report.php?loan_app_id=$formid' class='kt-nav__link'>
+																				<span class='kt-nav__link-text'>View Details</span>
+																				</a>
+																		</td>
+																				</tr>
+																			";
+																			
+																		}
+																	} 
+																}
+																
+																
+															}
+															if($statusType == 'none' && $periodType == 'none' && $searchInput != '')
+															{
+																$query = mysqli_query($mysqli, "SELECT loan_application.*, user.*, debtors_info.* FROM loan_application inner join user on loan_application.debtor_id = user.user_id inner join debtors_info on user.user_id = debtors_info.user_id");
+
+																if(mysqli_num_rows($query) > 0)
+																{
+																	while($data = mysqli_fetch_array($query)){
+																		$formid = $data['loan_app_id'];
+																		echo "
+																		<tr>
+																		<td>".$data['loan_app_id']."</td>
+																		<td> Name: ".$data['firstname'].' '.$data['middlename'].' '.$data['lastname']."<br>
+																			 Mobile: ".$data['mobile']."<br>
+																			 Email: ".$data['email']."</td>
+																		<td> Current Address: ".$data['c_street'].' '.$data['c_barangay'].' '.$data['c_city'].' '.$data['c_province'].' '.$data['c_zipcode']."</td>
+																		<td>
+																		<a href='lending_company/view_debtor_report.php?loan_app_id=$formid' class='kt-nav__link'>
+																				<span class='kt-nav__link-text'>View Details</span>
+																				</a>
+																	</td>
+																			</tr>
+																		";
+																	}
+																}
+															}
+
+															if($statusType != 'none' && $periodType != 'none' && $searchInput == '')
+															{
+																//$date1=date_create("2013-03-15");
+																$cdate = date("Y-m-d");
+																$getDate = date_create($cdate);
+																//$convertDate = $cdate->format('Y-m-d');
+																//$diff=date_diff($date1,$date2);
+																//echo "<script>alert('".$diff->format('%d days')."')</script>";
+																$getMonth = date('m');
+																$getLastMonth='';
+																$getYear = date('Y');
+																if($getMonth == 1)
+																	$getLastMonth = 12;
+																else
+																	$getLastMonth = $getMonth - 1;
+
+															
+																	$query = mysqli_query($mysqli, "SELECT loan_application.*, user.*, debtors_info.* FROM loan_application inner join user on loan_application.debtor_id = user.user_id inner join debtors_info on user.user_id = debtors_info.user_id WHERE MONTH(released_date) = '$getMonth' ORDER BY released_date asc");
+
+
+																	$queryMonth = mysqli_query($mysqli, "SELECT loan_application.*, user.*, debtors_info.* FROM loan_application inner join user on loan_application.debtor_id = user.user_id inner join debtors_info on user.user_id = debtors_info.user_id WHERE MONTH(released_date) = '$getMonth' ORDER BY released_date asc");
+	
+																	$queryLastMonth = mysqli_query($mysqli, "SELECT loan_application.*, user.*, debtors_info.* FROM loan_application inner join user on loan_application.debtor_id = user.user_id inner join debtors_info on user.user_id = debtors_info.user_id WHERE MONTH(released_date) = '$getLastMonth' ORDER BY released_date asc");
+	
+																	$queryYear = mysqli_query($mysqli, "SELECT loan_application.*, user.*, debtors_info.* FROM loan_application inner join user on loan_application.debtor_id = user.user_id inner join debtors_info on user.user_id = debtors_info.user_id WHERE MONTH(released_date) = '$getYear' ORDER BY released_date asc");
+	
+																if($periodType == 'today')
+																{
+
+																	if(mysqli_num_rows($query) > 0)
+																	{
+																		while($data = mysqli_fetch_array($query))
+																		{
+																			$formid = $data['loan_app_id'];
+																			$_newDate = new DateTime($data['released_date']);
+																			$newDate = $_newDate->format('Y-m-d');
+																			$createDate=date_create($newDate);
+																			$diff = date_diff($createDate,$getDate);
+																			$numDays = $diff->format('%d');
+																			//echo "<script>alert('".$numDays."')</script>";
+																			
+																			if($numDays == 0)
+																			{
+																				echo "
+																				<tr>
+																				<td>".$data['loan_app_id']."</td>
+																				<td> Name: ".$data['firstname'].' '.$data['middlename'].' '.$data['lastname']."<br>
+																					 Mobile: ".$data['mobile']."<br>
+																					 Email: ".$data['email']."</td>
+																				<td> Current Address: ".$data['c_street'].' '.$data['c_barangay'].' '.$data['c_city'].' '.$data['c_province'].' '.$data['c_zipcode']."</td>
+																				<td>
+																				<a href='lending_company/view_debtor_report.php?loan_app_id=$formid' class='kt-nav__link'>
+																				<span class='kt-nav__link-text'>View Details</span>
+																				</a>
+																			</td>
+																					</tr>
+																				";
+																			}
+																			
+																		}
+																	}
+
+																	//End
+																}
+																if($periodType == 'yesterday')
+																{
+																	//Start
+
+																	if(mysqli_num_rows($query) > 0)
+																	{
+																		while($data = mysqli_fetch_array($query))
+																		{
+																			$date1 =date_create('2020-12-1');
+																			$date2 =date_create('2020-12-16');
+
+																			$formid = $data['loan_app_id'];															
+																			$_newDate = new DateTime($data['released_date']);
+																			$newDate = $_newDate->format('Y-m-d');
+																			$createDate=date_create($newDate);
+																			$diff = date_diff($date1,$date2);
+																			$numDays = $diff->format('%d');
+																			echo "<script>alert('".$date1->format('Y-m-d')."/".$date2->format('Y-m-d')." ".$numDays."')</script>";
+																			
+																			if($numDays == 1)
+																			{
+																				echo "
+																				<tr>
+																				<td>".$data['loan_app_id']."</td>
+																				<td> Name: ".$data['firstname'].' '.$data['middlename'].' '.$data['lastname']."<br>
+																					 Mobile: ".$data['mobile']."<br>
+																					 Email: ".$data['email']."</td>
+																				<td> Current Address: ".$data['c_street'].' '.$data['c_barangay'].' '.$data['c_city'].' '.$data['c_province'].' '.$data['c_zipcode']."</td>
+																				<td>
+																				<a href='lending_company/view_debtor_report.php?loan_app_id=$formid' class='kt-nav__link'>
+																				<span class='kt-nav__link-text'>View Details</span>
+																				</a>
+																			</td>
+																					</tr>
+																				";
+																			}
+																			
+																		}
+																	}
+
+																	//End
+																}
+																if($periodType == 'sevenDays')
+																{
+																	//Start
+
+																	if(mysqli_num_rows($query) > 0)
+																	{
+																		while($data = mysqli_fetch_array($query))
+																		{
+																			$formid = $data['loan_app_id'];
+																			$_newDate = new DateTime($data['released_date']);
+																			$newDate = $_newDate->format('Y-m-d');
+																			$createDate=date_create($newDate);
+																			$diff = date_diff($createDate,$getDate);
+																			$numDays = $diff->format('%d');
+																			//echo "<script>alert('".$numDays."')</script>";
+																			
+																			if($numDays <= 7)
+																			{
+																				echo "
+																				<tr>
+																				<td>".$data['loan_app_id']."</td>
+																				<td> Name: ".$data['firstname'].' '.$data['middlename'].' '.$data['lastname']."<br>
+																					 Mobile: ".$data['mobile']."<br>
+																					 Email: ".$data['email']."</td>
+																				<td> Current Address: ".$data['c_street'].' '.$data['c_barangay'].' '.$data['c_city'].' '.$data['c_province'].' '.$data['c_zipcode']."</td>
+																				<td>
+																				<a href='lending_company/view_debtor_report.php?loan_app_id=$formid' class='kt-nav__link'>
+																				<span class='kt-nav__link-text'>View Details</span>
+																				</a>
+																			</td>
+																					</tr>
+																				";
+																			}
+																			
+																		}
+																	}
+
+																	//End
+																}
+																if($periodType == 'thisMonth')
+																{
+																	//Start
+
+																	if(mysqli_num_rows($queryMonth) > 0)
+																	{
+																		while($data = mysqli_fetch_array($queryMonth))
+																		{
+																			$formid = $data['loan_app_id'];
+																			echo "
+																			<tr>
+																			<td>".$data['loan_app_id']."</td>
+																			<td> Name: ".$data['firstname'].' '.$data['middlename'].' '.$data['lastname']."<br>
+																				 Mobile: ".$data['mobile']."<br>
+																				 Email: ".$data['email']."</td>
+																			<td> Current Address: ".$data['c_street'].' '.$data['c_barangay'].' '.$data['c_city'].' '.$data['c_province'].' '.$data['c_zipcode']."</td>
+																			<td>
+																			<a href='lending_company/view_debtor_report.php?loan_app_id=$formid' class='kt-nav__link'>
+																				<span class='kt-nav__link-text'>View Details</span>
+																				</a>
+																		</td>
+																				</tr>
+																			";
+																			
+																		}
+																	}
+
+																	//End
+																}
+																if($periodType == 'lastMonth')
+																{
+																	//Start
+
+																	if(mysqli_num_rows($queryLastMonth) > 0)
+																	{
+																		while($data = mysqli_fetch_array($queryLastMonth))
+																		{
+																			$formid = $data['loan_app_id'];
+																			echo "
+																			<tr>
+																			<td>".$data['loan_app_id']."</td>
+																			<td> Name: ".$data['firstname'].' '.$data['middlename'].' '.$data['lastname']."<br>
+																				 Mobile: ".$data['mobile']."<br>
+																				 Email: ".$data['email']."</td>
+																			<td> Current Address: ".$data['c_street'].' '.$data['c_barangay'].' '.$data['c_city'].' '.$data['c_province'].' '.$data['c_zipcode']."</td>
+																			<td>
+																			<a href='lending_company/view_debtor_report.php?loan_app_id=$formid' class='kt-nav__link'>
+																				<span class='kt-nav__link-text'>View Details</span>
+																				</a>
+																		</td>
+																				</tr>
+																			";
+																			
+																		}
+																	} 
+																}
+																if($periodType == 'thisYear')
+																{
+																	//Start
+
+																	if(mysqli_num_rows($queryYear) > 0)
+																	{
+																		while($data = mysqli_fetch_array($queryYear))
+																		{
+																			$formid = $data['loan_app_id'];
+																			echo "
+																			<tr>
+																			<td>".$data['loan_app_id']."</td>
+																			<td> Name: ".$data['firstname'].' '.$data['middlename'].' '.$data['lastname']."<br>
+																				 Mobile: ".$data['mobile']."<br>
+																				 Email: ".$data['email']."</td>
+																			<td> Current Address: ".$data['c_street'].' '.$data['c_barangay'].' '.$data['c_city'].' '.$data['c_province'].' '.$data['c_zipcode']."</td>
+																			<td>
+																			<a href='lending_company/view_debtor_report.php?loan_app_id=$formid' class='kt-nav__link'>
+																			<span class='kt-nav__link-text'>View Details</span>
+																			</a>
+																			</td>
+																				</tr>
+																			";
+																			
+																		}
+																	} 
+																}
+															}
+															
+															echo "<script>alert('Successfully Loaded')</script>";
+															
+														}
+													?>
+													</tbody>
+												</table>
+							
 								</div>
 							</div>
 						</div>
@@ -509,7 +1073,6 @@ $user = $query->fetch();
 		<!--end::Nav-->
 	</div>
 	</div>
-
 
 	
 		<!-- begin::User Panel-->
@@ -720,7 +1283,6 @@ $user = $query->fetch();
 
 
 
-
 	<!--begin::Scrolltop-->
 	<div id="kt_scrolltop" class="scrolltop">
 		<span class="svg-icon">
@@ -738,123 +1300,6 @@ $user = $query->fetch();
 	<!--end::Scrolltop-->
 
 
-
-	<!--begin::Sticky Toolbar-->
-
-	<!--end::Sticky Toolbar-->
-	<!--begin::Demo Panel-->
-	<div id="kt_demo_panel" class="offcanvas offcanvas-right p-10">
-		<!--begin::Header-->
-		<div class="offcanvas-header d-flex align-items-center justify-content-between pb-7">
-			<h4 class="font-weight-bold m-0">Select A Demo</h4>
-			<a href="#" class="btn btn-xs btn-icon btn-light btn-hover-primary" id="kt_demo_panel_close">
-				<i class="ki ki-close icon-xs text-muted"></i>
-			</a>
-		</div>
-		<!--end::Header-->
-		<!--begin::Content-->
-		<div class="offcanvas-content">
-			<!--begin::Wrapper-->
-			<div class="offcanvas-wrapper mb-5 scroll-pull">
-				<h5 class="font-weight-bold mb-4 text-center">Demo 1</h5>
-				<div class="overlay rounded-lg mb-8 offcanvas-demo offcanvas-demo-active">
-					<div class="overlay-wrapper rounded-lg">
-						<img src="assets/media/demos/demo1.png" alt="" class="w-100" />
-					</div>
-					<div class="overlay-layer">
-						<a href="../../demo1/dist" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">HTML</a>
-						<a href="https://preview.keenthemes.com/keen/demo1/rtl/index.html" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">RTL</a>
-					</div>
-				</div>
-				<h5 class="font-weight-bold mb-4 text-center">Demo 2</h5>
-				<div class="overlay rounded-lg mb-8 offcanvas-demo">
-					<div class="overlay-wrapper rounded-lg">
-						<img src="assets/media/demos/demo2.png" alt="" class="w-100" />
-					</div>
-					<div class="overlay-layer">
-						<a href="../../demo2/dist" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">HTML</a>
-						<a href="https://preview.keenthemes.com/keen/demo2/rtl/index.html" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">RTL</a>
-					</div>
-				</div>
-				<h5 class="font-weight-bold mb-4 text-center">Demo 3</h5>
-				<div class="overlay rounded-lg mb-8 offcanvas-demo">
-					<div class="overlay-wrapper rounded-lg">
-						<img src="assets/media/demos/demo3.png" alt="" class="w-100" />
-					</div>
-					<div class="overlay-layer">
-						<a href="../../demo3/dist" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">HTML</a>
-						<a href="https://preview.keenthemes.com/keen/demo3/rtl/index.html" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">RTL</a>
-					</div>
-				</div>
-				<h5 class="font-weight-bold mb-4 text-center">Demo 4</h5>
-				<div class="overlay rounded-lg mb-8 offcanvas-demo">
-					<div class="overlay-wrapper rounded-lg">
-						<img src="assets/media/demos/demo4.png" alt="" class="w-100" />
-					</div>
-					<div class="overlay-layer">
-						<a href="../../demo4/dist" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">HTML</a>
-						<a href="https://preview.keenthemes.com/keen/demo4/rtl/index.html" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">RTL</a>
-					</div>
-				</div>
-				<h5 class="font-weight-bold mb-4 text-center">Demo 5</h5>
-				<div class="overlay rounded-lg mb-8 offcanvas-demo">
-					<div class="overlay-wrapper rounded-lg">
-						<img src="assets/media/demos/demo5.png" alt="" class="w-100" />
-					</div>
-					<div class="overlay-layer">
-						<a href="../../demo5/dist" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">HTML</a>
-						<a href="https://preview.keenthemes.com/keen/demo5/rtl/index.html" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">RTL</a>
-					</div>
-				</div>
-				<h5 class="font-weight-bold mb-4 text-center">Demo 6</h5>
-				<div class="overlay rounded-lg mb-8 offcanvas-demo">
-					<div class="overlay-wrapper rounded-lg">
-						<img src="assets/media/demos/demo6.png" alt="" class="w-100" />
-					</div>
-					<div class="overlay-layer">
-						<a href="../../demo6/dist" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">HTML</a>
-						<a href="https://preview.keenthemes.com/keen/demo6/rtl/index.html" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">RTL</a>
-					</div>
-				</div>
-				<h5 class="font-weight-bold mb-4 text-center">Demo 7</h5>
-				<div class="overlay rounded-lg mb-8 offcanvas-demo">
-					<div class="overlay-wrapper rounded-lg">
-						<img src="assets/media/demos/demo7.png" alt="" class="w-100" />
-					</div>
-					<div class="overlay-layer">
-						<a href="../../demo7/dist" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">HTML</a>
-						<a href="https://preview.keenthemes.com/keen/demo7/rtl/index.html" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow" target="_blank">RTL</a>
-					</div>
-				</div>
-				<h5 class="font-weight-bold mb-4 text-center">Demo 8</h5>
-				<div class="overlay rounded-lg mb-8 offcanvas-demo">
-					<div class="overlay-wrapper rounded-lg">
-						<img src="assets/media/demos/demo8.png" alt="" class="w-100" />
-					</div>
-					<div class="overlay-layer">
-						<a href="#" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow disabled opacity-90">Coming soon</a>
-					</div>
-				</div>
-				<h5 class="font-weight-bold mb-4 text-center">Demo 9</h5>
-				<div class="overlay rounded-lg mb-8 offcanvas-demo">
-					<div class="overlay-wrapper rounded-lg">
-						<img src="assets/media/demos/demo9.png" alt="" class="w-100" />
-					</div>
-					<div class="overlay-layer">
-						<a href="#" class="btn btn-white btn-text-primary btn-hover-primary font-weight-boldest text-center min-w-75px shadow disabled opacity-90">Coming soon</a>
-					</div>
-				</div>
-			</div>
-			<!--end::Wrapper-->
-			<!--begin::Purchase-->
-			<div class="offcanvas-footer">
-				<a href="https://themes.getbootstrap.com/product/keen-the-ultimate-bootstrap-admin-theme/" target="_blank" class="btn btn-block btn-danger btn-shadow font-weight-bolder text-uppercase">Buy Keen Now!</a>
-			</div>
-			<!--end::Purchase-->
-		</div>
-		<!--end::Content-->
-	</div>
-	<!--end::Demo Panel-->
 	<script>
 		var HOST_URL = "https://preview.keenthemes.com/keen/theme/tools/preview";
 	</script>
