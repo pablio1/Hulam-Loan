@@ -137,10 +137,6 @@ $query = $dbh->prepare($sql);
 $query->execute();
 $user = $query->fetch();
 ?>
-<<<<<<< HEAD
-=======
-
->>>>>>> bcb71b013ac139ed83a532da494103021b5fa657
 <!DOCTYPE html>
 
 <html lang="en">
@@ -149,11 +145,7 @@ $user = $query->fetch();
 <head>
 	<base href="../">
 	<meta charset="utf-8" />
-<<<<<<< HEAD
 	<title>Hulam | Dashboard</title>
-=======
-	<title>Hulam | View Released Loan</title>
->>>>>>> bcb71b013ac139ed83a532da494103021b5fa657
 	<meta name="description" content="Updates and statistics" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 	<!--begin::Fonts-->
@@ -389,22 +381,14 @@ $user = $query->fetch();
 								<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
 							</li>
 							<li class="menu-item menu-item-submenu" data-menu-toggle="hover">
-<<<<<<< HEAD
 								<a href="lending_company/released_loan.php" class="menu-link menu-toggle">
-=======
-							<a href="lending_company/record_payment.php" class="menu-link menu-toggle">
->>>>>>> bcb71b013ac139ed83a532da494103021b5fa657
 									<span class="svg-icon menu-icon">
 									</span>
 									<span class="menu-text">Add Payment</span>
 								</a>
 							</li>
 							<li class="menu-item menu-item-submenu" data-menu-toggle="hover">
-<<<<<<< HEAD
 								<a href="lending_company/view_payment.php" class="menu-link menu-toggle">
-=======
-							<a href="lending_company/view_payment.php" class="menu-link menu-toggle">
->>>>>>> bcb71b013ac139ed83a532da494103021b5fa657
 									<span class="svg-icon menu-icon">
 									</span>
 									<span class="menu-text">Payment Records</span>
@@ -455,13 +439,8 @@ $user = $query->fetch();
 							<div id="kt_header_menu" class="header-menu header-menu-mobile header-menu-layout-default">
 								<!--begin::Header Nav-->
 								<ul class="menu-nav">
-<<<<<<< HEAD
 									<li class="menu-item menu-item-open menu-item-here menu-item-submenu menu-item-rel menu-item-open menu-item-here menu-item-active" data-menu-toggle="click" aria-haspopup="true">
 										<h4 class="menu-text" style="color:blue">Welcome to Hulam! <h4>&nbsp;&nbsp;
-=======
-								<li class="menu-item menu-item-open menu-item-here menu-item-submenu menu-item-rel menu-item-open menu-item-here menu-item-active" data-menu-toggle="click" aria-haspopup="true">
-                                        <h4 class="menu-text" style="color:blue">Welcome to Hulam! <h4>&nbsp;&nbsp;
->>>>>>> bcb71b013ac139ed83a532da494103021b5fa657
 												<h6 class="text-danger">
 													<?php
 													$id = $_SESSION['user_id'];
